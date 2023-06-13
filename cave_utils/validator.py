@@ -247,6 +247,7 @@ class PropValidator(CoreValidator):
             "text": str,
             "selector": list,
             "date": str,
+            "media": str,
         }
 
         self.field_types = {
@@ -272,12 +273,13 @@ class PropValidator(CoreValidator):
             "head": ["column", "row"],
             "text": ["textarea"],
             "num": ["slider"],
-            "selector": ["dropdown", "checkbox", "radio", "combobox"],
+            "selector": ["dropdown", "checkbox", "radio", "combobox", "hstepper", "vstepper", "hradio"],
             "date": ["date", "time", "datetime"],
+            "media": ["picture", "video"]
         }
 
         self.accepted_values = {
-            "type": ["head", "num", "toggle", "button", "text", "selector", "date"],
+            "type": ["head", "num", "toggle", "button", "text", "selector", "date", "media"],
             "variant": self.allowed_variants.get(validation_type, None),
             "views": ["year", "day", "hours", "minutes"],
         }
