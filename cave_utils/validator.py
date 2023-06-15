@@ -16,15 +16,20 @@ class LogObject:
         assert level in ["error", "warning"], "Invalid level, must be 'error' or 'warning'"
         return [i for i in self.log if i["level"] == level]
 
-    def write_logs(self, path, level=None):
-        pamda.write_json(path, self.get_logs(level=level), pretty=True)
-
     def print_logs(self, level=None):
         for i in self.get_logs(level=level):
             print("=" * 50)
             print(f"Path: {i['path']}")
             print(f"Message: {i['msg']}")
             print(f"Level: {i['level']}")
+
+    def write_logs(self, path, level=None):
+        with open(path, "w") as f:
+            for i in self.get_logs(level=level):
+                f.write("=" * 50 + "\n")
+                f.write(f"Path: {i['path']}\n")
+                f.write(f"Message: {i['msg']}\n")
+                f.write(f"Level: {i['level']}\n")
 
 
 class LogHelper:
@@ -37,25 +42,20 @@ class LogHelper:
 
 
 class CoreValidator:
-    def __init__(self, data, log: LogObject, prepend_path: list = [], **kwargs):
+    def __init__(self, data, log: LogObject, prepend_path:list=list(), **kwargs):
         self.data = copy.deepcopy(data)
+        self.ignore_keys = kwargs.get('ignore_keys', set())
         self.log = LogHelper(log=log, prepend_path=prepend_path)
         self.populate_data(**kwargs)
-        self.validate()
-        try:
-            self.additional_validations(**kwargs)
-        except Exception as e:
-            self.log.add(
-                path=[],
-                msg=f"Additional validations failed (likely due to another error with your api data)",
-            )
-        # self.additional_validations(**kwargs)
+        self.validate(**kwargs)
 
-    def validate(self):
+    def validate(self, **kwargs):
         for field in self.required_fields:
             if field not in self.data:
                 self.log.add(path=[field], msg=f"Missing required field: ({field})")
         for field, value in self.data.items():
+            if field in self.ignore_keys:
+                continue
             accepted_values = self.accepted_values.get(field, None)
             if (
                 isinstance(
@@ -97,6 +97,15 @@ class CoreValidator:
                     path=[field],
                     msg=f"Invalid type ({type(value)}): Acceptable types are: {acceptable_types}",
                 )
+        
+        # Run additional Validations
+        try:
+            self.additional_validations(**kwargs)
+        except Exception as e:
+            self.log.add(
+                path=[],
+                msg=f"Additional validations failed (likely due to another error with your api data)",
+            )
 
     def additional_validations(self, **kwargs):
         pass
@@ -1569,7 +1578,7 @@ class RootValidator(CoreValidator):
         # Validate Categories
         ## Note this happens first to give useful feedback as categories are used in other validations
         CategoriesValidator(
-            data=self.data.get("categories", {}), log=self.log, prepend_path=["categories"]
+            data=self.data.get("categories", {}), log=self.log, prepend_path=["categories"], **kwargs
         )
         ## Get useful categories data for future validations
         categories_data = pamda.pathOr({}, ["categories", "data"], self.data)
@@ -1586,13 +1595,13 @@ class RootValidator(CoreValidator):
             data=self.data.get("stats", {}),
             log=self.log,
             prepend_path=["stats"],
-            categories_key_values=categories_key_values,
+            categories_key_values=categories_key_values, **kwargs
         )
         ## Get useful stats data for future validations
         acceptable_stats = list(pamda.pathOr({}, ["stats", "types"], self.data).keys())
 
         # Validate KPIs
-        KpisValidator(data=self.data.get("kpis", {}), log=self.log, prepend_path=["kpis"])
+        KpisValidator(data=self.data.get("kpis", {}), log=self.log, prepend_path=["kpis"], **kwargs)
         ## Get useful kpis data for future validations
         acceptable_kpis = list(pamda.pathOr({}, ["kpis", "data"], self.data).keys())
 
@@ -1602,21 +1611,21 @@ class RootValidator(CoreValidator):
             log=self.log,
             prepend_path=["arcs"],
             top_level_key="arcs",
-            categories_key_values=categories_key_values,
+            categories_key_values=categories_key_values, **kwargs
         )
         ArcsNodesGeosValidator(
             data=self.data.get("nodes", {}),
             log=self.log,
             prepend_path=["nodes"],
             top_level_key="nodes",
-            categories_key_values=categories_key_values,
+            categories_key_values=categories_key_values, **kwargs
         )
         ArcsNodesGeosValidator(
             data=self.data.get("geos", {}),
             log=self.log,
             prepend_path=["geos"],
             top_level_key="geos",
-            categories_key_values=categories_key_values,
+            categories_key_values=categories_key_values, **kwargs
         )
         ## Get useful arcs, nodes, and geos data for future validations
         node_prop_options = {
@@ -1633,7 +1642,7 @@ class RootValidator(CoreValidator):
         }
 
         # Validate AppBar
-        AppBarValidator(data=self.data.get("appBar", {}), log=self.log, prepend_path=["appBar"])
+        AppBarValidator(data=self.data.get("appBar", {}), log=self.log, prepend_path=["appBar"], **kwargs)
 
         # Validate Dashboards
         DashboardsValidator(
@@ -1642,11 +1651,11 @@ class RootValidator(CoreValidator):
             prepend_path=["dashboards"],
             categories_key_levels=categories_key_levels,
             acceptable_stats=acceptable_stats,
-            acceptable_kpis=acceptable_kpis,
+            acceptable_kpis=acceptable_kpis, **kwargs
         )
 
         # Validate Kwargs
-        KwargsValidator(data=self.data.get("kwargs", {}), log=self.log, prepend_path=["kwargs"])
+        KwargsValidator(data=self.data.get("kwargs", {}), log=self.log, prepend_path=["kwargs"], **kwargs)
 
         # Validate Maps
         MapsValidator(
@@ -1656,7 +1665,7 @@ class RootValidator(CoreValidator):
             categories_key_levels=categories_key_levels,
             node_prop_options=node_prop_options,
             arc_prop_options=arc_prop_options,
-            geo_prop_options=geo_prop_options,
+            geo_prop_options=geo_prop_options, **kwargs
         )
 
         # Validate Panes
@@ -1664,7 +1673,7 @@ class RootValidator(CoreValidator):
             data=self.data.get("panes", {}),
             log=self.log,
             prepend_path=["panes"],
-            categories_key_values=categories_key_values,
+            categories_key_values=categories_key_values, **kwargs
         )
 
         # Validate Settings
@@ -1672,13 +1681,13 @@ class RootValidator(CoreValidator):
             data=self.data.get("settings", {}),
             log=self.log,
             prepend_path=["settings"],
-            root_data=self.data,
+            root_data=self.data, **kwargs
         )
 
 
 class Validator:
-    def __init__(self, session_data, **kwargs):
+    def __init__(self, session_data, ignore_keys:list=[], **kwargs):
         self.session_data = session_data
         self.log = LogObject()
-
-        RootValidator(data=self.session_data, log=self.log, prepend_path=[])
+        assert isinstance(ignore_keys, (list, set,)), "`ignore_keys` must be a list of strings or set of strings"
+        RootValidator(data=self.session_data, log=self.log, prepend_path=[], ignore_keys=set(ignore_keys))
