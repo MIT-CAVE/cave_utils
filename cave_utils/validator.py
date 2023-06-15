@@ -1,17 +1,30 @@
 from pamda import pamda
-import re, copy, json
+import re
+import copy
 
 
 class LogObject:
-    def __init__(self, errors: dict = dict(), warnings: dict = dict()):
-        self.errors = errors
-        self.warnings = warnings
+    def __init__(self):
+        self.log = []
 
-    def add(self, path, error, level="error"):
-        assert level in ["error", "warning"], "level must be one of `error` or `warning`"
-        data = self.warnings if level == "warning" else self.errors
-        path = path + [level]
-        pamda.assocPath(path=path, value=pamda.pathOr([], path, data) + [error], data=data)
+    def add(self, path, msg, level="error"):
+        self.log.append({"path": path, "msg": msg, "level": level})
+
+    def get_logs(self, level=None):
+        if level is None:
+            return self.log
+        assert level in ["error", "warning"], "Invalid level, must be 'error' or 'warning'"
+        return [i for i in self.log if i["level"] == level]
+
+    def write_logs(self, path, level=None):
+        pamda.write_json(path, self.get_logs(level=level), pretty=True)
+
+    def print_logs(self, level=None):
+        for i in self.get_logs(level=level):
+            print("=" * 50)
+            print(f"Path: {i['path']}")
+            print(f"Message: {i['msg']}")
+            print(f"Level: {i['level']}")
 
 
 class LogHelper:
@@ -19,11 +32,8 @@ class LogHelper:
         self.log = log
         self.prepend_path = prepend_path
 
-    def add(self, path, error, level="error"):
-        self.log.add(path=self.prepend_path + path, error=error, level=level)
-
-    def show(self):
-        self.log.show()
+    def add(self, path, msg, level="error"):
+        self.log.add(path=self.prepend_path + path, msg=msg, level=level)
 
 
 class CoreValidator:
@@ -37,14 +47,14 @@ class CoreValidator:
         except Exception as e:
             self.log.add(
                 path=[],
-                error=f"Additional validations failed (likely due to another error with your api data)",
+                msg=f"Additional validations failed (likely due to another error with your api data)",
             )
         # self.additional_validations(**kwargs)
 
     def validate(self):
         for field in self.required_fields:
             if field not in self.data:
-                self.log.add(path=[field], error=f"Missing required field")
+                self.log.add(path=[field], msg=f"Missing required field")
         for field, value in self.data.items():
             accepted_values = self.accepted_values.get(field, None)
             if (
@@ -64,27 +74,28 @@ class CoreValidator:
                 if len(value_diff) > 0:
                     self.log.add(
                         path=[field],
-                        error=f"Invalid values ({value_diff}): Acceptable values are: {accepted_values}",
+                        msg=f"Invalid values ({value_diff}): Acceptable values are: {accepted_values}",
                     )
                     continue
             else:
                 if accepted_values is not None and value not in accepted_values:
                     self.log.add(
                         path=[field],
-                        error=f"Invalid value ({value}): Acceptable values are: {accepted_values}",
+                        msg=f"Invalid value ({value}): Acceptable values are: {accepted_values}",
                     )
                     continue
             if field not in self.required_fields + self.optional_fields:
                 self.log.add(
                     path=[field],
-                    error=f"Unknown field: Acceptable fields are: {self.required_fields + self.optional_fields}",
+                    msg=f"Unknown field ({field}): Acceptable fields are: {self.required_fields + self.optional_fields}",
+                    level="warning",
                 )
                 continue
             acceptable_types = self.field_types.get(field, type(None))
             if not isinstance(value, acceptable_types):
                 self.log.add(
                     path=[field],
-                    error=f"Invalid type ({type(value)}): Acceptable types are: {acceptable_types}",
+                    msg=f"Invalid type ({type(value)}): Acceptable types are: {acceptable_types}",
                 )
 
     def additional_validations(self, **kwargs):
@@ -108,7 +119,7 @@ class CoreValidator:
 
     def validate_rgb_string(self, rgb_string: str, prepend_path: list = []):
         if not self.is_rgb_string_valid(rgb_string):
-            self.log.add(path=prepend_path, error=f"Invalid rgb string: {rgb_string}")
+            self.log.add(path=prepend_path, msg=f"Invalid rgb string: {rgb_string}")
 
     def is_url_valid(self, url: str):
         # Use Django regex for URL validation
@@ -127,18 +138,44 @@ class CoreValidator:
 
     def validate_url(self, url: str, prepend_path: list = []):
         if not self.is_url_valid(url):
-            self.log.add(path=prepend_path, error=f"Invalid URL: {url}")
+            self.log.add(path=prepend_path, msg=f"Invalid URL: {url}")
 
     def error(self, error: str, prepend_path: list = []):
-        self.log.add(path=prepend_path, error=error)
+        self.log.add(path=prepend_path, msg=error)
 
     def warn(self, error: str, prepend_path: list = []):
-        self.log.add(path=prepend_path, error=error, level="warning")
+        self.log.add(path=prepend_path, msg=error, level="warning")
 
     def validate_subset(self, subset: list, valid_values: list, prepend_path: list = []):
         invalid_values = pamda.difference(subset, valid_values)
         if len(invalid_values) > 0:
-            self.log.add(path=prepend_path, error=f"Invalid subset values: {invalid_values}")
+            self.log.add(path=prepend_path, msg=f"Invalid subset values: {invalid_values}")
+
+    def is_coord_path_valid(self, coord_path: list):
+        try:
+            if len(coord_path) < 2:
+                return False
+            for coord in coord_path:
+                # Ensure coord is less than 3 items (longitude, latitude, altitude)
+                if len(coord) > 3:
+                    return False
+                # Check Longitude
+                if coord[0] < -180 or coord[0] > 180:
+                    return False
+                # Check Latitude
+                if coord[1] < -90 or coord[1] > 90:
+                    return False
+                # Check Altitude (if present)
+                if len(coord) == 3:
+                    if coord[2] < 0:
+                        return False
+        except:
+            return False
+        return True
+
+    def validate_coord_path(self, coord_path: list, prepend_path: list = []):
+        if not self.is_coord_path_valid(coord_path):
+            self.log.add(path=prepend_path, msg=f"Invalid coordinate path")
 
 
 class NumericDictValidator(CoreValidator):
@@ -273,9 +310,17 @@ class PropValidator(CoreValidator):
             "head": ["column", "row"],
             "text": ["textarea"],
             "num": ["slider"],
-            "selector": ["dropdown", "checkbox", "radio", "combobox", "hstepper", "vstepper", "hradio"],
+            "selector": [
+                "dropdown",
+                "checkbox",
+                "radio",
+                "combobox",
+                "hstepper",
+                "vstepper",
+                "hradio",
+            ],
             "date": ["date", "time", "datetime"],
-            "media": ["picture", "video"]
+            "media": ["picture", "video"],
         }
 
         self.accepted_values = {
@@ -580,6 +625,7 @@ class ArcsNodesGeosDataValidator(CoreValidator):
             "endAltitude": (float, int),
             "endClick": int,
             "category": dict,
+            "path": list,
             # Overlapping fields
             "props": dict,
             "layout": dict,
@@ -608,6 +654,7 @@ class ArcsNodesGeosDataValidator(CoreValidator):
                 "category",
                 "startAltitude",
                 "endAltitude",
+                "path",
             ],
             "geos": ["name", "layout", "startClick", "endClick", "category"],
         }.get(self.top_level_key, [])
@@ -620,6 +667,7 @@ class ArcsNodesGeosDataValidator(CoreValidator):
         props = self.data.get("props")
         layout = self.data.get("layout")
         category = self.data.get("category")
+        path = self.data.get("path")
         if props is not None:
             CustomKeyValidator(
                 data=props, log=self.log, prepend_path=["props"], validator=PropValidator, **kwargs
@@ -635,6 +683,8 @@ class ArcsNodesGeosDataValidator(CoreValidator):
             )
         if category is not None:
             CategoryValidator(data=category, log=self.log, prepend_path=["category"], **kwargs)
+        if path is not None:
+            self.validate_coord_path(coord_path=path, prepend_path=["path"])
 
 
 class CategoriesValidator(CoreValidator):
@@ -1472,11 +1522,11 @@ class SettingsDataSyncValidator(CoreValidator):
 
         self.optional_fields = []
 
-    def additional_validations(self, **kwargs):
-        root_data = kwargs.get("root_data", {})
-        for key, path in self.data.get("data", {}).items():
-            if not pamda.hasPath(path, root_data):
-                self.warn(f"Path {path} does not exist.", prepend_path=["data", key])
+    # def additional_validations(self, **kwargs):
+    #     root_data = kwargs.get("root_data", {})
+    #     for key, path in self.data.get("data", {}).items():
+    #         if not pamda.hasPath(path, root_data):
+    #             self.warn(f"Path {path} does not exist.", prepend_path=["data", key])
 
 
 class RootValidator(CoreValidator):
@@ -1629,20 +1679,3 @@ class Validator:
         self.log = LogObject()
 
         RootValidator(data=self.session_data, log=self.log, prepend_path=[])
-
-        self.errors = self.log.errors
-        self.warnings = self.log.warnings
-
-    def print_errors(self):
-        print("Errors:")
-        print(json.dumps(self.errors, indent=2))
-
-    def print_warnings(self):
-        print("Warnings:")
-        print(json.dumps(self.warnings, indent=2))
-
-    def write_errors(self, path):
-        pamda.write_json(path, self.errors, pretty=True)
-
-    def write_warnings(self, path):
-        pamda.write_json(path, self.warnings, pretty=True)

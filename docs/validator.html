@@ -27,19 +27,32 @@
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">from pamda import pamda
-import re, copy, json
+import re
+import copy
 
 
 class LogObject:
-    def __init__(self, errors: dict = dict(), warnings: dict = dict()):
-        self.errors = errors
-        self.warnings = warnings
+    def __init__(self):
+        self.log = []
 
-    def add(self, path, error, level=&#34;error&#34;):
-        assert level in [&#34;error&#34;, &#34;warning&#34;], &#34;level must be one of `error` or `warning`&#34;
-        data = self.warnings if level == &#34;warning&#34; else self.errors
-        path = path + [level]
-        pamda.assocPath(path=path, value=pamda.pathOr([], path, data) + [error], data=data)
+    def add(self, path, msg, level=&#34;error&#34;):
+        self.log.append({&#34;path&#34;: path, &#34;msg&#34;: msg, &#34;level&#34;: level})
+
+    def get_logs(self, level=None):
+        if level is None:
+            return self.log
+        assert level in [&#34;error&#34;, &#34;warning&#34;], &#34;Invalid level, must be &#39;error&#39; or &#39;warning&#39;&#34;
+        return [i for i in self.log if i[&#34;level&#34;] == level]
+
+    def write_logs(self, path, level=None):
+        pamda.write_json(path, self.get_logs(level=level), pretty=True)
+
+    def print_logs(self, level=None):
+        for i in self.get_logs(level=level):
+            print(&#34;=&#34; * 50)
+            print(f&#34;Path: {i[&#39;path&#39;]}&#34;)
+            print(f&#34;Message: {i[&#39;msg&#39;]}&#34;)
+            print(f&#34;Level: {i[&#39;level&#39;]}&#34;)
 
 
 class LogHelper:
@@ -47,11 +60,8 @@ class LogHelper:
         self.log = log
         self.prepend_path = prepend_path
 
-    def add(self, path, error, level=&#34;error&#34;):
-        self.log.add(path=self.prepend_path + path, error=error, level=level)
-
-    def show(self):
-        self.log.show()
+    def add(self, path, msg, level=&#34;error&#34;):
+        self.log.add(path=self.prepend_path + path, msg=msg, level=level)
 
 
 class CoreValidator:
@@ -65,14 +75,14 @@ class CoreValidator:
         except Exception as e:
             self.log.add(
                 path=[],
-                error=f&#34;Additional validations failed (likely due to another error with your api data)&#34;,
+                msg=f&#34;Additional validations failed (likely due to another error with your api data)&#34;,
             )
         # self.additional_validations(**kwargs)
 
     def validate(self):
         for field in self.required_fields:
             if field not in self.data:
-                self.log.add(path=[field], error=f&#34;Missing required field&#34;)
+                self.log.add(path=[field], msg=f&#34;Missing required field&#34;)
         for field, value in self.data.items():
             accepted_values = self.accepted_values.get(field, None)
             if (
@@ -92,27 +102,28 @@ class CoreValidator:
                 if len(value_diff) &gt; 0:
                     self.log.add(
                         path=[field],
-                        error=f&#34;Invalid values ({value_diff}): Acceptable values are: {accepted_values}&#34;,
+                        msg=f&#34;Invalid values ({value_diff}): Acceptable values are: {accepted_values}&#34;,
                     )
                     continue
             else:
                 if accepted_values is not None and value not in accepted_values:
                     self.log.add(
                         path=[field],
-                        error=f&#34;Invalid value ({value}): Acceptable values are: {accepted_values}&#34;,
+                        msg=f&#34;Invalid value ({value}): Acceptable values are: {accepted_values}&#34;,
                     )
                     continue
             if field not in self.required_fields + self.optional_fields:
                 self.log.add(
                     path=[field],
-                    error=f&#34;Unknown field: Acceptable fields are: {self.required_fields + self.optional_fields}&#34;,
+                    msg=f&#34;Unknown field ({field}): Acceptable fields are: {self.required_fields + self.optional_fields}&#34;,
+                    level=&#34;warning&#34;,
                 )
                 continue
             acceptable_types = self.field_types.get(field, type(None))
             if not isinstance(value, acceptable_types):
                 self.log.add(
                     path=[field],
-                    error=f&#34;Invalid type ({type(value)}): Acceptable types are: {acceptable_types}&#34;,
+                    msg=f&#34;Invalid type ({type(value)}): Acceptable types are: {acceptable_types}&#34;,
                 )
 
     def additional_validations(self, **kwargs):
@@ -136,7 +147,7 @@ class CoreValidator:
 
     def validate_rgb_string(self, rgb_string: str, prepend_path: list = []):
         if not self.is_rgb_string_valid(rgb_string):
-            self.log.add(path=prepend_path, error=f&#34;Invalid rgb string: {rgb_string}&#34;)
+            self.log.add(path=prepend_path, msg=f&#34;Invalid rgb string: {rgb_string}&#34;)
 
     def is_url_valid(self, url: str):
         # Use Django regex for URL validation
@@ -155,18 +166,44 @@ class CoreValidator:
 
     def validate_url(self, url: str, prepend_path: list = []):
         if not self.is_url_valid(url):
-            self.log.add(path=prepend_path, error=f&#34;Invalid URL: {url}&#34;)
+            self.log.add(path=prepend_path, msg=f&#34;Invalid URL: {url}&#34;)
 
     def error(self, error: str, prepend_path: list = []):
-        self.log.add(path=prepend_path, error=error)
+        self.log.add(path=prepend_path, msg=error)
 
     def warn(self, error: str, prepend_path: list = []):
-        self.log.add(path=prepend_path, error=error, level=&#34;warning&#34;)
+        self.log.add(path=prepend_path, msg=error, level=&#34;warning&#34;)
 
     def validate_subset(self, subset: list, valid_values: list, prepend_path: list = []):
         invalid_values = pamda.difference(subset, valid_values)
         if len(invalid_values) &gt; 0:
-            self.log.add(path=prepend_path, error=f&#34;Invalid subset values: {invalid_values}&#34;)
+            self.log.add(path=prepend_path, msg=f&#34;Invalid subset values: {invalid_values}&#34;)
+
+    def is_coord_path_valid(self, coord_path: list):
+        try:
+            if len(coord_path) &lt; 2:
+                return False
+            for coord in coord_path:
+                # Ensure coord is less than 3 items (longitude, latitude, altitude)
+                if len(coord) &gt; 3:
+                    return False
+                # Check Longitude
+                if coord[0] &lt; -180 or coord[0] &gt; 180:
+                    return False
+                # Check Latitude
+                if coord[1] &lt; -90 or coord[1] &gt; 90:
+                    return False
+                # Check Altitude (if present)
+                if len(coord) == 3:
+                    if coord[2] &lt; 0:
+                        return False
+        except:
+            return False
+        return True
+
+    def validate_coord_path(self, coord_path: list, prepend_path: list = []):
+        if not self.is_coord_path_valid(coord_path):
+            self.log.add(path=prepend_path, msg=f&#34;Invalid coordinate path&#34;)
 
 
 class NumericDictValidator(CoreValidator):
@@ -301,9 +338,17 @@ class PropValidator(CoreValidator):
             &#34;head&#34;: [&#34;column&#34;, &#34;row&#34;],
             &#34;text&#34;: [&#34;textarea&#34;],
             &#34;num&#34;: [&#34;slider&#34;],
-            &#34;selector&#34;: [&#34;dropdown&#34;, &#34;checkbox&#34;, &#34;radio&#34;, &#34;combobox&#34;, &#34;hstepper&#34;, &#34;vstepper&#34;, &#34;hradio&#34;],
+            &#34;selector&#34;: [
+                &#34;dropdown&#34;,
+                &#34;checkbox&#34;,
+                &#34;radio&#34;,
+                &#34;combobox&#34;,
+                &#34;hstepper&#34;,
+                &#34;vstepper&#34;,
+                &#34;hradio&#34;,
+            ],
             &#34;date&#34;: [&#34;date&#34;, &#34;time&#34;, &#34;datetime&#34;],
-            &#34;media&#34;: [&#34;picture&#34;, &#34;video&#34;]
+            &#34;media&#34;: [&#34;picture&#34;, &#34;video&#34;],
         }
 
         self.accepted_values = {
@@ -608,6 +653,7 @@ class ArcsNodesGeosDataValidator(CoreValidator):
             &#34;endAltitude&#34;: (float, int),
             &#34;endClick&#34;: int,
             &#34;category&#34;: dict,
+            &#34;path&#34;: list,
             # Overlapping fields
             &#34;props&#34;: dict,
             &#34;layout&#34;: dict,
@@ -636,6 +682,7 @@ class ArcsNodesGeosDataValidator(CoreValidator):
                 &#34;category&#34;,
                 &#34;startAltitude&#34;,
                 &#34;endAltitude&#34;,
+                &#34;path&#34;,
             ],
             &#34;geos&#34;: [&#34;name&#34;, &#34;layout&#34;, &#34;startClick&#34;, &#34;endClick&#34;, &#34;category&#34;],
         }.get(self.top_level_key, [])
@@ -648,6 +695,7 @@ class ArcsNodesGeosDataValidator(CoreValidator):
         props = self.data.get(&#34;props&#34;)
         layout = self.data.get(&#34;layout&#34;)
         category = self.data.get(&#34;category&#34;)
+        path = self.data.get(&#34;path&#34;)
         if props is not None:
             CustomKeyValidator(
                 data=props, log=self.log, prepend_path=[&#34;props&#34;], validator=PropValidator, **kwargs
@@ -663,6 +711,8 @@ class ArcsNodesGeosDataValidator(CoreValidator):
             )
         if category is not None:
             CategoryValidator(data=category, log=self.log, prepend_path=[&#34;category&#34;], **kwargs)
+        if path is not None:
+            self.validate_coord_path(coord_path=path, prepend_path=[&#34;path&#34;])
 
 
 class CategoriesValidator(CoreValidator):
@@ -1500,11 +1550,11 @@ class SettingsDataSyncValidator(CoreValidator):
 
         self.optional_fields = []
 
-    def additional_validations(self, **kwargs):
-        root_data = kwargs.get(&#34;root_data&#34;, {})
-        for key, path in self.data.get(&#34;data&#34;, {}).items():
-            if not pamda.hasPath(path, root_data):
-                self.warn(f&#34;Path {path} does not exist.&#34;, prepend_path=[&#34;data&#34;, key])
+    # def additional_validations(self, **kwargs):
+    #     root_data = kwargs.get(&#34;root_data&#34;, {})
+    #     for key, path in self.data.get(&#34;data&#34;, {}).items():
+    #         if not pamda.hasPath(path, root_data):
+    #             self.warn(f&#34;Path {path} does not exist.&#34;, prepend_path=[&#34;data&#34;, key])
 
 
 class RootValidator(CoreValidator):
@@ -1656,24 +1706,7 @@ class Validator:
         self.session_data = session_data
         self.log = LogObject()
 
-        RootValidator(data=self.session_data, log=self.log, prepend_path=[])
-
-        self.errors = self.log.errors
-        self.warnings = self.log.warnings
-
-    def print_errors(self):
-        print(&#34;Errors:&#34;)
-        print(json.dumps(self.errors, indent=2))
-
-    def print_warnings(self):
-        print(&#34;Warnings:&#34;)
-        print(json.dumps(self.warnings, indent=2))
-
-    def write_errors(self, path):
-        pamda.write_json(path, self.errors, pretty=True)
-
-    def write_warnings(self, path):
-        pamda.write_json(path, self.warnings, pretty=True)</code></pre>
+        RootValidator(data=self.session_data, log=self.log, prepend_path=[])</code></pre>
 </details>
 </section>
 <section>
@@ -1904,6 +1937,7 @@ class Validator:
             &#34;endAltitude&#34;: (float, int),
             &#34;endClick&#34;: int,
             &#34;category&#34;: dict,
+            &#34;path&#34;: list,
             # Overlapping fields
             &#34;props&#34;: dict,
             &#34;layout&#34;: dict,
@@ -1932,6 +1966,7 @@ class Validator:
                 &#34;category&#34;,
                 &#34;startAltitude&#34;,
                 &#34;endAltitude&#34;,
+                &#34;path&#34;,
             ],
             &#34;geos&#34;: [&#34;name&#34;, &#34;layout&#34;, &#34;startClick&#34;, &#34;endClick&#34;, &#34;category&#34;],
         }.get(self.top_level_key, [])
@@ -1944,6 +1979,7 @@ class Validator:
         props = self.data.get(&#34;props&#34;)
         layout = self.data.get(&#34;layout&#34;)
         category = self.data.get(&#34;category&#34;)
+        path = self.data.get(&#34;path&#34;)
         if props is not None:
             CustomKeyValidator(
                 data=props, log=self.log, prepend_path=[&#34;props&#34;], validator=PropValidator, **kwargs
@@ -1958,7 +1994,9 @@ class Validator:
                 **kwargs,
             )
         if category is not None:
-            CategoryValidator(data=category, log=self.log, prepend_path=[&#34;category&#34;], **kwargs)</code></pre>
+            CategoryValidator(data=category, log=self.log, prepend_path=[&#34;category&#34;], **kwargs)
+        if path is not None:
+            self.validate_coord_path(coord_path=path, prepend_path=[&#34;path&#34;])</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -1979,6 +2017,7 @@ class Validator:
     props = self.data.get(&#34;props&#34;)
     layout = self.data.get(&#34;layout&#34;)
     category = self.data.get(&#34;category&#34;)
+    path = self.data.get(&#34;path&#34;)
     if props is not None:
         CustomKeyValidator(
             data=props, log=self.log, prepend_path=[&#34;props&#34;], validator=PropValidator, **kwargs
@@ -1993,7 +2032,9 @@ class Validator:
             **kwargs,
         )
     if category is not None:
-        CategoryValidator(data=category, log=self.log, prepend_path=[&#34;category&#34;], **kwargs)</code></pre>
+        CategoryValidator(data=category, log=self.log, prepend_path=[&#34;category&#34;], **kwargs)
+    if path is not None:
+        self.validate_coord_path(coord_path=path, prepend_path=[&#34;path&#34;])</code></pre>
 </details>
 </dd>
 <dt id="cave_utils.validator.ArcsNodesGeosDataValidator.populate_data"><code class="name flex">
@@ -2031,6 +2072,7 @@ class Validator:
         &#34;endAltitude&#34;: (float, int),
         &#34;endClick&#34;: int,
         &#34;category&#34;: dict,
+        &#34;path&#34;: list,
         # Overlapping fields
         &#34;props&#34;: dict,
         &#34;layout&#34;: dict,
@@ -2059,6 +2101,7 @@ class Validator:
             &#34;category&#34;,
             &#34;startAltitude&#34;,
             &#34;endAltitude&#34;,
+            &#34;path&#34;,
         ],
         &#34;geos&#34;: [&#34;name&#34;, &#34;layout&#34;, &#34;startClick&#34;, &#34;endClick&#34;, &#34;category&#34;],
     }.get(self.top_level_key, [])
@@ -2881,14 +2924,14 @@ class Validator:
         except Exception as e:
             self.log.add(
                 path=[],
-                error=f&#34;Additional validations failed (likely due to another error with your api data)&#34;,
+                msg=f&#34;Additional validations failed (likely due to another error with your api data)&#34;,
             )
         # self.additional_validations(**kwargs)
 
     def validate(self):
         for field in self.required_fields:
             if field not in self.data:
-                self.log.add(path=[field], error=f&#34;Missing required field&#34;)
+                self.log.add(path=[field], msg=f&#34;Missing required field&#34;)
         for field, value in self.data.items():
             accepted_values = self.accepted_values.get(field, None)
             if (
@@ -2908,27 +2951,28 @@ class Validator:
                 if len(value_diff) &gt; 0:
                     self.log.add(
                         path=[field],
-                        error=f&#34;Invalid values ({value_diff}): Acceptable values are: {accepted_values}&#34;,
+                        msg=f&#34;Invalid values ({value_diff}): Acceptable values are: {accepted_values}&#34;,
                     )
                     continue
             else:
                 if accepted_values is not None and value not in accepted_values:
                     self.log.add(
                         path=[field],
-                        error=f&#34;Invalid value ({value}): Acceptable values are: {accepted_values}&#34;,
+                        msg=f&#34;Invalid value ({value}): Acceptable values are: {accepted_values}&#34;,
                     )
                     continue
             if field not in self.required_fields + self.optional_fields:
                 self.log.add(
                     path=[field],
-                    error=f&#34;Unknown field: Acceptable fields are: {self.required_fields + self.optional_fields}&#34;,
+                    msg=f&#34;Unknown field ({field}): Acceptable fields are: {self.required_fields + self.optional_fields}&#34;,
+                    level=&#34;warning&#34;,
                 )
                 continue
             acceptable_types = self.field_types.get(field, type(None))
             if not isinstance(value, acceptable_types):
                 self.log.add(
                     path=[field],
-                    error=f&#34;Invalid type ({type(value)}): Acceptable types are: {acceptable_types}&#34;,
+                    msg=f&#34;Invalid type ({type(value)}): Acceptable types are: {acceptable_types}&#34;,
                 )
 
     def additional_validations(self, **kwargs):
@@ -2952,7 +2996,7 @@ class Validator:
 
     def validate_rgb_string(self, rgb_string: str, prepend_path: list = []):
         if not self.is_rgb_string_valid(rgb_string):
-            self.log.add(path=prepend_path, error=f&#34;Invalid rgb string: {rgb_string}&#34;)
+            self.log.add(path=prepend_path, msg=f&#34;Invalid rgb string: {rgb_string}&#34;)
 
     def is_url_valid(self, url: str):
         # Use Django regex for URL validation
@@ -2971,18 +3015,44 @@ class Validator:
 
     def validate_url(self, url: str, prepend_path: list = []):
         if not self.is_url_valid(url):
-            self.log.add(path=prepend_path, error=f&#34;Invalid URL: {url}&#34;)
+            self.log.add(path=prepend_path, msg=f&#34;Invalid URL: {url}&#34;)
 
     def error(self, error: str, prepend_path: list = []):
-        self.log.add(path=prepend_path, error=error)
+        self.log.add(path=prepend_path, msg=error)
 
     def warn(self, error: str, prepend_path: list = []):
-        self.log.add(path=prepend_path, error=error, level=&#34;warning&#34;)
+        self.log.add(path=prepend_path, msg=error, level=&#34;warning&#34;)
 
     def validate_subset(self, subset: list, valid_values: list, prepend_path: list = []):
         invalid_values = pamda.difference(subset, valid_values)
         if len(invalid_values) &gt; 0:
-            self.log.add(path=prepend_path, error=f&#34;Invalid subset values: {invalid_values}&#34;)</code></pre>
+            self.log.add(path=prepend_path, msg=f&#34;Invalid subset values: {invalid_values}&#34;)
+
+    def is_coord_path_valid(self, coord_path: list):
+        try:
+            if len(coord_path) &lt; 2:
+                return False
+            for coord in coord_path:
+                # Ensure coord is less than 3 items (longitude, latitude, altitude)
+                if len(coord) &gt; 3:
+                    return False
+                # Check Longitude
+                if coord[0] &lt; -180 or coord[0] &gt; 180:
+                    return False
+                # Check Latitude
+                if coord[1] &lt; -90 or coord[1] &gt; 90:
+                    return False
+                # Check Altitude (if present)
+                if len(coord) == 3:
+                    if coord[2] &lt; 0:
+                        return False
+        except:
+            return False
+        return True
+
+    def validate_coord_path(self, coord_path: list, prepend_path: list = []):
+        if not self.is_coord_path_valid(coord_path):
+            self.log.add(path=prepend_path, msg=f&#34;Invalid coordinate path&#34;)</code></pre>
 </details>
 <h3>Subclasses</h3>
 <ul class="hlist">
@@ -3053,7 +3123,39 @@ class Validator:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def error(self, error: str, prepend_path: list = []):
-    self.log.add(path=prepend_path, error=error)</code></pre>
+    self.log.add(path=prepend_path, msg=error)</code></pre>
+</details>
+</dd>
+<dt id="cave_utils.validator.CoreValidator.is_coord_path_valid"><code class="name flex">
+<span>def <span class="ident">is_coord_path_valid</span></span>(<span>self, coord_path: list)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def is_coord_path_valid(self, coord_path: list):
+    try:
+        if len(coord_path) &lt; 2:
+            return False
+        for coord in coord_path:
+            # Ensure coord is less than 3 items (longitude, latitude, altitude)
+            if len(coord) &gt; 3:
+                return False
+            # Check Longitude
+            if coord[0] &lt; -180 or coord[0] &gt; 180:
+                return False
+            # Check Latitude
+            if coord[1] &lt; -90 or coord[1] &gt; 90:
+                return False
+            # Check Altitude (if present)
+            if len(coord) == 3:
+                if coord[2] &lt; 0:
+                    return False
+    except:
+        return False
+    return True</code></pre>
 </details>
 </dd>
 <dt id="cave_utils.validator.CoreValidator.is_rgb_string_valid"><code class="name flex">
@@ -3119,7 +3221,7 @@ class Validator:
 <pre><code class="python">def validate(self):
     for field in self.required_fields:
         if field not in self.data:
-            self.log.add(path=[field], error=f&#34;Missing required field&#34;)
+            self.log.add(path=[field], msg=f&#34;Missing required field&#34;)
     for field, value in self.data.items():
         accepted_values = self.accepted_values.get(field, None)
         if (
@@ -3139,28 +3241,43 @@ class Validator:
             if len(value_diff) &gt; 0:
                 self.log.add(
                     path=[field],
-                    error=f&#34;Invalid values ({value_diff}): Acceptable values are: {accepted_values}&#34;,
+                    msg=f&#34;Invalid values ({value_diff}): Acceptable values are: {accepted_values}&#34;,
                 )
                 continue
         else:
             if accepted_values is not None and value not in accepted_values:
                 self.log.add(
                     path=[field],
-                    error=f&#34;Invalid value ({value}): Acceptable values are: {accepted_values}&#34;,
+                    msg=f&#34;Invalid value ({value}): Acceptable values are: {accepted_values}&#34;,
                 )
                 continue
         if field not in self.required_fields + self.optional_fields:
             self.log.add(
                 path=[field],
-                error=f&#34;Unknown field: Acceptable fields are: {self.required_fields + self.optional_fields}&#34;,
+                msg=f&#34;Unknown field ({field}): Acceptable fields are: {self.required_fields + self.optional_fields}&#34;,
+                level=&#34;warning&#34;,
             )
             continue
         acceptable_types = self.field_types.get(field, type(None))
         if not isinstance(value, acceptable_types):
             self.log.add(
                 path=[field],
-                error=f&#34;Invalid type ({type(value)}): Acceptable types are: {acceptable_types}&#34;,
+                msg=f&#34;Invalid type ({type(value)}): Acceptable types are: {acceptable_types}&#34;,
             )</code></pre>
+</details>
+</dd>
+<dt id="cave_utils.validator.CoreValidator.validate_coord_path"><code class="name flex">
+<span>def <span class="ident">validate_coord_path</span></span>(<span>self, coord_path: list, prepend_path: list = [])</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def validate_coord_path(self, coord_path: list, prepend_path: list = []):
+    if not self.is_coord_path_valid(coord_path):
+        self.log.add(path=prepend_path, msg=f&#34;Invalid coordinate path&#34;)</code></pre>
 </details>
 </dd>
 <dt id="cave_utils.validator.CoreValidator.validate_rgb_string"><code class="name flex">
@@ -3174,7 +3291,7 @@ class Validator:
 </summary>
 <pre><code class="python">def validate_rgb_string(self, rgb_string: str, prepend_path: list = []):
     if not self.is_rgb_string_valid(rgb_string):
-        self.log.add(path=prepend_path, error=f&#34;Invalid rgb string: {rgb_string}&#34;)</code></pre>
+        self.log.add(path=prepend_path, msg=f&#34;Invalid rgb string: {rgb_string}&#34;)</code></pre>
 </details>
 </dd>
 <dt id="cave_utils.validator.CoreValidator.validate_subset"><code class="name flex">
@@ -3189,7 +3306,7 @@ class Validator:
 <pre><code class="python">def validate_subset(self, subset: list, valid_values: list, prepend_path: list = []):
     invalid_values = pamda.difference(subset, valid_values)
     if len(invalid_values) &gt; 0:
-        self.log.add(path=prepend_path, error=f&#34;Invalid subset values: {invalid_values}&#34;)</code></pre>
+        self.log.add(path=prepend_path, msg=f&#34;Invalid subset values: {invalid_values}&#34;)</code></pre>
 </details>
 </dd>
 <dt id="cave_utils.validator.CoreValidator.validate_url"><code class="name flex">
@@ -3203,7 +3320,7 @@ class Validator:
 </summary>
 <pre><code class="python">def validate_url(self, url: str, prepend_path: list = []):
     if not self.is_url_valid(url):
-        self.log.add(path=prepend_path, error=f&#34;Invalid URL: {url}&#34;)</code></pre>
+        self.log.add(path=prepend_path, msg=f&#34;Invalid URL: {url}&#34;)</code></pre>
 </details>
 </dd>
 <dt id="cave_utils.validator.CoreValidator.warn"><code class="name flex">
@@ -3216,7 +3333,7 @@ class Validator:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def warn(self, error: str, prepend_path: list = []):
-    self.log.add(path=prepend_path, error=error, level=&#34;warning&#34;)</code></pre>
+    self.log.add(path=prepend_path, msg=error, level=&#34;warning&#34;)</code></pre>
 </details>
 </dd>
 </dl>
@@ -4283,16 +4400,13 @@ class Validator:
         self.log = log
         self.prepend_path = prepend_path
 
-    def add(self, path, error, level=&#34;error&#34;):
-        self.log.add(path=self.prepend_path + path, error=error, level=level)
-
-    def show(self):
-        self.log.show()</code></pre>
+    def add(self, path, msg, level=&#34;error&#34;):
+        self.log.add(path=self.prepend_path + path, msg=msg, level=level)</code></pre>
 </details>
 <h3>Methods</h3>
 <dl>
 <dt id="cave_utils.validator.LogHelper.add"><code class="name flex">
-<span>def <span class="ident">add</span></span>(<span>self, path, error, level='error')</span>
+<span>def <span class="ident">add</span></span>(<span>self, path, msg, level='error')</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -4300,28 +4414,14 @@ class Validator:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def add(self, path, error, level=&#34;error&#34;):
-    self.log.add(path=self.prepend_path + path, error=error, level=level)</code></pre>
-</details>
-</dd>
-<dt id="cave_utils.validator.LogHelper.show"><code class="name flex">
-<span>def <span class="ident">show</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def show(self):
-    self.log.show()</code></pre>
+<pre><code class="python">def add(self, path, msg, level=&#34;error&#34;):
+    self.log.add(path=self.prepend_path + path, msg=msg, level=level)</code></pre>
 </details>
 </dd>
 </dl>
 </dd>
 <dt id="cave_utils.validator.LogObject"><code class="flex name class">
 <span>class <span class="ident">LogObject</span></span>
-<span>(</span><span>errors: dict = {}, warnings: dict = {})</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -4330,20 +4430,32 @@ class Validator:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class LogObject:
-    def __init__(self, errors: dict = dict(), warnings: dict = dict()):
-        self.errors = errors
-        self.warnings = warnings
+    def __init__(self):
+        self.log = []
 
-    def add(self, path, error, level=&#34;error&#34;):
-        assert level in [&#34;error&#34;, &#34;warning&#34;], &#34;level must be one of `error` or `warning`&#34;
-        data = self.warnings if level == &#34;warning&#34; else self.errors
-        path = path + [level]
-        pamda.assocPath(path=path, value=pamda.pathOr([], path, data) + [error], data=data)</code></pre>
+    def add(self, path, msg, level=&#34;error&#34;):
+        self.log.append({&#34;path&#34;: path, &#34;msg&#34;: msg, &#34;level&#34;: level})
+
+    def get_logs(self, level=None):
+        if level is None:
+            return self.log
+        assert level in [&#34;error&#34;, &#34;warning&#34;], &#34;Invalid level, must be &#39;error&#39; or &#39;warning&#39;&#34;
+        return [i for i in self.log if i[&#34;level&#34;] == level]
+
+    def write_logs(self, path, level=None):
+        pamda.write_json(path, self.get_logs(level=level), pretty=True)
+
+    def print_logs(self, level=None):
+        for i in self.get_logs(level=level):
+            print(&#34;=&#34; * 50)
+            print(f&#34;Path: {i[&#39;path&#39;]}&#34;)
+            print(f&#34;Message: {i[&#39;msg&#39;]}&#34;)
+            print(f&#34;Level: {i[&#39;level&#39;]}&#34;)</code></pre>
 </details>
 <h3>Methods</h3>
 <dl>
 <dt id="cave_utils.validator.LogObject.add"><code class="name flex">
-<span>def <span class="ident">add</span></span>(<span>self, path, error, level='error')</span>
+<span>def <span class="ident">add</span></span>(<span>self, path, msg, level='error')</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -4351,11 +4463,54 @@ class Validator:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def add(self, path, error, level=&#34;error&#34;):
-    assert level in [&#34;error&#34;, &#34;warning&#34;], &#34;level must be one of `error` or `warning`&#34;
-    data = self.warnings if level == &#34;warning&#34; else self.errors
-    path = path + [level]
-    pamda.assocPath(path=path, value=pamda.pathOr([], path, data) + [error], data=data)</code></pre>
+<pre><code class="python">def add(self, path, msg, level=&#34;error&#34;):
+    self.log.append({&#34;path&#34;: path, &#34;msg&#34;: msg, &#34;level&#34;: level})</code></pre>
+</details>
+</dd>
+<dt id="cave_utils.validator.LogObject.get_logs"><code class="name flex">
+<span>def <span class="ident">get_logs</span></span>(<span>self, level=None)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_logs(self, level=None):
+    if level is None:
+        return self.log
+    assert level in [&#34;error&#34;, &#34;warning&#34;], &#34;Invalid level, must be &#39;error&#39; or &#39;warning&#39;&#34;
+    return [i for i in self.log if i[&#34;level&#34;] == level]</code></pre>
+</details>
+</dd>
+<dt id="cave_utils.validator.LogObject.print_logs"><code class="name flex">
+<span>def <span class="ident">print_logs</span></span>(<span>self, level=None)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def print_logs(self, level=None):
+    for i in self.get_logs(level=level):
+        print(&#34;=&#34; * 50)
+        print(f&#34;Path: {i[&#39;path&#39;]}&#34;)
+        print(f&#34;Message: {i[&#39;msg&#39;]}&#34;)
+        print(f&#34;Level: {i[&#39;level&#39;]}&#34;)</code></pre>
+</details>
+</dd>
+<dt id="cave_utils.validator.LogObject.write_logs"><code class="name flex">
+<span>def <span class="ident">write_logs</span></span>(<span>self, path, level=None)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def write_logs(self, path, level=None):
+    pamda.write_json(path, self.get_logs(level=level), pretty=True)</code></pre>
 </details>
 </dd>
 </dl>
@@ -5140,9 +5295,17 @@ class Validator:
             &#34;head&#34;: [&#34;column&#34;, &#34;row&#34;],
             &#34;text&#34;: [&#34;textarea&#34;],
             &#34;num&#34;: [&#34;slider&#34;],
-            &#34;selector&#34;: [&#34;dropdown&#34;, &#34;checkbox&#34;, &#34;radio&#34;, &#34;combobox&#34;, &#34;hstepper&#34;, &#34;vstepper&#34;, &#34;hradio&#34;],
+            &#34;selector&#34;: [
+                &#34;dropdown&#34;,
+                &#34;checkbox&#34;,
+                &#34;radio&#34;,
+                &#34;combobox&#34;,
+                &#34;hstepper&#34;,
+                &#34;vstepper&#34;,
+                &#34;hradio&#34;,
+            ],
             &#34;date&#34;: [&#34;date&#34;, &#34;time&#34;, &#34;datetime&#34;],
-            &#34;media&#34;: [&#34;picture&#34;, &#34;video&#34;]
+            &#34;media&#34;: [&#34;picture&#34;, &#34;video&#34;],
         }
 
         self.accepted_values = {
@@ -5320,9 +5483,17 @@ class Validator:
         &#34;head&#34;: [&#34;column&#34;, &#34;row&#34;],
         &#34;text&#34;: [&#34;textarea&#34;],
         &#34;num&#34;: [&#34;slider&#34;],
-        &#34;selector&#34;: [&#34;dropdown&#34;, &#34;checkbox&#34;, &#34;radio&#34;, &#34;combobox&#34;, &#34;hstepper&#34;, &#34;vstepper&#34;, &#34;hradio&#34;],
+        &#34;selector&#34;: [
+            &#34;dropdown&#34;,
+            &#34;checkbox&#34;,
+            &#34;radio&#34;,
+            &#34;combobox&#34;,
+            &#34;hstepper&#34;,
+            &#34;vstepper&#34;,
+            &#34;hradio&#34;,
+        ],
         &#34;date&#34;: [&#34;date&#34;, &#34;time&#34;, &#34;datetime&#34;],
-        &#34;media&#34;: [&#34;picture&#34;, &#34;video&#34;]
+        &#34;media&#34;: [&#34;picture&#34;, &#34;video&#34;],
     }
 
     self.accepted_values = {
@@ -5754,11 +5925,11 @@ class Validator:
 
         self.optional_fields = []
 
-    def additional_validations(self, **kwargs):
-        root_data = kwargs.get(&#34;root_data&#34;, {})
-        for key, path in self.data.get(&#34;data&#34;, {}).items():
-            if not pamda.hasPath(path, root_data):
-                self.warn(f&#34;Path {path} does not exist.&#34;, prepend_path=[&#34;data&#34;, key])</code></pre>
+    # def additional_validations(self, **kwargs):
+    #     root_data = kwargs.get(&#34;root_data&#34;, {})
+    #     for key, path in self.data.get(&#34;data&#34;, {}).items():
+    #         if not pamda.hasPath(path, root_data):
+    #             self.warn(f&#34;Path {path} does not exist.&#34;, prepend_path=[&#34;data&#34;, key])</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -5766,22 +5937,6 @@ class Validator:
 </ul>
 <h3>Methods</h3>
 <dl>
-<dt id="cave_utils.validator.SettingsDataSyncValidator.additional_validations"><code class="name flex">
-<span>def <span class="ident">additional_validations</span></span>(<span>self, **kwargs)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def additional_validations(self, **kwargs):
-    root_data = kwargs.get(&#34;root_data&#34;, {})
-    for key, path in self.data.get(&#34;data&#34;, {}).items():
-        if not pamda.hasPath(path, root_data):
-            self.warn(f&#34;Path {path} does not exist.&#34;, prepend_path=[&#34;data&#34;, key])</code></pre>
-</details>
-</dd>
 <dt id="cave_utils.validator.SettingsDataSyncValidator.populate_data"><code class="name flex">
 <span>def <span class="ident">populate_data</span></span>(<span>self, **kwargs)</span>
 </code></dt>
@@ -6311,82 +6466,8 @@ class Validator:
         self.session_data = session_data
         self.log = LogObject()
 
-        RootValidator(data=self.session_data, log=self.log, prepend_path=[])
-
-        self.errors = self.log.errors
-        self.warnings = self.log.warnings
-
-    def print_errors(self):
-        print(&#34;Errors:&#34;)
-        print(json.dumps(self.errors, indent=2))
-
-    def print_warnings(self):
-        print(&#34;Warnings:&#34;)
-        print(json.dumps(self.warnings, indent=2))
-
-    def write_errors(self, path):
-        pamda.write_json(path, self.errors, pretty=True)
-
-    def write_warnings(self, path):
-        pamda.write_json(path, self.warnings, pretty=True)</code></pre>
+        RootValidator(data=self.session_data, log=self.log, prepend_path=[])</code></pre>
 </details>
-<h3>Methods</h3>
-<dl>
-<dt id="cave_utils.validator.Validator.print_errors"><code class="name flex">
-<span>def <span class="ident">print_errors</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def print_errors(self):
-    print(&#34;Errors:&#34;)
-    print(json.dumps(self.errors, indent=2))</code></pre>
-</details>
-</dd>
-<dt id="cave_utils.validator.Validator.print_warnings"><code class="name flex">
-<span>def <span class="ident">print_warnings</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def print_warnings(self):
-    print(&#34;Warnings:&#34;)
-    print(json.dumps(self.warnings, indent=2))</code></pre>
-</details>
-</dd>
-<dt id="cave_utils.validator.Validator.write_errors"><code class="name flex">
-<span>def <span class="ident">write_errors</span></span>(<span>self, path)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def write_errors(self, path):
-    pamda.write_json(path, self.errors, pretty=True)</code></pre>
-</details>
-</dd>
-<dt id="cave_utils.validator.Validator.write_warnings"><code class="name flex">
-<span>def <span class="ident">write_warnings</span></span>(<span>self, path)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def write_warnings(self, path):
-    pamda.write_json(path, self.warnings, pretty=True)</code></pre>
-</details>
-</dd>
-</dl>
 </dd>
 <dt id="cave_utils.validator.ViewportValidator"><code class="flex name class">
 <span>class <span class="ident">ViewportValidator</span></span>
@@ -6637,9 +6718,11 @@ class Validator:
 <ul class="">
 <li><code><a title="cave_utils.validator.CoreValidator.additional_validations" href="#cave_utils.validator.CoreValidator.additional_validations">additional_validations</a></code></li>
 <li><code><a title="cave_utils.validator.CoreValidator.error" href="#cave_utils.validator.CoreValidator.error">error</a></code></li>
+<li><code><a title="cave_utils.validator.CoreValidator.is_coord_path_valid" href="#cave_utils.validator.CoreValidator.is_coord_path_valid">is_coord_path_valid</a></code></li>
 <li><code><a title="cave_utils.validator.CoreValidator.is_rgb_string_valid" href="#cave_utils.validator.CoreValidator.is_rgb_string_valid">is_rgb_string_valid</a></code></li>
 <li><code><a title="cave_utils.validator.CoreValidator.is_url_valid" href="#cave_utils.validator.CoreValidator.is_url_valid">is_url_valid</a></code></li>
 <li><code><a title="cave_utils.validator.CoreValidator.validate" href="#cave_utils.validator.CoreValidator.validate">validate</a></code></li>
+<li><code><a title="cave_utils.validator.CoreValidator.validate_coord_path" href="#cave_utils.validator.CoreValidator.validate_coord_path">validate_coord_path</a></code></li>
 <li><code><a title="cave_utils.validator.CoreValidator.validate_rgb_string" href="#cave_utils.validator.CoreValidator.validate_rgb_string">validate_rgb_string</a></code></li>
 <li><code><a title="cave_utils.validator.CoreValidator.validate_subset" href="#cave_utils.validator.CoreValidator.validate_subset">validate_subset</a></code></li>
 <li><code><a title="cave_utils.validator.CoreValidator.validate_url" href="#cave_utils.validator.CoreValidator.validate_url">validate_url</a></code></li>
@@ -6724,13 +6807,15 @@ class Validator:
 <h4><code><a title="cave_utils.validator.LogHelper" href="#cave_utils.validator.LogHelper">LogHelper</a></code></h4>
 <ul class="">
 <li><code><a title="cave_utils.validator.LogHelper.add" href="#cave_utils.validator.LogHelper.add">add</a></code></li>
-<li><code><a title="cave_utils.validator.LogHelper.show" href="#cave_utils.validator.LogHelper.show">show</a></code></li>
 </ul>
 </li>
 <li>
 <h4><code><a title="cave_utils.validator.LogObject" href="#cave_utils.validator.LogObject">LogObject</a></code></h4>
 <ul class="">
 <li><code><a title="cave_utils.validator.LogObject.add" href="#cave_utils.validator.LogObject.add">add</a></code></li>
+<li><code><a title="cave_utils.validator.LogObject.get_logs" href="#cave_utils.validator.LogObject.get_logs">get_logs</a></code></li>
+<li><code><a title="cave_utils.validator.LogObject.print_logs" href="#cave_utils.validator.LogObject.print_logs">print_logs</a></code></li>
+<li><code><a title="cave_utils.validator.LogObject.write_logs" href="#cave_utils.validator.LogObject.write_logs">write_logs</a></code></li>
 </ul>
 </li>
 <li>
@@ -6809,7 +6894,6 @@ class Validator:
 <li>
 <h4><code><a title="cave_utils.validator.SettingsDataSyncValidator" href="#cave_utils.validator.SettingsDataSyncValidator">SettingsDataSyncValidator</a></code></h4>
 <ul class="">
-<li><code><a title="cave_utils.validator.SettingsDataSyncValidator.additional_validations" href="#cave_utils.validator.SettingsDataSyncValidator.additional_validations">additional_validations</a></code></li>
 <li><code><a title="cave_utils.validator.SettingsDataSyncValidator.populate_data" href="#cave_utils.validator.SettingsDataSyncValidator.populate_data">populate_data</a></code></li>
 </ul>
 </li>
@@ -6856,12 +6940,6 @@ class Validator:
 </li>
 <li>
 <h4><code><a title="cave_utils.validator.Validator" href="#cave_utils.validator.Validator">Validator</a></code></h4>
-<ul class="">
-<li><code><a title="cave_utils.validator.Validator.print_errors" href="#cave_utils.validator.Validator.print_errors">print_errors</a></code></li>
-<li><code><a title="cave_utils.validator.Validator.print_warnings" href="#cave_utils.validator.Validator.print_warnings">print_warnings</a></code></li>
-<li><code><a title="cave_utils.validator.Validator.write_errors" href="#cave_utils.validator.Validator.write_errors">write_errors</a></code></li>
-<li><code><a title="cave_utils.validator.Validator.write_warnings" href="#cave_utils.validator.Validator.write_warnings">write_warnings</a></code></li>
-</ul>
 </li>
 <li>
 <h4><code><a title="cave_utils.validator.ViewportValidator" href="#cave_utils.validator.ViewportValidator">ViewportValidator</a></code></h4>
