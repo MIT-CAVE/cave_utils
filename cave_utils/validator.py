@@ -303,6 +303,7 @@ class PropValidator(CoreValidator):
             "minValue": (int, float),
             "maxRows": int,
             "minRows": int,
+            "rows": int,
             "numberFormat": dict,
         }
 
@@ -343,6 +344,7 @@ class PropValidator(CoreValidator):
                 "apiCommandKeys",
                 "minRows",
                 "maxRows",
+                "rows",
             ],
             "num": [
                 "help",
