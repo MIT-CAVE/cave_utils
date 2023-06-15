@@ -54,7 +54,7 @@ class CoreValidator:
     def validate(self):
         for field in self.required_fields:
             if field not in self.data:
-                self.log.add(path=[field], msg=f"Missing required field")
+                self.log.add(path=[field], msg=f"Missing required field: ({field})")
         for field, value in self.data.items():
             accepted_values = self.accepted_values.get(field, None)
             if (
@@ -1225,6 +1225,7 @@ class LegendGroupLayersValidator(CoreValidator):
             ),
             "groupMatchCategory": str,
             "groupMatchCategoryLevel": str,
+            "order": int,
         }
 
         self.accepted_values = {
@@ -1238,7 +1239,7 @@ class LegendGroupLayersValidator(CoreValidator):
 
         self.required_fields = ["value", "colorBy"]
 
-        self.optional_fields = []
+        self.optional_fields = ["order"]
 
         if layer_type == "nodes":
             self.optional_fields.extend(
