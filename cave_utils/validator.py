@@ -228,6 +228,8 @@ class NumberFormatValidator(CoreValidator):
 
 class ColorByOptionValidator(CoreValidator):
     def is_categorical(self):
+        if self.data=={}:
+            return False
         expected_keys = ["min", "max", "startGradientColor", "endGradientColor"]
         return len(pamda.intersection(expected_keys, list(self.data.keys()))) == 0
 
