@@ -42,9 +42,9 @@ class LogHelper:
 
 
 class CoreValidator:
-    def __init__(self, data, log: LogObject, prepend_path:list=list(), **kwargs):
+    def __init__(self, data, log: LogObject, prepend_path: list = list(), **kwargs):
         self.data = copy.deepcopy(data)
-        self.ignore_keys = kwargs.get('ignore_keys', set())
+        self.ignore_keys = kwargs.get("ignore_keys", set())
         self.log = LogHelper(log=log, prepend_path=prepend_path)
         self.populate_data(**kwargs)
         self.validate(**kwargs)
@@ -97,7 +97,7 @@ class CoreValidator:
                     path=[field],
                     msg=f"Invalid type ({type(value)}): Acceptable types are: {acceptable_types}",
                 )
-        
+
         # Run additional Validations
         try:
             self.additional_validations(**kwargs)
@@ -228,7 +228,7 @@ class NumberFormatValidator(CoreValidator):
 
 class ColorByOptionValidator(CoreValidator):
     def is_categorical(self):
-        if self.data=={}:
+        if self.data == {}:
             return False
         expected_keys = ["min", "max", "startGradientColor", "endGradientColor"]
         return len(pamda.intersection(expected_keys, list(self.data.keys()))) == 0
@@ -1580,7 +1580,10 @@ class RootValidator(CoreValidator):
         # Validate Categories
         ## Note this happens first to give useful feedback as categories are used in other validations
         CategoriesValidator(
-            data=self.data.get("categories", {}), log=self.log, prepend_path=["categories"], **kwargs
+            data=self.data.get("categories", {}),
+            log=self.log,
+            prepend_path=["categories"],
+            **kwargs,
         )
         ## Get useful categories data for future validations
         categories_data = pamda.pathOr({}, ["categories", "data"], self.data)
@@ -1597,7 +1600,8 @@ class RootValidator(CoreValidator):
             data=self.data.get("stats", {}),
             log=self.log,
             prepend_path=["stats"],
-            categories_key_values=categories_key_values, **kwargs
+            categories_key_values=categories_key_values,
+            **kwargs,
         )
         ## Get useful stats data for future validations
         acceptable_stats = list(pamda.pathOr({}, ["stats", "types"], self.data).keys())
@@ -1613,21 +1617,24 @@ class RootValidator(CoreValidator):
             log=self.log,
             prepend_path=["arcs"],
             top_level_key="arcs",
-            categories_key_values=categories_key_values, **kwargs
+            categories_key_values=categories_key_values,
+            **kwargs,
         )
         ArcsNodesGeosValidator(
             data=self.data.get("nodes", {}),
             log=self.log,
             prepend_path=["nodes"],
             top_level_key="nodes",
-            categories_key_values=categories_key_values, **kwargs
+            categories_key_values=categories_key_values,
+            **kwargs,
         )
         ArcsNodesGeosValidator(
             data=self.data.get("geos", {}),
             log=self.log,
             prepend_path=["geos"],
             top_level_key="geos",
-            categories_key_values=categories_key_values, **kwargs
+            categories_key_values=categories_key_values,
+            **kwargs,
         )
         ## Get useful arcs, nodes, and geos data for future validations
         node_prop_options = {
@@ -1644,7 +1651,9 @@ class RootValidator(CoreValidator):
         }
 
         # Validate AppBar
-        AppBarValidator(data=self.data.get("appBar", {}), log=self.log, prepend_path=["appBar"], **kwargs)
+        AppBarValidator(
+            data=self.data.get("appBar", {}), log=self.log, prepend_path=["appBar"], **kwargs
+        )
 
         # Validate Dashboards
         DashboardsValidator(
@@ -1653,11 +1662,14 @@ class RootValidator(CoreValidator):
             prepend_path=["dashboards"],
             categories_key_levels=categories_key_levels,
             acceptable_stats=acceptable_stats,
-            acceptable_kpis=acceptable_kpis, **kwargs
+            acceptable_kpis=acceptable_kpis,
+            **kwargs,
         )
 
         # Validate Kwargs
-        KwargsValidator(data=self.data.get("kwargs", {}), log=self.log, prepend_path=["kwargs"], **kwargs)
+        KwargsValidator(
+            data=self.data.get("kwargs", {}), log=self.log, prepend_path=["kwargs"], **kwargs
+        )
 
         # Validate Maps
         MapsValidator(
@@ -1667,7 +1679,8 @@ class RootValidator(CoreValidator):
             categories_key_levels=categories_key_levels,
             node_prop_options=node_prop_options,
             arc_prop_options=arc_prop_options,
-            geo_prop_options=geo_prop_options, **kwargs
+            geo_prop_options=geo_prop_options,
+            **kwargs,
         )
 
         # Validate Panes
@@ -1675,7 +1688,8 @@ class RootValidator(CoreValidator):
             data=self.data.get("panes", {}),
             log=self.log,
             prepend_path=["panes"],
-            categories_key_values=categories_key_values, **kwargs
+            categories_key_values=categories_key_values,
+            **kwargs,
         )
 
         # Validate Settings
@@ -1683,13 +1697,22 @@ class RootValidator(CoreValidator):
             data=self.data.get("settings", {}),
             log=self.log,
             prepend_path=["settings"],
-            root_data=self.data, **kwargs
+            root_data=self.data,
+            **kwargs,
         )
 
 
 class Validator:
-    def __init__(self, session_data, ignore_keys:list=[], **kwargs):
+    def __init__(self, session_data, ignore_keys: list = [], **kwargs):
         self.session_data = session_data
         self.log = LogObject()
-        assert isinstance(ignore_keys, (list, set,)), "`ignore_keys` must be a list of strings or set of strings"
-        RootValidator(data=self.session_data, log=self.log, prepend_path=[], ignore_keys=set(ignore_keys))
+        assert isinstance(
+            ignore_keys,
+            (
+                list,
+                set,
+            ),
+        ), "`ignore_keys` must be a list of strings or set of strings"
+        RootValidator(
+            data=self.session_data, log=self.log, prepend_path=[], ignore_keys=set(ignore_keys)
+        )

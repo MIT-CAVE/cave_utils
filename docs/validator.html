@@ -44,15 +44,20 @@ class LogObject:
         assert level in [&#34;error&#34;, &#34;warning&#34;], &#34;Invalid level, must be &#39;error&#39; or &#39;warning&#39;&#34;
         return [i for i in self.log if i[&#34;level&#34;] == level]
 
-    def write_logs(self, path, level=None):
-        pamda.write_json(path, self.get_logs(level=level), pretty=True)
-
     def print_logs(self, level=None):
         for i in self.get_logs(level=level):
             print(&#34;=&#34; * 50)
             print(f&#34;Path: {i[&#39;path&#39;]}&#34;)
             print(f&#34;Message: {i[&#39;msg&#39;]}&#34;)
             print(f&#34;Level: {i[&#39;level&#39;]}&#34;)
+
+    def write_logs(self, path, level=None):
+        with open(path, &#34;w&#34;) as f:
+            for i in self.get_logs(level=level):
+                f.write(&#34;=&#34; * 50 + &#34;\n&#34;)
+                f.write(f&#34;Path: {i[&#39;path&#39;]}\n&#34;)
+                f.write(f&#34;Message: {i[&#39;msg&#39;]}\n&#34;)
+                f.write(f&#34;Level: {i[&#39;level&#39;]}\n&#34;)
 
 
 class LogHelper:
@@ -65,25 +70,20 @@ class LogHelper:
 
 
 class CoreValidator:
-    def __init__(self, data, log: LogObject, prepend_path: list = [], **kwargs):
+    def __init__(self, data, log: LogObject, prepend_path: list = list(), **kwargs):
         self.data = copy.deepcopy(data)
+        self.ignore_keys = kwargs.get(&#34;ignore_keys&#34;, set())
         self.log = LogHelper(log=log, prepend_path=prepend_path)
         self.populate_data(**kwargs)
-        self.validate()
-        try:
-            self.additional_validations(**kwargs)
-        except Exception as e:
-            self.log.add(
-                path=[],
-                msg=f&#34;Additional validations failed (likely due to another error with your api data)&#34;,
-            )
-        # self.additional_validations(**kwargs)
+        self.validate(**kwargs)
 
-    def validate(self):
+    def validate(self, **kwargs):
         for field in self.required_fields:
             if field not in self.data:
-                self.log.add(path=[field], msg=f&#34;Missing required field&#34;)
+                self.log.add(path=[field], msg=f&#34;Missing required field: ({field})&#34;)
         for field, value in self.data.items():
+            if field in self.ignore_keys:
+                continue
             accepted_values = self.accepted_values.get(field, None)
             if (
                 isinstance(
@@ -125,6 +125,15 @@ class CoreValidator:
                     path=[field],
                     msg=f&#34;Invalid type ({type(value)}): Acceptable types are: {acceptable_types}&#34;,
                 )
+
+        # Run additional Validations
+        try:
+            self.additional_validations(**kwargs)
+        except Exception as e:
+            self.log.add(
+                path=[],
+                msg=f&#34;Additional validations failed (likely due to another error with your api data)&#34;,
+            )
 
     def additional_validations(self, **kwargs):
         pass
@@ -247,6 +256,8 @@ class NumberFormatValidator(CoreValidator):
 
 class ColorByOptionValidator(CoreValidator):
     def is_categorical(self):
+        if self.data == {}:
+            return False
         expected_keys = [&#34;min&#34;, &#34;max&#34;, &#34;startGradientColor&#34;, &#34;endGradientColor&#34;]
         return len(pamda.intersection(expected_keys, list(self.data.keys()))) == 0
 
@@ -331,6 +342,7 @@ class PropValidator(CoreValidator):
             &#34;minValue&#34;: (int, float),
             &#34;maxRows&#34;: int,
             &#34;minRows&#34;: int,
+            &#34;rows&#34;: int,
             &#34;numberFormat&#34;: dict,
         }
 
@@ -371,6 +383,7 @@ class PropValidator(CoreValidator):
                 &#34;apiCommandKeys&#34;,
                 &#34;minRows&#34;,
                 &#34;maxRows&#34;,
+                &#34;rows&#34;,
             ],
             &#34;num&#34;: [
                 &#34;help&#34;,
@@ -1251,6 +1264,7 @@ class LegendGroupLayersValidator(CoreValidator):
             ),
             &#34;groupMatchCategory&#34;: str,
             &#34;groupMatchCategoryLevel&#34;: str,
+            &#34;order&#34;: int,
         }
 
         self.accepted_values = {
@@ -1264,7 +1278,7 @@ class LegendGroupLayersValidator(CoreValidator):
 
         self.required_fields = [&#34;value&#34;, &#34;colorBy&#34;]
 
-        self.optional_fields = []
+        self.optional_fields = [&#34;order&#34;]
 
         if layer_type == &#34;nodes&#34;:
             self.optional_fields.extend(
@@ -1594,7 +1608,10 @@ class RootValidator(CoreValidator):
         # Validate Categories
         ## Note this happens first to give useful feedback as categories are used in other validations
         CategoriesValidator(
-            data=self.data.get(&#34;categories&#34;, {}), log=self.log, prepend_path=[&#34;categories&#34;]
+            data=self.data.get(&#34;categories&#34;, {}),
+            log=self.log,
+            prepend_path=[&#34;categories&#34;],
+            **kwargs,
         )
         ## Get useful categories data for future validations
         categories_data = pamda.pathOr({}, [&#34;categories&#34;, &#34;data&#34;], self.data)
@@ -1612,12 +1629,13 @@ class RootValidator(CoreValidator):
             log=self.log,
             prepend_path=[&#34;stats&#34;],
             categories_key_values=categories_key_values,
+            **kwargs,
         )
         ## Get useful stats data for future validations
         acceptable_stats = list(pamda.pathOr({}, [&#34;stats&#34;, &#34;types&#34;], self.data).keys())
 
         # Validate KPIs
-        KpisValidator(data=self.data.get(&#34;kpis&#34;, {}), log=self.log, prepend_path=[&#34;kpis&#34;])
+        KpisValidator(data=self.data.get(&#34;kpis&#34;, {}), log=self.log, prepend_path=[&#34;kpis&#34;], **kwargs)
         ## Get useful kpis data for future validations
         acceptable_kpis = list(pamda.pathOr({}, [&#34;kpis&#34;, &#34;data&#34;], self.data).keys())
 
@@ -1628,6 +1646,7 @@ class RootValidator(CoreValidator):
             prepend_path=[&#34;arcs&#34;],
             top_level_key=&#34;arcs&#34;,
             categories_key_values=categories_key_values,
+            **kwargs,
         )
         ArcsNodesGeosValidator(
             data=self.data.get(&#34;nodes&#34;, {}),
@@ -1635,6 +1654,7 @@ class RootValidator(CoreValidator):
             prepend_path=[&#34;nodes&#34;],
             top_level_key=&#34;nodes&#34;,
             categories_key_values=categories_key_values,
+            **kwargs,
         )
         ArcsNodesGeosValidator(
             data=self.data.get(&#34;geos&#34;, {}),
@@ -1642,6 +1662,7 @@ class RootValidator(CoreValidator):
             prepend_path=[&#34;geos&#34;],
             top_level_key=&#34;geos&#34;,
             categories_key_values=categories_key_values,
+            **kwargs,
         )
         ## Get useful arcs, nodes, and geos data for future validations
         node_prop_options = {
@@ -1658,7 +1679,9 @@ class RootValidator(CoreValidator):
         }
 
         # Validate AppBar
-        AppBarValidator(data=self.data.get(&#34;appBar&#34;, {}), log=self.log, prepend_path=[&#34;appBar&#34;])
+        AppBarValidator(
+            data=self.data.get(&#34;appBar&#34;, {}), log=self.log, prepend_path=[&#34;appBar&#34;], **kwargs
+        )
 
         # Validate Dashboards
         DashboardsValidator(
@@ -1668,10 +1691,13 @@ class RootValidator(CoreValidator):
             categories_key_levels=categories_key_levels,
             acceptable_stats=acceptable_stats,
             acceptable_kpis=acceptable_kpis,
+            **kwargs,
         )
 
         # Validate Kwargs
-        KwargsValidator(data=self.data.get(&#34;kwargs&#34;, {}), log=self.log, prepend_path=[&#34;kwargs&#34;])
+        KwargsValidator(
+            data=self.data.get(&#34;kwargs&#34;, {}), log=self.log, prepend_path=[&#34;kwargs&#34;], **kwargs
+        )
 
         # Validate Maps
         MapsValidator(
@@ -1682,6 +1708,7 @@ class RootValidator(CoreValidator):
             node_prop_options=node_prop_options,
             arc_prop_options=arc_prop_options,
             geo_prop_options=geo_prop_options,
+            **kwargs,
         )
 
         # Validate Panes
@@ -1690,6 +1717,7 @@ class RootValidator(CoreValidator):
             log=self.log,
             prepend_path=[&#34;panes&#34;],
             categories_key_values=categories_key_values,
+            **kwargs,
         )
 
         # Validate Settings
@@ -1698,15 +1726,24 @@ class RootValidator(CoreValidator):
             log=self.log,
             prepend_path=[&#34;settings&#34;],
             root_data=self.data,
+            **kwargs,
         )
 
 
 class Validator:
-    def __init__(self, session_data, **kwargs):
+    def __init__(self, session_data, ignore_keys: list = [], **kwargs):
         self.session_data = session_data
         self.log = LogObject()
-
-        RootValidator(data=self.session_data, log=self.log, prepend_path=[])</code></pre>
+        assert isinstance(
+            ignore_keys,
+            (
+                list,
+                set,
+            ),
+        ), &#34;`ignore_keys` must be a list of strings or set of strings&#34;
+        RootValidator(
+            data=self.session_data, log=self.log, prepend_path=[], ignore_keys=set(ignore_keys)
+        )</code></pre>
 </details>
 </section>
 <section>
@@ -2747,6 +2784,8 @@ class Validator:
 </summary>
 <pre><code class="python">class ColorByOptionValidator(CoreValidator):
     def is_categorical(self):
+        if self.data == {}:
+            return False
         expected_keys = [&#34;min&#34;, &#34;max&#34;, &#34;startGradientColor&#34;, &#34;endGradientColor&#34;]
         return len(pamda.intersection(expected_keys, list(self.data.keys()))) == 0
 
@@ -2806,6 +2845,8 @@ class Validator:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def is_categorical(self):
+    if self.data == {}:
+        return False
     expected_keys = [&#34;min&#34;, &#34;max&#34;, &#34;startGradientColor&#34;, &#34;endGradientColor&#34;]
     return len(pamda.intersection(expected_keys, list(self.data.keys()))) == 0</code></pre>
 </details>
@@ -2914,25 +2955,20 @@ class Validator:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class CoreValidator:
-    def __init__(self, data, log: LogObject, prepend_path: list = [], **kwargs):
+    def __init__(self, data, log: LogObject, prepend_path: list = list(), **kwargs):
         self.data = copy.deepcopy(data)
+        self.ignore_keys = kwargs.get(&#34;ignore_keys&#34;, set())
         self.log = LogHelper(log=log, prepend_path=prepend_path)
         self.populate_data(**kwargs)
-        self.validate()
-        try:
-            self.additional_validations(**kwargs)
-        except Exception as e:
-            self.log.add(
-                path=[],
-                msg=f&#34;Additional validations failed (likely due to another error with your api data)&#34;,
-            )
-        # self.additional_validations(**kwargs)
+        self.validate(**kwargs)
 
-    def validate(self):
+    def validate(self, **kwargs):
         for field in self.required_fields:
             if field not in self.data:
-                self.log.add(path=[field], msg=f&#34;Missing required field&#34;)
+                self.log.add(path=[field], msg=f&#34;Missing required field: ({field})&#34;)
         for field, value in self.data.items():
+            if field in self.ignore_keys:
+                continue
             accepted_values = self.accepted_values.get(field, None)
             if (
                 isinstance(
@@ -2974,6 +3010,15 @@ class Validator:
                     path=[field],
                     msg=f&#34;Invalid type ({type(value)}): Acceptable types are: {acceptable_types}&#34;,
                 )
+
+        # Run additional Validations
+        try:
+            self.additional_validations(**kwargs)
+        except Exception as e:
+            self.log.add(
+                path=[],
+                msg=f&#34;Additional validations failed (likely due to another error with your api data)&#34;,
+            )
 
     def additional_validations(self, **kwargs):
         pass
@@ -3210,7 +3255,7 @@ class Validator:
 </details>
 </dd>
 <dt id="cave_utils.validator.CoreValidator.validate"><code class="name flex">
-<span>def <span class="ident">validate</span></span>(<span>self)</span>
+<span>def <span class="ident">validate</span></span>(<span>self, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -3218,11 +3263,13 @@ class Validator:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def validate(self):
+<pre><code class="python">def validate(self, **kwargs):
     for field in self.required_fields:
         if field not in self.data:
-            self.log.add(path=[field], msg=f&#34;Missing required field&#34;)
+            self.log.add(path=[field], msg=f&#34;Missing required field: ({field})&#34;)
     for field, value in self.data.items():
+        if field in self.ignore_keys:
+            continue
         accepted_values = self.accepted_values.get(field, None)
         if (
             isinstance(
@@ -3263,7 +3310,16 @@ class Validator:
             self.log.add(
                 path=[field],
                 msg=f&#34;Invalid type ({type(value)}): Acceptable types are: {acceptable_types}&#34;,
-            )</code></pre>
+            )
+
+    # Run additional Validations
+    try:
+        self.additional_validations(**kwargs)
+    except Exception as e:
+        self.log.add(
+            path=[],
+            msg=f&#34;Additional validations failed (likely due to another error with your api data)&#34;,
+        )</code></pre>
 </details>
 </dd>
 <dt id="cave_utils.validator.CoreValidator.validate_coord_path"><code class="name flex">
@@ -4172,6 +4228,7 @@ class Validator:
             ),
             &#34;groupMatchCategory&#34;: str,
             &#34;groupMatchCategoryLevel&#34;: str,
+            &#34;order&#34;: int,
         }
 
         self.accepted_values = {
@@ -4185,7 +4242,7 @@ class Validator:
 
         self.required_fields = [&#34;value&#34;, &#34;colorBy&#34;]
 
-        self.optional_fields = []
+        self.optional_fields = [&#34;order&#34;]
 
         if layer_type == &#34;nodes&#34;:
             self.optional_fields.extend(
@@ -4239,6 +4296,7 @@ class Validator:
         ),
         &#34;groupMatchCategory&#34;: str,
         &#34;groupMatchCategoryLevel&#34;: str,
+        &#34;order&#34;: int,
     }
 
     self.accepted_values = {
@@ -4252,7 +4310,7 @@ class Validator:
 
     self.required_fields = [&#34;value&#34;, &#34;colorBy&#34;]
 
-    self.optional_fields = []
+    self.optional_fields = [&#34;order&#34;]
 
     if layer_type == &#34;nodes&#34;:
         self.optional_fields.extend(
@@ -4442,15 +4500,20 @@ class Validator:
         assert level in [&#34;error&#34;, &#34;warning&#34;], &#34;Invalid level, must be &#39;error&#39; or &#39;warning&#39;&#34;
         return [i for i in self.log if i[&#34;level&#34;] == level]
 
-    def write_logs(self, path, level=None):
-        pamda.write_json(path, self.get_logs(level=level), pretty=True)
-
     def print_logs(self, level=None):
         for i in self.get_logs(level=level):
             print(&#34;=&#34; * 50)
             print(f&#34;Path: {i[&#39;path&#39;]}&#34;)
             print(f&#34;Message: {i[&#39;msg&#39;]}&#34;)
-            print(f&#34;Level: {i[&#39;level&#39;]}&#34;)</code></pre>
+            print(f&#34;Level: {i[&#39;level&#39;]}&#34;)
+
+    def write_logs(self, path, level=None):
+        with open(path, &#34;w&#34;) as f:
+            for i in self.get_logs(level=level):
+                f.write(&#34;=&#34; * 50 + &#34;\n&#34;)
+                f.write(f&#34;Path: {i[&#39;path&#39;]}\n&#34;)
+                f.write(f&#34;Message: {i[&#39;msg&#39;]}\n&#34;)
+                f.write(f&#34;Level: {i[&#39;level&#39;]}\n&#34;)</code></pre>
 </details>
 <h3>Methods</h3>
 <dl>
@@ -4510,7 +4573,12 @@ class Validator:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def write_logs(self, path, level=None):
-    pamda.write_json(path, self.get_logs(level=level), pretty=True)</code></pre>
+    with open(path, &#34;w&#34;) as f:
+        for i in self.get_logs(level=level):
+            f.write(&#34;=&#34; * 50 + &#34;\n&#34;)
+            f.write(f&#34;Path: {i[&#39;path&#39;]}\n&#34;)
+            f.write(f&#34;Message: {i[&#39;msg&#39;]}\n&#34;)
+            f.write(f&#34;Level: {i[&#39;level&#39;]}\n&#34;)</code></pre>
 </details>
 </dd>
 </dl>
@@ -5288,6 +5356,7 @@ class Validator:
             &#34;minValue&#34;: (int, float),
             &#34;maxRows&#34;: int,
             &#34;minRows&#34;: int,
+            &#34;rows&#34;: int,
             &#34;numberFormat&#34;: dict,
         }
 
@@ -5328,6 +5397,7 @@ class Validator:
                 &#34;apiCommandKeys&#34;,
                 &#34;minRows&#34;,
                 &#34;maxRows&#34;,
+                &#34;rows&#34;,
             ],
             &#34;num&#34;: [
                 &#34;help&#34;,
@@ -5476,6 +5546,7 @@ class Validator:
         &#34;minValue&#34;: (int, float),
         &#34;maxRows&#34;: int,
         &#34;minRows&#34;: int,
+        &#34;rows&#34;: int,
         &#34;numberFormat&#34;: dict,
     }
 
@@ -5516,6 +5587,7 @@ class Validator:
             &#34;apiCommandKeys&#34;,
             &#34;minRows&#34;,
             &#34;maxRows&#34;,
+            &#34;rows&#34;,
         ],
         &#34;num&#34;: [
             &#34;help&#34;,
@@ -5624,7 +5696,10 @@ class Validator:
         # Validate Categories
         ## Note this happens first to give useful feedback as categories are used in other validations
         CategoriesValidator(
-            data=self.data.get(&#34;categories&#34;, {}), log=self.log, prepend_path=[&#34;categories&#34;]
+            data=self.data.get(&#34;categories&#34;, {}),
+            log=self.log,
+            prepend_path=[&#34;categories&#34;],
+            **kwargs,
         )
         ## Get useful categories data for future validations
         categories_data = pamda.pathOr({}, [&#34;categories&#34;, &#34;data&#34;], self.data)
@@ -5642,12 +5717,13 @@ class Validator:
             log=self.log,
             prepend_path=[&#34;stats&#34;],
             categories_key_values=categories_key_values,
+            **kwargs,
         )
         ## Get useful stats data for future validations
         acceptable_stats = list(pamda.pathOr({}, [&#34;stats&#34;, &#34;types&#34;], self.data).keys())
 
         # Validate KPIs
-        KpisValidator(data=self.data.get(&#34;kpis&#34;, {}), log=self.log, prepend_path=[&#34;kpis&#34;])
+        KpisValidator(data=self.data.get(&#34;kpis&#34;, {}), log=self.log, prepend_path=[&#34;kpis&#34;], **kwargs)
         ## Get useful kpis data for future validations
         acceptable_kpis = list(pamda.pathOr({}, [&#34;kpis&#34;, &#34;data&#34;], self.data).keys())
 
@@ -5658,6 +5734,7 @@ class Validator:
             prepend_path=[&#34;arcs&#34;],
             top_level_key=&#34;arcs&#34;,
             categories_key_values=categories_key_values,
+            **kwargs,
         )
         ArcsNodesGeosValidator(
             data=self.data.get(&#34;nodes&#34;, {}),
@@ -5665,6 +5742,7 @@ class Validator:
             prepend_path=[&#34;nodes&#34;],
             top_level_key=&#34;nodes&#34;,
             categories_key_values=categories_key_values,
+            **kwargs,
         )
         ArcsNodesGeosValidator(
             data=self.data.get(&#34;geos&#34;, {}),
@@ -5672,6 +5750,7 @@ class Validator:
             prepend_path=[&#34;geos&#34;],
             top_level_key=&#34;geos&#34;,
             categories_key_values=categories_key_values,
+            **kwargs,
         )
         ## Get useful arcs, nodes, and geos data for future validations
         node_prop_options = {
@@ -5688,7 +5767,9 @@ class Validator:
         }
 
         # Validate AppBar
-        AppBarValidator(data=self.data.get(&#34;appBar&#34;, {}), log=self.log, prepend_path=[&#34;appBar&#34;])
+        AppBarValidator(
+            data=self.data.get(&#34;appBar&#34;, {}), log=self.log, prepend_path=[&#34;appBar&#34;], **kwargs
+        )
 
         # Validate Dashboards
         DashboardsValidator(
@@ -5698,10 +5779,13 @@ class Validator:
             categories_key_levels=categories_key_levels,
             acceptable_stats=acceptable_stats,
             acceptable_kpis=acceptable_kpis,
+            **kwargs,
         )
 
         # Validate Kwargs
-        KwargsValidator(data=self.data.get(&#34;kwargs&#34;, {}), log=self.log, prepend_path=[&#34;kwargs&#34;])
+        KwargsValidator(
+            data=self.data.get(&#34;kwargs&#34;, {}), log=self.log, prepend_path=[&#34;kwargs&#34;], **kwargs
+        )
 
         # Validate Maps
         MapsValidator(
@@ -5712,6 +5796,7 @@ class Validator:
             node_prop_options=node_prop_options,
             arc_prop_options=arc_prop_options,
             geo_prop_options=geo_prop_options,
+            **kwargs,
         )
 
         # Validate Panes
@@ -5720,6 +5805,7 @@ class Validator:
             log=self.log,
             prepend_path=[&#34;panes&#34;],
             categories_key_values=categories_key_values,
+            **kwargs,
         )
 
         # Validate Settings
@@ -5728,6 +5814,7 @@ class Validator:
             log=self.log,
             prepend_path=[&#34;settings&#34;],
             root_data=self.data,
+            **kwargs,
         )</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -5749,7 +5836,10 @@ class Validator:
     # Validate Categories
     ## Note this happens first to give useful feedback as categories are used in other validations
     CategoriesValidator(
-        data=self.data.get(&#34;categories&#34;, {}), log=self.log, prepend_path=[&#34;categories&#34;]
+        data=self.data.get(&#34;categories&#34;, {}),
+        log=self.log,
+        prepend_path=[&#34;categories&#34;],
+        **kwargs,
     )
     ## Get useful categories data for future validations
     categories_data = pamda.pathOr({}, [&#34;categories&#34;, &#34;data&#34;], self.data)
@@ -5767,12 +5857,13 @@ class Validator:
         log=self.log,
         prepend_path=[&#34;stats&#34;],
         categories_key_values=categories_key_values,
+        **kwargs,
     )
     ## Get useful stats data for future validations
     acceptable_stats = list(pamda.pathOr({}, [&#34;stats&#34;, &#34;types&#34;], self.data).keys())
 
     # Validate KPIs
-    KpisValidator(data=self.data.get(&#34;kpis&#34;, {}), log=self.log, prepend_path=[&#34;kpis&#34;])
+    KpisValidator(data=self.data.get(&#34;kpis&#34;, {}), log=self.log, prepend_path=[&#34;kpis&#34;], **kwargs)
     ## Get useful kpis data for future validations
     acceptable_kpis = list(pamda.pathOr({}, [&#34;kpis&#34;, &#34;data&#34;], self.data).keys())
 
@@ -5783,6 +5874,7 @@ class Validator:
         prepend_path=[&#34;arcs&#34;],
         top_level_key=&#34;arcs&#34;,
         categories_key_values=categories_key_values,
+        **kwargs,
     )
     ArcsNodesGeosValidator(
         data=self.data.get(&#34;nodes&#34;, {}),
@@ -5790,6 +5882,7 @@ class Validator:
         prepend_path=[&#34;nodes&#34;],
         top_level_key=&#34;nodes&#34;,
         categories_key_values=categories_key_values,
+        **kwargs,
     )
     ArcsNodesGeosValidator(
         data=self.data.get(&#34;geos&#34;, {}),
@@ -5797,6 +5890,7 @@ class Validator:
         prepend_path=[&#34;geos&#34;],
         top_level_key=&#34;geos&#34;,
         categories_key_values=categories_key_values,
+        **kwargs,
     )
     ## Get useful arcs, nodes, and geos data for future validations
     node_prop_options = {
@@ -5813,7 +5907,9 @@ class Validator:
     }
 
     # Validate AppBar
-    AppBarValidator(data=self.data.get(&#34;appBar&#34;, {}), log=self.log, prepend_path=[&#34;appBar&#34;])
+    AppBarValidator(
+        data=self.data.get(&#34;appBar&#34;, {}), log=self.log, prepend_path=[&#34;appBar&#34;], **kwargs
+    )
 
     # Validate Dashboards
     DashboardsValidator(
@@ -5823,10 +5919,13 @@ class Validator:
         categories_key_levels=categories_key_levels,
         acceptable_stats=acceptable_stats,
         acceptable_kpis=acceptable_kpis,
+        **kwargs,
     )
 
     # Validate Kwargs
-    KwargsValidator(data=self.data.get(&#34;kwargs&#34;, {}), log=self.log, prepend_path=[&#34;kwargs&#34;])
+    KwargsValidator(
+        data=self.data.get(&#34;kwargs&#34;, {}), log=self.log, prepend_path=[&#34;kwargs&#34;], **kwargs
+    )
 
     # Validate Maps
     MapsValidator(
@@ -5837,6 +5936,7 @@ class Validator:
         node_prop_options=node_prop_options,
         arc_prop_options=arc_prop_options,
         geo_prop_options=geo_prop_options,
+        **kwargs,
     )
 
     # Validate Panes
@@ -5845,6 +5945,7 @@ class Validator:
         log=self.log,
         prepend_path=[&#34;panes&#34;],
         categories_key_values=categories_key_values,
+        **kwargs,
     )
 
     # Validate Settings
@@ -5853,6 +5954,7 @@ class Validator:
         log=self.log,
         prepend_path=[&#34;settings&#34;],
         root_data=self.data,
+        **kwargs,
     )</code></pre>
 </details>
 </dd>
@@ -6453,7 +6555,7 @@ class Validator:
 </dd>
 <dt id="cave_utils.validator.Validator"><code class="flex name class">
 <span>class <span class="ident">Validator</span></span>
-<span>(</span><span>session_data, **kwargs)</span>
+<span>(</span><span>session_data, ignore_keys: list = [], **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -6462,11 +6564,19 @@ class Validator:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Validator:
-    def __init__(self, session_data, **kwargs):
+    def __init__(self, session_data, ignore_keys: list = [], **kwargs):
         self.session_data = session_data
         self.log = LogObject()
-
-        RootValidator(data=self.session_data, log=self.log, prepend_path=[])</code></pre>
+        assert isinstance(
+            ignore_keys,
+            (
+                list,
+                set,
+            ),
+        ), &#34;`ignore_keys` must be a list of strings or set of strings&#34;
+        RootValidator(
+            data=self.session_data, log=self.log, prepend_path=[], ignore_keys=set(ignore_keys)
+        )</code></pre>
 </details>
 </dd>
 <dt id="cave_utils.validator.ViewportValidator"><code class="flex name class">
