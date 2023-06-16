@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
-<title>cave_utils API documentation</title>
+<title>cave_utils.utils.socket API documentation</title>
 <meta name="description" content="" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
@@ -19,24 +19,83 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Namespace <code>cave_utils</code></h1>
+<h1 class="title">Module <code>cave_utils.utils.socket</code></h1>
 </header>
 <section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Socket:
+    def __init__(self):
+        pass
+
+    def broadcast(self, *args, **kwargs):
+        print(&#34;broadcast: &#34;, {&#34;args&#34;: args, &#34;kwargs&#34;: kwargs})
+
+    def notify(self, *args, **kwargs):
+        print(&#34;notify: &#34;, {&#34;args&#34;: args, &#34;kwargs&#34;: kwargs})</code></pre>
+</details>
 </section>
 <section>
-<h2 class="section-title" id="header-submodules">Sub-modules</h2>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt><code class="name"><a title="cave_utils.utils" href="utils/index.html">cave_utils.utils</a></code></dt>
+<dt id="cave_utils.utils.socket.Socket"><code class="flex name class">
+<span>class <span class="ident">Socket</span></span>
+</code></dt>
 <dd>
 <div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Socket:
+    def __init__(self):
+        pass
+
+    def broadcast(self, *args, **kwargs):
+        print(&#34;broadcast: &#34;, {&#34;args&#34;: args, &#34;kwargs&#34;: kwargs})
+
+    def notify(self, *args, **kwargs):
+        print(&#34;notify: &#34;, {&#34;args&#34;: args, &#34;kwargs&#34;: kwargs})</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="cave_utils.utils.socket.Socket.broadcast"><code class="name flex">
+<span>def <span class="ident">broadcast</span></span>(<span>self, *args, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def broadcast(self, *args, **kwargs):
+    print(&#34;broadcast: &#34;, {&#34;args&#34;: args, &#34;kwargs&#34;: kwargs})</code></pre>
+</details>
+</dd>
+<dt id="cave_utils.utils.socket.Socket.notify"><code class="name flex">
+<span>def <span class="ident">notify</span></span>(<span>self, *args, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def notify(self, *args, **kwargs):
+    print(&#34;notify: &#34;, {&#34;args&#34;: args, &#34;kwargs&#34;: kwargs})</code></pre>
+</details>
 </dd>
 </dl>
-</section>
-<section>
-</section>
-<section>
-</section>
-<section>
+</dd>
+</dl>
 </section>
 </article>
 <nav id="sidebar">
@@ -45,9 +104,20 @@
 <ul></ul>
 </div>
 <ul id="index">
-<li><h3><a href="#header-submodules">Sub-modules</a></h3>
+<li><h3>Super-module</h3>
 <ul>
-<li><code><a title="cave_utils.utils" href="utils/index.html">cave_utils.utils</a></code></li>
+<li><code><a title="cave_utils.utils" href="index.html">cave_utils.utils</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="cave_utils.utils.socket.Socket" href="#cave_utils.utils.socket.Socket">Socket</a></code></h4>
+<ul class="">
+<li><code><a title="cave_utils.utils.socket.Socket.broadcast" href="#cave_utils.utils.socket.Socket.broadcast">broadcast</a></code></li>
+<li><code><a title="cave_utils.utils.socket.Socket.notify" href="#cave_utils.utils.socket.Socket.notify">notify</a></code></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
