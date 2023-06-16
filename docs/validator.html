@@ -27,46 +27,10 @@
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">from pamda import pamda
-import re
 import copy
+import re
 
-
-class LogObject:
-    def __init__(self):
-        self.log = []
-
-    def add(self, path, msg, level=&#34;error&#34;):
-        self.log.append({&#34;path&#34;: path, &#34;msg&#34;: msg, &#34;level&#34;: level})
-
-    def get_logs(self, level=None):
-        if level is None:
-            return self.log
-        assert level in [&#34;error&#34;, &#34;warning&#34;], &#34;Invalid level, must be &#39;error&#39; or &#39;warning&#39;&#34;
-        return [i for i in self.log if i[&#34;level&#34;] == level]
-
-    def print_logs(self, level=None):
-        for i in self.get_logs(level=level):
-            print(&#34;=&#34; * 50)
-            print(f&#34;Path: {i[&#39;path&#39;]}&#34;)
-            print(f&#34;Message: {i[&#39;msg&#39;]}&#34;)
-            print(f&#34;Level: {i[&#39;level&#39;]}&#34;)
-
-    def write_logs(self, path, level=None):
-        with open(path, &#34;w&#34;) as f:
-            for i in self.get_logs(level=level):
-                f.write(&#34;=&#34; * 50 + &#34;\n&#34;)
-                f.write(f&#34;Path: {i[&#39;path&#39;]}\n&#34;)
-                f.write(f&#34;Message: {i[&#39;msg&#39;]}\n&#34;)
-                f.write(f&#34;Level: {i[&#39;level&#39;]}\n&#34;)
-
-
-class LogHelper:
-    def __init__(self, log: LogObject, prepend_path: list):
-        self.log = log
-        self.prepend_path = prepend_path
-
-    def add(self, path, msg, level=&#34;error&#34;):
-        self.log.add(path=self.prepend_path + path, msg=msg, level=level)
+from .log import LogHelper, LogObject
 
 
 class CoreValidator:
@@ -1594,14 +1558,13 @@ class RootValidator(CoreValidator):
             &#34;dashboards&#34;,
             &#34;geos&#34;,
             &#34;kpis&#34;,
-            &#34;kwargs&#34;,
             &#34;maps&#34;,
             &#34;nodes&#34;,
             &#34;panes&#34;,
             &#34;settings&#34;,
             &#34;stats&#34;,
         ]
-        self.optional_fields = []
+        self.optional_fields = [&#34;kwargs&#34;]
         self.accepted_values = {}
 
     def additional_validations(self, **kwargs):
@@ -1757,7 +1720,7 @@ class Validator:
 <dl>
 <dt id="cave_utils.validator.AppBarDataValidator"><code class="flex name class">
 <span>class <span class="ident">AppBarDataValidator</span></span>
-<span>(</span><span>data, log: <a title="cave_utils.validator.LogObject" href="#cave_utils.validator.LogObject">LogObject</a>, prepend_path: list = [], **kwargs)</span>
+<span>(</span><span>data, log: <a title="cave_utils.log.LogObject" href="log.html#cave_utils.log.LogObject">LogObject</a>, prepend_path: list = [], **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -1840,7 +1803,7 @@ class Validator:
 </dd>
 <dt id="cave_utils.validator.AppBarValidator"><code class="flex name class">
 <span>class <span class="ident">AppBarValidator</span></span>
-<span>(</span><span>data, log: <a title="cave_utils.validator.LogObject" href="#cave_utils.validator.LogObject">LogObject</a>, prepend_path: list = [], **kwargs)</span>
+<span>(</span><span>data, log: <a title="cave_utils.log.LogObject" href="log.html#cave_utils.log.LogObject">LogObject</a>, prepend_path: list = [], **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -1939,7 +1902,7 @@ class Validator:
 </dd>
 <dt id="cave_utils.validator.ArcsNodesGeosDataValidator"><code class="flex name class">
 <span>class <span class="ident">ArcsNodesGeosDataValidator</span></span>
-<span>(</span><span>data, log: <a title="cave_utils.validator.LogObject" href="#cave_utils.validator.LogObject">LogObject</a>, prepend_path: list = [], **kwargs)</span>
+<span>(</span><span>data, log: <a title="cave_utils.log.LogObject" href="log.html#cave_utils.log.LogObject">LogObject</a>, prepend_path: list = [], **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -2152,7 +2115,7 @@ class Validator:
 </dd>
 <dt id="cave_utils.validator.ArcsNodesGeosTypesValidator"><code class="flex name class">
 <span>class <span class="ident">ArcsNodesGeosTypesValidator</span></span>
-<span>(</span><span>data, log: <a title="cave_utils.validator.LogObject" href="#cave_utils.validator.LogObject">LogObject</a>, prepend_path: list = [], **kwargs)</span>
+<span>(</span><span>data, log: <a title="cave_utils.log.LogObject" href="log.html#cave_utils.log.LogObject">LogObject</a>, prepend_path: list = [], **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -2331,7 +2294,7 @@ class Validator:
 </dd>
 <dt id="cave_utils.validator.ArcsNodesGeosValidator"><code class="flex name class">
 <span>class <span class="ident">ArcsNodesGeosValidator</span></span>
-<span>(</span><span>data, log: <a title="cave_utils.validator.LogObject" href="#cave_utils.validator.LogObject">LogObject</a>, prepend_path: list = [], **kwargs)</span>
+<span>(</span><span>data, log: <a title="cave_utils.log.LogObject" href="log.html#cave_utils.log.LogObject">LogObject</a>, prepend_path: list = [], **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -2450,7 +2413,7 @@ class Validator:
 </dd>
 <dt id="cave_utils.validator.CategoriesDataValidator"><code class="flex name class">
 <span>class <span class="ident">CategoriesDataValidator</span></span>
-<span>(</span><span>data, log: <a title="cave_utils.validator.LogObject" href="#cave_utils.validator.LogObject">LogObject</a>, prepend_path: list = [], **kwargs)</span>
+<span>(</span><span>data, log: <a title="cave_utils.log.LogObject" href="log.html#cave_utils.log.LogObject">LogObject</a>, prepend_path: list = [], **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -2573,7 +2536,7 @@ class Validator:
 </dd>
 <dt id="cave_utils.validator.CategoriesValidator"><code class="flex name class">
 <span>class <span class="ident">CategoriesValidator</span></span>
-<span>(</span><span>data, log: <a title="cave_utils.validator.LogObject" href="#cave_utils.validator.LogObject">LogObject</a>, prepend_path: list = [], **kwargs)</span>
+<span>(</span><span>data, log: <a title="cave_utils.log.LogObject" href="log.html#cave_utils.log.LogObject">LogObject</a>, prepend_path: list = [], **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -2658,7 +2621,7 @@ class Validator:
 </dd>
 <dt id="cave_utils.validator.CategoryDataValidator"><code class="flex name class">
 <span>class <span class="ident">CategoryDataValidator</span></span>
-<span>(</span><span>data, log: <a title="cave_utils.validator.LogObject" href="#cave_utils.validator.LogObject">LogObject</a>, prepend_path: list = [], **kwargs)</span>
+<span>(</span><span>data, log: <a title="cave_utils.log.LogObject" href="log.html#cave_utils.log.LogObject">LogObject</a>, prepend_path: list = [], **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -2701,7 +2664,7 @@ class Validator:
 </dd>
 <dt id="cave_utils.validator.CategoryValidator"><code class="flex name class">
 <span>class <span class="ident">CategoryValidator</span></span>
-<span>(</span><span>data, log: <a title="cave_utils.validator.LogObject" href="#cave_utils.validator.LogObject">LogObject</a>, prepend_path: list = [], **kwargs)</span>
+<span>(</span><span>data, log: <a title="cave_utils.log.LogObject" href="log.html#cave_utils.log.LogObject">LogObject</a>, prepend_path: list = [], **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -2774,7 +2737,7 @@ class Validator:
 </dd>
 <dt id="cave_utils.validator.ColorByOptionValidator"><code class="flex name class">
 <span>class <span class="ident">ColorByOptionValidator</span></span>
-<span>(</span><span>data, log: <a title="cave_utils.validator.LogObject" href="#cave_utils.validator.LogObject">LogObject</a>, prepend_path: list = [], **kwargs)</span>
+<span>(</span><span>data, log: <a title="cave_utils.log.LogObject" href="log.html#cave_utils.log.LogObject">LogObject</a>, prepend_path: list = [], **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -2881,7 +2844,7 @@ class Validator:
 </dd>
 <dt id="cave_utils.validator.ColorValidator"><code class="flex name class">
 <span>class <span class="ident">ColorValidator</span></span>
-<span>(</span><span>data, log: <a title="cave_utils.validator.LogObject" href="#cave_utils.validator.LogObject">LogObject</a>, prepend_path: list = [], **kwargs)</span>
+<span>(</span><span>data, log: <a title="cave_utils.log.LogObject" href="log.html#cave_utils.log.LogObject">LogObject</a>, prepend_path: list = [], **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -2946,7 +2909,7 @@ class Validator:
 </dd>
 <dt id="cave_utils.validator.CoreValidator"><code class="flex name class">
 <span>class <span class="ident">CoreValidator</span></span>
-<span>(</span><span>data, log: <a title="cave_utils.validator.LogObject" href="#cave_utils.validator.LogObject">LogObject</a>, prepend_path: list = [], **kwargs)</span>
+<span>(</span><span>data, log: <a title="cave_utils.log.LogObject" href="log.html#cave_utils.log.LogObject">LogObject</a>, prepend_path: list = [], **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -3396,7 +3359,7 @@ class Validator:
 </dd>
 <dt id="cave_utils.validator.CustomKeyValidator"><code class="flex name class">
 <span>class <span class="ident">CustomKeyValidator</span></span>
-<span>(</span><span>data, log: <a title="cave_utils.validator.LogObject" href="#cave_utils.validator.LogObject">LogObject</a>, prepend_path: list = [], **kwargs)</span>
+<span>(</span><span>data, log: <a title="cave_utils.log.LogObject" href="log.html#cave_utils.log.LogObject">LogObject</a>, prepend_path: list = [], **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -3459,7 +3422,7 @@ class Validator:
 </dd>
 <dt id="cave_utils.validator.DashboardDataValidator"><code class="flex name class">
 <span>class <span class="ident">DashboardDataValidator</span></span>
-<span>(</span><span>data, log: <a title="cave_utils.validator.LogObject" href="#cave_utils.validator.LogObject">LogObject</a>, prepend_path: list = [], **kwargs)</span>
+<span>(</span><span>data, log: <a title="cave_utils.log.LogObject" href="log.html#cave_utils.log.LogObject">LogObject</a>, prepend_path: list = [], **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -3536,7 +3499,7 @@ class Validator:
 </dd>
 <dt id="cave_utils.validator.DashboardLayoutValidator"><code class="flex name class">
 <span>class <span class="ident">DashboardLayoutValidator</span></span>
-<span>(</span><span>data, log: <a title="cave_utils.validator.LogObject" href="#cave_utils.validator.LogObject">LogObject</a>, prepend_path: list = [], **kwargs)</span>
+<span>(</span><span>data, log: <a title="cave_utils.log.LogObject" href="log.html#cave_utils.log.LogObject">LogObject</a>, prepend_path: list = [], **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -3647,7 +3610,7 @@ class Validator:
 </dd>
 <dt id="cave_utils.validator.DashboardsValidator"><code class="flex name class">
 <span>class <span class="ident">DashboardsValidator</span></span>
-<span>(</span><span>data, log: <a title="cave_utils.validator.LogObject" href="#cave_utils.validator.LogObject">LogObject</a>, prepend_path: list = [], **kwargs)</span>
+<span>(</span><span>data, log: <a title="cave_utils.log.LogObject" href="log.html#cave_utils.log.LogObject">LogObject</a>, prepend_path: list = [], **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -3734,7 +3697,7 @@ class Validator:
 </dd>
 <dt id="cave_utils.validator.GeoJsonValidator"><code class="flex name class">
 <span>class <span class="ident">GeoJsonValidator</span></span>
-<span>(</span><span>data, log: <a title="cave_utils.validator.LogObject" href="#cave_utils.validator.LogObject">LogObject</a>, prepend_path: list = [], **kwargs)</span>
+<span>(</span><span>data, log: <a title="cave_utils.log.LogObject" href="log.html#cave_utils.log.LogObject">LogObject</a>, prepend_path: list = [], **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -3797,7 +3760,7 @@ class Validator:
 </dd>
 <dt id="cave_utils.validator.KpisDataValidator"><code class="flex name class">
 <span>class <span class="ident">KpisDataValidator</span></span>
-<span>(</span><span>data, log: <a title="cave_utils.validator.LogObject" href="#cave_utils.validator.LogObject">LogObject</a>, prepend_path: list = [], **kwargs)</span>
+<span>(</span><span>data, log: <a title="cave_utils.log.LogObject" href="log.html#cave_utils.log.LogObject">LogObject</a>, prepend_path: list = [], **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -3914,7 +3877,7 @@ class Validator:
 </dd>
 <dt id="cave_utils.validator.KpisValidator"><code class="flex name class">
 <span>class <span class="ident">KpisValidator</span></span>
-<span>(</span><span>data, log: <a title="cave_utils.validator.LogObject" href="#cave_utils.validator.LogObject">LogObject</a>, prepend_path: list = [], **kwargs)</span>
+<span>(</span><span>data, log: <a title="cave_utils.log.LogObject" href="log.html#cave_utils.log.LogObject">LogObject</a>, prepend_path: list = [], **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -4011,7 +3974,7 @@ class Validator:
 </dd>
 <dt id="cave_utils.validator.KwargsValidator"><code class="flex name class">
 <span>class <span class="ident">KwargsValidator</span></span>
-<span>(</span><span>data, log: <a title="cave_utils.validator.LogObject" href="#cave_utils.validator.LogObject">LogObject</a>, prepend_path: list = [], **kwargs)</span>
+<span>(</span><span>data, log: <a title="cave_utils.log.LogObject" href="log.html#cave_utils.log.LogObject">LogObject</a>, prepend_path: list = [], **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -4062,7 +4025,7 @@ class Validator:
 </dd>
 <dt id="cave_utils.validator.LayoutValidator"><code class="flex name class">
 <span>class <span class="ident">LayoutValidator</span></span>
-<span>(</span><span>data, log: <a title="cave_utils.validator.LogObject" href="#cave_utils.validator.LogObject">LogObject</a>, prepend_path: list = [], **kwargs)</span>
+<span>(</span><span>data, log: <a title="cave_utils.log.LogObject" href="log.html#cave_utils.log.LogObject">LogObject</a>, prepend_path: list = [], **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -4199,7 +4162,7 @@ class Validator:
 </dd>
 <dt id="cave_utils.validator.LegendGroupLayersValidator"><code class="flex name class">
 <span>class <span class="ident">LegendGroupLayersValidator</span></span>
-<span>(</span><span>data, log: <a title="cave_utils.validator.LogObject" href="#cave_utils.validator.LogObject">LogObject</a>, prepend_path: list = [], **kwargs)</span>
+<span>(</span><span>data, log: <a title="cave_utils.log.LogObject" href="log.html#cave_utils.log.LogObject">LogObject</a>, prepend_path: list = [], **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -4334,7 +4297,7 @@ class Validator:
 </dd>
 <dt id="cave_utils.validator.LegendGroupsValidator"><code class="flex name class">
 <span>class <span class="ident">LegendGroupsValidator</span></span>
-<span>(</span><span>data, log: <a title="cave_utils.validator.LogObject" href="#cave_utils.validator.LogObject">LogObject</a>, prepend_path: list = [], **kwargs)</span>
+<span>(</span><span>data, log: <a title="cave_utils.log.LogObject" href="log.html#cave_utils.log.LogObject">LogObject</a>, prepend_path: list = [], **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -4443,149 +4406,9 @@ class Validator:
 </dd>
 </dl>
 </dd>
-<dt id="cave_utils.validator.LogHelper"><code class="flex name class">
-<span>class <span class="ident">LogHelper</span></span>
-<span>(</span><span>log: <a title="cave_utils.validator.LogObject" href="#cave_utils.validator.LogObject">LogObject</a>, prepend_path: list)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class LogHelper:
-    def __init__(self, log: LogObject, prepend_path: list):
-        self.log = log
-        self.prepend_path = prepend_path
-
-    def add(self, path, msg, level=&#34;error&#34;):
-        self.log.add(path=self.prepend_path + path, msg=msg, level=level)</code></pre>
-</details>
-<h3>Methods</h3>
-<dl>
-<dt id="cave_utils.validator.LogHelper.add"><code class="name flex">
-<span>def <span class="ident">add</span></span>(<span>self, path, msg, level='error')</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def add(self, path, msg, level=&#34;error&#34;):
-    self.log.add(path=self.prepend_path + path, msg=msg, level=level)</code></pre>
-</details>
-</dd>
-</dl>
-</dd>
-<dt id="cave_utils.validator.LogObject"><code class="flex name class">
-<span>class <span class="ident">LogObject</span></span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class LogObject:
-    def __init__(self):
-        self.log = []
-
-    def add(self, path, msg, level=&#34;error&#34;):
-        self.log.append({&#34;path&#34;: path, &#34;msg&#34;: msg, &#34;level&#34;: level})
-
-    def get_logs(self, level=None):
-        if level is None:
-            return self.log
-        assert level in [&#34;error&#34;, &#34;warning&#34;], &#34;Invalid level, must be &#39;error&#39; or &#39;warning&#39;&#34;
-        return [i for i in self.log if i[&#34;level&#34;] == level]
-
-    def print_logs(self, level=None):
-        for i in self.get_logs(level=level):
-            print(&#34;=&#34; * 50)
-            print(f&#34;Path: {i[&#39;path&#39;]}&#34;)
-            print(f&#34;Message: {i[&#39;msg&#39;]}&#34;)
-            print(f&#34;Level: {i[&#39;level&#39;]}&#34;)
-
-    def write_logs(self, path, level=None):
-        with open(path, &#34;w&#34;) as f:
-            for i in self.get_logs(level=level):
-                f.write(&#34;=&#34; * 50 + &#34;\n&#34;)
-                f.write(f&#34;Path: {i[&#39;path&#39;]}\n&#34;)
-                f.write(f&#34;Message: {i[&#39;msg&#39;]}\n&#34;)
-                f.write(f&#34;Level: {i[&#39;level&#39;]}\n&#34;)</code></pre>
-</details>
-<h3>Methods</h3>
-<dl>
-<dt id="cave_utils.validator.LogObject.add"><code class="name flex">
-<span>def <span class="ident">add</span></span>(<span>self, path, msg, level='error')</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def add(self, path, msg, level=&#34;error&#34;):
-    self.log.append({&#34;path&#34;: path, &#34;msg&#34;: msg, &#34;level&#34;: level})</code></pre>
-</details>
-</dd>
-<dt id="cave_utils.validator.LogObject.get_logs"><code class="name flex">
-<span>def <span class="ident">get_logs</span></span>(<span>self, level=None)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def get_logs(self, level=None):
-    if level is None:
-        return self.log
-    assert level in [&#34;error&#34;, &#34;warning&#34;], &#34;Invalid level, must be &#39;error&#39; or &#39;warning&#39;&#34;
-    return [i for i in self.log if i[&#34;level&#34;] == level]</code></pre>
-</details>
-</dd>
-<dt id="cave_utils.validator.LogObject.print_logs"><code class="name flex">
-<span>def <span class="ident">print_logs</span></span>(<span>self, level=None)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def print_logs(self, level=None):
-    for i in self.get_logs(level=level):
-        print(&#34;=&#34; * 50)
-        print(f&#34;Path: {i[&#39;path&#39;]}&#34;)
-        print(f&#34;Message: {i[&#39;msg&#39;]}&#34;)
-        print(f&#34;Level: {i[&#39;level&#39;]}&#34;)</code></pre>
-</details>
-</dd>
-<dt id="cave_utils.validator.LogObject.write_logs"><code class="name flex">
-<span>def <span class="ident">write_logs</span></span>(<span>self, path, level=None)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def write_logs(self, path, level=None):
-    with open(path, &#34;w&#34;) as f:
-        for i in self.get_logs(level=level):
-            f.write(&#34;=&#34; * 50 + &#34;\n&#34;)
-            f.write(f&#34;Path: {i[&#39;path&#39;]}\n&#34;)
-            f.write(f&#34;Message: {i[&#39;msg&#39;]}\n&#34;)
-            f.write(f&#34;Level: {i[&#39;level&#39;]}\n&#34;)</code></pre>
-</details>
-</dd>
-</dl>
-</dd>
 <dt id="cave_utils.validator.MapDataValidator"><code class="flex name class">
 <span>class <span class="ident">MapDataValidator</span></span>
-<span>(</span><span>data, log: <a title="cave_utils.validator.LogObject" href="#cave_utils.validator.LogObject">LogObject</a>, prepend_path: list = [], **kwargs)</span>
+<span>(</span><span>data, log: <a title="cave_utils.log.LogObject" href="log.html#cave_utils.log.LogObject">LogObject</a>, prepend_path: list = [], **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -4700,7 +4523,7 @@ class Validator:
 </dd>
 <dt id="cave_utils.validator.MapsValidator"><code class="flex name class">
 <span>class <span class="ident">MapsValidator</span></span>
-<span>(</span><span>data, log: <a title="cave_utils.validator.LogObject" href="#cave_utils.validator.LogObject">LogObject</a>, prepend_path: list = [], **kwargs)</span>
+<span>(</span><span>data, log: <a title="cave_utils.log.LogObject" href="log.html#cave_utils.log.LogObject">LogObject</a>, prepend_path: list = [], **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -4779,7 +4602,7 @@ class Validator:
 </dd>
 <dt id="cave_utils.validator.NestedStructureValidator"><code class="flex name class">
 <span>class <span class="ident">NestedStructureValidator</span></span>
-<span>(</span><span>data, log: <a title="cave_utils.validator.LogObject" href="#cave_utils.validator.LogObject">LogObject</a>, prepend_path: list = [], **kwargs)</span>
+<span>(</span><span>data, log: <a title="cave_utils.log.LogObject" href="log.html#cave_utils.log.LogObject">LogObject</a>, prepend_path: list = [], **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -4820,7 +4643,7 @@ class Validator:
 </dd>
 <dt id="cave_utils.validator.NumberFormatValidator"><code class="flex name class">
 <span>class <span class="ident">NumberFormatValidator</span></span>
-<span>(</span><span>data, log: <a title="cave_utils.validator.LogObject" href="#cave_utils.validator.LogObject">LogObject</a>, prepend_path: list = [], **kwargs)</span>
+<span>(</span><span>data, log: <a title="cave_utils.log.LogObject" href="log.html#cave_utils.log.LogObject">LogObject</a>, prepend_path: list = [], **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -4877,7 +4700,7 @@ class Validator:
 </dd>
 <dt id="cave_utils.validator.NumericDictValidator"><code class="flex name class">
 <span>class <span class="ident">NumericDictValidator</span></span>
-<span>(</span><span>data, log: <a title="cave_utils.validator.LogObject" href="#cave_utils.validator.LogObject">LogObject</a>, prepend_path: list = [], **kwargs)</span>
+<span>(</span><span>data, log: <a title="cave_utils.log.LogObject" href="log.html#cave_utils.log.LogObject">LogObject</a>, prepend_path: list = [], **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -4918,7 +4741,7 @@ class Validator:
 </dd>
 <dt id="cave_utils.validator.PanesContextApplyCategoriesValidator"><code class="flex name class">
 <span>class <span class="ident">PanesContextApplyCategoriesValidator</span></span>
-<span>(</span><span>data, log: <a title="cave_utils.validator.LogObject" href="#cave_utils.validator.LogObject">LogObject</a>, prepend_path: list = [], **kwargs)</span>
+<span>(</span><span>data, log: <a title="cave_utils.log.LogObject" href="log.html#cave_utils.log.LogObject">LogObject</a>, prepend_path: list = [], **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -4967,7 +4790,7 @@ class Validator:
 </dd>
 <dt id="cave_utils.validator.PanesContextDataValidator"><code class="flex name class">
 <span>class <span class="ident">PanesContextDataValidator</span></span>
-<span>(</span><span>data, log: <a title="cave_utils.validator.LogObject" href="#cave_utils.validator.LogObject">LogObject</a>, prepend_path: list = [], **kwargs)</span>
+<span>(</span><span>data, log: <a title="cave_utils.log.LogObject" href="log.html#cave_utils.log.LogObject">LogObject</a>, prepend_path: list = [], **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -5062,7 +4885,7 @@ class Validator:
 </dd>
 <dt id="cave_utils.validator.PanesDataValidator"><code class="flex name class">
 <span>class <span class="ident">PanesDataValidator</span></span>
-<span>(</span><span>data, log: <a title="cave_utils.validator.LogObject" href="#cave_utils.validator.LogObject">LogObject</a>, prepend_path: list = [], **kwargs)</span>
+<span>(</span><span>data, log: <a title="cave_utils.log.LogObject" href="log.html#cave_utils.log.LogObject">LogObject</a>, prepend_path: list = [], **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -5231,7 +5054,7 @@ class Validator:
 </dd>
 <dt id="cave_utils.validator.PanesValidator"><code class="flex name class">
 <span>class <span class="ident">PanesValidator</span></span>
-<span>(</span><span>data, log: <a title="cave_utils.validator.LogObject" href="#cave_utils.validator.LogObject">LogObject</a>, prepend_path: list = [], **kwargs)</span>
+<span>(</span><span>data, log: <a title="cave_utils.log.LogObject" href="log.html#cave_utils.log.LogObject">LogObject</a>, prepend_path: list = [], **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -5316,7 +5139,7 @@ class Validator:
 </dd>
 <dt id="cave_utils.validator.PropValidator"><code class="flex name class">
 <span>class <span class="ident">PropValidator</span></span>
-<span>(</span><span>data, log: <a title="cave_utils.validator.LogObject" href="#cave_utils.validator.LogObject">LogObject</a>, prepend_path: list = [], **kwargs)</span>
+<span>(</span><span>data, log: <a title="cave_utils.log.LogObject" href="log.html#cave_utils.log.LogObject">LogObject</a>, prepend_path: list = [], **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -5651,7 +5474,7 @@ class Validator:
 </dd>
 <dt id="cave_utils.validator.RootValidator"><code class="flex name class">
 <span>class <span class="ident">RootValidator</span></span>
-<span>(</span><span>data, log: <a title="cave_utils.validator.LogObject" href="#cave_utils.validator.LogObject">LogObject</a>, prepend_path: list = [], **kwargs)</span>
+<span>(</span><span>data, log: <a title="cave_utils.log.LogObject" href="log.html#cave_utils.log.LogObject">LogObject</a>, prepend_path: list = [], **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -5682,14 +5505,13 @@ class Validator:
             &#34;dashboards&#34;,
             &#34;geos&#34;,
             &#34;kpis&#34;,
-            &#34;kwargs&#34;,
             &#34;maps&#34;,
             &#34;nodes&#34;,
             &#34;panes&#34;,
             &#34;settings&#34;,
             &#34;stats&#34;,
         ]
-        self.optional_fields = []
+        self.optional_fields = [&#34;kwargs&#34;]
         self.accepted_values = {}
 
     def additional_validations(self, **kwargs):
@@ -5989,14 +5811,13 @@ class Validator:
         &#34;dashboards&#34;,
         &#34;geos&#34;,
         &#34;kpis&#34;,
-        &#34;kwargs&#34;,
         &#34;maps&#34;,
         &#34;nodes&#34;,
         &#34;panes&#34;,
         &#34;settings&#34;,
         &#34;stats&#34;,
     ]
-    self.optional_fields = []
+    self.optional_fields = [&#34;kwargs&#34;]
     self.accepted_values = {}</code></pre>
 </details>
 </dd>
@@ -6004,7 +5825,7 @@ class Validator:
 </dd>
 <dt id="cave_utils.validator.SettingsDataSyncValidator"><code class="flex name class">
 <span>class <span class="ident">SettingsDataSyncValidator</span></span>
-<span>(</span><span>data, log: <a title="cave_utils.validator.LogObject" href="#cave_utils.validator.LogObject">LogObject</a>, prepend_path: list = [], **kwargs)</span>
+<span>(</span><span>data, log: <a title="cave_utils.log.LogObject" href="log.html#cave_utils.log.LogObject">LogObject</a>, prepend_path: list = [], **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -6067,7 +5888,7 @@ class Validator:
 </dd>
 <dt id="cave_utils.validator.SettingsDataValidator"><code class="flex name class">
 <span>class <span class="ident">SettingsDataValidator</span></span>
-<span>(</span><span>data, log: <a title="cave_utils.validator.LogObject" href="#cave_utils.validator.LogObject">LogObject</a>, prepend_path: list = [], **kwargs)</span>
+<span>(</span><span>data, log: <a title="cave_utils.log.LogObject" href="log.html#cave_utils.log.LogObject">LogObject</a>, prepend_path: list = [], **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -6168,7 +5989,7 @@ class Validator:
 </dd>
 <dt id="cave_utils.validator.SettingsValidator"><code class="flex name class">
 <span>class <span class="ident">SettingsValidator</span></span>
-<span>(</span><span>data, log: <a title="cave_utils.validator.LogObject" href="#cave_utils.validator.LogObject">LogObject</a>, prepend_path: list = [], **kwargs)</span>
+<span>(</span><span>data, log: <a title="cave_utils.log.LogObject" href="log.html#cave_utils.log.LogObject">LogObject</a>, prepend_path: list = [], **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -6245,7 +6066,7 @@ class Validator:
 </dd>
 <dt id="cave_utils.validator.SizeValidator"><code class="flex name class">
 <span>class <span class="ident">SizeValidator</span></span>
-<span>(</span><span>data, log: <a title="cave_utils.validator.LogObject" href="#cave_utils.validator.LogObject">LogObject</a>, prepend_path: list = [], **kwargs)</span>
+<span>(</span><span>data, log: <a title="cave_utils.log.LogObject" href="log.html#cave_utils.log.LogObject">LogObject</a>, prepend_path: list = [], **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -6292,7 +6113,7 @@ class Validator:
 </dd>
 <dt id="cave_utils.validator.StatsDataValidator"><code class="flex name class">
 <span>class <span class="ident">StatsDataValidator</span></span>
-<span>(</span><span>data, log: <a title="cave_utils.validator.LogObject" href="#cave_utils.validator.LogObject">LogObject</a>, prepend_path: list = [], **kwargs)</span>
+<span>(</span><span>data, log: <a title="cave_utils.log.LogObject" href="log.html#cave_utils.log.LogObject">LogObject</a>, prepend_path: list = [], **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -6371,7 +6192,7 @@ class Validator:
 </dd>
 <dt id="cave_utils.validator.StatsTypesValidator"><code class="flex name class">
 <span>class <span class="ident">StatsTypesValidator</span></span>
-<span>(</span><span>data, log: <a title="cave_utils.validator.LogObject" href="#cave_utils.validator.LogObject">LogObject</a>, prepend_path: list = [], **kwargs)</span>
+<span>(</span><span>data, log: <a title="cave_utils.log.LogObject" href="log.html#cave_utils.log.LogObject">LogObject</a>, prepend_path: list = [], **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -6454,7 +6275,7 @@ class Validator:
 </dd>
 <dt id="cave_utils.validator.StatsValidator"><code class="flex name class">
 <span>class <span class="ident">StatsValidator</span></span>
-<span>(</span><span>data, log: <a title="cave_utils.validator.LogObject" href="#cave_utils.validator.LogObject">LogObject</a>, prepend_path: list = [], **kwargs)</span>
+<span>(</span><span>data, log: <a title="cave_utils.log.LogObject" href="log.html#cave_utils.log.LogObject">LogObject</a>, prepend_path: list = [], **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -6581,7 +6402,7 @@ class Validator:
 </dd>
 <dt id="cave_utils.validator.ViewportValidator"><code class="flex name class">
 <span>class <span class="ident">ViewportValidator</span></span>
-<span>(</span><span>data, log: <a title="cave_utils.validator.LogObject" href="#cave_utils.validator.LogObject">LogObject</a>, prepend_path: list = [], **kwargs)</span>
+<span>(</span><span>data, log: <a title="cave_utils.log.LogObject" href="log.html#cave_utils.log.LogObject">LogObject</a>, prepend_path: list = [], **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -6911,21 +6732,6 @@ class Validator:
 <ul class="">
 <li><code><a title="cave_utils.validator.LegendGroupsValidator.additional_validations" href="#cave_utils.validator.LegendGroupsValidator.additional_validations">additional_validations</a></code></li>
 <li><code><a title="cave_utils.validator.LegendGroupsValidator.populate_data" href="#cave_utils.validator.LegendGroupsValidator.populate_data">populate_data</a></code></li>
-</ul>
-</li>
-<li>
-<h4><code><a title="cave_utils.validator.LogHelper" href="#cave_utils.validator.LogHelper">LogHelper</a></code></h4>
-<ul class="">
-<li><code><a title="cave_utils.validator.LogHelper.add" href="#cave_utils.validator.LogHelper.add">add</a></code></li>
-</ul>
-</li>
-<li>
-<h4><code><a title="cave_utils.validator.LogObject" href="#cave_utils.validator.LogObject">LogObject</a></code></h4>
-<ul class="">
-<li><code><a title="cave_utils.validator.LogObject.add" href="#cave_utils.validator.LogObject.add">add</a></code></li>
-<li><code><a title="cave_utils.validator.LogObject.get_logs" href="#cave_utils.validator.LogObject.get_logs">get_logs</a></code></li>
-<li><code><a title="cave_utils.validator.LogObject.print_logs" href="#cave_utils.validator.LogObject.print_logs">print_logs</a></code></li>
-<li><code><a title="cave_utils.validator.LogObject.write_logs" href="#cave_utils.validator.LogObject.write_logs">write_logs</a></code></li>
 </ul>
 </li>
 <li>
