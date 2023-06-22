@@ -1,3 +1,3 @@
-from cave_utils.utils import Socket
+from cave_utils import Socket
 
 Socket()
