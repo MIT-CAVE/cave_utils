@@ -3,16 +3,20 @@ import sys
 
 class Arguments:
     def __init__(self):
+        self.passed_args = list(sys.argv)
+        self.populate_data()
+
+    def populate_data(self):
         self.kwargs = {}
         self.flags = []
         self.other = []
         skip_next = True  # Skip the first argument, which is the file name
-        for idx, i in enumerate(sys.argv):
+        for idx, i in enumerate(self.passed_args):
             if skip_next:
                 skip_next = False
                 continue
             if i.lower().startswith("--"):
-                self.kwargs[i[2:]] = sys.argv[idx + 1]
+                self.kwargs[i[2:]] = self.passed_args[idx + 1]
                 skip_next = True
             elif i.lower().startswith("-"):
                 self.flags.append(i[1:])
@@ -22,8 +26,23 @@ class Arguments:
     def get_kwarg(self, key, default=None):
         return self.kwargs.get(key, default)
 
-    def has_kwarg(self, key):
-        return key in self.kwargs
-
     def has_flag(self, key):
         return key in self.flags
+
+    def delete(self, key, silent=False):
+        if key not in self.kwargs and key not in self.flags and key not in self.other:
+            if not silent:
+                print(f"Key {key} not found in arguments")
+            return
+        for idx, i in enumerate(self.passed_args):
+            if i == f"--{key}":
+                del self.passed_args[idx]
+                del self.passed_args[idx]
+                break
+            if i == f"-{key}" or i == key:
+                del self.passed_args[idx]
+                break
+        self.populate_data()
+
+    def get_arg_list(self):
+        return self.passed_args

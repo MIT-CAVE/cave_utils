@@ -31,16 +31,20 @@
 
 class Arguments:
     def __init__(self):
+        self.passed_args = list(sys.argv)
+        self.populate_data()
+
+    def populate_data(self):
         self.kwargs = {}
         self.flags = []
         self.other = []
         skip_next = True  # Skip the first argument, which is the file name
-        for idx, i in enumerate(sys.argv):
+        for idx, i in enumerate(self.passed_args):
             if skip_next:
                 skip_next = False
                 continue
             if i.lower().startswith(&#34;--&#34;):
-                self.kwargs[i[2:]] = sys.argv[idx + 1]
+                self.kwargs[i[2:]] = self.passed_args[idx + 1]
                 skip_next = True
             elif i.lower().startswith(&#34;-&#34;):
                 self.flags.append(i[1:])
@@ -50,11 +54,26 @@ class Arguments:
     def get_kwarg(self, key, default=None):
         return self.kwargs.get(key, default)
 
-    def has_kwarg(self, key):
-        return key in self.kwargs
-
     def has_flag(self, key):
-        return key in self.flags</code></pre>
+        return key in self.flags
+
+    def delete(self, key, silent=False):
+        if key not in self.kwargs and key not in self.flags and key not in self.other:
+            if not silent:
+                print(f&#34;Key {key} not found in arguments&#34;)
+            return
+        for idx, i in enumerate(self.passed_args):
+            if i == f&#34;--{key}&#34;:
+                del self.passed_args[idx]
+                del self.passed_args[idx]
+                break
+            if i == f&#34;-{key}&#34; or i == key:
+                del self.passed_args[idx]
+                break
+        self.populate_data()
+
+    def get_arg_list(self):
+        return self.passed_args</code></pre>
 </details>
 </section>
 <section>
@@ -77,16 +96,20 @@ class Arguments:
 </summary>
 <pre><code class="python">class Arguments:
     def __init__(self):
+        self.passed_args = list(sys.argv)
+        self.populate_data()
+
+    def populate_data(self):
         self.kwargs = {}
         self.flags = []
         self.other = []
         skip_next = True  # Skip the first argument, which is the file name
-        for idx, i in enumerate(sys.argv):
+        for idx, i in enumerate(self.passed_args):
             if skip_next:
                 skip_next = False
                 continue
             if i.lower().startswith(&#34;--&#34;):
-                self.kwargs[i[2:]] = sys.argv[idx + 1]
+                self.kwargs[i[2:]] = self.passed_args[idx + 1]
                 skip_next = True
             elif i.lower().startswith(&#34;-&#34;):
                 self.flags.append(i[1:])
@@ -96,14 +119,67 @@ class Arguments:
     def get_kwarg(self, key, default=None):
         return self.kwargs.get(key, default)
 
-    def has_kwarg(self, key):
-        return key in self.kwargs
-
     def has_flag(self, key):
-        return key in self.flags</code></pre>
+        return key in self.flags
+
+    def delete(self, key, silent=False):
+        if key not in self.kwargs and key not in self.flags and key not in self.other:
+            if not silent:
+                print(f&#34;Key {key} not found in arguments&#34;)
+            return
+        for idx, i in enumerate(self.passed_args):
+            if i == f&#34;--{key}&#34;:
+                del self.passed_args[idx]
+                del self.passed_args[idx]
+                break
+            if i == f&#34;-{key}&#34; or i == key:
+                del self.passed_args[idx]
+                break
+        self.populate_data()
+
+    def get_arg_list(self):
+        return self.passed_args</code></pre>
 </details>
 <h3>Methods</h3>
 <dl>
+<dt id="cave_utils.arguments.Arguments.delete"><code class="name flex">
+<span>def <span class="ident">delete</span></span>(<span>self, key, silent=False)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def delete(self, key, silent=False):
+    if key not in self.kwargs and key not in self.flags and key not in self.other:
+        if not silent:
+            print(f&#34;Key {key} not found in arguments&#34;)
+        return
+    for idx, i in enumerate(self.passed_args):
+        if i == f&#34;--{key}&#34;:
+            del self.passed_args[idx]
+            del self.passed_args[idx]
+            break
+        if i == f&#34;-{key}&#34; or i == key:
+            del self.passed_args[idx]
+            break
+    self.populate_data()</code></pre>
+</details>
+</dd>
+<dt id="cave_utils.arguments.Arguments.get_arg_list"><code class="name flex">
+<span>def <span class="ident">get_arg_list</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_arg_list(self):
+    return self.passed_args</code></pre>
+</details>
+</dd>
 <dt id="cave_utils.arguments.Arguments.get_kwarg"><code class="name flex">
 <span>def <span class="ident">get_kwarg</span></span>(<span>self, key, default=None)</span>
 </code></dt>
@@ -130,8 +206,8 @@ class Arguments:
     return key in self.flags</code></pre>
 </details>
 </dd>
-<dt id="cave_utils.arguments.Arguments.has_kwarg"><code class="name flex">
-<span>def <span class="ident">has_kwarg</span></span>(<span>self, key)</span>
+<dt id="cave_utils.arguments.Arguments.populate_data"><code class="name flex">
+<span>def <span class="ident">populate_data</span></span>(<span>self)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -139,8 +215,22 @@ class Arguments:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def has_kwarg(self, key):
-    return key in self.kwargs</code></pre>
+<pre><code class="python">def populate_data(self):
+    self.kwargs = {}
+    self.flags = []
+    self.other = []
+    skip_next = True  # Skip the first argument, which is the file name
+    for idx, i in enumerate(self.passed_args):
+        if skip_next:
+            skip_next = False
+            continue
+        if i.lower().startswith(&#34;--&#34;):
+            self.kwargs[i[2:]] = self.passed_args[idx + 1]
+            skip_next = True
+        elif i.lower().startswith(&#34;-&#34;):
+            self.flags.append(i[1:])
+        else:
+            self.other.append(i)</code></pre>
 </details>
 </dd>
 </dl>
@@ -164,9 +254,11 @@ class Arguments:
 <li>
 <h4><code><a title="cave_utils.arguments.Arguments" href="#cave_utils.arguments.Arguments">Arguments</a></code></h4>
 <ul class="">
+<li><code><a title="cave_utils.arguments.Arguments.delete" href="#cave_utils.arguments.Arguments.delete">delete</a></code></li>
+<li><code><a title="cave_utils.arguments.Arguments.get_arg_list" href="#cave_utils.arguments.Arguments.get_arg_list">get_arg_list</a></code></li>
 <li><code><a title="cave_utils.arguments.Arguments.get_kwarg" href="#cave_utils.arguments.Arguments.get_kwarg">get_kwarg</a></code></li>
 <li><code><a title="cave_utils.arguments.Arguments.has_flag" href="#cave_utils.arguments.Arguments.has_flag">has_flag</a></code></li>
-<li><code><a title="cave_utils.arguments.Arguments.has_kwarg" href="#cave_utils.arguments.Arguments.has_kwarg">has_kwarg</a></code></li>
+<li><code><a title="cave_utils.arguments.Arguments.populate_data" href="#cave_utils.arguments.Arguments.populate_data">populate_data</a></code></li>
 </ul>
 </li>
 </ul>
