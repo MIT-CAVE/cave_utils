@@ -44,6 +44,13 @@ class Arguments:
                 skip_next = False
                 continue
             if i.lower().startswith(&#34;--&#34;):
+                if idx + 1 &gt;= len(self.passed_args):
+                    self.flags.append(i[2:])
+                    continue
+                else:
+                    if self.passed_args[idx + 1].lower().startswith(&#34;-&#34;):
+                        self.flags.append(i[2:])
+                        continue
                 self.kwargs[i[2:]] = self.passed_args[idx + 1]
                 skip_next = True
             elif i.lower().startswith(&#34;-&#34;):
@@ -57,18 +64,16 @@ class Arguments:
     def has_flag(self, key):
         return key in self.flags
 
-    def delete(self, key, silent=False):
+    def delete(self, key, silent=False, only_flag=False):
         if key not in self.kwargs and key not in self.flags and key not in self.other:
             if not silent:
                 print(f&#34;Key {key} not found in arguments&#34;)
             return
         for idx, i in enumerate(self.passed_args):
-            if i == f&#34;--{key}&#34;:
+            if i == f&#34;--{key}&#34; or i == f&#34;-{key}&#34; or i == key:
                 del self.passed_args[idx]
-                del self.passed_args[idx]
-                break
-            if i == f&#34;-{key}&#34; or i == key:
-                del self.passed_args[idx]
+                if key in self.kwargs and not only_flag:
+                    del self.passed_args[idx]
                 break
         self.populate_data()
 
@@ -109,6 +114,13 @@ class Arguments:
                 skip_next = False
                 continue
             if i.lower().startswith(&#34;--&#34;):
+                if idx + 1 &gt;= len(self.passed_args):
+                    self.flags.append(i[2:])
+                    continue
+                else:
+                    if self.passed_args[idx + 1].lower().startswith(&#34;-&#34;):
+                        self.flags.append(i[2:])
+                        continue
                 self.kwargs[i[2:]] = self.passed_args[idx + 1]
                 skip_next = True
             elif i.lower().startswith(&#34;-&#34;):
@@ -122,18 +134,16 @@ class Arguments:
     def has_flag(self, key):
         return key in self.flags
 
-    def delete(self, key, silent=False):
+    def delete(self, key, silent=False, only_flag=False):
         if key not in self.kwargs and key not in self.flags and key not in self.other:
             if not silent:
                 print(f&#34;Key {key} not found in arguments&#34;)
             return
         for idx, i in enumerate(self.passed_args):
-            if i == f&#34;--{key}&#34;:
+            if i == f&#34;--{key}&#34; or i == f&#34;-{key}&#34; or i == key:
                 del self.passed_args[idx]
-                del self.passed_args[idx]
-                break
-            if i == f&#34;-{key}&#34; or i == key:
-                del self.passed_args[idx]
+                if key in self.kwargs and not only_flag:
+                    del self.passed_args[idx]
                 break
         self.populate_data()
 
@@ -143,7 +153,7 @@ class Arguments:
 <h3>Methods</h3>
 <dl>
 <dt id="cave_utils.arguments.Arguments.delete"><code class="name flex">
-<span>def <span class="ident">delete</span></span>(<span>self, key, silent=False)</span>
+<span>def <span class="ident">delete</span></span>(<span>self, key, silent=False, only_flag=False)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -151,18 +161,16 @@ class Arguments:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def delete(self, key, silent=False):
+<pre><code class="python">def delete(self, key, silent=False, only_flag=False):
     if key not in self.kwargs and key not in self.flags and key not in self.other:
         if not silent:
             print(f&#34;Key {key} not found in arguments&#34;)
         return
     for idx, i in enumerate(self.passed_args):
-        if i == f&#34;--{key}&#34;:
+        if i == f&#34;--{key}&#34; or i == f&#34;-{key}&#34; or i == key:
             del self.passed_args[idx]
-            del self.passed_args[idx]
-            break
-        if i == f&#34;-{key}&#34; or i == key:
-            del self.passed_args[idx]
+            if key in self.kwargs and not only_flag:
+                del self.passed_args[idx]
             break
     self.populate_data()</code></pre>
 </details>
@@ -225,6 +233,13 @@ class Arguments:
             skip_next = False
             continue
         if i.lower().startswith(&#34;--&#34;):
+            if idx + 1 &gt;= len(self.passed_args):
+                self.flags.append(i[2:])
+                continue
+            else:
+                if self.passed_args[idx + 1].lower().startswith(&#34;-&#34;):
+                    self.flags.append(i[2:])
+                    continue
             self.kwargs[i[2:]] = self.passed_args[idx + 1]
             skip_next = True
         elif i.lower().startswith(&#34;-&#34;):
