@@ -66,20 +66,20 @@ class CoreValidator:
                 if len(value_diff) &gt; 0:
                     self.log.add(
                         path=[field],
-                        msg=f&#34;Invalid values ({value_diff}): Acceptable values are: {accepted_values}&#34;,
+                        msg=f&#34;Invalid values (&#39;{value_diff}&#39;): Acceptable values are: {accepted_values}&#34;,
                     )
                     continue
             else:
                 if accepted_values is not None and value not in accepted_values:
                     self.log.add(
                         path=[field],
-                        msg=f&#34;Invalid value ({value}): Acceptable values are: {accepted_values}&#34;,
+                        msg=f&#34;Invalid value (&#39;{value}&#39;): Acceptable values are: {accepted_values}&#34;,
                     )
                     continue
             if field not in self.required_fields + self.optional_fields:
                 self.log.add(
                     path=[field],
-                    msg=f&#34;Unknown field ({field}): Acceptable fields are: {self.required_fields + self.optional_fields}&#34;,
+                    msg=f&#34;Unknown field (&#39;{field}&#39;): Acceptable fields are: {self.required_fields + self.optional_fields}&#34;,
                     level=&#34;warning&#34;,
                 )
                 continue
@@ -87,7 +87,7 @@ class CoreValidator:
             if not isinstance(value, acceptable_types):
                 self.log.add(
                     path=[field],
-                    msg=f&#34;Invalid type ({type(value)}): Acceptable types are: {acceptable_types}&#34;,
+                    msg=f&#34;Invalid type (&#39;{type(value)}&#39;): Acceptable types are: {acceptable_types}&#34;,
                 )
 
         # Run additional Validations
@@ -178,6 +178,16 @@ class CoreValidator:
         if not self.is_coord_path_valid(coord_path):
             self.log.add(path=prepend_path, msg=f&#34;Invalid coordinate path&#34;)
 
+    def validate_list(self, data: list, types: tuple, prepend_path: str):
+        if not isinstance(types, tuple):
+            types = (types,)
+        for item in data:
+            if not isinstance(item, types):
+                self.log.add(
+                    path=prepend_path, msg=f&#34;Invalid list type. Item {item} is not of type {types}&#34;
+                )
+                break
+
 
 class NumericDictValidator(CoreValidator):
     def populate_data(self, **kwargs):
@@ -212,6 +222,27 @@ class NumberFormatValidator(CoreValidator):
             &#34;trailingZeros&#34;: bool,
             &#34;nilValue&#34;: str,
             &#34;locale&#34;: str,
+        }
+        self.required_fields = []
+        self.optional_fields = list(self.field_types.keys())
+        self.accepted_values = {}
+
+
+class legendOverrideValidator(CoreValidator):
+    def populate_data(self, **kwargs):
+        self.field_types = {
+            &#34;scientificPrecision&#34;: int,
+            &#34;useScientificFormat&#34;: bool,
+            &#34;minLabel&#34;: (
+                str,
+                int,
+                float,
+            ),
+            &#34;maxLabel&#34;: (
+                str,
+                int,
+                float,
+            ),
         }
         self.required_fields = []
         self.optional_fields = list(self.field_types.keys())
@@ -308,6 +339,7 @@ class PropValidator(CoreValidator):
             &#34;minRows&#34;: int,
             &#34;rows&#34;: int,
             &#34;numberFormat&#34;: dict,
+            &#34;legendOverride&#34;: dict,
         }
 
         self.allowed_variants = {
@@ -322,6 +354,7 @@ class PropValidator(CoreValidator):
                 &#34;hstepper&#34;,
                 &#34;vstepper&#34;,
                 &#34;hradio&#34;,
+                &#34;nested&#34;,
             ],
             &#34;date&#34;: [&#34;date&#34;, &#34;time&#34;, &#34;datetime&#34;],
             &#34;media&#34;: [&#34;picture&#34;, &#34;video&#34;],
@@ -358,9 +391,11 @@ class PropValidator(CoreValidator):
                 &#34;maxValue&#34;,
                 &#34;minValue&#34;,
                 &#34;numberFormat&#34;,
+                &#34;legendOverride&#34;,
             ],
             &#34;toggle&#34;: [&#34;help&#34;, &#34;enabled&#34;, &#34;apiCommand&#34;, &#34;apiCommandKeys&#34;],
             &#34;button&#34;: [&#34;help&#34;, &#34;enabled&#34;, &#34;apiCommand&#34;, &#34;apiCommandKeys&#34;],
+            &#34;media&#34;: [&#34;help&#34;, &#34;variant&#34;],
             &#34;selector&#34;: [
                 &#34;help&#34;,
                 &#34;enabled&#34;,
@@ -370,7 +405,7 @@ class PropValidator(CoreValidator):
                 &#34;placeholder&#34;,
             ],
             &#34;date&#34;: [&#34;help&#34;, &#34;enabled&#34;, &#34;variant&#34;, &#34;apiCommand&#34;, &#34;apiCommandKeys&#34;, &#34;views&#34;],
-        }.get(validation_type, list(self.field_types.keys()))
+        }.get(validation_type, [])
 
         # Custom code to handle semi-required fields
         # If the prop is a types prop, then these fields are optional
@@ -383,6 +418,7 @@ class PropValidator(CoreValidator):
             &#34;button&#34;: [&#34;name&#34;, &#34;value&#34;],
             &#34;selector&#34;: [&#34;name&#34;, &#34;value&#34;, &#34;options&#34;],
             &#34;date&#34;: [&#34;name&#34;, &#34;value&#34;],
+            &#34;media&#34;: [&#34;name&#34;, &#34;value&#34;],
         }.get(validation_type, [])
 
         if is_types_prop:
@@ -416,12 +452,43 @@ class PropValidator(CoreValidator):
                 NumberFormatValidator(
                     data=number_format, log=self.log, prepend_path=[&#34;numberFormat&#34;]
                 )
+            legendOverride = self.data.get(&#34;legendOverride&#34;)
+            if legendOverride:
+                legendOverrideValidator(
+                    data=legendOverride, log=self.log, prepend_path=[&#34;legendOverride&#34;]
+                )
 
         elif validation_type == &#34;selector&#34;:
-            if self.data.get(&#34;variant&#34;) != &#34;checkbox&#34; and len(self.data.get(&#34;value&#34;, [])) &gt; 1:
+            variant = self.data.get(&#34;variant&#34;)
+            value = self.data.get(&#34;value&#34;, [])
+            if variant not in [&#34;checkbox&#34;, &#34;nested&#34;] and len(value) &gt; 1:
                 self.error(
                     &#34;Only one value can be selected for this variant.&#34;, prepend_path=[&#34;value&#34;]
                 )
+            CustomKeyValidator(
+                data=self.data.get(&#34;options&#34;, {}),
+                log=self.log,
+                prepend_path=[&#34;options&#34;],
+                validator=SelectorOptionsValidator,
+                variant=variant,
+                **kwargs,
+            )
+
+
+class SelectorOptionsValidator(CoreValidator):
+    def populate_data(self, **kwargs):
+        self.field_types = {
+            &#34;name&#34;: str,
+            &#34;path&#34;: list,
+        }
+        self.required_fields = [&#34;name&#34;]
+        self.optional_fields = []
+        self.accepted_values = {}
+        if kwargs.get(&#34;variant&#34;) == &#34;nested&#34;:
+            self.required_fields += [&#34;path&#34;]
+
+    def additional_validations(self, **kwargs):
+        self.validate_list(data=self.data.get(&#34;path&#34;, []), types=(str,), prepend_path=[&#34;path&#34;])
 
 
 class LayoutValidator(CoreValidator):
@@ -2950,20 +3017,20 @@ class Validator:
                 if len(value_diff) &gt; 0:
                     self.log.add(
                         path=[field],
-                        msg=f&#34;Invalid values ({value_diff}): Acceptable values are: {accepted_values}&#34;,
+                        msg=f&#34;Invalid values (&#39;{value_diff}&#39;): Acceptable values are: {accepted_values}&#34;,
                     )
                     continue
             else:
                 if accepted_values is not None and value not in accepted_values:
                     self.log.add(
                         path=[field],
-                        msg=f&#34;Invalid value ({value}): Acceptable values are: {accepted_values}&#34;,
+                        msg=f&#34;Invalid value (&#39;{value}&#39;): Acceptable values are: {accepted_values}&#34;,
                     )
                     continue
             if field not in self.required_fields + self.optional_fields:
                 self.log.add(
                     path=[field],
-                    msg=f&#34;Unknown field ({field}): Acceptable fields are: {self.required_fields + self.optional_fields}&#34;,
+                    msg=f&#34;Unknown field (&#39;{field}&#39;): Acceptable fields are: {self.required_fields + self.optional_fields}&#34;,
                     level=&#34;warning&#34;,
                 )
                 continue
@@ -2971,7 +3038,7 @@ class Validator:
             if not isinstance(value, acceptable_types):
                 self.log.add(
                     path=[field],
-                    msg=f&#34;Invalid type ({type(value)}): Acceptable types are: {acceptable_types}&#34;,
+                    msg=f&#34;Invalid type (&#39;{type(value)}&#39;): Acceptable types are: {acceptable_types}&#34;,
                 )
 
         # Run additional Validations
@@ -3060,7 +3127,17 @@ class Validator:
 
     def validate_coord_path(self, coord_path: list, prepend_path: list = []):
         if not self.is_coord_path_valid(coord_path):
-            self.log.add(path=prepend_path, msg=f&#34;Invalid coordinate path&#34;)</code></pre>
+            self.log.add(path=prepend_path, msg=f&#34;Invalid coordinate path&#34;)
+
+    def validate_list(self, data: list, types: tuple, prepend_path: str):
+        if not isinstance(types, tuple):
+            types = (types,)
+        for item in data:
+            if not isinstance(item, types):
+                self.log.add(
+                    path=prepend_path, msg=f&#34;Invalid list type. Item {item} is not of type {types}&#34;
+                )
+                break</code></pre>
 </details>
 <h3>Subclasses</h3>
 <ul class="hlist">
@@ -3097,6 +3174,7 @@ class Validator:
 <li><a title="cave_utils.validator.PanesValidator" href="#cave_utils.validator.PanesValidator">PanesValidator</a></li>
 <li><a title="cave_utils.validator.PropValidator" href="#cave_utils.validator.PropValidator">PropValidator</a></li>
 <li><a title="cave_utils.validator.RootValidator" href="#cave_utils.validator.RootValidator">RootValidator</a></li>
+<li><a title="cave_utils.validator.SelectorOptionsValidator" href="#cave_utils.validator.SelectorOptionsValidator">SelectorOptionsValidator</a></li>
 <li><a title="cave_utils.validator.SettingsDataSyncValidator" href="#cave_utils.validator.SettingsDataSyncValidator">SettingsDataSyncValidator</a></li>
 <li><a title="cave_utils.validator.SettingsDataValidator" href="#cave_utils.validator.SettingsDataValidator">SettingsDataValidator</a></li>
 <li><a title="cave_utils.validator.SettingsValidator" href="#cave_utils.validator.SettingsValidator">SettingsValidator</a></li>
@@ -3105,6 +3183,7 @@ class Validator:
 <li><a title="cave_utils.validator.StatsTypesValidator" href="#cave_utils.validator.StatsTypesValidator">StatsTypesValidator</a></li>
 <li><a title="cave_utils.validator.StatsValidator" href="#cave_utils.validator.StatsValidator">StatsValidator</a></li>
 <li><a title="cave_utils.validator.ViewportValidator" href="#cave_utils.validator.ViewportValidator">ViewportValidator</a></li>
+<li><a title="cave_utils.validator.legendOverrideValidator" href="#cave_utils.validator.legendOverrideValidator">legendOverrideValidator</a></li>
 </ul>
 <h3>Methods</h3>
 <dl>
@@ -3251,20 +3330,20 @@ class Validator:
             if len(value_diff) &gt; 0:
                 self.log.add(
                     path=[field],
-                    msg=f&#34;Invalid values ({value_diff}): Acceptable values are: {accepted_values}&#34;,
+                    msg=f&#34;Invalid values (&#39;{value_diff}&#39;): Acceptable values are: {accepted_values}&#34;,
                 )
                 continue
         else:
             if accepted_values is not None and value not in accepted_values:
                 self.log.add(
                     path=[field],
-                    msg=f&#34;Invalid value ({value}): Acceptable values are: {accepted_values}&#34;,
+                    msg=f&#34;Invalid value (&#39;{value}&#39;): Acceptable values are: {accepted_values}&#34;,
                 )
                 continue
         if field not in self.required_fields + self.optional_fields:
             self.log.add(
                 path=[field],
-                msg=f&#34;Unknown field ({field}): Acceptable fields are: {self.required_fields + self.optional_fields}&#34;,
+                msg=f&#34;Unknown field (&#39;{field}&#39;): Acceptable fields are: {self.required_fields + self.optional_fields}&#34;,
                 level=&#34;warning&#34;,
             )
             continue
@@ -3272,7 +3351,7 @@ class Validator:
         if not isinstance(value, acceptable_types):
             self.log.add(
                 path=[field],
-                msg=f&#34;Invalid type ({type(value)}): Acceptable types are: {acceptable_types}&#34;,
+                msg=f&#34;Invalid type (&#39;{type(value)}&#39;): Acceptable types are: {acceptable_types}&#34;,
             )
 
     # Run additional Validations
@@ -3297,6 +3376,26 @@ class Validator:
 <pre><code class="python">def validate_coord_path(self, coord_path: list, prepend_path: list = []):
     if not self.is_coord_path_valid(coord_path):
         self.log.add(path=prepend_path, msg=f&#34;Invalid coordinate path&#34;)</code></pre>
+</details>
+</dd>
+<dt id="cave_utils.validator.CoreValidator.validate_list"><code class="name flex">
+<span>def <span class="ident">validate_list</span></span>(<span>self, data: list, types: tuple, prepend_path: str)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def validate_list(self, data: list, types: tuple, prepend_path: str):
+    if not isinstance(types, tuple):
+        types = (types,)
+    for item in data:
+        if not isinstance(item, types):
+            self.log.add(
+                path=prepend_path, msg=f&#34;Invalid list type. Item {item} is not of type {types}&#34;
+            )
+            break</code></pre>
 </details>
 </dd>
 <dt id="cave_utils.validator.CoreValidator.validate_rgb_string"><code class="name flex">
@@ -5181,6 +5280,7 @@ class Validator:
             &#34;minRows&#34;: int,
             &#34;rows&#34;: int,
             &#34;numberFormat&#34;: dict,
+            &#34;legendOverride&#34;: dict,
         }
 
         self.allowed_variants = {
@@ -5195,6 +5295,7 @@ class Validator:
                 &#34;hstepper&#34;,
                 &#34;vstepper&#34;,
                 &#34;hradio&#34;,
+                &#34;nested&#34;,
             ],
             &#34;date&#34;: [&#34;date&#34;, &#34;time&#34;, &#34;datetime&#34;],
             &#34;media&#34;: [&#34;picture&#34;, &#34;video&#34;],
@@ -5231,9 +5332,11 @@ class Validator:
                 &#34;maxValue&#34;,
                 &#34;minValue&#34;,
                 &#34;numberFormat&#34;,
+                &#34;legendOverride&#34;,
             ],
             &#34;toggle&#34;: [&#34;help&#34;, &#34;enabled&#34;, &#34;apiCommand&#34;, &#34;apiCommandKeys&#34;],
             &#34;button&#34;: [&#34;help&#34;, &#34;enabled&#34;, &#34;apiCommand&#34;, &#34;apiCommandKeys&#34;],
+            &#34;media&#34;: [&#34;help&#34;, &#34;variant&#34;],
             &#34;selector&#34;: [
                 &#34;help&#34;,
                 &#34;enabled&#34;,
@@ -5243,7 +5346,7 @@ class Validator:
                 &#34;placeholder&#34;,
             ],
             &#34;date&#34;: [&#34;help&#34;, &#34;enabled&#34;, &#34;variant&#34;, &#34;apiCommand&#34;, &#34;apiCommandKeys&#34;, &#34;views&#34;],
-        }.get(validation_type, list(self.field_types.keys()))
+        }.get(validation_type, [])
 
         # Custom code to handle semi-required fields
         # If the prop is a types prop, then these fields are optional
@@ -5256,6 +5359,7 @@ class Validator:
             &#34;button&#34;: [&#34;name&#34;, &#34;value&#34;],
             &#34;selector&#34;: [&#34;name&#34;, &#34;value&#34;, &#34;options&#34;],
             &#34;date&#34;: [&#34;name&#34;, &#34;value&#34;],
+            &#34;media&#34;: [&#34;name&#34;, &#34;value&#34;],
         }.get(validation_type, [])
 
         if is_types_prop:
@@ -5289,12 +5393,27 @@ class Validator:
                 NumberFormatValidator(
                     data=number_format, log=self.log, prepend_path=[&#34;numberFormat&#34;]
                 )
+            legendOverride = self.data.get(&#34;legendOverride&#34;)
+            if legendOverride:
+                legendOverrideValidator(
+                    data=legendOverride, log=self.log, prepend_path=[&#34;legendOverride&#34;]
+                )
 
         elif validation_type == &#34;selector&#34;:
-            if self.data.get(&#34;variant&#34;) != &#34;checkbox&#34; and len(self.data.get(&#34;value&#34;, [])) &gt; 1:
+            variant = self.data.get(&#34;variant&#34;)
+            value = self.data.get(&#34;value&#34;, [])
+            if variant not in [&#34;checkbox&#34;, &#34;nested&#34;] and len(value) &gt; 1:
                 self.error(
                     &#34;Only one value can be selected for this variant.&#34;, prepend_path=[&#34;value&#34;]
-                )</code></pre>
+                )
+            CustomKeyValidator(
+                data=self.data.get(&#34;options&#34;, {}),
+                log=self.log,
+                prepend_path=[&#34;options&#34;],
+                validator=SelectorOptionsValidator,
+                variant=variant,
+                **kwargs,
+            )</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -5321,12 +5440,27 @@ class Validator:
             NumberFormatValidator(
                 data=number_format, log=self.log, prepend_path=[&#34;numberFormat&#34;]
             )
+        legendOverride = self.data.get(&#34;legendOverride&#34;)
+        if legendOverride:
+            legendOverrideValidator(
+                data=legendOverride, log=self.log, prepend_path=[&#34;legendOverride&#34;]
+            )
 
     elif validation_type == &#34;selector&#34;:
-        if self.data.get(&#34;variant&#34;) != &#34;checkbox&#34; and len(self.data.get(&#34;value&#34;, [])) &gt; 1:
+        variant = self.data.get(&#34;variant&#34;)
+        value = self.data.get(&#34;value&#34;, [])
+        if variant not in [&#34;checkbox&#34;, &#34;nested&#34;] and len(value) &gt; 1:
             self.error(
                 &#34;Only one value can be selected for this variant.&#34;, prepend_path=[&#34;value&#34;]
-            )</code></pre>
+            )
+        CustomKeyValidator(
+            data=self.data.get(&#34;options&#34;, {}),
+            log=self.log,
+            prepend_path=[&#34;options&#34;],
+            validator=SelectorOptionsValidator,
+            variant=variant,
+            **kwargs,
+        )</code></pre>
 </details>
 </dd>
 <dt id="cave_utils.validator.PropValidator.populate_data"><code class="name flex">
@@ -5371,6 +5505,7 @@ class Validator:
         &#34;minRows&#34;: int,
         &#34;rows&#34;: int,
         &#34;numberFormat&#34;: dict,
+        &#34;legendOverride&#34;: dict,
     }
 
     self.allowed_variants = {
@@ -5385,6 +5520,7 @@ class Validator:
             &#34;hstepper&#34;,
             &#34;vstepper&#34;,
             &#34;hradio&#34;,
+            &#34;nested&#34;,
         ],
         &#34;date&#34;: [&#34;date&#34;, &#34;time&#34;, &#34;datetime&#34;],
         &#34;media&#34;: [&#34;picture&#34;, &#34;video&#34;],
@@ -5421,9 +5557,11 @@ class Validator:
             &#34;maxValue&#34;,
             &#34;minValue&#34;,
             &#34;numberFormat&#34;,
+            &#34;legendOverride&#34;,
         ],
         &#34;toggle&#34;: [&#34;help&#34;, &#34;enabled&#34;, &#34;apiCommand&#34;, &#34;apiCommandKeys&#34;],
         &#34;button&#34;: [&#34;help&#34;, &#34;enabled&#34;, &#34;apiCommand&#34;, &#34;apiCommandKeys&#34;],
+        &#34;media&#34;: [&#34;help&#34;, &#34;variant&#34;],
         &#34;selector&#34;: [
             &#34;help&#34;,
             &#34;enabled&#34;,
@@ -5433,7 +5571,7 @@ class Validator:
             &#34;placeholder&#34;,
         ],
         &#34;date&#34;: [&#34;help&#34;, &#34;enabled&#34;, &#34;variant&#34;, &#34;apiCommand&#34;, &#34;apiCommandKeys&#34;, &#34;views&#34;],
-    }.get(validation_type, list(self.field_types.keys()))
+    }.get(validation_type, [])
 
     # Custom code to handle semi-required fields
     # If the prop is a types prop, then these fields are optional
@@ -5446,6 +5584,7 @@ class Validator:
         &#34;button&#34;: [&#34;name&#34;, &#34;value&#34;],
         &#34;selector&#34;: [&#34;name&#34;, &#34;value&#34;, &#34;options&#34;],
         &#34;date&#34;: [&#34;name&#34;, &#34;value&#34;],
+        &#34;media&#34;: [&#34;name&#34;, &#34;value&#34;],
     }.get(validation_type, [])
 
     if is_types_prop:
@@ -5819,6 +5958,73 @@ class Validator:
     ]
     self.optional_fields = [&#34;kwargs&#34;]
     self.accepted_values = {}</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="cave_utils.validator.SelectorOptionsValidator"><code class="flex name class">
+<span>class <span class="ident">SelectorOptionsValidator</span></span>
+<span>(</span><span>data, log: <a title="cave_utils.log.LogObject" href="log.html#cave_utils.log.LogObject">LogObject</a>, prepend_path: list = [], **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class SelectorOptionsValidator(CoreValidator):
+    def populate_data(self, **kwargs):
+        self.field_types = {
+            &#34;name&#34;: str,
+            &#34;path&#34;: list,
+        }
+        self.required_fields = [&#34;name&#34;]
+        self.optional_fields = []
+        self.accepted_values = {}
+        if kwargs.get(&#34;variant&#34;) == &#34;nested&#34;:
+            self.required_fields += [&#34;path&#34;]
+
+    def additional_validations(self, **kwargs):
+        self.validate_list(data=self.data.get(&#34;path&#34;, []), types=(str,), prepend_path=[&#34;path&#34;])</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="cave_utils.validator.CoreValidator" href="#cave_utils.validator.CoreValidator">CoreValidator</a></li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="cave_utils.validator.SelectorOptionsValidator.additional_validations"><code class="name flex">
+<span>def <span class="ident">additional_validations</span></span>(<span>self, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def additional_validations(self, **kwargs):
+    self.validate_list(data=self.data.get(&#34;path&#34;, []), types=(str,), prepend_path=[&#34;path&#34;])</code></pre>
+</details>
+</dd>
+<dt id="cave_utils.validator.SelectorOptionsValidator.populate_data"><code class="name flex">
+<span>def <span class="ident">populate_data</span></span>(<span>self, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def populate_data(self, **kwargs):
+    self.field_types = {
+        &#34;name&#34;: str,
+        &#34;path&#34;: list,
+    }
+    self.required_fields = [&#34;name&#34;]
+    self.optional_fields = []
+    self.accepted_values = {}
+    if kwargs.get(&#34;variant&#34;) == &#34;nested&#34;:
+        self.required_fields += [&#34;path&#34;]</code></pre>
 </details>
 </dd>
 </dl>
@@ -6551,6 +6757,73 @@ class Validator:
 </dd>
 </dl>
 </dd>
+<dt id="cave_utils.validator.legendOverrideValidator"><code class="flex name class">
+<span>class <span class="ident">legendOverrideValidator</span></span>
+<span>(</span><span>data, log: <a title="cave_utils.log.LogObject" href="log.html#cave_utils.log.LogObject">LogObject</a>, prepend_path: list = [], **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class legendOverrideValidator(CoreValidator):
+    def populate_data(self, **kwargs):
+        self.field_types = {
+            &#34;scientificPrecision&#34;: int,
+            &#34;useScientificFormat&#34;: bool,
+            &#34;minLabel&#34;: (
+                str,
+                int,
+                float,
+            ),
+            &#34;maxLabel&#34;: (
+                str,
+                int,
+                float,
+            ),
+        }
+        self.required_fields = []
+        self.optional_fields = list(self.field_types.keys())
+        self.accepted_values = {}</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="cave_utils.validator.CoreValidator" href="#cave_utils.validator.CoreValidator">CoreValidator</a></li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="cave_utils.validator.legendOverrideValidator.populate_data"><code class="name flex">
+<span>def <span class="ident">populate_data</span></span>(<span>self, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def populate_data(self, **kwargs):
+    self.field_types = {
+        &#34;scientificPrecision&#34;: int,
+        &#34;useScientificFormat&#34;: bool,
+        &#34;minLabel&#34;: (
+            str,
+            int,
+            float,
+        ),
+        &#34;maxLabel&#34;: (
+            str,
+            int,
+            float,
+        ),
+    }
+    self.required_fields = []
+    self.optional_fields = list(self.field_types.keys())
+    self.accepted_values = {}</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
 </dl>
 </section>
 </article>
@@ -6654,6 +6927,7 @@ class Validator:
 <li><code><a title="cave_utils.validator.CoreValidator.is_url_valid" href="#cave_utils.validator.CoreValidator.is_url_valid">is_url_valid</a></code></li>
 <li><code><a title="cave_utils.validator.CoreValidator.validate" href="#cave_utils.validator.CoreValidator.validate">validate</a></code></li>
 <li><code><a title="cave_utils.validator.CoreValidator.validate_coord_path" href="#cave_utils.validator.CoreValidator.validate_coord_path">validate_coord_path</a></code></li>
+<li><code><a title="cave_utils.validator.CoreValidator.validate_list" href="#cave_utils.validator.CoreValidator.validate_list">validate_list</a></code></li>
 <li><code><a title="cave_utils.validator.CoreValidator.validate_rgb_string" href="#cave_utils.validator.CoreValidator.validate_rgb_string">validate_rgb_string</a></code></li>
 <li><code><a title="cave_utils.validator.CoreValidator.validate_subset" href="#cave_utils.validator.CoreValidator.validate_subset">validate_subset</a></code></li>
 <li><code><a title="cave_utils.validator.CoreValidator.validate_url" href="#cave_utils.validator.CoreValidator.validate_url">validate_url</a></code></li>
@@ -6808,6 +7082,13 @@ class Validator:
 </ul>
 </li>
 <li>
+<h4><code><a title="cave_utils.validator.SelectorOptionsValidator" href="#cave_utils.validator.SelectorOptionsValidator">SelectorOptionsValidator</a></code></h4>
+<ul class="">
+<li><code><a title="cave_utils.validator.SelectorOptionsValidator.additional_validations" href="#cave_utils.validator.SelectorOptionsValidator.additional_validations">additional_validations</a></code></li>
+<li><code><a title="cave_utils.validator.SelectorOptionsValidator.populate_data" href="#cave_utils.validator.SelectorOptionsValidator.populate_data">populate_data</a></code></li>
+</ul>
+</li>
+<li>
 <h4><code><a title="cave_utils.validator.SettingsDataSyncValidator" href="#cave_utils.validator.SettingsDataSyncValidator">SettingsDataSyncValidator</a></code></h4>
 <ul class="">
 <li><code><a title="cave_utils.validator.SettingsDataSyncValidator.populate_data" href="#cave_utils.validator.SettingsDataSyncValidator.populate_data">populate_data</a></code></li>
@@ -6861,6 +7142,12 @@ class Validator:
 <h4><code><a title="cave_utils.validator.ViewportValidator" href="#cave_utils.validator.ViewportValidator">ViewportValidator</a></code></h4>
 <ul class="">
 <li><code><a title="cave_utils.validator.ViewportValidator.populate_data" href="#cave_utils.validator.ViewportValidator.populate_data">populate_data</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="cave_utils.validator.legendOverrideValidator" href="#cave_utils.validator.legendOverrideValidator">legendOverrideValidator</a></code></h4>
+<ul class="">
+<li><code><a title="cave_utils.validator.legendOverrideValidator.populate_data" href="#cave_utils.validator.legendOverrideValidator.populate_data">populate_data</a></code></li>
 </ul>
 </li>
 </ul>

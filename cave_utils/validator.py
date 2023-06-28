@@ -38,20 +38,20 @@ class CoreValidator:
                 if len(value_diff) > 0:
                     self.log.add(
                         path=[field],
-                        msg=f"Invalid values ({value_diff}): Acceptable values are: {accepted_values}",
+                        msg=f"Invalid values ('{value_diff}'): Acceptable values are: {accepted_values}",
                     )
                     continue
             else:
                 if accepted_values is not None and value not in accepted_values:
                     self.log.add(
                         path=[field],
-                        msg=f"Invalid value ({value}): Acceptable values are: {accepted_values}",
+                        msg=f"Invalid value ('{value}'): Acceptable values are: {accepted_values}",
                     )
                     continue
             if field not in self.required_fields + self.optional_fields:
                 self.log.add(
                     path=[field],
-                    msg=f"Unknown field ({field}): Acceptable fields are: {self.required_fields + self.optional_fields}",
+                    msg=f"Unknown field ('{field}'): Acceptable fields are: {self.required_fields + self.optional_fields}",
                     level="warning",
                 )
                 continue
@@ -59,7 +59,7 @@ class CoreValidator:
             if not isinstance(value, acceptable_types):
                 self.log.add(
                     path=[field],
-                    msg=f"Invalid type ({type(value)}): Acceptable types are: {acceptable_types}",
+                    msg=f"Invalid type ('{type(value)}'): Acceptable types are: {acceptable_types}",
                 )
 
         # Run additional Validations
@@ -150,6 +150,16 @@ class CoreValidator:
         if not self.is_coord_path_valid(coord_path):
             self.log.add(path=prepend_path, msg=f"Invalid coordinate path")
 
+    def validate_list(self, data: list, types: tuple, prepend_path: str):
+        if not isinstance(types, tuple):
+            types = (types,)
+        for item in data:
+            if not isinstance(item, types):
+                self.log.add(
+                    path=prepend_path, msg=f"Invalid list type. Item {item} is not of type {types}"
+                )
+                break
+
 
 class NumericDictValidator(CoreValidator):
     def populate_data(self, **kwargs):
@@ -184,6 +194,27 @@ class NumberFormatValidator(CoreValidator):
             "trailingZeros": bool,
             "nilValue": str,
             "locale": str,
+        }
+        self.required_fields = []
+        self.optional_fields = list(self.field_types.keys())
+        self.accepted_values = {}
+
+
+class legendOverrideValidator(CoreValidator):
+    def populate_data(self, **kwargs):
+        self.field_types = {
+            "scientificPrecision": int,
+            "useScientificFormat": bool,
+            "minLabel": (
+                str,
+                int,
+                float,
+            ),
+            "maxLabel": (
+                str,
+                int,
+                float,
+            ),
         }
         self.required_fields = []
         self.optional_fields = list(self.field_types.keys())
@@ -280,6 +311,7 @@ class PropValidator(CoreValidator):
             "minRows": int,
             "rows": int,
             "numberFormat": dict,
+            "legendOverride": dict,
         }
 
         self.allowed_variants = {
@@ -294,6 +326,7 @@ class PropValidator(CoreValidator):
                 "hstepper",
                 "vstepper",
                 "hradio",
+                "nested",
             ],
             "date": ["date", "time", "datetime"],
             "media": ["picture", "video"],
@@ -330,9 +363,11 @@ class PropValidator(CoreValidator):
                 "maxValue",
                 "minValue",
                 "numberFormat",
+                "legendOverride",
             ],
             "toggle": ["help", "enabled", "apiCommand", "apiCommandKeys"],
             "button": ["help", "enabled", "apiCommand", "apiCommandKeys"],
+            "media": ["help", "variant"],
             "selector": [
                 "help",
                 "enabled",
@@ -342,7 +377,7 @@ class PropValidator(CoreValidator):
                 "placeholder",
             ],
             "date": ["help", "enabled", "variant", "apiCommand", "apiCommandKeys", "views"],
-        }.get(validation_type, list(self.field_types.keys()))
+        }.get(validation_type, [])
 
         # Custom code to handle semi-required fields
         # If the prop is a types prop, then these fields are optional
@@ -355,6 +390,7 @@ class PropValidator(CoreValidator):
             "button": ["name", "value"],
             "selector": ["name", "value", "options"],
             "date": ["name", "value"],
+            "media": ["name", "value"],
         }.get(validation_type, [])
 
         if is_types_prop:
@@ -388,12 +424,43 @@ class PropValidator(CoreValidator):
                 NumberFormatValidator(
                     data=number_format, log=self.log, prepend_path=["numberFormat"]
                 )
+            legendOverride = self.data.get("legendOverride")
+            if legendOverride:
+                legendOverrideValidator(
+                    data=legendOverride, log=self.log, prepend_path=["legendOverride"]
+                )
 
         elif validation_type == "selector":
-            if self.data.get("variant") != "checkbox" and len(self.data.get("value", [])) > 1:
+            variant = self.data.get("variant")
+            value = self.data.get("value", [])
+            if variant not in ["checkbox", "nested"] and len(value) > 1:
                 self.error(
                     "Only one value can be selected for this variant.", prepend_path=["value"]
                 )
+            CustomKeyValidator(
+                data=self.data.get("options", {}),
+                log=self.log,
+                prepend_path=["options"],
+                validator=SelectorOptionsValidator,
+                variant=variant,
+                **kwargs,
+            )
+
+
+class SelectorOptionsValidator(CoreValidator):
+    def populate_data(self, **kwargs):
+        self.field_types = {
+            "name": str,
+            "path": list,
+        }
+        self.required_fields = ["name"]
+        self.optional_fields = []
+        self.accepted_values = {}
+        if kwargs.get("variant") == "nested":
+            self.required_fields += ["path"]
+
+    def additional_validations(self, **kwargs):
+        self.validate_list(data=self.data.get("path", []), types=(str,), prepend_path=["path"])
 
 
 class LayoutValidator(CoreValidator):
