@@ -11,4 +11,5 @@ pdoc3==0.10.0
 platformdirs==3.5.3
 pyflakes==3.0.1
 tomli==2.0.1
+twine==4.0.2
 -e .

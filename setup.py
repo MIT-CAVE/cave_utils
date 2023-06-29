@@ -8,7 +8,7 @@ long_description = (this_directory / "README.md").read_text()
 setup(
   name = 'cave_utils',
   packages=['cave_utils'],
-  version = '1.5.0-beta.1',
+  version = '1.5.0',
   license='MIT',
   description = 'Cave utilities for the CAVE App at the MIT',
   long_description=long_description,
