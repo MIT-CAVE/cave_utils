@@ -8,7 +8,7 @@ long_description = (this_directory / "README.md").read_text()
 setup(
   name = 'cave_utils',
   packages=['cave_utils'],
-  version = '1.6.0b1',
+  version = '1.5.0',
   license='MIT',
   description = 'Cave utilities for the CAVE App at the MIT',
   long_description=long_description,
@@ -16,7 +16,7 @@ setup(
   author = 'Connor Makowski',
   author_email = 'connor.m.makowski@gmail.com',
   url = 'https://github.com/mit-cave/cave_utils',
-  download_url = 'https://github.com/mit-cave/cave_utils/dist/cave_utils-1.6.0b1.tar.gz',
+  download_url = 'https://github.com/mit-cave/cave_utils/dist/cave_utils-1.5.0.tar.gz',
   keywords = [],
   install_requires=[
     'pamda>=2.1.2',
