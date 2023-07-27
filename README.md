@@ -5,7 +5,7 @@ Basic utilities for the MIT Cave App. This package is intended to be used by the
 Setup
 ----------
 
-Make sure you have Python 3.9.x (or higher) installed on your system. You can download it [here](https://www.python.org/downloads/).
+Make sure you have Python 3.7.x (or higher) installed on your system. You can download it [here](https://www.python.org/downloads/).
 
 ### Installation
 
