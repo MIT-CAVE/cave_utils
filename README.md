@@ -36,3 +36,31 @@ pip install cave_utils
 
 2. Run the following command:
     `cave test test_init.py`
+
+# Live Utils Development 
+1. In your cave_app, update the following file:
+
+    `utils/run_server.sh`
+    ```
+    #!/bin/bash
+
+    SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+    APP_DIR=$(dirname "$SCRIPT_DIR")
+
+    pip install -e /cave_utils
+
+    source ./utils/helpers/shell_functions.sh
+    source ./utils/helpers/ensure_postgres_running.sh
+    source ./utils/helpers/ensure_db_setup.sh
+
+    python "$APP_DIR/manage.py" runserver 0.0.0.0:8000 2>&1 | pipe_log "INFO"
+    ```
+
+2. In your cave_app, set `LIVE_API_VALIDATION=True` in the `.env` file
+    - This will validate your data every time an api command is called for each session
+    - Outputs will be stored in `logs/validation/{session_name}.log`
+
+3. Use the following command to run your cave_app:
+    `cave run --docker-args "--volume {local_path_to_cave_utils}/cave_utils:/cave_utils"`
+    
+    As you edit cave_utils, the logs will be updated live
