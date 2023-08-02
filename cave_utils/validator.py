@@ -972,8 +972,8 @@ class AppBarDataValidator(CoreValidator):
             "apiCommandKeys": list,
         }
         self.accepted_values = {
-            "type": ["map", "stats", "kpi", "pane", "button"],
-            "bar": ["upper", "lower"],
+            "type": ["map", "stats", "kpi", "pane", "modal", "button"],
+            "bar": ["upper", "lower", "upperLeft", "lowerLeft", "upperRight", "lowerRight"],
         }
         self.required_fields = ["icon", "type", "bar"]
         self.optional_fields = ["order", "color", "apiCommand", "apiCommandKeys"]
@@ -1384,6 +1384,65 @@ class ViewportValidator(CoreValidator):
             self.required_fields += ["icon", "name"]
 
 
+class ModalsValidator(CoreValidator):
+    def populate_data(self, **kwargs):
+        self.field_types = {
+            "data": dict,
+            "allowModification": bool,
+            "sendToApi": bool,
+            "sendToClient": bool,
+        }
+
+        self.accepted_values = {}
+
+        self.required_fields = ["data"]
+
+        self.optional_fields = ["allowModification", "sendToApi", "sendToClient"]
+
+    def additional_validations(self, **kwargs):
+        CustomKeyValidator(
+            data=self.data.get("data", {}),
+            log=self.log,
+            prepend_path=["data"],
+            validator=ModalsDataValidator,
+            **kwargs,
+        )
+
+
+class ModalsDataValidator(CoreValidator):
+    def populate_data(self, **kwargs):
+        self.field_types = {
+            "name": str,
+            "props": dict,
+            "layout": dict,
+            "teamSyncCommand": str,
+            "teamSyncCommandKeys": list,
+        }
+
+        self.accepted_values = {}
+
+        self.required_fields = ["name", "props"]
+
+        self.optional_fields = ["layout", "teamSyncCommand", "teamSyncCommandKeys"]
+
+    def additional_validations(self, **kwargs):
+        props_data = self.data.get("props", {})
+        CustomKeyValidator(
+            data=props_data,
+            log=self.log,
+            prepend_path=["props"],
+            validator=PropValidator,
+            **kwargs,
+        )
+        LayoutValidator(
+            data=self.data.get("layout", {}),
+            log=self.log,
+            prepend_path=["layout"],
+            acceptable_keys=list(props_data.keys()),
+            **kwargs,
+        )
+
+
 class PanesValidator(CoreValidator):
     def populate_data(self, **kwargs):
         self.field_types = {
@@ -1605,6 +1664,7 @@ class RootValidator(CoreValidator):
             "kpis": dict,
             "kwargs": dict,
             "maps": dict,
+            "modals": dict,
             "nodes": dict,
             "panes": dict,
             "settings": dict,
@@ -1623,7 +1683,7 @@ class RootValidator(CoreValidator):
             "settings",
             "stats",
         ]
-        self.optional_fields = ["kwargs"]
+        self.optional_fields = ["kwargs", "modals"]
         self.accepted_values = {}
 
     def additional_validations(self, **kwargs):
@@ -1730,6 +1790,15 @@ class RootValidator(CoreValidator):
             node_prop_options=node_prop_options,
             arc_prop_options=arc_prop_options,
             geo_prop_options=geo_prop_options,
+            **kwargs,
+        )
+
+        # Validate Modals
+        ModalsValidator(
+            data=self.data.get("modals", {}),
+            log=self.log,
+            prepend_path=["modals"],
+            categories_key_values=categories_key_values,
             **kwargs,
         )
 
