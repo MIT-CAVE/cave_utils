@@ -94,6 +94,15 @@ class CoreValidator:
         if not self.is_rgb_string_valid(rgb_string):
             self.log.add(path=prepend_path, msg=f"Invalid rgb string: {rgb_string}")
 
+    def validate_pixel_string(self, pixel_string: str, prepend_path: list = []):
+        try:
+            if "px" != pixel_string[-2:]:
+                self.log.add(path=prepend_path, msg=f"Invalid pixel string: {pixel_string}")
+            if int(pixel_string[:-2]) < 0:
+                self.log.add(path=prepend_path, msg=f"Invalid pixel string: {pixel_string}")
+        except:
+            self.log.add(path=prepend_path, msg=f"Invalid pixel string: {pixel_string}")
+
     def is_url_valid(self, url: str):
         # Use Django regex for URL validation
         # See https://stackoverflow.com/a/7160778/12014156
@@ -239,9 +248,10 @@ class ColorByOptionValidator(CoreValidator):
                 "max": (float, int),
                 "startGradientColor": dict,
                 "endGradientColor": dict,
+                "nullColor": (str, type(None)),
             }
             self.required_fields = ["startGradientColor", "endGradientColor"]
-            self.optional_fields = ["min", "max"]
+            self.optional_fields = ["min", "max", "nullColor"]
         self.accepted_values = {}
 
     def additional_validations(self, **kwargs):
@@ -250,6 +260,10 @@ class ColorByOptionValidator(CoreValidator):
         else:
             for field in ["startGradientColor", "endGradientColor"]:
                 ColorValidator(data=self.data.get(field), log=self.log, prepend_path=[field])
+            if self.data.get("nullColor") is not None:
+                self.validate_rgb_string(
+                    rgb_string=self.data.get("nullColor"), prepend_path=["nullColor"]
+                )
 
 
 class SizeValidator(CoreValidator):
@@ -257,10 +271,17 @@ class SizeValidator(CoreValidator):
         self.field_types = {
             "min": (float, int),
             "max": (float, int),
+            "nullSize": (str, type(None)),
         }
         self.required_fields = []
-        self.optional_fields = ["min", "max"]
+        self.optional_fields = ["min", "max", "nullSize"]
         self.accepted_values = {}
+
+    def additional_validations(self, **kwargs):
+        if self.data.get("nullSize") is not None:
+            self.validate_pixel_string(
+                pixel_string=self.data.get("nullSize"), prepend_path=["nullSize"]
+            )
 
 
 class CustomKeyValidator(CoreValidator):
@@ -1776,11 +1797,6 @@ class RootValidator(CoreValidator):
             **kwargs,
         )
 
-        # Validate Kwargs
-        KwargsValidator(
-            data=self.data.get("kwargs", {}), log=self.log, prepend_path=["kwargs"], **kwargs
-        )
-
         # Validate Maps
         MapsValidator(
             data=self.data.get("maps", {}),
@@ -1790,15 +1806,6 @@ class RootValidator(CoreValidator):
             node_prop_options=node_prop_options,
             arc_prop_options=arc_prop_options,
             geo_prop_options=geo_prop_options,
-            **kwargs,
-        )
-
-        # Validate Modals
-        ModalsValidator(
-            data=self.data.get("modals", {}),
-            log=self.log,
-            prepend_path=["modals"],
-            categories_key_values=categories_key_values,
             **kwargs,
         )
 
@@ -1819,6 +1826,24 @@ class RootValidator(CoreValidator):
             root_data=self.data,
             **kwargs,
         )
+
+        # Optional Key Validations (only if key is present)
+
+        # Validate Modals
+        if "modals" in self.data:
+            ModalsValidator(
+                data=self.data.get("modals", {}),
+                log=self.log,
+                prepend_path=["modals"],
+                categories_key_values=categories_key_values,
+                **kwargs,
+            )
+
+        # Validate Kwargs
+        if "kwargs" in self.data:
+            KwargsValidator(
+                data=self.data.get("kwargs", {}), log=self.log, prepend_path=["kwargs"], **kwargs
+            )
 
 
 class Validator:
