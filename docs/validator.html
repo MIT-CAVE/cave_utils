@@ -122,6 +122,15 @@ class CoreValidator:
         if not self.is_rgb_string_valid(rgb_string):
             self.log.add(path=prepend_path, msg=f&#34;Invalid rgb string: {rgb_string}&#34;)
 
+    def validate_pixel_string(self, pixel_string: str, prepend_path: list = []):
+        try:
+            if &#34;px&#34; != pixel_string[-2:]:
+                self.log.add(path=prepend_path, msg=f&#34;Invalid pixel string: {pixel_string}&#34;)
+            if int(pixel_string[:-2]) &lt; 0:
+                self.log.add(path=prepend_path, msg=f&#34;Invalid pixel string: {pixel_string}&#34;)
+        except:
+            self.log.add(path=prepend_path, msg=f&#34;Invalid pixel string: {pixel_string}&#34;)
+
     def is_url_valid(self, url: str):
         # Use Django regex for URL validation
         # See https://stackoverflow.com/a/7160778/12014156
@@ -267,9 +276,10 @@ class ColorByOptionValidator(CoreValidator):
                 &#34;max&#34;: (float, int),
                 &#34;startGradientColor&#34;: dict,
                 &#34;endGradientColor&#34;: dict,
+                &#34;nullColor&#34;: (str, type(None)),
             }
             self.required_fields = [&#34;startGradientColor&#34;, &#34;endGradientColor&#34;]
-            self.optional_fields = [&#34;min&#34;, &#34;max&#34;]
+            self.optional_fields = [&#34;min&#34;, &#34;max&#34;, &#34;nullColor&#34;]
         self.accepted_values = {}
 
     def additional_validations(self, **kwargs):
@@ -278,6 +288,10 @@ class ColorByOptionValidator(CoreValidator):
         else:
             for field in [&#34;startGradientColor&#34;, &#34;endGradientColor&#34;]:
                 ColorValidator(data=self.data.get(field), log=self.log, prepend_path=[field])
+            if self.data.get(&#34;nullColor&#34;) is not None:
+                self.validate_rgb_string(
+                    rgb_string=self.data.get(&#34;nullColor&#34;), prepend_path=[&#34;nullColor&#34;]
+                )
 
 
 class SizeValidator(CoreValidator):
@@ -285,10 +299,17 @@ class SizeValidator(CoreValidator):
         self.field_types = {
             &#34;min&#34;: (float, int),
             &#34;max&#34;: (float, int),
+            &#34;nullSize&#34;: (str, type(None)),
         }
         self.required_fields = []
-        self.optional_fields = [&#34;min&#34;, &#34;max&#34;]
+        self.optional_fields = [&#34;min&#34;, &#34;max&#34;, &#34;nullSize&#34;]
         self.accepted_values = {}
+
+    def additional_validations(self, **kwargs):
+        if self.data.get(&#34;nullSize&#34;) is not None:
+            self.validate_pixel_string(
+                pixel_string=self.data.get(&#34;nullSize&#34;), prepend_path=[&#34;nullSize&#34;]
+            )
 
 
 class CustomKeyValidator(CoreValidator):
@@ -1804,11 +1825,6 @@ class RootValidator(CoreValidator):
             **kwargs,
         )
 
-        # Validate Kwargs
-        KwargsValidator(
-            data=self.data.get(&#34;kwargs&#34;, {}), log=self.log, prepend_path=[&#34;kwargs&#34;], **kwargs
-        )
-
         # Validate Maps
         MapsValidator(
             data=self.data.get(&#34;maps&#34;, {}),
@@ -1818,15 +1834,6 @@ class RootValidator(CoreValidator):
             node_prop_options=node_prop_options,
             arc_prop_options=arc_prop_options,
             geo_prop_options=geo_prop_options,
-            **kwargs,
-        )
-
-        # Validate Modals
-        ModalsValidator(
-            data=self.data.get(&#34;modals&#34;, {}),
-            log=self.log,
-            prepend_path=[&#34;modals&#34;],
-            categories_key_values=categories_key_values,
             **kwargs,
         )
 
@@ -1847,6 +1854,24 @@ class RootValidator(CoreValidator):
             root_data=self.data,
             **kwargs,
         )
+
+        # Optional Key Validations (only if key is present)
+
+        # Validate Modals
+        if &#34;modals&#34; in self.data:
+            ModalsValidator(
+                data=self.data.get(&#34;modals&#34;, {}),
+                log=self.log,
+                prepend_path=[&#34;modals&#34;],
+                categories_key_values=categories_key_values,
+                **kwargs,
+            )
+
+        # Validate Kwargs
+        if &#34;kwargs&#34; in self.data:
+            KwargsValidator(
+                data=self.data.get(&#34;kwargs&#34;, {}), log=self.log, prepend_path=[&#34;kwargs&#34;], **kwargs
+            )
 
 
 class Validator:
@@ -2919,9 +2944,10 @@ class Validator:
                 &#34;max&#34;: (float, int),
                 &#34;startGradientColor&#34;: dict,
                 &#34;endGradientColor&#34;: dict,
+                &#34;nullColor&#34;: (str, type(None)),
             }
             self.required_fields = [&#34;startGradientColor&#34;, &#34;endGradientColor&#34;]
-            self.optional_fields = [&#34;min&#34;, &#34;max&#34;]
+            self.optional_fields = [&#34;min&#34;, &#34;max&#34;, &#34;nullColor&#34;]
         self.accepted_values = {}
 
     def additional_validations(self, **kwargs):
@@ -2929,7 +2955,11 @@ class Validator:
             ColorValidator(data=self.data, log=self.log, prepend_path=[], is_color_option=True)
         else:
             for field in [&#34;startGradientColor&#34;, &#34;endGradientColor&#34;]:
-                ColorValidator(data=self.data.get(field), log=self.log, prepend_path=[field])</code></pre>
+                ColorValidator(data=self.data.get(field), log=self.log, prepend_path=[field])
+            if self.data.get(&#34;nullColor&#34;) is not None:
+                self.validate_rgb_string(
+                    rgb_string=self.data.get(&#34;nullColor&#34;), prepend_path=[&#34;nullColor&#34;]
+                )</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -2951,7 +2981,11 @@ class Validator:
         ColorValidator(data=self.data, log=self.log, prepend_path=[], is_color_option=True)
     else:
         for field in [&#34;startGradientColor&#34;, &#34;endGradientColor&#34;]:
-            ColorValidator(data=self.data.get(field), log=self.log, prepend_path=[field])</code></pre>
+            ColorValidator(data=self.data.get(field), log=self.log, prepend_path=[field])
+        if self.data.get(&#34;nullColor&#34;) is not None:
+            self.validate_rgb_string(
+                rgb_string=self.data.get(&#34;nullColor&#34;), prepend_path=[&#34;nullColor&#34;]
+            )</code></pre>
 </details>
 </dd>
 <dt id="cave_utils.validator.ColorByOptionValidator.is_categorical"><code class="name flex">
@@ -2990,9 +3024,10 @@ class Validator:
             &#34;max&#34;: (float, int),
             &#34;startGradientColor&#34;: dict,
             &#34;endGradientColor&#34;: dict,
+            &#34;nullColor&#34;: (str, type(None)),
         }
         self.required_fields = [&#34;startGradientColor&#34;, &#34;endGradientColor&#34;]
-        self.optional_fields = [&#34;min&#34;, &#34;max&#34;]
+        self.optional_fields = [&#34;min&#34;, &#34;max&#34;, &#34;nullColor&#34;]
     self.accepted_values = {}</code></pre>
 </details>
 </dd>
@@ -3161,6 +3196,15 @@ class Validator:
     def validate_rgb_string(self, rgb_string: str, prepend_path: list = []):
         if not self.is_rgb_string_valid(rgb_string):
             self.log.add(path=prepend_path, msg=f&#34;Invalid rgb string: {rgb_string}&#34;)
+
+    def validate_pixel_string(self, pixel_string: str, prepend_path: list = []):
+        try:
+            if &#34;px&#34; != pixel_string[-2:]:
+                self.log.add(path=prepend_path, msg=f&#34;Invalid pixel string: {pixel_string}&#34;)
+            if int(pixel_string[:-2]) &lt; 0:
+                self.log.add(path=prepend_path, msg=f&#34;Invalid pixel string: {pixel_string}&#34;)
+        except:
+            self.log.add(path=prepend_path, msg=f&#34;Invalid pixel string: {pixel_string}&#34;)
 
     def is_url_valid(self, url: str):
         # Use Django regex for URL validation
@@ -3487,6 +3531,25 @@ class Validator:
                 path=prepend_path, msg=f&#34;Invalid list type. Item {item} is not of type {types}&#34;
             )
             break</code></pre>
+</details>
+</dd>
+<dt id="cave_utils.validator.CoreValidator.validate_pixel_string"><code class="name flex">
+<span>def <span class="ident">validate_pixel_string</span></span>(<span>self, pixel_string: str, prepend_path: list = [])</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def validate_pixel_string(self, pixel_string: str, prepend_path: list = []):
+    try:
+        if &#34;px&#34; != pixel_string[-2:]:
+            self.log.add(path=prepend_path, msg=f&#34;Invalid pixel string: {pixel_string}&#34;)
+        if int(pixel_string[:-2]) &lt; 0:
+            self.log.add(path=prepend_path, msg=f&#34;Invalid pixel string: {pixel_string}&#34;)
+    except:
+        self.log.add(path=prepend_path, msg=f&#34;Invalid pixel string: {pixel_string}&#34;)</code></pre>
 </details>
 </dd>
 <dt id="cave_utils.validator.CoreValidator.validate_rgb_string"><code class="name flex">
@@ -6063,11 +6126,6 @@ class Validator:
             **kwargs,
         )
 
-        # Validate Kwargs
-        KwargsValidator(
-            data=self.data.get(&#34;kwargs&#34;, {}), log=self.log, prepend_path=[&#34;kwargs&#34;], **kwargs
-        )
-
         # Validate Maps
         MapsValidator(
             data=self.data.get(&#34;maps&#34;, {}),
@@ -6077,15 +6135,6 @@ class Validator:
             node_prop_options=node_prop_options,
             arc_prop_options=arc_prop_options,
             geo_prop_options=geo_prop_options,
-            **kwargs,
-        )
-
-        # Validate Modals
-        ModalsValidator(
-            data=self.data.get(&#34;modals&#34;, {}),
-            log=self.log,
-            prepend_path=[&#34;modals&#34;],
-            categories_key_values=categories_key_values,
             **kwargs,
         )
 
@@ -6105,7 +6154,25 @@ class Validator:
             prepend_path=[&#34;settings&#34;],
             root_data=self.data,
             **kwargs,
-        )</code></pre>
+        )
+
+        # Optional Key Validations (only if key is present)
+
+        # Validate Modals
+        if &#34;modals&#34; in self.data:
+            ModalsValidator(
+                data=self.data.get(&#34;modals&#34;, {}),
+                log=self.log,
+                prepend_path=[&#34;modals&#34;],
+                categories_key_values=categories_key_values,
+                **kwargs,
+            )
+
+        # Validate Kwargs
+        if &#34;kwargs&#34; in self.data:
+            KwargsValidator(
+                data=self.data.get(&#34;kwargs&#34;, {}), log=self.log, prepend_path=[&#34;kwargs&#34;], **kwargs
+            )</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -6212,11 +6279,6 @@ class Validator:
         **kwargs,
     )
 
-    # Validate Kwargs
-    KwargsValidator(
-        data=self.data.get(&#34;kwargs&#34;, {}), log=self.log, prepend_path=[&#34;kwargs&#34;], **kwargs
-    )
-
     # Validate Maps
     MapsValidator(
         data=self.data.get(&#34;maps&#34;, {}),
@@ -6226,15 +6288,6 @@ class Validator:
         node_prop_options=node_prop_options,
         arc_prop_options=arc_prop_options,
         geo_prop_options=geo_prop_options,
-        **kwargs,
-    )
-
-    # Validate Modals
-    ModalsValidator(
-        data=self.data.get(&#34;modals&#34;, {}),
-        log=self.log,
-        prepend_path=[&#34;modals&#34;],
-        categories_key_values=categories_key_values,
         **kwargs,
     )
 
@@ -6254,7 +6307,25 @@ class Validator:
         prepend_path=[&#34;settings&#34;],
         root_data=self.data,
         **kwargs,
-    )</code></pre>
+    )
+
+    # Optional Key Validations (only if key is present)
+
+    # Validate Modals
+    if &#34;modals&#34; in self.data:
+        ModalsValidator(
+            data=self.data.get(&#34;modals&#34;, {}),
+            log=self.log,
+            prepend_path=[&#34;modals&#34;],
+            categories_key_values=categories_key_values,
+            **kwargs,
+        )
+
+    # Validate Kwargs
+    if &#34;kwargs&#34; in self.data:
+        KwargsValidator(
+            data=self.data.get(&#34;kwargs&#34;, {}), log=self.log, prepend_path=[&#34;kwargs&#34;], **kwargs
+        )</code></pre>
 </details>
 </dd>
 <dt id="cave_utils.validator.RootValidator.populate_data"><code class="name flex">
@@ -6624,10 +6695,17 @@ class Validator:
         self.field_types = {
             &#34;min&#34;: (float, int),
             &#34;max&#34;: (float, int),
+            &#34;nullSize&#34;: (str, type(None)),
         }
         self.required_fields = []
-        self.optional_fields = [&#34;min&#34;, &#34;max&#34;]
-        self.accepted_values = {}</code></pre>
+        self.optional_fields = [&#34;min&#34;, &#34;max&#34;, &#34;nullSize&#34;]
+        self.accepted_values = {}
+
+    def additional_validations(self, **kwargs):
+        if self.data.get(&#34;nullSize&#34;) is not None:
+            self.validate_pixel_string(
+                pixel_string=self.data.get(&#34;nullSize&#34;), prepend_path=[&#34;nullSize&#34;]
+            )</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -6635,6 +6713,22 @@ class Validator:
 </ul>
 <h3>Methods</h3>
 <dl>
+<dt id="cave_utils.validator.SizeValidator.additional_validations"><code class="name flex">
+<span>def <span class="ident">additional_validations</span></span>(<span>self, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def additional_validations(self, **kwargs):
+    if self.data.get(&#34;nullSize&#34;) is not None:
+        self.validate_pixel_string(
+            pixel_string=self.data.get(&#34;nullSize&#34;), prepend_path=[&#34;nullSize&#34;]
+        )</code></pre>
+</details>
+</dd>
 <dt id="cave_utils.validator.SizeValidator.populate_data"><code class="name flex">
 <span>def <span class="ident">populate_data</span></span>(<span>self, **kwargs)</span>
 </code></dt>
@@ -6648,9 +6742,10 @@ class Validator:
     self.field_types = {
         &#34;min&#34;: (float, int),
         &#34;max&#34;: (float, int),
+        &#34;nullSize&#34;: (str, type(None)),
     }
     self.required_fields = []
-    self.optional_fields = [&#34;min&#34;, &#34;max&#34;]
+    self.optional_fields = [&#34;min&#34;, &#34;max&#34;, &#34;nullSize&#34;]
     self.accepted_values = {}</code></pre>
 </details>
 </dd>
@@ -7267,6 +7362,7 @@ class Validator:
 <li><code><a title="cave_utils.validator.CoreValidator.validate" href="#cave_utils.validator.CoreValidator.validate">validate</a></code></li>
 <li><code><a title="cave_utils.validator.CoreValidator.validate_coord_path" href="#cave_utils.validator.CoreValidator.validate_coord_path">validate_coord_path</a></code></li>
 <li><code><a title="cave_utils.validator.CoreValidator.validate_list" href="#cave_utils.validator.CoreValidator.validate_list">validate_list</a></code></li>
+<li><code><a title="cave_utils.validator.CoreValidator.validate_pixel_string" href="#cave_utils.validator.CoreValidator.validate_pixel_string">validate_pixel_string</a></code></li>
 <li><code><a title="cave_utils.validator.CoreValidator.validate_rgb_string" href="#cave_utils.validator.CoreValidator.validate_rgb_string">validate_rgb_string</a></code></li>
 <li><code><a title="cave_utils.validator.CoreValidator.validate_subset" href="#cave_utils.validator.CoreValidator.validate_subset">validate_subset</a></code></li>
 <li><code><a title="cave_utils.validator.CoreValidator.validate_url" href="#cave_utils.validator.CoreValidator.validate_url">validate_url</a></code></li>
@@ -7464,6 +7560,7 @@ class Validator:
 <li>
 <h4><code><a title="cave_utils.validator.SizeValidator" href="#cave_utils.validator.SizeValidator">SizeValidator</a></code></h4>
 <ul class="">
+<li><code><a title="cave_utils.validator.SizeValidator.additional_validations" href="#cave_utils.validator.SizeValidator.additional_validations">additional_validations</a></code></li>
 <li><code><a title="cave_utils.validator.SizeValidator.populate_data" href="#cave_utils.validator.SizeValidator.populate_data">populate_data</a></code></li>
 </ul>
 </li>
