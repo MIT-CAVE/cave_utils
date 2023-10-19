@@ -1,70 +1,67 @@
-from cave_utils.api_spec import Validator
+from cave_utils.api import Validator
 
 example = {
     "kwargs": {
         "wipeExisting": True,
     },
     "settings": {
-        "allowModification": False,
-        "data": {
-            "demo": {
-                "map1": {
-                    "scrollSpeed": 0.1,
-                },
-                "dash1": {
-                    "displayTime": 30,
+        "demo": {
+            "map1": {
+                "scrollSpeed": 0.1,
+            },
+            "dash1": {
+                "displayTime": 30,
+            },
+        },
+        "sync": {
+            "panes": {
+                "name": "Open Pane",
+                "showToggle": True,
+                "value": False,
+                "data": {
+                    "ab1": ["panes", "paneState", "left"],
+                    "ab2": ["panes", "paneState", "right"],
                 },
             },
-            "sync": {
-                "panes": {
-                    "name": "Open Pane",
-                    "showToggle": True,
-                    "value": False,
-                    "data": {
-                        "ab1": ["panes", "paneState", "left"],
-                        "ab2": ["panes", "paneState", "right"],
-                    },
-                },
-                "pageSelection": {
-                    "name": "Page Selection",
-                    "showToggle": True,
-                    "value": False,
-                    "data": {"ps1": ["pages", "currentPage"]},
-                },
-                "mapLayers": {
-                    "name": "Map Layers",
-                    "showToggle": True,
-                    "value": False,
-                    "data": {"ml1": ["maps", "data", "map1", "legendGroups"]},
-                },
-                "modals": {
-                    "name": "Open Modal",
-                    "showToggle": True,
-                    "value": False,
-                    "data": {"pn1": ["panes", "paneState", "center"]},
-                },
-                "pages": {
-                    "name": "Dashboards",
-                    "showToggle": True,
-                    "value": False,
-                    "data": {"db1": ["pages", "data"]},
-                },
+            "pageSelection": {
+                "name": "Page Selection",
+                "showToggle": True,
+                "value": False,
+                "data": {"ps1": ["pages", "currentPage"]},
             },
-            "iconUrl": "https://react-icons.mitcave.com/4.10.1",
-            "order": {
-                "sync": ["panes", "modals", "pageSelection", "mapLayers", "pages"],
+            "mapLayers": {
+                "name": "Map Layers",
+                "showToggle": True,
+                "value": False,
+                "data": {"ml1": ["maps", "data", "map1", "legendGroups"]},
             },
-            "debug": True,
-            "time": {
-                "timeLength": 3,
-                "timeUnits": "Century",
+            "modals": {
+                "name": "Open Modal",
+                "showToggle": True,
+                "value": False,
+                "data": {"pn1": ["panes", "paneState", "center"]},
             },
-            "defaults": {
-                "precision": 4,
-                "trailingZeros": True,
-                "unitPlacement": "afterWithSpace",
-                "showToolbar": True,
+            "pages": {
+                "name": "Dashboards",
+                "showToggle": True,
+                "value": False,
+                "data": {"db1": ["pages", "data"]},
             },
+        },
+        "iconUrl": "https://react-icons.mitcave.com/4.10.1",
+        "order": {
+            "sync": ["panes", "modals", "pageSelection", "mapLayers", "pages"],
+        },
+        "debug": True,
+        "time": {
+            "timeLength": 3,
+            "timeUnits": "Century",
+        },
+        "defaults": {
+            "precision": 4,
+            "trailingZeros": True,
+            "unitPlacement": "afterWithSpace",
+            "showToolbar": True,
         },
     },
     "appBar": {
@@ -128,8 +125,7 @@ example = {
                 "variant": "modal",
             },
         },
-    },
-    
+    },  
     "panes": {
         "data": {
             "exampleModal": {
@@ -1728,5 +1724,5 @@ example = {
 x=Validator(
     session_data=example,
 )
-
+from pprint import pp as print
 print(x.log.log)

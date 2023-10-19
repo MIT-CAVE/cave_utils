@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
-<title>cave_utils.api_spec.pages API documentation</title>
+<title>cave_utils.api.pages API documentation</title>
 <meta name="description" content="" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
@@ -19,14 +19,14 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>cave_utils.api_spec.pages</code></h1>
+<h1 class="title">Module <code>cave_utils.api.pages</code></h1>
 </header>
 <section id="section-intro">
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from cave_utils.api_spec.utils import *
+<pre><code class="python">from cave_utils.api.utils import *
 
 
 class pages(ApiValidator):
@@ -130,9 +130,9 @@ class pages_data(ApiValidator):
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="cave_utils.api_spec.pages.pages"><code class="flex name class">
+<dt id="cave_utils.api.pages.pages"><code class="flex name class">
 <span>class <span class="ident">pages</span></span>
-<span>(</span><span>data, log: <a title="cave_utils.log.LogObject" href="../log.html#cave_utils.log.LogObject">LogObject</a>, prepend_path: list = [], **kwargs)</span>
+<span>(</span><span>**fields)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -166,12 +166,29 @@ class pages_data(ApiValidator):
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
-<li><a title="cave_utils.api_spec.utils.ApiValidator" href="utils.html#cave_utils.api_spec.utils.ApiValidator">ApiValidator</a></li>
+<li><a title="cave_utils.api.utils.ApiValidator" href="../utils.html#cave_utils.api.utils.ApiValidator">ApiValidator</a></li>
+</ul>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="cave_utils.api.utils.ApiValidator" href="../utils.html#cave_utils.api.utils.ApiValidator">ApiValidator</a></b></code>:
+<ul class="hlist">
+<li><code><a title="cave_utils.api.utils.ApiValidator.check_coord_path_valid" href="../utils.html#cave_utils.api.utils.ApiValidator.check_coord_path_valid">check_coord_path_valid</a></code></li>
+<li><code><a title="cave_utils.api.utils.ApiValidator.check_list_valid" href="../utils.html#cave_utils.api.utils.ApiValidator.check_list_valid">check_list_valid</a></code></li>
+<li><code><a title="cave_utils.api.utils.ApiValidator.check_pixel_string_valid" href="../utils.html#cave_utils.api.utils.ApiValidator.check_pixel_string_valid">check_pixel_string_valid</a></code></li>
+<li><code><a title="cave_utils.api.utils.ApiValidator.check_rgba_string_valid" href="../utils.html#cave_utils.api.utils.ApiValidator.check_rgba_string_valid">check_rgba_string_valid</a></code></li>
+<li><code><a title="cave_utils.api.utils.ApiValidator.check_subset_valid" href="../utils.html#cave_utils.api.utils.ApiValidator.check_subset_valid">check_subset_valid</a></code></li>
+<li><code><a title="cave_utils.api.utils.ApiValidator.check_url_valid" href="../utils.html#cave_utils.api.utils.ApiValidator.check_url_valid">check_url_valid</a></code></li>
+<li><code><a title="cave_utils.api.utils.ApiValidator.error" href="../utils.html#cave_utils.api.utils.ApiValidator.error">error</a></code></li>
+<li><code><a title="cave_utils.api.utils.ApiValidator.spec" href="../utils.html#cave_utils.api.utils.ApiValidator.spec">spec</a></code></li>
+<li><code><a title="cave_utils.api.utils.ApiValidator.validate" href="../utils.html#cave_utils.api.utils.ApiValidator.validate">validate</a></code></li>
+<li><code><a title="cave_utils.api.utils.ApiValidator.warn" href="../utils.html#cave_utils.api.utils.ApiValidator.warn">warn</a></code></li>
+</ul>
+</li>
 </ul>
 </dd>
-<dt id="cave_utils.api_spec.pages.pages_data"><code class="flex name class">
+<dt id="cave_utils.api.pages.pages_data"><code class="flex name class">
 <span>class <span class="ident">pages_data</span></span>
-<span>(</span><span>data, log: <a title="cave_utils.log.LogObject" href="../log.html#cave_utils.log.LogObject">LogObject</a>, prepend_path: list = [], **kwargs)</span>
+<span>(</span><span>**fields)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -247,7 +264,24 @@ class pages_data(ApiValidator):
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
-<li><a title="cave_utils.api_spec.utils.ApiValidator" href="utils.html#cave_utils.api_spec.utils.ApiValidator">ApiValidator</a></li>
+<li><a title="cave_utils.api.utils.ApiValidator" href="../utils.html#cave_utils.api.utils.ApiValidator">ApiValidator</a></li>
+</ul>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="cave_utils.api.utils.ApiValidator" href="../utils.html#cave_utils.api.utils.ApiValidator">ApiValidator</a></b></code>:
+<ul class="hlist">
+<li><code><a title="cave_utils.api.utils.ApiValidator.check_coord_path_valid" href="../utils.html#cave_utils.api.utils.ApiValidator.check_coord_path_valid">check_coord_path_valid</a></code></li>
+<li><code><a title="cave_utils.api.utils.ApiValidator.check_list_valid" href="../utils.html#cave_utils.api.utils.ApiValidator.check_list_valid">check_list_valid</a></code></li>
+<li><code><a title="cave_utils.api.utils.ApiValidator.check_pixel_string_valid" href="../utils.html#cave_utils.api.utils.ApiValidator.check_pixel_string_valid">check_pixel_string_valid</a></code></li>
+<li><code><a title="cave_utils.api.utils.ApiValidator.check_rgba_string_valid" href="../utils.html#cave_utils.api.utils.ApiValidator.check_rgba_string_valid">check_rgba_string_valid</a></code></li>
+<li><code><a title="cave_utils.api.utils.ApiValidator.check_subset_valid" href="../utils.html#cave_utils.api.utils.ApiValidator.check_subset_valid">check_subset_valid</a></code></li>
+<li><code><a title="cave_utils.api.utils.ApiValidator.check_url_valid" href="../utils.html#cave_utils.api.utils.ApiValidator.check_url_valid">check_url_valid</a></code></li>
+<li><code><a title="cave_utils.api.utils.ApiValidator.error" href="../utils.html#cave_utils.api.utils.ApiValidator.error">error</a></code></li>
+<li><code><a title="cave_utils.api.utils.ApiValidator.spec" href="../utils.html#cave_utils.api.utils.ApiValidator.spec">spec</a></code></li>
+<li><code><a title="cave_utils.api.utils.ApiValidator.validate" href="../utils.html#cave_utils.api.utils.ApiValidator.validate">validate</a></code></li>
+<li><code><a title="cave_utils.api.utils.ApiValidator.warn" href="../utils.html#cave_utils.api.utils.ApiValidator.warn">warn</a></code></li>
+</ul>
+</li>
 </ul>
 </dd>
 </dl>
@@ -261,16 +295,16 @@ class pages_data(ApiValidator):
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
-<li><code><a title="cave_utils.api_spec" href="index.html">cave_utils.api_spec</a></code></li>
+<li><code><a title="cave_utils.api" href="../index.html">cave_utils.api</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="cave_utils.api_spec.pages.pages" href="#cave_utils.api_spec.pages.pages">pages</a></code></h4>
+<h4><code><a title="cave_utils.api.pages.pages" href="#cave_utils.api.pages.pages">pages</a></code></h4>
 </li>
 <li>
-<h4><code><a title="cave_utils.api_spec.pages.pages_data" href="#cave_utils.api_spec.pages.pages_data">pages_data</a></code></h4>
+<h4><code><a title="cave_utils.api.pages.pages_data" href="#cave_utils.api.pages.pages_data">pages_data</a></code></h4>
 </li>
 </ul>
 </li>

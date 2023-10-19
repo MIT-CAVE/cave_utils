@@ -1,117 +1,137 @@
+"""
+Special utility functions to help in validating your data against the CAVE API. This is not a key that should be passed as part of your `session_data`.
+"""
 from pamda import pamda
 import re
 from cave_utils.log import LogHelper, LogObject
 
 class ApiValidator:
-    def __init__(self, data, log: LogObject, prepend_path: list = list(), **kwargs):
+    def __init__(self, **fields):
+        self.validate(**fields)
+
+    def validate(self, data, log: LogObject, prepend_path: list = list(), **kwargs):
+        """
+        Run the api validation process for the passed data.
+        """
         self.data = data
         self.ignore_keys = kwargs.get("ignore_keys", set())
         self.log = LogHelper(log=log, prepend_path=prepend_path)
-        self.__populate_data__(**kwargs)
-        self.validate(**kwargs)
-
-    def validate(self, **kwargs):
-        for field in self.required_fields:
-            if field not in self.data:
-                self.log.add(path=[field], msg=f"Missing required field: ({field})")
-        for field, value in self.data.items():
-            if field in self.ignore_keys:
-                continue
-            if field in ['timeValues', 'order']:
-                continue
-                # TODO: Implement validation for these fields
-            accepted_values = self.accepted_values.get(field, None)
-            if (
-                isinstance(
-                    value,
-                    (
-                        list,
-                        dict,
-                    ),
+        try:
+            spec_output = self.spec(**self.data)
+            extra_kwargs = spec_output.get("kwargs", {})
+            # TODO: Find way to custom check timeValues and order
+            extra_kwargs.pop("order", None)
+            extra_kwargs.pop("timeValues", None)
+            if extra_kwargs != {}:
+                self.warn(
+                    msg=f"Unknown Fields: {str(list(extra_kwargs.keys()))}",
                 )
-                and accepted_values is not None
-            ):
-                check_value = value
-                if isinstance(value, dict):
-                    check_value = list(value.keys())
+        except Exception as e:
+            self.error(
+                msg=f"Error validating spec: {e}",
+            )
+            # Must return since an invalid spec will bug out other validation checks
+            return
+        for field, accepted_values in spec_output.get("accepted_values", {}).items():
+            if field not in self.data:
+                continue
+            check_value = self.data.get(field)
+            if isinstance(check_value, dict):
+                check_value = list(check_value.keys())
+            if isinstance(check_value, list):
                 value_diff = pamda.difference(check_value, accepted_values)
                 if len(value_diff) > 0:
-                    self.log.add(
+                    self.error(
                         path=[field],
-                        msg=f"Invalid values ('{value_diff}'): Acceptable values are: {accepted_values}",
+                        msg=f"Invalid values ('{value_diff}'): Acceptable values are: {accepted_values if accepted_values>5 else accepted_values[:5] + ['...']}",
                     )
                     continue
             else:
-                if accepted_values is not None and value not in accepted_values:
-                    self.log.add(
+                if check_value not in accepted_values:
+                    self.error(
                         path=[field],
-                        msg=f"Invalid value ('{value}'): Acceptable values are: {accepted_values}",
+                        msg=f"Invalid value ('{check_value}'): Acceptable values are: {accepted_values}",
                     )
                     continue
-            if field not in self.required_fields + self.optional_fields:
-                self.log.add(
-                    path=[field],
-                    msg=f"Unknown field ('{field}'): Acceptable fields are: {self.required_fields + self.optional_fields}",
-                    level="warning",
-                )
-                continue
-            acceptable_types = self.field_types.get(field, type(None))
-            if not isinstance(value, acceptable_types):
-                self.log.add(
-                    path=[field],
-                    msg=f"Invalid type ('{type(value)}'): Acceptable types are: {acceptable_types}",
-                )
 
         # Run additional Validations
         # self.__additional_validations__(**kwargs)
         try:
             self.__additional_validations__(**kwargs)
         except Exception as e:
-            self.log.add(
+            self.error(
                 path=[],
-                msg=f"Additional validations failed (likely due to another error with your api data)",
+                msg=f"Additional validations failed (likely due to another error with your api data). Error: {e}",
             )
+
+    def spec(self, **kwargs):
+        """
+        The default spec method.
+         
+        This provides a baseline spec for some utility validators.
+        
+        This should be overridden by any non utility child class.
+        """
+        return {
+            "kwargs": {},
+            "accepted_values": {},
+        }
 
     def __additional_validations__(self, **kwargs):
         pass
 
-    def error(self, error: str, prepend_path: list = []):
-        self.log.add(path=prepend_path, msg=error)
+    def error(self, msg: str, path: list = []):
+        """
+        Raise an error for the log the log
+        """
+        self.log.add(path=path, msg=msg)
 
-    def warn(self, error: str, prepend_path: list = []):
-        self.log.add(path=prepend_path, msg=error, level="warning")
+    def warn(self, msg: str, path: list = []):
+        """
+        Raise a warning for the log the log
+        """
+        self.log.add(path=path, msg=msg, level="warning")
 
     # Add Special Validator Checks
     def check_rgba_string_valid(self, rgba_string: str, prepend_path:list=[]):
+        """
+        Validate an rgba string and if an issue is present, log an error
+        """
         try:
             if "rgba(" != rgba_string[:5]:
-                self.log.add(path=prepend_path, msg="Invalid RGBA string")
+                self.error(path=prepend_path, msg="Invalid RGBA string")
                 return
             if ")" != rgba_string[-1]:
-                self.log.add(path=prepend_path, msg="Invalid RGBA string")
+                self.error(path=prepend_path, msg="Invalid RGBA string")
                 return
             rgba_list = rgba_string[5:-1].replace(" ", "").split(",")
             for rgba in rgba_list:
                 if not rgba.isdigit():
-                    self.log.add(path=prepend_path, msg="Invalid RGBA string")
+                    self.error(path=prepend_path, msg="Invalid RGBA string")
                     return
                 if int(rgba) < 0 or int(rgba) > 255:
-                    self.log.add(path=prepend_path, msg="Invalid RGBA string")
+                    self.error(path=prepend_path, msg="Invalid RGBA string")
                     return
         except:
-            self.log.add(path=prepend_path, msg="Invalid RGBA string")
+            self.error(path=prepend_path, msg="Invalid RGBA string")
 
     def check_pixel_string_valid(self, pixel_string: str, prepend_path:list=[]):
+        """
+        Validate a pixel string and if an issue is present, log an error
+        """
         try:
             if "px" != pixel_string[-2:]:
-                self.log.add(path=prepend_path, msg="Invalid pixel string")
+                self.error(path=prepend_path, msg="Invalid pixel string")
                 return
             if int(pixel_string[:-2]) <= 0:
-                self.log.add(path=prepend_path, msg="Invalid pixel string")
+                self.error(path=prepend_path, msg="Invalid pixel string")
         except:
-            self.log.add(path=prepend_path, msg="Invalid pixel string")
+            self.error(path=prepend_path, msg="Invalid pixel string")
 
     def check_url_valid(self, url: str, prepend_path:list=[]):
+        """
+        Validate a url and if an issue is present, log an error
+        """
         # Use Django regex for URL validation
         # See https://stackoverflow.com/a/7160778/12014156
         regex = re.compile(
@@ -124,46 +144,74 @@ class ApiValidator:
             re.IGNORECASE,
         )
         if re.match(regex, url) is None:
-            self.log.add(path=prepend_path, msg="Invalid url")
+            self.error(path=prepend_path, msg="Invalid url")
 
     def check_subset_valid(self, subset: list, valid_values: list, prepend_path:list=[]):
+        """
+        Validate a subset of values is in a set of valid values and if an issue is present, log an error
+        """
         invalid_values = pamda.difference(subset, valid_values)
         if len(invalid_values) > 0:
-            self.log.add(path=prepend_path, msg="Invalid values selected: " + str(invalid_values))
+            self.error(path=prepend_path, msg="Invalid values selected: " + str(invalid_values))
 
     def check_coord_path_valid(self, coord_path: list, prepend_path:list=[]):
+        """
+        Validate a coordinate path and if an issue is present, log an error
+        """
         try:
             if len(coord_path) < 2:
-                self.log.add(path=prepend_path, msg="Invalid coordinate path")
+                self.error(path=prepend_path, msg="Invalid coordinate path")
                 return
             for coord in coord_path:
                 # Ensure coord is less than 3 items (longitude, latitude, altitude)
                 if len(coord) > 3:
-                    self.log.add(path=prepend_path, msg="Invalid coordinate path")
+                    self.error(path=prepend_path, msg="Invalid coordinate path")
                     return
                 # Check Longitude
                 if coord[0] < -180 or coord[0] > 180:
-                    self.log.add(path=prepend_path, msg="Invalid coordinate path")
+                    self.error(path=prepend_path, msg="Invalid coordinate path")
                     return
                 # Check Latitude
                 if coord[1] < -90 or coord[1] > 90:
-                    self.log.add(path=prepend_path, msg="Invalid coordinate path")
+                    self.error(path=prepend_path, msg="Invalid coordinate path")
                     return
                 # Check Altitude (if present)
                 if len(coord) == 3:
                     if coord[2] < 0:
-                        self.log.add(path=prepend_path, msg="Invalid coordinate path")
+                        self.error(path=prepend_path, msg="Invalid coordinate path")
                         return
         except:
-            self.log.add(path=prepend_path, msg="Invalid coordinate path")
+            self.error(path=prepend_path, msg="Invalid coordinate path")
 
     def check_list_valid(self, data: list, types: tuple, prepend_path:list=[]):
+        """
+        Validate a list only contains certain object types and if an issue is present, log an error
+        """
         if not isinstance(types, tuple):
             types = (types,)
         for idx, item in enumerate(data):
             if not isinstance(item, types):
-                self.log.add(path=prepend_path, msg=f"Invalid list item type at index: {idx} with type: {type(item)}")
+                self.error(path=prepend_path, msg=f"Invalid list item type at index: {idx} with type: {type(item)}")
                 return
+
+
+class CustomKeyValidator(ApiValidator):
+    @staticmethod
+    def spec(**kwargs):
+        for k,v in kwargs.items():
+            if not isinstance(v, dict):
+                raise Exception(f"Error for field ({k}): Type {type(dict())} is required but instead received {type(v)}")
+        return {
+            "kwargs": {},
+            "accepted_values": {},
+        }
+
+    def __additional_validations__(self, **kwargs):
+        assert "validator" in kwargs, "Must pass validator to CustomKeyValidator"
+        validator = kwargs.get("validator")
+        kwargs_new = {k:v for k,v in kwargs.items() if k != "validator"}
+        for field, value in self.data.items():
+            validator(data=value, log=self.log, prepend_path=[field], **kwargs_new)
 
 
 class ColorByOptionValidator(ApiValidator):
@@ -208,21 +256,6 @@ class SizeByOptionValidator(ApiValidator):
                     pixel_string=field_value, 
                     prepend_path=[field]
                 )
-        
-
-class CustomKeyValidator(ApiValidator):
-    def __populate_data__(self, **kwargs):
-        self.field_types = {i: dict for i in self.data.keys()}
-        self.required_fields = list(self.data.keys())
-        self.optional_fields = []
-        self.accepted_values = {}
-
-    def __additional_validations__(self, **kwargs):
-        assert "validator" in kwargs, "Must pass validator to CustomKeyValidator"
-        validator = kwargs.get("validator")
-        kwargs_new = {k:v for k,v in kwargs.items() if k != "validator"}
-        for field, value in self.data.items():
-            validator(data=value, log=self.log, prepend_path=[field], **kwargs_new)
 
 
 class PropValidator(ApiValidator):

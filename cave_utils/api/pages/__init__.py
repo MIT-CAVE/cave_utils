@@ -1,4 +1,4 @@
-from cave_utils.api_spec.utils import *
+from cave_utils.api.utils import *
 
 
 class pages(ApiValidator):
