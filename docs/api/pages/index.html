@@ -44,7 +44,7 @@ class pages(ApiValidator):
 
         self.optional_fields = [&#34;allowModification&#34;, &#34;sendToApi&#34;, &#34;sendToClient&#34;]
 
-    def __additional_validations__(self, **kwargs):
+    def __extend_spec__(self, **kwargs):
         CustomKeyValidator(
             data=self.data.get(&#34;data&#34;, {}),
             log=self.log,
@@ -83,7 +83,7 @@ class pages_data(ApiValidator):
             self.required_fields += [&#34;props&#34;]
             self.optional_fields += [&#34;data&#34;, &#34;teamSyncCommand&#34;, &#34;teamSyncCommandKeys&#34;]
 
-    def __additional_validations__(self, **kwargs):
+    def __extend_spec__(self, **kwargs):
         variant = self.data.get(&#34;variant&#34;)
         props_data = self.data.get(&#34;props&#34;, {})
         if variant == &#34;options&#34;:
@@ -94,7 +94,7 @@ class pages_data(ApiValidator):
                 validator=PropValidator,
                 **kwargs,
             )
-            LayoutValidator(
+            PropLayoutValidator(
                 data=self.data.get(&#34;layout&#34;, {}),
                 log=self.log,
                 prepend_path=[&#34;layout&#34;],
@@ -155,7 +155,7 @@ class pages_data(ApiValidator):
 
         self.optional_fields = [&#34;allowModification&#34;, &#34;sendToApi&#34;, &#34;sendToClient&#34;]
 
-    def __additional_validations__(self, **kwargs):
+    def __extend_spec__(self, **kwargs):
         CustomKeyValidator(
             data=self.data.get(&#34;data&#34;, {}),
             log=self.log,
@@ -172,16 +172,7 @@ class pages_data(ApiValidator):
 <ul class="hlist">
 <li><code><b><a title="cave_utils.api.utils.ApiValidator" href="../utils.html#cave_utils.api.utils.ApiValidator">ApiValidator</a></b></code>:
 <ul class="hlist">
-<li><code><a title="cave_utils.api.utils.ApiValidator.check_coord_path_valid" href="../utils.html#cave_utils.api.utils.ApiValidator.check_coord_path_valid">check_coord_path_valid</a></code></li>
-<li><code><a title="cave_utils.api.utils.ApiValidator.check_list_valid" href="../utils.html#cave_utils.api.utils.ApiValidator.check_list_valid">check_list_valid</a></code></li>
-<li><code><a title="cave_utils.api.utils.ApiValidator.check_pixel_string_valid" href="../utils.html#cave_utils.api.utils.ApiValidator.check_pixel_string_valid">check_pixel_string_valid</a></code></li>
-<li><code><a title="cave_utils.api.utils.ApiValidator.check_rgba_string_valid" href="../utils.html#cave_utils.api.utils.ApiValidator.check_rgba_string_valid">check_rgba_string_valid</a></code></li>
-<li><code><a title="cave_utils.api.utils.ApiValidator.check_subset_valid" href="../utils.html#cave_utils.api.utils.ApiValidator.check_subset_valid">check_subset_valid</a></code></li>
-<li><code><a title="cave_utils.api.utils.ApiValidator.check_url_valid" href="../utils.html#cave_utils.api.utils.ApiValidator.check_url_valid">check_url_valid</a></code></li>
-<li><code><a title="cave_utils.api.utils.ApiValidator.error" href="../utils.html#cave_utils.api.utils.ApiValidator.error">error</a></code></li>
 <li><code><a title="cave_utils.api.utils.ApiValidator.spec" href="../utils.html#cave_utils.api.utils.ApiValidator.spec">spec</a></code></li>
-<li><code><a title="cave_utils.api.utils.ApiValidator.validate" href="../utils.html#cave_utils.api.utils.ApiValidator.validate">validate</a></code></li>
-<li><code><a title="cave_utils.api.utils.ApiValidator.warn" href="../utils.html#cave_utils.api.utils.ApiValidator.warn">warn</a></code></li>
 </ul>
 </li>
 </ul>
@@ -225,7 +216,7 @@ class pages_data(ApiValidator):
             self.required_fields += [&#34;props&#34;]
             self.optional_fields += [&#34;data&#34;, &#34;teamSyncCommand&#34;, &#34;teamSyncCommandKeys&#34;]
 
-    def __additional_validations__(self, **kwargs):
+    def __extend_spec__(self, **kwargs):
         variant = self.data.get(&#34;variant&#34;)
         props_data = self.data.get(&#34;props&#34;, {})
         if variant == &#34;options&#34;:
@@ -236,7 +227,7 @@ class pages_data(ApiValidator):
                 validator=PropValidator,
                 **kwargs,
             )
-            LayoutValidator(
+            PropLayoutValidator(
                 data=self.data.get(&#34;layout&#34;, {}),
                 log=self.log,
                 prepend_path=[&#34;layout&#34;],
@@ -270,16 +261,7 @@ class pages_data(ApiValidator):
 <ul class="hlist">
 <li><code><b><a title="cave_utils.api.utils.ApiValidator" href="../utils.html#cave_utils.api.utils.ApiValidator">ApiValidator</a></b></code>:
 <ul class="hlist">
-<li><code><a title="cave_utils.api.utils.ApiValidator.check_coord_path_valid" href="../utils.html#cave_utils.api.utils.ApiValidator.check_coord_path_valid">check_coord_path_valid</a></code></li>
-<li><code><a title="cave_utils.api.utils.ApiValidator.check_list_valid" href="../utils.html#cave_utils.api.utils.ApiValidator.check_list_valid">check_list_valid</a></code></li>
-<li><code><a title="cave_utils.api.utils.ApiValidator.check_pixel_string_valid" href="../utils.html#cave_utils.api.utils.ApiValidator.check_pixel_string_valid">check_pixel_string_valid</a></code></li>
-<li><code><a title="cave_utils.api.utils.ApiValidator.check_rgba_string_valid" href="../utils.html#cave_utils.api.utils.ApiValidator.check_rgba_string_valid">check_rgba_string_valid</a></code></li>
-<li><code><a title="cave_utils.api.utils.ApiValidator.check_subset_valid" href="../utils.html#cave_utils.api.utils.ApiValidator.check_subset_valid">check_subset_valid</a></code></li>
-<li><code><a title="cave_utils.api.utils.ApiValidator.check_url_valid" href="../utils.html#cave_utils.api.utils.ApiValidator.check_url_valid">check_url_valid</a></code></li>
-<li><code><a title="cave_utils.api.utils.ApiValidator.error" href="../utils.html#cave_utils.api.utils.ApiValidator.error">error</a></code></li>
 <li><code><a title="cave_utils.api.utils.ApiValidator.spec" href="../utils.html#cave_utils.api.utils.ApiValidator.spec">spec</a></code></li>
-<li><code><a title="cave_utils.api.utils.ApiValidator.validate" href="../utils.html#cave_utils.api.utils.ApiValidator.validate">validate</a></code></li>
-<li><code><a title="cave_utils.api.utils.ApiValidator.warn" href="../utils.html#cave_utils.api.utils.ApiValidator.warn">warn</a></code></li>
 </ul>
 </li>
 </ul>

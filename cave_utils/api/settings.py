@@ -6,13 +6,15 @@ import type_enforced
 
 # TODO: Add actual docs with real default values.
 
+
 @type_enforced.Enforcer
 class settings_time(ApiValidator):
     """
     ## Api Path: settings.time
     """
+
     @staticmethod
-    def spec(timeLength:int, timeUnits:str, **kwargs):
+    def spec(timeLength: int, timeUnits: str, **kwargs):
         """
         Required Arguments:
 
@@ -24,9 +26,10 @@ class settings_time(ApiValidator):
             - What: The units of time to display.
         """
         return {
-            'kwargs': kwargs,
-            'accepted_values': {},
+            "kwargs": kwargs,
+            "accepted_values": {},
         }
+
 
 @type_enforced.Enforcer
 class settings_sync(ApiValidator):
@@ -35,7 +38,7 @@ class settings_sync(ApiValidator):
     """
 
     @staticmethod
-    def spec(name:str, showToggle:bool, value:bool, data:dict, **kwargs):
+    def spec(name: str, showToggle: bool, value: bool, data: dict, **kwargs):
         """
         Required Arguments:
 
@@ -54,15 +57,16 @@ class settings_sync(ApiValidator):
 
         """
         return {
-            'kwargs': kwargs,
-            'accepted_values': {},
+            "kwargs": kwargs,
+            "accepted_values": {},
         }
 
-    # def __additional_validations__(self, **kwargs):
+    # def __extend_spec__(self, **kwargs):
     #     root_data = kwargs.get("root_data", {})
     #     for key, path in self.data.get("data", {}).items():
     #         if not pamda.hasPath(path, root_data):
-    #             self.warn(f"Path {path} does not exist.", prepend_path=["data", key])
+    #             self.__warn__(f"Path {path} does not exist.", prepend_path=["data", key])
+
 
 @type_enforced.Enforcer
 class settings_demo(ApiValidator):
@@ -71,7 +75,7 @@ class settings_demo(ApiValidator):
     """
 
     @staticmethod
-    def spec(scrollSpeed:[int,float]=1, displayTime:int=5, **kwargs):
+    def spec(scrollSpeed: [int, float] = 1, displayTime: int = 5, **kwargs):
         """
         Optional Arguments:
 
@@ -85,9 +89,10 @@ class settings_demo(ApiValidator):
             - Default: `5`
         """
         return {
-            'kwargs': kwargs,
-            'accepted_values': {},
+            "kwargs": kwargs,
+            "accepted_values": {},
         }
+
 
 @type_enforced.Enforcer
 class settings_defaults(ApiValidator):
@@ -96,7 +101,13 @@ class settings_defaults(ApiValidator):
     """
 
     @staticmethod
-    def spec(precision:int=2, trailingZeros:bool=False, unitPlacement:str="right", showToolbar:bool=True, **kwargs):
+    def spec(
+        precision: int = 2,
+        trailingZeros: bool = False,
+        unitPlacement: str = "right",
+        showToolbar: bool = True,
+        **kwargs,
+    ):
         """
         Required Arguments:
 
@@ -121,11 +132,12 @@ class settings_defaults(ApiValidator):
             - Default: `True`
         """
         return {
-            'kwargs': kwargs,
-            'accepted_values': {
+            "kwargs": kwargs,
+            "accepted_values": {
                 # TODO: "unitPlacement": [],
             },
         }
+
 
 @type_enforced.Enforcer
 class settings(ApiValidator):
@@ -134,7 +146,15 @@ class settings(ApiValidator):
     """
 
     @staticmethod
-    def spec(iconUrl:str, demo:dict=dict(), sync:dict=dict(), time:dict=dict(), defaults:dict=dict(), debug:bool=False, **kwargs):
+    def spec(
+        iconUrl: str,
+        demo: dict = dict(),
+        sync: dict = dict(),
+        time: dict = dict(),
+        defaults: dict = dict(),
+        debug: bool = False,
+        **kwargs,
+    ):
         """
         Required Arguments:
 
@@ -171,12 +191,12 @@ class settings(ApiValidator):
             - Default: `False`
         """
         return {
-            'kwargs': kwargs,
-            'accepted_values': {},
+            "kwargs": kwargs,
+            "accepted_values": {},
         }
 
-    def __additional_validations__(self, **kwargs):
-        self.check_url_valid(
+    def __extend_spec__(self, **kwargs):
+        self.__check_url_valid__(
             url=self.data.get("iconUrl"),
         )
         CustomKeyValidator(

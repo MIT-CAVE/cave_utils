@@ -4,13 +4,24 @@ Build out an app bar with buttons to launch pages, launch panes and trigger api 
 from cave_utils.api.utils import *
 import type_enforced
 
+
 @type_enforced.Enforcer
 class appBar_data_star(ApiValidator):
     """
     ## Api Path: appBar.data.*
     """
+
     @staticmethod
-    def spec(icon:str, type:str, bar:str, variant:[str,None]=None, color:[str,None]=None, apiCommand:[str,None]=None, apiCommandKeys:[list,None]=None, **kwargs):
+    def spec(
+        icon: str,
+        type: str,
+        bar: str,
+        variant: [str, None] = None,
+        color: [str, None] = None,
+        apiCommand: [str, None] = None,
+        apiCommandKeys: [list, None] = None,
+        **kwargs,
+    ):
         """
         Required Arguments:
 
@@ -34,7 +45,7 @@ class appBar_data_star(ApiValidator):
                 - `"lowerLeft"`
                 - `"upperRight"`
                 - `"lowerRight"`
-        
+
         Optional Arguments:
 
         - `variant`:
@@ -67,29 +78,28 @@ class appBar_data_star(ApiValidator):
 
         """
         return {
-            'kwargs': kwargs,
-            'accepted_values': {
+            "kwargs": kwargs,
+            "accepted_values": {
                 "type": ["session", "settings", "button", "pane", "page"],
                 "variant": ["modal", "wall"] if type == "pane" else [],
                 "bar": ["upperLeft", "lowerLeft", "upperRight", "lowerRight"],
-            }
+            },
         }
 
-    def __additional_validations__(self, **kwargs):
+    def __extend_spec__(self, **kwargs):
         color = self.data.get("color")
         if color:
-            self.check_rgba_string_valid(
-                rgba_string=color,
-                prepend_path=["color"]
-            )
+            self.__check_rgba_string_valid__(rgba_string=color, prepend_path=["color"])
+
 
 @type_enforced.Enforcer
 class appBar(ApiValidator):
     """
     ## Api Path: appBar
     """
+
     @staticmethod
-    def spec(data:dict=dict(), **kwargs):
+    def spec(data: dict = dict(), **kwargs):
         """
         Optional Arguments:
 
@@ -98,12 +108,9 @@ class appBar(ApiValidator):
             - What: The data to pass to `appBar.data.*`.
             - Default: `{}`
         """
-        return {
-            'kwargs': kwargs,
-            'accepted_values': {}
-        }
+        return {"kwargs": kwargs, "accepted_values": {}}
 
-    def __additional_validations__(self, **kwargs):
+    def __extend_spec__(self, **kwargs):
         data = self.data.get("data", {})
         CustomKeyValidator(
             data=data, log=self.log, prepend_path=["data"], validator=appBar_data_star, **kwargs

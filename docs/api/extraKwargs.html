@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
-<title>cave_utils.api.kwargs API documentation</title>
+<title>cave_utils.api.extraKwargs API documentation</title>
 <meta name="description" content="(Optional) Pass special arguments to the server that are not part of the API spec." />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
@@ -19,7 +19,7 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>cave_utils.api.kwargs</code></h1>
+<h1 class="title">Module <code>cave_utils.api.extraKwargs</code></h1>
 </header>
 <section id="section-intro">
 <p>(Optional) Pass special arguments to the server that are not part of the API spec.</p>
@@ -34,9 +34,9 @@ from cave_utils.api.utils import *
 import type_enforced
 
 @type_enforced.Enforcer
-class kwargs(ApiValidator):
+class extraKwargs(ApiValidator):
     &#34;&#34;&#34;
-    ## Api Path: kwargs
+    ## Api Path: extraKwargs
     &#34;&#34;&#34;
 
     @staticmethod
@@ -66,20 +66,20 @@ class kwargs(ApiValidator):
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="cave_utils.api.kwargs.kwargs"><code class="flex name class">
-<span>class <span class="ident">kwargs</span></span>
+<dt id="cave_utils.api.extraKwargs.extraKwargs"><code class="flex name class">
+<span>class <span class="ident">extraKwargs</span></span>
 <span>(</span><span>**fields)</span>
 </code></dt>
 <dd>
-<div class="desc"><h2 id="api-path-kwargs">Api Path: kwargs</h2></div>
+<div class="desc"><h2 id="api-path-extrakwargs">Api Path: extraKwargs</h2></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@type_enforced.Enforcer
-class kwargs(ApiValidator):
+class extraKwargs(ApiValidator):
     &#34;&#34;&#34;
-    ## Api Path: kwargs
+    ## Api Path: extraKwargs
     &#34;&#34;&#34;
 
     @staticmethod
@@ -105,7 +105,7 @@ class kwargs(ApiValidator):
 </ul>
 <h3>Static methods</h3>
 <dl>
-<dt id="cave_utils.api.kwargs.kwargs.spec"><code class="name flex">
+<dt id="cave_utils.api.extraKwargs.extraKwargs.spec"><code class="name flex">
 <span>def <span class="ident">spec</span></span>(<span>wipeExisting: bool = False, **kwargs)</span>
 </code></dt>
 <dd>
@@ -147,22 +147,6 @@ def spec(wipeExisting:bool=False, **kwargs):
 </details>
 </dd>
 </dl>
-<h3>Inherited members</h3>
-<ul class="hlist">
-<li><code><b><a title="cave_utils.api.utils.ApiValidator" href="utils.html#cave_utils.api.utils.ApiValidator">ApiValidator</a></b></code>:
-<ul class="hlist">
-<li><code><a title="cave_utils.api.utils.ApiValidator.check_coord_path_valid" href="utils.html#cave_utils.api.utils.ApiValidator.check_coord_path_valid">check_coord_path_valid</a></code></li>
-<li><code><a title="cave_utils.api.utils.ApiValidator.check_list_valid" href="utils.html#cave_utils.api.utils.ApiValidator.check_list_valid">check_list_valid</a></code></li>
-<li><code><a title="cave_utils.api.utils.ApiValidator.check_pixel_string_valid" href="utils.html#cave_utils.api.utils.ApiValidator.check_pixel_string_valid">check_pixel_string_valid</a></code></li>
-<li><code><a title="cave_utils.api.utils.ApiValidator.check_rgba_string_valid" href="utils.html#cave_utils.api.utils.ApiValidator.check_rgba_string_valid">check_rgba_string_valid</a></code></li>
-<li><code><a title="cave_utils.api.utils.ApiValidator.check_subset_valid" href="utils.html#cave_utils.api.utils.ApiValidator.check_subset_valid">check_subset_valid</a></code></li>
-<li><code><a title="cave_utils.api.utils.ApiValidator.check_url_valid" href="utils.html#cave_utils.api.utils.ApiValidator.check_url_valid">check_url_valid</a></code></li>
-<li><code><a title="cave_utils.api.utils.ApiValidator.error" href="utils.html#cave_utils.api.utils.ApiValidator.error">error</a></code></li>
-<li><code><a title="cave_utils.api.utils.ApiValidator.validate" href="utils.html#cave_utils.api.utils.ApiValidator.validate">validate</a></code></li>
-<li><code><a title="cave_utils.api.utils.ApiValidator.warn" href="utils.html#cave_utils.api.utils.ApiValidator.warn">warn</a></code></li>
-</ul>
-</li>
-</ul>
 </dd>
 </dl>
 </section>
@@ -181,9 +165,9 @@ def spec(wipeExisting:bool=False, **kwargs):
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="cave_utils.api.kwargs.kwargs" href="#cave_utils.api.kwargs.kwargs">kwargs</a></code></h4>
+<h4><code><a title="cave_utils.api.extraKwargs.extraKwargs" href="#cave_utils.api.extraKwargs.extraKwargs">extraKwargs</a></code></h4>
 <ul class="">
-<li><code><a title="cave_utils.api.kwargs.kwargs.spec" href="#cave_utils.api.kwargs.kwargs.spec">spec</a></code></li>
+<li><code><a title="cave_utils.api.extraKwargs.extraKwargs.spec" href="#cave_utils.api.extraKwargs.extraKwargs.spec">spec</a></code></li>
 </ul>
 </li>
 </ul>

@@ -28,7 +28,7 @@
 <p>This code serves as a generic API spec. It is used to automate the API documentation process.</p>
 <p>Submodules are used to define the api spec for each level of the api. You can use the links on the left to navigate into the API and get detailed documentation for each API item at each level.</p>
 <p>Classes represent the actual API items and should have relevant API documentation for each item at the class level.</p>
-<p>For example, you are currently in the root of the API spec. In the API root, you can find the following submodules like <code><a title="cave_utils.api.kwargs" href="kwargs.html">cave_utils.api.kwargs</a></code> and <code><a title="cave_utils.api.settings" href="settings.html">cave_utils.api.settings</a></code>. See the left hand side for all available submodules.</p>
+<p>For example, you are currently in the root of the API spec. In the API root, you can find the following submodules like <code>kwargs</code> and <code><a title="cave_utils.api.settings" href="settings.html">cave_utils.api.settings</a></code>. See the left hand side for all available submodules.</p>
 <h2 id="validation-use">Validation Use</h2>
 <p>This code can be used directly for validation purposes:</p>
 <pre><code>from cave_utils.api_spec import Validator
@@ -58,9 +58,10 @@ It also serves to document the API and provide a reference for the data structur
 .. include:: ./documentation.md
 &#34;&#34;&#34;
 from cave_utils.api.utils import *
-from cave_utils.api.kwargs import kwargs as KwargsValidator
+from cave_utils.api.extraKwargs import extraKwargs
 from cave_utils.api.settings import settings
 from cave_utils.api.appBar import appBar
+from cave_utils.api.panes import panes
 
 class Root(ApiValidator):
     &#34;&#34;&#34;
@@ -78,8 +79,8 @@ class Root(ApiValidator):
         mapFeatures: dict = dict(),
         groupedOutputs: dict = dict(),
         globalOutputs: dict = dict(),
-        kwargs: dict = dict(),
-        **otherKwargs
+        extraKwargs: dict = dict(),
+        **kwargs
     ):
         &#34;&#34;&#34;
         Required Arguments:
@@ -121,35 +122,22 @@ class Root(ApiValidator):
             - Type: dict
             - What: Configure data that is general to the entire application and can be compared across sessions.
             - Default: `{}`
-        - `kwargs`:
+        - `extraKwargs`:
             - Type: dict
             - What: Special arguments to be passed to the server.
             - Default: `{}`
 
         &#34;&#34;&#34;
-        return otherKwargs
-
-    def __populate_data__(self, **otherKwargs):
-        self.field_types = {
-            &#34;settings&#34;: dict,
-            &#34;appBar&#34;: dict,
-            &#34;panes&#34;: dict,
-            &#34;pages&#34;: dict,
-            &#34;maps&#34;: dict,
-            &#34;mapFeatures&#34;: dict,
-            &#34;groupedOutputs&#34;: dict,
-            &#34;globalOutputs&#34;: dict,
-            &#34;kwargs&#34;: dict,
+        return {
+            &#39;kwargs&#39;: kwargs,
+            &#39;accepted_values&#39;: {},
         }
-        self.required_fields = [&#39;settings&#39;, &#39;appBar&#39;]
-        self.optional_fields = [&#39;panes&#39;, &#39;pages&#39;, &#39;maps&#39;, &#39;mapFeatures&#39;, &#39;groupedOutputs&#39;, &#39;globalOutputs&#39;, &#39;kwargs&#39;]
-        self.accepted_values = {}
 
-    def __additional_validations__(self, **kwargs):
+    def __extend_spec__(self, **kwargs):
         # Validate Kwargs
-        if &#34;kwargs&#34; in self.data:
-            KwargsValidator(
-                data=self.data.get(&#34;kwargs&#34;, {}), log=self.log, prepend_path=[&#34;kwargs&#34;], **kwargs
+        if &#34;extraKwargs&#34; in self.data:
+            extraKwargs(
+                data=self.data.get(&#34;extraKwargs&#34;, {}), log=self.log, prepend_path=[&#34;kwargs&#34;], **kwargs
             )
         # Validate Settings
         settings(
@@ -164,6 +152,13 @@ class Root(ApiValidator):
             data=self.data.get(&#34;appBar&#34;, {}), 
             log=self.log, 
             prepend_path=[&#34;appBar&#34;], 
+            **kwargs
+        )
+        # Validate panes
+        panes(
+            data=self.data.get(&#34;panes&#34;, {}), 
+            log=self.log, 
+            prepend_path=[&#34;panes&#34;], 
             **kwargs
         )
 
@@ -208,13 +203,17 @@ class Validator:
 <dd>
 <div class="desc"><p>Build out an app bar with buttons to launch pages, launch panes and trigger api commands.</p></div>
 </dd>
-<dt><code class="name"><a title="cave_utils.api.kwargs" href="kwargs.html">cave_utils.api.kwargs</a></code></dt>
+<dt><code class="name"><a title="cave_utils.api.extraKwargs" href="extraKwargs.html">cave_utils.api.extraKwargs</a></code></dt>
 <dd>
 <div class="desc"><p>(Optional) Pass special arguments to the server that are not part of the API spec.</p></div>
 </dd>
 <dt><code class="name"><a title="cave_utils.api.pages" href="pages/index.html">cave_utils.api.pages</a></code></dt>
 <dd>
 <div class="desc"></div>
+</dd>
+<dt><code class="name"><a title="cave_utils.api.panes" href="panes.html">cave_utils.api.panes</a></code></dt>
+<dd>
+<div class="desc"><p>Build out an app bar with buttons to launch pages, launch panes and trigger api commands.</p></div>
 </dd>
 <dt><code class="name"><a title="cave_utils.api.settings" href="settings.html">cave_utils.api.settings</a></code></dt>
 <dd>
@@ -260,8 +259,8 @@ class Validator:
         mapFeatures: dict = dict(),
         groupedOutputs: dict = dict(),
         globalOutputs: dict = dict(),
-        kwargs: dict = dict(),
-        **otherKwargs
+        extraKwargs: dict = dict(),
+        **kwargs
     ):
         &#34;&#34;&#34;
         Required Arguments:
@@ -303,35 +302,22 @@ class Validator:
             - Type: dict
             - What: Configure data that is general to the entire application and can be compared across sessions.
             - Default: `{}`
-        - `kwargs`:
+        - `extraKwargs`:
             - Type: dict
             - What: Special arguments to be passed to the server.
             - Default: `{}`
 
         &#34;&#34;&#34;
-        return otherKwargs
-
-    def __populate_data__(self, **otherKwargs):
-        self.field_types = {
-            &#34;settings&#34;: dict,
-            &#34;appBar&#34;: dict,
-            &#34;panes&#34;: dict,
-            &#34;pages&#34;: dict,
-            &#34;maps&#34;: dict,
-            &#34;mapFeatures&#34;: dict,
-            &#34;groupedOutputs&#34;: dict,
-            &#34;globalOutputs&#34;: dict,
-            &#34;kwargs&#34;: dict,
+        return {
+            &#39;kwargs&#39;: kwargs,
+            &#39;accepted_values&#39;: {},
         }
-        self.required_fields = [&#39;settings&#39;, &#39;appBar&#39;]
-        self.optional_fields = [&#39;panes&#39;, &#39;pages&#39;, &#39;maps&#39;, &#39;mapFeatures&#39;, &#39;groupedOutputs&#39;, &#39;globalOutputs&#39;, &#39;kwargs&#39;]
-        self.accepted_values = {}
 
-    def __additional_validations__(self, **kwargs):
+    def __extend_spec__(self, **kwargs):
         # Validate Kwargs
-        if &#34;kwargs&#34; in self.data:
-            KwargsValidator(
-                data=self.data.get(&#34;kwargs&#34;, {}), log=self.log, prepend_path=[&#34;kwargs&#34;], **kwargs
+        if &#34;extraKwargs&#34; in self.data:
+            extraKwargs(
+                data=self.data.get(&#34;extraKwargs&#34;, {}), log=self.log, prepend_path=[&#34;kwargs&#34;], **kwargs
             )
         # Validate Settings
         settings(
@@ -347,6 +333,13 @@ class Validator:
             log=self.log, 
             prepend_path=[&#34;appBar&#34;], 
             **kwargs
+        )
+        # Validate panes
+        panes(
+            data=self.data.get(&#34;panes&#34;, {}), 
+            log=self.log, 
+            prepend_path=[&#34;panes&#34;], 
+            **kwargs
         )</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -356,7 +349,7 @@ class Validator:
 <h3>Static methods</h3>
 <dl>
 <dt id="cave_utils.api.Root.spec"><code class="name flex">
-<span>def <span class="ident">spec</span></span>(<span>settings: dict, appBar: dict, panes: dict = {}, pages: dict = {}, maps: dict = {}, mapFeatures: dict = {}, groupedOutputs: dict = {}, globalOutputs: dict = {}, kwargs: dict = {}, **otherKwargs)</span>
+<span>def <span class="ident">spec</span></span>(<span>settings: dict, appBar: dict, panes: dict = {}, pages: dict = {}, maps: dict = {}, mapFeatures: dict = {}, groupedOutputs: dict = {}, globalOutputs: dict = {}, extraKwargs: dict = {}, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Required Arguments:</p>
@@ -378,7 +371,7 @@ class Validator:
 </ul>
 <p>Optional Arguments:</p>
 <ul>
-<li><code>panes</code>:<ul>
+<li><code><a title="cave_utils.api.panes" href="panes.html">cave_utils.api.panes</a></code>:<ul>
 <li>Type: dict</li>
 <li>What: Configure panes for your application.</li>
 <li>Default: <code>{}</code></li>
@@ -414,7 +407,7 @@ class Validator:
 <li>Default: <code>{}</code></li>
 </ul>
 </li>
-<li><code><a title="cave_utils.api.kwargs" href="kwargs.html">cave_utils.api.kwargs</a></code>:<ul>
+<li><code><a title="cave_utils.api.extraKwargs" href="extraKwargs.html">cave_utils.api.extraKwargs</a></code>:<ul>
 <li>Type: dict</li>
 <li>What: Special arguments to be passed to the server.</li>
 <li>Default: <code>{}</code></li>
@@ -435,8 +428,8 @@ def spec(
     mapFeatures: dict = dict(),
     groupedOutputs: dict = dict(),
     globalOutputs: dict = dict(),
-    kwargs: dict = dict(),
-    **otherKwargs
+    extraKwargs: dict = dict(),
+    **kwargs
 ):
     &#34;&#34;&#34;
     Required Arguments:
@@ -478,32 +471,19 @@ def spec(
         - Type: dict
         - What: Configure data that is general to the entire application and can be compared across sessions.
         - Default: `{}`
-    - `kwargs`:
+    - `extraKwargs`:
         - Type: dict
         - What: Special arguments to be passed to the server.
         - Default: `{}`
 
     &#34;&#34;&#34;
-    return otherKwargs</code></pre>
+    return {
+        &#39;kwargs&#39;: kwargs,
+        &#39;accepted_values&#39;: {},
+    }</code></pre>
 </details>
 </dd>
 </dl>
-<h3>Inherited members</h3>
-<ul class="hlist">
-<li><code><b><a title="cave_utils.api.utils.ApiValidator" href="utils.html#cave_utils.api.utils.ApiValidator">ApiValidator</a></b></code>:
-<ul class="hlist">
-<li><code><a title="cave_utils.api.utils.ApiValidator.check_coord_path_valid" href="utils.html#cave_utils.api.utils.ApiValidator.check_coord_path_valid">check_coord_path_valid</a></code></li>
-<li><code><a title="cave_utils.api.utils.ApiValidator.check_list_valid" href="utils.html#cave_utils.api.utils.ApiValidator.check_list_valid">check_list_valid</a></code></li>
-<li><code><a title="cave_utils.api.utils.ApiValidator.check_pixel_string_valid" href="utils.html#cave_utils.api.utils.ApiValidator.check_pixel_string_valid">check_pixel_string_valid</a></code></li>
-<li><code><a title="cave_utils.api.utils.ApiValidator.check_rgba_string_valid" href="utils.html#cave_utils.api.utils.ApiValidator.check_rgba_string_valid">check_rgba_string_valid</a></code></li>
-<li><code><a title="cave_utils.api.utils.ApiValidator.check_subset_valid" href="utils.html#cave_utils.api.utils.ApiValidator.check_subset_valid">check_subset_valid</a></code></li>
-<li><code><a title="cave_utils.api.utils.ApiValidator.check_url_valid" href="utils.html#cave_utils.api.utils.ApiValidator.check_url_valid">check_url_valid</a></code></li>
-<li><code><a title="cave_utils.api.utils.ApiValidator.error" href="utils.html#cave_utils.api.utils.ApiValidator.error">error</a></code></li>
-<li><code><a title="cave_utils.api.utils.ApiValidator.validate" href="utils.html#cave_utils.api.utils.ApiValidator.validate">validate</a></code></li>
-<li><code><a title="cave_utils.api.utils.ApiValidator.warn" href="utils.html#cave_utils.api.utils.ApiValidator.warn">warn</a></code></li>
-</ul>
-</li>
-</ul>
 </dd>
 <dt id="cave_utils.api.Validator"><code class="flex name class">
 <span>class <span class="ident">Validator</span></span>
@@ -586,8 +566,9 @@ def spec(
 <li><h3><a href="#header-submodules">Sub-modules</a></h3>
 <ul>
 <li><code><a title="cave_utils.api.appBar" href="appBar.html">cave_utils.api.appBar</a></code></li>
-<li><code><a title="cave_utils.api.kwargs" href="kwargs.html">cave_utils.api.kwargs</a></code></li>
+<li><code><a title="cave_utils.api.extraKwargs" href="extraKwargs.html">cave_utils.api.extraKwargs</a></code></li>
 <li><code><a title="cave_utils.api.pages" href="pages/index.html">cave_utils.api.pages</a></code></li>
+<li><code><a title="cave_utils.api.panes" href="panes.html">cave_utils.api.panes</a></code></li>
 <li><code><a title="cave_utils.api.settings" href="settings.html">cave_utils.api.settings</a></code></li>
 <li><code><a title="cave_utils.api.utils" href="utils.html">cave_utils.api.utils</a></code></li>
 </ul>

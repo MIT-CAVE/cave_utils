@@ -6,9 +6,13 @@ It also serves to document the API and provide a reference for the data structur
 .. include:: ./documentation.md
 """
 from cave_utils.api.utils import *
-from cave_utils.api.kwargs import kwargs as KwargsValidator
+from cave_utils.api.extraKwargs import extraKwargs
 from cave_utils.api.settings import settings
 from cave_utils.api.appBar import appBar
+from cave_utils.api.panes import panes
+from cave_utils.api.pages import pages
+from cave_utils.api.maps import maps
+
 
 class Root(ApiValidator):
     """
@@ -16,6 +20,7 @@ class Root(ApiValidator):
 
     This should include all of the data needed to build out your application.
     """
+
     @staticmethod
     def spec(
         settings: dict,
@@ -26,8 +31,8 @@ class Root(ApiValidator):
         mapFeatures: dict = dict(),
         groupedOutputs: dict = dict(),
         globalOutputs: dict = dict(),
-        kwargs: dict = dict(),
-        **otherKwargs
+        extraKwargs: dict = dict(),
+        **kwargs,
     ):
         """
         Required Arguments:
@@ -69,35 +74,25 @@ class Root(ApiValidator):
             - Type: dict
             - What: Configure data that is general to the entire application and can be compared across sessions.
             - Default: `{}`
-        - `kwargs`:
+        - `extraKwargs`:
             - Type: dict
             - What: Special arguments to be passed to the server.
             - Default: `{}`
 
         """
-        return otherKwargs
-
-    def __populate_data__(self, **otherKwargs):
-        self.field_types = {
-            "settings": dict,
-            "appBar": dict,
-            "panes": dict,
-            "pages": dict,
-            "maps": dict,
-            "mapFeatures": dict,
-            "groupedOutputs": dict,
-            "globalOutputs": dict,
-            "kwargs": dict,
+        return {
+            "kwargs": kwargs,
+            "accepted_values": {},
         }
-        self.required_fields = ['settings', 'appBar']
-        self.optional_fields = ['panes', 'pages', 'maps', 'mapFeatures', 'groupedOutputs', 'globalOutputs', 'kwargs']
-        self.accepted_values = {}
 
-    def __additional_validations__(self, **kwargs):
+    def __extend_spec__(self, **kwargs):
         # Validate Kwargs
-        if "kwargs" in self.data:
-            KwargsValidator(
-                data=self.data.get("kwargs", {}), log=self.log, prepend_path=["kwargs"], **kwargs
+        if "extraKwargs" in self.data:
+            extraKwargs(
+                data=self.data.get("extraKwargs", {}),
+                log=self.log,
+                prepend_path=["kwargs"],
+                **kwargs,
             )
         # Validate Settings
         settings(
@@ -108,12 +103,19 @@ class Root(ApiValidator):
             **kwargs,
         )
         # Validate appBar
-        appBar(
-            data=self.data.get("appBar", {}), 
-            log=self.log, 
-            prepend_path=["appBar"], 
-            **kwargs
-        )
+        appBar(data=self.data.get("appBar", {}), log=self.log, prepend_path=["appBar"], **kwargs)
+        # Validate panes
+        panes(data=self.data.get("panes", {}), log=self.log, prepend_path=["panes"], **kwargs)
+        # Validate maps
+        maps(data=self.data.get("maps", {}), log=self.log, prepend_path=["maps"], **kwargs)
+        # Validate mapFeatures
+        # TODO
+        # Validate globalOutputs
+        # TODO
+        # Validate groupedOutputs
+        # TODO
+        # Validate pages
+        pages(data=self.data.get("pages", {}), log=self.log, prepend_path=["pages"], **kwargs)
 
 
 class Validator:
@@ -122,12 +124,12 @@ class Validator:
         Util to validate your session_data against the API spec.
 
         Required Arguments:
-        
+
         - `session_data`:
             - Type: dict
             - What: The data to validate.
             - Note: This should be the data you are sending to the server.
-        
+
         Optional Arguments:
 
         - `ignore_keys`:
@@ -144,6 +146,4 @@ class Validator:
                 set,
             ),
         ), "`ignore_keys` must be a list of strings or set of strings"
-        Root(
-            data=self.session_data, log=self.log, prepend_path=[], ignore_keys=set(ignore_keys)
-        )
+        Root(data=self.session_data, log=self.log, prepend_path=[], ignore_keys=set(ignore_keys))

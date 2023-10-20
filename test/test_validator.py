@@ -1,7 +1,7 @@
 from cave_utils.api import Validator
 
 example = {
-    "kwargs": {
+    "extraKwargs": {
         "wipeExisting": True,
     },
     "settings": {
@@ -125,7 +125,7 @@ example = {
                 "variant": "modal",
             },
         },
-    },  
+    },
     "panes": {
         "data": {
             "exampleModal": {
@@ -158,7 +158,6 @@ example = {
             },
             "examplePropsPane": {
                 "name": "Example Props Pane",
-                "variant": "options",
                 "props": {
                     "numericHeader": {
                         "name": "Numeric Props",
@@ -567,7 +566,7 @@ example = {
                         "mapId": "map1",
                         "showToolbar": False,
                         "maximized": True,
-                        },
+                    },
                     {
                         "variant": "Bar",
                         "groupingLevel": ["size"],
@@ -575,7 +574,7 @@ example = {
                         "lockedLayout": True,
                         "statAggregation": "Sum",
                         "groupedOutputDataId": "locationGroup",
-                        "statId":"numericExampleCalculationStat",
+                        "statId": "numericExampleCalculationStat",
                     },
                 ],
                 "lockedLayout": False,
@@ -586,7 +585,7 @@ example = {
                         "variant": "Bar",
                         "statAggregation": "Average",
                         "groupedOutputDataId": "locationGroup",
-                        "statId":"numericStatExampleB",
+                        "statId": "numericStatExampleB",
                     },
                     {
                         "type": "globalOutputs",
@@ -603,13 +602,13 @@ example = {
                         "groupingId": ["sku"],
                         "statAggregation": "Average",
                         "groupedOutputDataId": "locationGroup",
-                        "statId":"numericExampleCalculationStat",
+                        "statId": "numericExampleCalculationStat",
                     },
                     {
                         "variant": "Cumulative Line",
                         "statAggregation": "Sum",
                         "groupedOutputDataId": "locationGroup",
-                        "statId":"numericStatExampleB",
+                        "statId": "numericStatExampleB",
                         "groupingId": ["location", "sku"],
                         "groupingLevel": ["state", "sku"],
                     },
@@ -781,8 +780,18 @@ example = {
                                     },
                                 },
                                 "sizeByOptions": {
-                                    "numericPropExampleA": {"min": 0, "max": 80, "startSize": "30px", "endSize": "45px"},
-                                    "numericPropExampleB": {"min": 0, "max": 50, "startSize": "15px", "endSize": "30px"},
+                                    "numericPropExampleA": {
+                                        "min": 0,
+                                        "max": 80,
+                                        "startSize": "30px",
+                                        "endSize": "45px",
+                                    },
+                                    "numericPropExampleB": {
+                                        "min": 0,
+                                        "max": 50,
+                                        "startSize": "15px",
+                                        "endSize": "30px",
+                                    },
                                 },
                                 "icon": "fa6/FaIgloo",
                             },
@@ -791,8 +800,18 @@ example = {
                                 "sizeBy": "numericPropExampleB",
                                 "value": True,
                                 "sizeByOptions": {
-                                    "numericPropExampleA": {"min": 0, "max": 50, "startSize": "15px", "endSize": "30px"},
-                                    "numericPropExampleB": {"min": 0, "max": 40, "startSize": "5px", "endSize": "15px"},
+                                    "numericPropExampleA": {
+                                        "min": 0,
+                                        "max": 50,
+                                        "startSize": "15px",
+                                        "endSize": "30px",
+                                    },
+                                    "numericPropExampleB": {
+                                        "min": 0,
+                                        "max": 40,
+                                        "startSize": "5px",
+                                        "endSize": "15px",
+                                    },
                                 },
                                 "colorByOptions": {
                                     "selectorPropForColor": {
@@ -852,8 +871,18 @@ example = {
                                     },
                                 },
                                 "sizeByOptions": {
-                                    "numericPropExampleA": {"min": 0, "max": 100, "startSize": "15px", "endSize": "30px"},
-                                    "numericPropExampleB": {"min": 0, "max": 250, "startSize": "5px", "endSize": "15px"},
+                                    "numericPropExampleA": {
+                                        "min": 0,
+                                        "max": 100,
+                                        "startSize": "15px",
+                                        "endSize": "30px",
+                                    },
+                                    "numericPropExampleB": {
+                                        "min": 0,
+                                        "max": 250,
+                                        "startSize": "5px",
+                                        "endSize": "15px",
+                                    },
                                 },
                                 "icon": "bs/BsBuilding",
                             },
@@ -885,8 +914,18 @@ example = {
                                 },
                                 "lineBy": "dotted",
                                 "sizeByOptions": {
-                                    "numericPropExampleA": {"min": 0, "max": 50, "startSize": "15px", "endSize": "30px"},
-                                    "numericPropExampleB": {"min": 0, "max": 40, "startSize": "5px", "endSize": "15px"},
+                                    "numericPropExampleA": {
+                                        "min": 0,
+                                        "max": 50,
+                                        "startSize": "15px",
+                                        "endSize": "30px",
+                                    },
+                                    "numericPropExampleB": {
+                                        "min": 0,
+                                        "max": 40,
+                                        "startSize": "5px",
+                                        "endSize": "15px",
+                                    },
                                 },
                             },
                             "state": {
@@ -924,6 +963,7 @@ example = {
                 },
             },
             "map2": {
+                "name": "Example Map 2",
                 "order": {
                     "optionalViewports": ["ov0", "ov1"],
                     "legendGroups": ["lga", "lgb"],
@@ -994,8 +1034,18 @@ example = {
                                     },
                                 },
                                 "sizeByOptions": {
-                                    "numericPropExampleA": {"min": 0, "max": 80, "startSize": "30px", "endSize": "45px"},
-                                    "numericPropExampleB": {"min": 0, "max": 50, "startSize": "15px", "endSize": "30px"},
+                                    "numericPropExampleA": {
+                                        "min": 0,
+                                        "max": 80,
+                                        "startSize": "30px",
+                                        "endSize": "45px",
+                                    },
+                                    "numericPropExampleB": {
+                                        "min": 0,
+                                        "max": 50,
+                                        "startSize": "15px",
+                                        "endSize": "30px",
+                                    },
                                 },
                                 "startSize": "30px",
                                 "endSize": "45px",
@@ -1006,8 +1056,18 @@ example = {
                                 "sizeBy": "numericPropExampleB",
                                 "value": True,
                                 "sizeByOptions": {
-                                    "numericPropExampleA": {"min": 0, "max": 50, "startSize": "15px", "endSize": "30px"},
-                                    "numericPropExampleB": {"min": 0, "max": 40, "startSize": "5px", "endSize": "15px"},
+                                    "numericPropExampleA": {
+                                        "min": 0,
+                                        "max": 50,
+                                        "startSize": "15px",
+                                        "endSize": "30px",
+                                    },
+                                    "numericPropExampleB": {
+                                        "min": 0,
+                                        "max": 40,
+                                        "startSize": "5px",
+                                        "endSize": "15px",
+                                    },
                                 },
                                 "startSize": "15px",
                                 "endSize": "30px",
@@ -1062,8 +1122,18 @@ example = {
                                     },
                                 },
                                 "sizeByOptions": {
-                                    "numericPropExampleA": {"min": 0, "max": 100, "startSize": "15px", "endSize": "30px"},
-                                    "numericPropExampleB": {"min": 0, "max": 250, "startSize": "5px", "endSize": "15px"},
+                                    "numericPropExampleA": {
+                                        "min": 0,
+                                        "max": 100,
+                                        "startSize": "15px",
+                                        "endSize": "30px",
+                                    },
+                                    "numericPropExampleB": {
+                                        "min": 0,
+                                        "max": 250,
+                                        "startSize": "5px",
+                                        "endSize": "15px",
+                                    },
                                 },
                                 "startSize": "30px",
                                 "endSize": "45px",
@@ -1097,8 +1167,18 @@ example = {
                                 },
                                 "lineBy": "dotted",
                                 "sizeByOptions": {
-                                    "numericPropExampleA": {"min": 0, "max": 50, "startSize": "15px", "endSize": "30px"},
-                                    "numericPropExampleB": {"min": 0, "max": 40, "startSize": "5px", "endSize": "15px"},
+                                    "numericPropExampleA": {
+                                        "min": 0,
+                                        "max": 50,
+                                        "startSize": "15px",
+                                        "endSize": "30px",
+                                    },
+                                    "numericPropExampleB": {
+                                        "min": 0,
+                                        "max": 40,
+                                        "startSize": "5px",
+                                        "endSize": "15px",
+                                    },
                                 },
                                 "startSize": "15px",
                                 "endSize": "30px",
@@ -1213,8 +1293,8 @@ example = {
                         "numericPropExampleA": [15],
                         "numericPropExampleB": [40],
                         "selectorPropForColor": [["b"]],
-                    }
-                }
+                    },
+                },
             },
             "T2": {
                 "type": "arc",
@@ -1283,7 +1363,7 @@ example = {
                         "numericPropExampleB": [20, 14, 6],
                         "selectorPropForColor": [["e"], ["d"], ["f"]],
                     },
-                }
+                },
             },
             "nodeTypeA": {
                 "type": "node",
@@ -1317,9 +1397,15 @@ example = {
                 "data": {
                     "location": {
                         "timeValues": {
-                            0: { "latitude": [43.78, 39.82], },
-                            1: { "latitude": [44.78, 39.82], },
-                            2: { "latitude": [45.78, 39.82], },
+                            0: {
+                                "latitude": [43.78, 39.82],
+                            },
+                            1: {
+                                "latitude": [44.78, 39.82],
+                            },
+                            2: {
+                                "latitude": [45.78, 39.82],
+                            },
                         },
                         "longitude": [-79.63, -86.18],
                     },
@@ -1328,7 +1414,7 @@ example = {
                         "numericPropExampleB": [50, 40],
                         "booleanPropExample": [True, True],
                     },
-                }
+                },
             },
             "nodeTypeB": {
                 "type": "node",
@@ -1370,7 +1456,7 @@ example = {
                         "numericPropExampleB": [150, 250, 250],
                         "booleanPropExample": [True, True, True],
                     },
-                }
+                },
             },
             "state": {
                 "type": "geo",
@@ -1401,8 +1487,8 @@ example = {
                     "values": {
                         "numericPropExampleC": [0, 300, 250, 100, 200],
                         "booleanPropExample": [True, True, False, False, False],
-                    }
-                }
+                    },
+                },
             },
             "country": {
                 "type": "geo",
@@ -1426,8 +1512,8 @@ example = {
                     },
                     "values": {
                         "numericPropExampleC": [50, 800],
-                    }
-                }
+                    },
+                },
             },
         }
     },
@@ -1584,13 +1670,13 @@ example = {
                     "type": "head",
                     "name": "Example KPI Header 1",
                     "icon": "bs/BsInboxes",
-                    "variant": "icon"
+                    "variant": "icon",
                 },
                 "kpiHeader2": {
                     "type": "head",
                     "name": "Example KPI Header 2",
                     "icon": "bs/BsTruck",
-                    "variant": "icon"
+                    "variant": "icon",
                 },
                 "key1": {
                     "name": "KPI Example 1",
@@ -1721,8 +1807,9 @@ example = {
     },
 }
 
-x=Validator(
+x = Validator(
     session_data=example,
 )
 from pprint import pp as print
+
 print(x.log.log)

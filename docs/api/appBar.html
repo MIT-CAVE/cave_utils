@@ -104,10 +104,10 @@ class appBar_data_star(ApiValidator):
             }
         }
 
-    def __additional_validations__(self, **kwargs):
+    def __extend_spec__(self, **kwargs):
         color = self.data.get(&#34;color&#34;)
         if color:
-            self.check_rgba_string_valid(
+            self.__check_rgba_string_valid__(
                 rgba_string=color,
                 prepend_path=[&#34;color&#34;]
             )
@@ -132,7 +132,7 @@ class appBar(ApiValidator):
             &#39;accepted_values&#39;: {}
         }
 
-    def __additional_validations__(self, **kwargs):
+    def __extend_spec__(self, **kwargs):
         data = self.data.get(&#34;data&#34;, {})
         CustomKeyValidator(
             data=data, log=self.log, prepend_path=[&#34;data&#34;], validator=appBar_data_star, **kwargs
@@ -178,7 +178,7 @@ class appBar(ApiValidator):
             &#39;accepted_values&#39;: {}
         }
 
-    def __additional_validations__(self, **kwargs):
+    def __extend_spec__(self, **kwargs):
         data = self.data.get(&#34;data&#34;, {})
         CustomKeyValidator(
             data=data, log=self.log, prepend_path=[&#34;data&#34;], validator=appBar_data_star, **kwargs
@@ -224,22 +224,6 @@ def spec(data:dict=dict(), **kwargs):
 </details>
 </dd>
 </dl>
-<h3>Inherited members</h3>
-<ul class="hlist">
-<li><code><b><a title="cave_utils.api.utils.ApiValidator" href="utils.html#cave_utils.api.utils.ApiValidator">ApiValidator</a></b></code>:
-<ul class="hlist">
-<li><code><a title="cave_utils.api.utils.ApiValidator.check_coord_path_valid" href="utils.html#cave_utils.api.utils.ApiValidator.check_coord_path_valid">check_coord_path_valid</a></code></li>
-<li><code><a title="cave_utils.api.utils.ApiValidator.check_list_valid" href="utils.html#cave_utils.api.utils.ApiValidator.check_list_valid">check_list_valid</a></code></li>
-<li><code><a title="cave_utils.api.utils.ApiValidator.check_pixel_string_valid" href="utils.html#cave_utils.api.utils.ApiValidator.check_pixel_string_valid">check_pixel_string_valid</a></code></li>
-<li><code><a title="cave_utils.api.utils.ApiValidator.check_rgba_string_valid" href="utils.html#cave_utils.api.utils.ApiValidator.check_rgba_string_valid">check_rgba_string_valid</a></code></li>
-<li><code><a title="cave_utils.api.utils.ApiValidator.check_subset_valid" href="utils.html#cave_utils.api.utils.ApiValidator.check_subset_valid">check_subset_valid</a></code></li>
-<li><code><a title="cave_utils.api.utils.ApiValidator.check_url_valid" href="utils.html#cave_utils.api.utils.ApiValidator.check_url_valid">check_url_valid</a></code></li>
-<li><code><a title="cave_utils.api.utils.ApiValidator.error" href="utils.html#cave_utils.api.utils.ApiValidator.error">error</a></code></li>
-<li><code><a title="cave_utils.api.utils.ApiValidator.validate" href="utils.html#cave_utils.api.utils.ApiValidator.validate">validate</a></code></li>
-<li><code><a title="cave_utils.api.utils.ApiValidator.warn" href="utils.html#cave_utils.api.utils.ApiValidator.warn">warn</a></code></li>
-</ul>
-</li>
-</ul>
 </dd>
 <dt id="cave_utils.api.appBar.appBar_data_star"><code class="flex name class">
 <span>class <span class="ident">appBar_data_star</span></span>
@@ -322,10 +306,10 @@ class appBar_data_star(ApiValidator):
             }
         }
 
-    def __additional_validations__(self, **kwargs):
+    def __extend_spec__(self, **kwargs):
         color = self.data.get(&#34;color&#34;)
         if color:
-            self.check_rgba_string_valid(
+            self.__check_rgba_string_valid__(
                 rgba_string=color,
                 prepend_path=[&#34;color&#34;]
             )</code></pre>
@@ -491,22 +475,6 @@ def spec(icon:str, type:str, bar:str, variant:[str,None]=None, color:[str,None]=
 </details>
 </dd>
 </dl>
-<h3>Inherited members</h3>
-<ul class="hlist">
-<li><code><b><a title="cave_utils.api.utils.ApiValidator" href="utils.html#cave_utils.api.utils.ApiValidator">ApiValidator</a></b></code>:
-<ul class="hlist">
-<li><code><a title="cave_utils.api.utils.ApiValidator.check_coord_path_valid" href="utils.html#cave_utils.api.utils.ApiValidator.check_coord_path_valid">check_coord_path_valid</a></code></li>
-<li><code><a title="cave_utils.api.utils.ApiValidator.check_list_valid" href="utils.html#cave_utils.api.utils.ApiValidator.check_list_valid">check_list_valid</a></code></li>
-<li><code><a title="cave_utils.api.utils.ApiValidator.check_pixel_string_valid" href="utils.html#cave_utils.api.utils.ApiValidator.check_pixel_string_valid">check_pixel_string_valid</a></code></li>
-<li><code><a title="cave_utils.api.utils.ApiValidator.check_rgba_string_valid" href="utils.html#cave_utils.api.utils.ApiValidator.check_rgba_string_valid">check_rgba_string_valid</a></code></li>
-<li><code><a title="cave_utils.api.utils.ApiValidator.check_subset_valid" href="utils.html#cave_utils.api.utils.ApiValidator.check_subset_valid">check_subset_valid</a></code></li>
-<li><code><a title="cave_utils.api.utils.ApiValidator.check_url_valid" href="utils.html#cave_utils.api.utils.ApiValidator.check_url_valid">check_url_valid</a></code></li>
-<li><code><a title="cave_utils.api.utils.ApiValidator.error" href="utils.html#cave_utils.api.utils.ApiValidator.error">error</a></code></li>
-<li><code><a title="cave_utils.api.utils.ApiValidator.validate" href="utils.html#cave_utils.api.utils.ApiValidator.validate">validate</a></code></li>
-<li><code><a title="cave_utils.api.utils.ApiValidator.warn" href="utils.html#cave_utils.api.utils.ApiValidator.warn">warn</a></code></li>
-</ul>
-</li>
-</ul>
 </dd>
 </dl>
 </section>
