@@ -1,7 +1,7 @@
 """
 (Optional) Pass special arguments to the server that are not part of the API spec.
 """
-from cave_utils.api.utils import *
+from cave_utils.api.utils import ApiValidator
 import type_enforced
 
 

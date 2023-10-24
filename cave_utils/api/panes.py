@@ -1,14 +1,15 @@
 """
 Build out an app bar with buttons to launch pages, launch panes and trigger api commands.
 """
-from cave_utils.api.utils import *
+from cave_utils.api.utils import ApiValidator, CustomKeyValidator
+from cave_utils.api.general import props, values, layout
 import type_enforced
 
 
 @type_enforced.Enforcer
 class panes_data_star(ApiValidator):
     """
-    ## Api Path: panes.data.*
+    ## Api Path: panes.data.\*
     """
 
     @staticmethod
@@ -24,17 +25,17 @@ class panes_data_star(ApiValidator):
         - `props`:
             - Type: dict
             - What: The props that will be rendered in the pane.
-            - See: `cave_utils.api.utils.PropValidator`
+            - See: `cave_utils.api.general.props`
         - `values`:
             - Type: dict
             - What: The values that will be passed to the props.
             - Required: False
-            - See: `cave_utils.api.utils.PropValueValidator`
+            - See: `cave_utils.api.general.values`
         - `layout`:
             - Type: dict
             - What: The layout of the pane.
             - Required: False
-            - See: `cave_utils.api.utils.PropLayoutValidator`
+            - See: `cave_utils.api.general.layout`
         """
         return {"kwargs": kwargs, "accepted_values": {}}
 
@@ -44,18 +45,18 @@ class panes_data_star(ApiValidator):
             data=self.data.get("props", {}),
             log=self.log,
             prepend_path=["props"],
-            validator=PropValidator,
+            validator=props,
             **kwargs,
         )
         props_data = self.data.get("props", {})
-        PropLayoutValidator(
+        layout(
             data=self.data.get("layout", {}),
             log=self.log,
             prepend_path=["layout"],
             prop_id_list=list(props_data.keys()),
             **kwargs,
         )
-        PropValueValidator(
+        values(
             data=self.data.get("values", {}),
             log=self.log,
             prepend_path=["values"],

@@ -1,9 +1,6 @@
 from cave_utils.api import Validator
 
 example = {
-    "extraKwargs": {
-        "wipeExisting": True,
-    },
     "settings": {
         "demo": {
             "map1": {
@@ -558,23 +555,23 @@ example = {
             "dash1": {
                 "pageLayout": [
                     {
-                        "variant": "Bar",
-                        "statAggregation": "Average",
+                        "variant": "bar",
+                        "statAggregation": "mean",
                     },
                     {
                         "type": "map",
                         "mapId": "map1",
                         "showToolbar": False,
                         "maximized": True,
-                    },
+                        },
                     {
-                        "variant": "Bar",
+                        "variant": "bar",
                         "groupingLevel": ["size"],
                         "groupingId": ["sku"],
                         "lockedLayout": True,
-                        "statAggregation": "Sum",
+                        "statAggregation": "sum",
                         "groupedOutputDataId": "locationGroup",
-                        "statId": "numericExampleCalculationStat",
+                        "statId":"numericExampleCalculationStat",
                     },
                 ],
                 "lockedLayout": False,
@@ -582,33 +579,33 @@ example = {
             "dash2": {
                 "pageLayout": [
                     {
-                        "variant": "Bar",
-                        "statAggregation": "Average",
+                        "variant": "bar",
+                        "statAggregation": "mean",
                         "groupedOutputDataId": "locationGroup",
-                        "statId": "numericStatExampleB",
+                        "statId":"numericStatExampleB",
                     },
                     {
                         "type": "globalOutputs",
-                        "variant": "Bar",
-                        "statAggregation": "Sum",
+                        "variant": "bar",
+                        "statAggregation": "sum",
                         "sessions": [],
                         "globalOutput": ["key1", "key2"],
                         "showToolbar": False,
                     },
                     {
-                        "variant": "Box Plot",
+                        "variant": "box_plot",
                         "groupingLevel": ["size"],
                         "lockedLayout": True,
                         "groupingId": ["sku"],
-                        "statAggregation": "Average",
+                        "statAggregation": "mean",
                         "groupedOutputDataId": "locationGroup",
-                        "statId": "numericExampleCalculationStat",
+                        "statId":"numericExampleCalculationStat",
                     },
                     {
-                        "variant": "Cumulative Line",
-                        "statAggregation": "Sum",
+                        "variant": "cumulative_line",
+                        "statAggregation": "sum",
                         "groupedOutputDataId": "locationGroup",
-                        "statId": "numericStatExampleB",
+                        "statId":"numericStatExampleB",
                         "groupingId": ["location", "sku"],
                         "groupingLevel": ["state", "sku"],
                     },
@@ -619,19 +616,21 @@ example = {
     },
     "maps": {
         "additionalMapStyles": {
-            "watercolor": {
-                "name": "Watercolor",
+            "osmRasterTiles": {
+                "name": "OSM Raster Tiles",
                 "icon": "md/MdBrush",
                 "spec": {
                     "version": 8,
                     "sources": {
                         "raster-tiles": {
                             "type": "raster",
+                            # EG: See a list of raster sources based on OSM here:
+                            # https://wiki.openstreetmap.org/wiki/Raster_tile_providers
                             "tiles": [
-                                "https://stamen-tiles.a.ssl.fastly.net/watercolor/{z}/{x}/{y}.jpg"
+                                "https://tile.openstreetmap.org/{z}/{x}/{y}.png"
                             ],
                             "tileSize": 256,
-                            "attribution": "Map tiles by <a target='_top' rel='noopener' href='http://stamen.com'>Stamen Design</a>, under <a target='_top' rel='noopener' href='http://creativecommons.org/licenses/by/3.0'>CC BY 3.0</a>. Data by <a target='_top' rel='noopener' href='http://openstreetmap.org'>OpenStreetMap</a>, under <a target='_top' rel='noopener' href='http://creativecommons.org/licenses/by-sa/3.0'>CC BY SA</a>",
+                            "attribution": "Map tiles by <a target='_top' rel='noopener' href='https://osmfoundation.org/'>OpenStreetMap</a>, under <a target='_top' rel='noopener' href='https://osmfoundation.org/copyright'>Open Database License</a>.",
                         },
                     },
                     "layers": [
@@ -705,7 +704,7 @@ example = {
                     "legendGroups": ["lga", "lgb"],
                 },
                 "name": "Example Map 1",
-                "currentStyle": "watercolor",
+                "currentStyle": "osmRasterTiles",
                 "currentProjection": "globe",
                 "defaultViewport": {
                     "longitude": -75.447,
@@ -713,8 +712,6 @@ example = {
                     "zoom": 4.66,
                     "pitch": 0,
                     "bearing": 0,
-                    "height": 1287,
-                    "altitude": 1.5,
                     "maxZoom": 12,
                     "minZoom": 2,
                 },
@@ -780,18 +777,8 @@ example = {
                                     },
                                 },
                                 "sizeByOptions": {
-                                    "numericPropExampleA": {
-                                        "min": 0,
-                                        "max": 80,
-                                        "startSize": "30px",
-                                        "endSize": "45px",
-                                    },
-                                    "numericPropExampleB": {
-                                        "min": 0,
-                                        "max": 50,
-                                        "startSize": "15px",
-                                        "endSize": "30px",
-                                    },
+                                    "numericPropExampleA": {"min": 0, "max": 80, "startSize": "30px", "endSize": "45px"},
+                                    "numericPropExampleB": {"min": 0, "max": 50, "startSize": "15px", "endSize": "30px"},
                                 },
                                 "icon": "fa6/FaIgloo",
                             },
@@ -800,18 +787,8 @@ example = {
                                 "sizeBy": "numericPropExampleB",
                                 "value": True,
                                 "sizeByOptions": {
-                                    "numericPropExampleA": {
-                                        "min": 0,
-                                        "max": 50,
-                                        "startSize": "15px",
-                                        "endSize": "30px",
-                                    },
-                                    "numericPropExampleB": {
-                                        "min": 0,
-                                        "max": 40,
-                                        "startSize": "5px",
-                                        "endSize": "15px",
-                                    },
+                                    "numericPropExampleA": {"min": 0, "max": 50, "startSize": "15px", "endSize": "30px"},
+                                    "numericPropExampleB": {"min": 0, "max": 40, "startSize": "5px", "endSize": "15px"},
                                 },
                                 "colorByOptions": {
                                     "selectorPropForColor": {
@@ -871,18 +848,8 @@ example = {
                                     },
                                 },
                                 "sizeByOptions": {
-                                    "numericPropExampleA": {
-                                        "min": 0,
-                                        "max": 100,
-                                        "startSize": "15px",
-                                        "endSize": "30px",
-                                    },
-                                    "numericPropExampleB": {
-                                        "min": 0,
-                                        "max": 250,
-                                        "startSize": "5px",
-                                        "endSize": "15px",
-                                    },
+                                    "numericPropExampleA": {"min": 0, "max": 100, "startSize": "15px", "endSize": "30px"},
+                                    "numericPropExampleB": {"min": 0, "max": 250, "startSize": "5px", "endSize": "15px"},
                                 },
                                 "icon": "bs/BsBuilding",
                             },
@@ -914,18 +881,8 @@ example = {
                                 },
                                 "lineBy": "dotted",
                                 "sizeByOptions": {
-                                    "numericPropExampleA": {
-                                        "min": 0,
-                                        "max": 50,
-                                        "startSize": "15px",
-                                        "endSize": "30px",
-                                    },
-                                    "numericPropExampleB": {
-                                        "min": 0,
-                                        "max": 40,
-                                        "startSize": "5px",
-                                        "endSize": "15px",
-                                    },
+                                    "numericPropExampleA": {"min": 0, "max": 50, "startSize": "15px", "endSize": "30px"},
+                                    "numericPropExampleB": {"min": 0, "max": 40, "startSize": "5px", "endSize": "15px"},
                                 },
                             },
                             "state": {
@@ -963,19 +920,17 @@ example = {
                 },
             },
             "map2": {
-                "name": "Example Map 2",
                 "order": {
                     "optionalViewports": ["ov0", "ov1"],
                     "legendGroups": ["lga", "lgb"],
                 },
+                "name": "Example Map 2",
                 "defaultViewport": {
                     "longitude": -75.447,
                     "latitude": 40.345,
                     "zoom": 4.66,
                     "pitch": 0,
                     "bearing": 0,
-                    "height": 1287,
-                    "altitude": 1.5,
                     "maxZoom": 12,
                     "minZoom": 2,
                 },
@@ -1034,21 +989,9 @@ example = {
                                     },
                                 },
                                 "sizeByOptions": {
-                                    "numericPropExampleA": {
-                                        "min": 0,
-                                        "max": 80,
-                                        "startSize": "30px",
-                                        "endSize": "45px",
-                                    },
-                                    "numericPropExampleB": {
-                                        "min": 0,
-                                        "max": 50,
-                                        "startSize": "15px",
-                                        "endSize": "30px",
-                                    },
+                                    "numericPropExampleA": {"min": 0, "max": 80, "startSize": "30px", "endSize": "45px"},
+                                    "numericPropExampleB": {"min": 0, "max": 50, "startSize": "15px", "endSize": "30px"},
                                 },
-                                "startSize": "30px",
-                                "endSize": "45px",
                                 "icon": "fa6/FaIgloo",
                             },
                             "T1": {
@@ -1056,21 +999,9 @@ example = {
                                 "sizeBy": "numericPropExampleB",
                                 "value": True,
                                 "sizeByOptions": {
-                                    "numericPropExampleA": {
-                                        "min": 0,
-                                        "max": 50,
-                                        "startSize": "15px",
-                                        "endSize": "30px",
-                                    },
-                                    "numericPropExampleB": {
-                                        "min": 0,
-                                        "max": 40,
-                                        "startSize": "5px",
-                                        "endSize": "15px",
-                                    },
+                                    "numericPropExampleA": {"min": 0, "max": 50, "startSize": "15px", "endSize": "30px"},
+                                    "numericPropExampleB": {"min": 0, "max": 40, "startSize": "5px", "endSize": "15px"},
                                 },
-                                "startSize": "15px",
-                                "endSize": "30px",
                                 "colorByOptions": {
                                     "selectorPropForColor": {
                                         "a": "rgba(128,255,255, 255)",
@@ -1122,21 +1053,9 @@ example = {
                                     },
                                 },
                                 "sizeByOptions": {
-                                    "numericPropExampleA": {
-                                        "min": 0,
-                                        "max": 100,
-                                        "startSize": "15px",
-                                        "endSize": "30px",
-                                    },
-                                    "numericPropExampleB": {
-                                        "min": 0,
-                                        "max": 250,
-                                        "startSize": "5px",
-                                        "endSize": "15px",
-                                    },
+                                    "numericPropExampleA": {"min": 0, "max": 100, "startSize": "15px", "endSize": "30px"},
+                                    "numericPropExampleB": {"min": 0, "max": 250, "startSize": "5px", "endSize": "15px"},
                                 },
-                                "startSize": "30px",
-                                "endSize": "45px",
                                 "icon": "bs/BsBuilding",
                             },
                             "T2": {
@@ -1167,21 +1086,9 @@ example = {
                                 },
                                 "lineBy": "dotted",
                                 "sizeByOptions": {
-                                    "numericPropExampleA": {
-                                        "min": 0,
-                                        "max": 50,
-                                        "startSize": "15px",
-                                        "endSize": "30px",
-                                    },
-                                    "numericPropExampleB": {
-                                        "min": 0,
-                                        "max": 40,
-                                        "startSize": "5px",
-                                        "endSize": "15px",
-                                    },
+                                    "numericPropExampleA": {"min": 0, "max": 50, "startSize": "15px", "endSize": "30px"},
+                                    "numericPropExampleB": {"min": 0, "max": 40, "startSize": "5px", "endSize": "15px"},
                                 },
-                                "startSize": "15px",
-                                "endSize": "30px",
                             },
                             "state": {
                                 "value": True,
@@ -1225,8 +1132,8 @@ example = {
                 "type": "arc",
                 "name": "Flow Type 1",
                 "geoJson": {
-                    "geoJsonLayer": "https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/bart.geo.json",
-                    "geoJsonProp": "name",
+                    "geoJsonLayer": "https://raw.githubusercontent.com/MIT-CAVE/cave_app/ced363/cave_api/cave_api/example_data/example.geojson",
+                    "geoJsonProp": "arc_id",
                 },
                 "props": {
                     "numericPropExampleA": {
@@ -1260,9 +1167,6 @@ example = {
                         "enabled": True,
                     },
                 },
-                "values": {
-                    "selectorPropForColor": ["a"],
-                },
                 "layout": {
                     "type": "grid",
                     "numColumns": "auto",
@@ -1287,14 +1191,14 @@ example = {
                 },
                 "data": {
                     "location": {
-                        "geoJsonValue": ["DUBL-DALY (ROUTE 11/12)"],
+                        "geoJsonValue": ["toronto-pittsburgh-indianapolis"],
                     },
-                    "values": {
+                    "valueLists": {
                         "numericPropExampleA": [15],
                         "numericPropExampleB": [40],
                         "selectorPropForColor": [["b"]],
-                    },
-                },
+                    }
+                }
             },
             "T2": {
                 "type": "arc",
@@ -1358,12 +1262,12 @@ example = {
                         "endLatitude": [42.89, 28.49, 42.361176],
                         "endLongitude": [-85.68, -81.56, -71.084707],
                     },
-                    "values": {
+                    "valueLists": {
                         "numericPropExampleA": [30, 30, 30],
                         "numericPropExampleB": [20, 14, 6],
                         "selectorPropForColor": [["e"], ["d"], ["f"]],
                     },
-                },
+                }
             },
             "nodeTypeA": {
                 "type": "node",
@@ -1397,24 +1301,18 @@ example = {
                 "data": {
                     "location": {
                         "timeValues": {
-                            0: {
-                                "latitude": [43.78, 39.82],
-                            },
-                            1: {
-                                "latitude": [44.78, 39.82],
-                            },
-                            2: {
-                                "latitude": [45.78, 39.82],
-                            },
+                            0: { "latitude": [43.78, 39.82], },
+                            1: { "latitude": [44.78, 39.82], },
+                            2: { "latitude": [45.78, 39.82], },
                         },
                         "longitude": [-79.63, -86.18],
                     },
-                    "values": {
+                    "valueLists": {
                         "numericPropExampleA": [100, 80],
                         "numericPropExampleB": [50, 40],
                         "booleanPropExample": [True, True],
                     },
-                },
+                }
             },
             "nodeTypeB": {
                 "type": "node",
@@ -1451,12 +1349,12 @@ example = {
                         "latitude": [42.89, 28.49, 42.361176],
                         "longitude": [-85.68, -81.56, -71.084707],
                     },
-                    "values": {
+                    "valueLists": {
                         "numericPropExampleA": [500, 1000, 1000],
                         "numericPropExampleB": [150, 250, 250],
                         "booleanPropExample": [True, True, True],
                     },
-                },
+                }
             },
             "state": {
                 "type": "geo",
@@ -1476,7 +1374,6 @@ example = {
                     "booleanPropExample": {
                         "name": "Boolean Prop Example",
                         "type": "toggle",
-                        "value": True,
                         "help": "Help for boolean prop",
                     },
                 },
@@ -1484,11 +1381,11 @@ example = {
                     "location": {
                         "geoJsonValue": ["CA.ON", "US.MI", "US.MA", "US.FL", "US.IN"],
                     },
-                    "values": {
+                    "valueLists": {
                         "numericPropExampleC": [0, 300, 250, 100, 200],
                         "booleanPropExample": [True, True, False, False, False],
-                    },
-                },
+                    }
+                }
             },
             "country": {
                 "type": "geo",
@@ -1510,10 +1407,10 @@ example = {
                     "location": {
                         "geoJsonValue": ["CA", "US"],
                     },
-                    "values": {
+                    "valueLists": {
                         "numericPropExampleC": [50, 800],
-                    },
-                },
+                    }
+                }
             },
         }
     },
@@ -1664,146 +1561,147 @@ example = {
         },
     },
     "globalOutputs": {
-        "data": {
-            "props": {
-                "kpiHeader1": {
-                    "type": "head",
-                    "name": "Example KPI Header 1",
-                    "icon": "bs/BsInboxes",
-                    "variant": "icon",
-                },
-                "kpiHeader2": {
-                    "type": "head",
-                    "name": "Example KPI Header 2",
-                    "icon": "bs/BsTruck",
-                    "variant": "icon",
-                },
-                "key1": {
-                    "name": "KPI Example 1",
-                    "icon": "bs/BsFillEmojiFrownFill",
-                    "precision": 0,
-                    "unit": "frowns",
-                    "type": "num",
-                    "variant": "icon",
-                },
-                "key2": {
-                    "name": "KPI Example 2",
-                    "icon": "bs/BsFillEmojiSmileFill",
-                    "precision": 0,
-                    "unit": "smiles",
-                    "type": "num",
-                    "variant": "icon",
-                },
-                "key3": {
-                    "name": "KPI Example 3",
-                    "icon": "bs/BsInboxes",
-                    "precision": 4,
-                    "notation": "scientific",
-                    "notationDisplay": "E+",
-                    "trailingZeros": True,
-                    "unit": "units",
-                    "type": "num",
-                    "variant": "icon",
-                },
-                "key4": {
-                    "name": "A Big Number",
-                    "icon": "bs/BsTruck",
-                    "notation": "engineering",
-                    "notationDisplay": "x10^",
-                    "precision": 0,
-                    "unit": "units",
-                    "type": "num",
-                    "variant": "icon",
-                },
-                "key5": {
-                    "name": "A Really Big Number",
-                    "icon": "md/MdExpand",
-                    "precision": 2,
-                    "unit": "$",
-                    "unitPlacement": "before",
-                    "notation": "compact",
-                    "notationDisplay": "long",
-                    "trailingZeros": True,
-                    "type": "num",
-                    "variant": "icon",
-                },
-                "key6": {
-                    "name": "A Decent Big Number",
-                    "icon": "md/MdExpand",
-                    "precision": 2,
-                    "unit": "$",
-                    "unitPlacement": "before",
-                    "notation": "compact",
-                    "notationDisplay": "long",
-                    "trailingZeros": True,
-                    "type": "num",
-                    "variant": "icon",
-                },
+        "props": {
+            "kpiHeader1": {
+                "type": "head",
+                "name": "Example KPI Header 1",
+                "icon": "bs/BsInboxes",
+                "variant": "icon"
             },
-            "values": {
-                "key1": 18,
-                "key2": 32,
-                "key3": 100,
-                "key4": 10000000000000,
-                "key5": 9007199254740991,
-                "key6": 199254740991,
+            "kpiHeader2": {
+                "type": "head",
+                "name": "Example KPI Header 2",
+                "icon": "bs/BsTruck",
+                "variant": "icon"
             },
-            "layout": {
-                "type": "grid",
-                "numColumns": "auto",
-                "numRows": "auto",
-                "data": {
-                    "col1Row1": {
-                        "type": "item",
-                        "itemId": "kpiHeader1",
-                        "column": 1,
-                        "row": 1,
-                    },
-                    "col1Row2": {
-                        "type": "item",
-                        "itemId": "key1",
-                        "column": 1,
-                        "row": 2,
-                    },
-                    "col1Row3": {
-                        "type": "item",
-                        "itemId": "key4",
-                        "column": 1,
-                        "row": 3,
-                    },
-                    "col1Row4": {
-                        "type": "item",
-                        "itemId": "key5",
-                        "column": 1,
-                        "row": 4,
-                    },
-                    "col2Row1": {
-                        "type": "item",
-                        "itemId": "kpiHeader2",
-                        "column": 2,
-                        "row": 1,
-                    },
-                    "col2Row2": {
-                        "type": "item",
-                        "itemId": "key2",
-                        "column": 2,
-                        "row": 2,
-                    },
-                    "col2Row3": {
-                        "type": "item",
-                        "itemId": "key3",
-                        "column": 2,
-                        "row": 3,
-                    },
-                    "col1Row5": {
-                        "type": "item",
-                        "itemId": "key6",
-                        "column": 1,
-                        "row": 5,
-                    },
+            "key1": {
+                "name": "KPI Example 1",
+                "icon": "bs/BsFillEmojiFrownFill",
+                "precision": 0,
+                "unit": "frowns",
+                "type": "num",
+                "variant": "icon",
+            },
+            "key2": {
+                "name": "KPI Example 2",
+                "icon": "bs/BsFillEmojiSmileFill",
+                "precision": 0,
+                "unit": "smiles",
+                "type": "num",
+                "variant": "icon",
+            },
+            "key3": {
+                "name": "KPI Example 3",
+                "icon": "bs/BsInboxes",
+                "precision": 4,
+                "notation": "scientific",
+                "notationDisplay": "E+",
+                "trailingZeros": True,
+                "unit": "units",
+                "type": "num",
+                "variant": "icon",
+            },
+            "key4": {
+                "name": "A Big Number",
+                "icon": "bs/BsTruck",
+                "notation": "engineering",
+                "notationDisplay": "x10^",
+                "precision": 0,
+                "unit": "units",
+                "type": "num",
+                "variant": "icon",
+            },
+            "key5": {
+                "name": "A Really Big Number",
+                "icon": "md/MdExpand",
+                "precision": 2,
+                "unit": "$",
+                "unitPlacement": "before",
+                "notation": "compact",
+                "notationDisplay": "long",
+                "trailingZeros": True,
+                "type": "num",
+                "variant": "icon",
+            },
+            "key6": {
+                "name": "A Decent Big Number",
+                "icon": "md/MdExpand",
+                "precision": 2,
+                "unit": "$",
+                "unitPlacement": "before",
+                "notation": "compact",
+                "notationDisplay": "long",
+                "trailingZeros": True,
+                "type": "num",
+                "variant": "icon",
+            },
+        },
+        "values": {
+            "key1": 18,
+            "key2": 32,
+            "key3": 100,
+            "key4": 10000000000000,
+            "key5": 9007199254740991,
+            "key6": 199254740991,
+        },
+        "layout": {
+            "type": "grid",
+            "numColumns": "auto",
+            "numRows": "auto",
+            "data": {
+                "col1Row1": {
+                    "type": "item",
+                    "itemId": "kpiHeader1",
+                    "column": 1,
+                    "row": 1,
+                },
+                "col1Row2": {
+                    "type": "item",
+                    "itemId": "key1",
+                    "column": 1,
+                    "row": 2,
+                },
+                "col1Row3": {
+                    "type": "item",
+                    "itemId": "key4",
+                    "column": 1,
+                    "row": 3,
+                },
+                "col1Row4": {
+                    "type": "item",
+                    "itemId": "key5",
+                    "column": 1,
+                    "row": 4,
+                },
+                "col2Row1": {
+                    "type": "item",
+                    "itemId": "kpiHeader2",
+                    "column": 2,
+                    "row": 1,
+                },
+                "col2Row2": {
+                    "type": "item",
+                    "itemId": "key2",
+                    "column": 2,
+                    "row": 2,
+                },
+                "col2Row3": {
+                    "type": "item",
+                    "itemId": "key3",
+                    "column": 2,
+                    "row": 3,
+                },
+                "col1Row5": {
+                    "type": "item",
+                    "itemId": "key6",
+                    "column": 1,
+                    "row": 5,
                 },
             },
         },
+    },
+    "extraKwargs": {
+        "wipeExisting": True,
     },
 }
 

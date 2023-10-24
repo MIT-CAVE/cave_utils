@@ -35,13 +35,15 @@ import type_enforced
 
 # TODO: Add actual docs with real default values.
 
+
 @type_enforced.Enforcer
 class settings_time(ApiValidator):
     &#34;&#34;&#34;
     ## Api Path: settings.time
     &#34;&#34;&#34;
+
     @staticmethod
-    def spec(timeLength:int, timeUnits:str, **kwargs):
+    def spec(timeLength: int, timeUnits: str, **kwargs):
         &#34;&#34;&#34;
         Required Arguments:
 
@@ -53,9 +55,10 @@ class settings_time(ApiValidator):
             - What: The units of time to display.
         &#34;&#34;&#34;
         return {
-            &#39;kwargs&#39;: kwargs,
-            &#39;accepted_values&#39;: {},
+            &#34;kwargs&#34;: kwargs,
+            &#34;accepted_values&#34;: {},
         }
+
 
 @type_enforced.Enforcer
 class settings_sync(ApiValidator):
@@ -64,7 +67,7 @@ class settings_sync(ApiValidator):
     &#34;&#34;&#34;
 
     @staticmethod
-    def spec(name:str, showToggle:bool, value:bool, data:dict, **kwargs):
+    def spec(name: str, showToggle: bool, value: bool, data: dict, **kwargs):
         &#34;&#34;&#34;
         Required Arguments:
 
@@ -83,8 +86,8 @@ class settings_sync(ApiValidator):
 
         &#34;&#34;&#34;
         return {
-            &#39;kwargs&#39;: kwargs,
-            &#39;accepted_values&#39;: {},
+            &#34;kwargs&#34;: kwargs,
+            &#34;accepted_values&#34;: {},
         }
 
     # def __extend_spec__(self, **kwargs):
@@ -93,6 +96,7 @@ class settings_sync(ApiValidator):
     #         if not pamda.hasPath(path, root_data):
     #             self.__warn__(f&#34;Path {path} does not exist.&#34;, prepend_path=[&#34;data&#34;, key])
 
+
 @type_enforced.Enforcer
 class settings_demo(ApiValidator):
     &#34;&#34;&#34;
@@ -100,7 +104,7 @@ class settings_demo(ApiValidator):
     &#34;&#34;&#34;
 
     @staticmethod
-    def spec(scrollSpeed:[int,float]=1, displayTime:int=5, **kwargs):
+    def spec(scrollSpeed: [int, float] = 1, displayTime: int = 5, **kwargs):
         &#34;&#34;&#34;
         Optional Arguments:
 
@@ -114,9 +118,10 @@ class settings_demo(ApiValidator):
             - Default: `5`
         &#34;&#34;&#34;
         return {
-            &#39;kwargs&#39;: kwargs,
-            &#39;accepted_values&#39;: {},
+            &#34;kwargs&#34;: kwargs,
+            &#34;accepted_values&#34;: {},
         }
+
 
 @type_enforced.Enforcer
 class settings_defaults(ApiValidator):
@@ -125,7 +130,13 @@ class settings_defaults(ApiValidator):
     &#34;&#34;&#34;
 
     @staticmethod
-    def spec(precision:int=2, trailingZeros:bool=False, unitPlacement:str=&#34;right&#34;, showToolbar:bool=True, **kwargs):
+    def spec(
+        precision: int = 2,
+        trailingZeros: bool = False,
+        unitPlacement: str = &#34;right&#34;,
+        showToolbar: bool = True,
+        **kwargs,
+    ):
         &#34;&#34;&#34;
         Required Arguments:
 
@@ -150,11 +161,12 @@ class settings_defaults(ApiValidator):
             - Default: `True`
         &#34;&#34;&#34;
         return {
-            &#39;kwargs&#39;: kwargs,
-            &#39;accepted_values&#39;: {
+            &#34;kwargs&#34;: kwargs,
+            &#34;accepted_values&#34;: {
                 # TODO: &#34;unitPlacement&#34;: [],
             },
         }
+
 
 @type_enforced.Enforcer
 class settings(ApiValidator):
@@ -163,7 +175,15 @@ class settings(ApiValidator):
     &#34;&#34;&#34;
 
     @staticmethod
-    def spec(iconUrl:str, demo:dict=dict(), sync:dict=dict(), time:dict=dict(), defaults:dict=dict(), debug:bool=False, **kwargs):
+    def spec(
+        iconUrl: str,
+        demo: dict = dict(),
+        sync: dict = dict(),
+        time: dict = dict(),
+        defaults: dict = dict(),
+        debug: bool = False,
+        **kwargs,
+    ):
         &#34;&#34;&#34;
         Required Arguments:
 
@@ -200,8 +220,8 @@ class settings(ApiValidator):
             - Default: `False`
         &#34;&#34;&#34;
         return {
-            &#39;kwargs&#39;: kwargs,
-            &#39;accepted_values&#39;: {},
+            &#34;kwargs&#34;: kwargs,
+            &#34;accepted_values&#34;: {},
         }
 
     def __extend_spec__(self, **kwargs):
@@ -263,7 +283,15 @@ class settings(ApiValidator):
     &#34;&#34;&#34;
 
     @staticmethod
-    def spec(iconUrl:str, demo:dict=dict(), sync:dict=dict(), time:dict=dict(), defaults:dict=dict(), debug:bool=False, **kwargs):
+    def spec(
+        iconUrl: str,
+        demo: dict = dict(),
+        sync: dict = dict(),
+        time: dict = dict(),
+        defaults: dict = dict(),
+        debug: bool = False,
+        **kwargs,
+    ):
         &#34;&#34;&#34;
         Required Arguments:
 
@@ -300,8 +328,8 @@ class settings(ApiValidator):
             - Default: `False`
         &#34;&#34;&#34;
         return {
-            &#39;kwargs&#39;: kwargs,
-            &#39;accepted_values&#39;: {},
+            &#34;kwargs&#34;: kwargs,
+            &#34;accepted_values&#34;: {},
         }
 
     def __extend_spec__(self, **kwargs):
@@ -397,7 +425,15 @@ class settings(ApiValidator):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def spec(iconUrl:str, demo:dict=dict(), sync:dict=dict(), time:dict=dict(), defaults:dict=dict(), debug:bool=False, **kwargs):
+def spec(
+    iconUrl: str,
+    demo: dict = dict(),
+    sync: dict = dict(),
+    time: dict = dict(),
+    defaults: dict = dict(),
+    debug: bool = False,
+    **kwargs,
+):
     &#34;&#34;&#34;
     Required Arguments:
 
@@ -434,8 +470,8 @@ def spec(iconUrl:str, demo:dict=dict(), sync:dict=dict(), time:dict=dict(), defa
         - Default: `False`
     &#34;&#34;&#34;
     return {
-        &#39;kwargs&#39;: kwargs,
-        &#39;accepted_values&#39;: {},
+        &#34;kwargs&#34;: kwargs,
+        &#34;accepted_values&#34;: {},
     }</code></pre>
 </details>
 </dd>
@@ -458,7 +494,13 @@ class settings_defaults(ApiValidator):
     &#34;&#34;&#34;
 
     @staticmethod
-    def spec(precision:int=2, trailingZeros:bool=False, unitPlacement:str=&#34;right&#34;, showToolbar:bool=True, **kwargs):
+    def spec(
+        precision: int = 2,
+        trailingZeros: bool = False,
+        unitPlacement: str = &#34;right&#34;,
+        showToolbar: bool = True,
+        **kwargs,
+    ):
         &#34;&#34;&#34;
         Required Arguments:
 
@@ -483,8 +525,8 @@ class settings_defaults(ApiValidator):
             - Default: `True`
         &#34;&#34;&#34;
         return {
-            &#39;kwargs&#39;: kwargs,
-            &#39;accepted_values&#39;: {
+            &#34;kwargs&#34;: kwargs,
+            &#34;accepted_values&#34;: {
                 # TODO: &#34;unitPlacement&#34;: [],
             },
         }</code></pre>
@@ -536,7 +578,13 @@ class settings_defaults(ApiValidator):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def spec(precision:int=2, trailingZeros:bool=False, unitPlacement:str=&#34;right&#34;, showToolbar:bool=True, **kwargs):
+def spec(
+    precision: int = 2,
+    trailingZeros: bool = False,
+    unitPlacement: str = &#34;right&#34;,
+    showToolbar: bool = True,
+    **kwargs,
+):
     &#34;&#34;&#34;
     Required Arguments:
 
@@ -561,8 +609,8 @@ def spec(precision:int=2, trailingZeros:bool=False, unitPlacement:str=&#34;right
         - Default: `True`
     &#34;&#34;&#34;
     return {
-        &#39;kwargs&#39;: kwargs,
-        &#39;accepted_values&#39;: {
+        &#34;kwargs&#34;: kwargs,
+        &#34;accepted_values&#34;: {
             # TODO: &#34;unitPlacement&#34;: [],
         },
     }</code></pre>
@@ -587,7 +635,7 @@ class settings_demo(ApiValidator):
     &#34;&#34;&#34;
 
     @staticmethod
-    def spec(scrollSpeed:[int,float]=1, displayTime:int=5, **kwargs):
+    def spec(scrollSpeed: [int, float] = 1, displayTime: int = 5, **kwargs):
         &#34;&#34;&#34;
         Optional Arguments:
 
@@ -601,8 +649,8 @@ class settings_demo(ApiValidator):
             - Default: `5`
         &#34;&#34;&#34;
         return {
-            &#39;kwargs&#39;: kwargs,
-            &#39;accepted_values&#39;: {},
+            &#34;kwargs&#34;: kwargs,
+            &#34;accepted_values&#34;: {},
         }</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -635,7 +683,7 @@ class settings_demo(ApiValidator):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def spec(scrollSpeed:[int,float]=1, displayTime:int=5, **kwargs):
+def spec(scrollSpeed: [int, float] = 1, displayTime: int = 5, **kwargs):
     &#34;&#34;&#34;
     Optional Arguments:
 
@@ -649,8 +697,8 @@ def spec(scrollSpeed:[int,float]=1, displayTime:int=5, **kwargs):
         - Default: `5`
     &#34;&#34;&#34;
     return {
-        &#39;kwargs&#39;: kwargs,
-        &#39;accepted_values&#39;: {},
+        &#34;kwargs&#34;: kwargs,
+        &#34;accepted_values&#34;: {},
     }</code></pre>
 </details>
 </dd>
@@ -673,7 +721,7 @@ class settings_sync(ApiValidator):
     &#34;&#34;&#34;
 
     @staticmethod
-    def spec(name:str, showToggle:bool, value:bool, data:dict, **kwargs):
+    def spec(name: str, showToggle: bool, value: bool, data: dict, **kwargs):
         &#34;&#34;&#34;
         Required Arguments:
 
@@ -692,8 +740,8 @@ class settings_sync(ApiValidator):
 
         &#34;&#34;&#34;
         return {
-            &#39;kwargs&#39;: kwargs,
-            &#39;accepted_values&#39;: {},
+            &#34;kwargs&#34;: kwargs,
+            &#34;accepted_values&#34;: {},
         }
 
     # def __extend_spec__(self, **kwargs):
@@ -740,7 +788,7 @@ class settings_sync(ApiValidator):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def spec(name:str, showToggle:bool, value:bool, data:dict, **kwargs):
+def spec(name: str, showToggle: bool, value: bool, data: dict, **kwargs):
     &#34;&#34;&#34;
     Required Arguments:
 
@@ -759,8 +807,8 @@ def spec(name:str, showToggle:bool, value:bool, data:dict, **kwargs):
 
     &#34;&#34;&#34;
     return {
-        &#39;kwargs&#39;: kwargs,
-        &#39;accepted_values&#39;: {},
+        &#34;kwargs&#34;: kwargs,
+        &#34;accepted_values&#34;: {},
     }</code></pre>
 </details>
 </dd>
@@ -781,8 +829,9 @@ class settings_time(ApiValidator):
     &#34;&#34;&#34;
     ## Api Path: settings.time
     &#34;&#34;&#34;
+
     @staticmethod
-    def spec(timeLength:int, timeUnits:str, **kwargs):
+    def spec(timeLength: int, timeUnits: str, **kwargs):
         &#34;&#34;&#34;
         Required Arguments:
 
@@ -794,8 +843,8 @@ class settings_time(ApiValidator):
             - What: The units of time to display.
         &#34;&#34;&#34;
         return {
-            &#39;kwargs&#39;: kwargs,
-            &#39;accepted_values&#39;: {},
+            &#34;kwargs&#34;: kwargs,
+            &#34;accepted_values&#34;: {},
         }</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -826,7 +875,7 @@ class settings_time(ApiValidator):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def spec(timeLength:int, timeUnits:str, **kwargs):
+def spec(timeLength: int, timeUnits: str, **kwargs):
     &#34;&#34;&#34;
     Required Arguments:
 
@@ -838,8 +887,8 @@ def spec(timeLength:int, timeUnits:str, **kwargs):
         - What: The units of time to display.
     &#34;&#34;&#34;
     return {
-        &#39;kwargs&#39;: kwargs,
-        &#39;accepted_values&#39;: {},
+        &#34;kwargs&#34;: kwargs,
+        &#34;accepted_values&#34;: {},
     }</code></pre>
 </details>
 </dd>

@@ -30,16 +30,27 @@
 <pre><code class="python">&#34;&#34;&#34;
 Build out an app bar with buttons to launch pages, launch panes and trigger api commands.
 &#34;&#34;&#34;
-from cave_utils.api.utils import *
+from cave_utils.api.utils import ApiValidator, CustomKeyValidator
 import type_enforced
+
 
 @type_enforced.Enforcer
 class appBar_data_star(ApiValidator):
     &#34;&#34;&#34;
-    ## Api Path: appBar.data.*
+    ## Api Path: appBar.data.\*
     &#34;&#34;&#34;
+
     @staticmethod
-    def spec(icon:str, type:str, bar:str, variant:[str,None]=None, color:[str,None]=None, apiCommand:[str,None]=None, apiCommandKeys:[list,None]=None, **kwargs):
+    def spec(
+        icon: str,
+        type: str,
+        bar: str,
+        variant: [str, None] = None,
+        color: [str, None] = None,
+        apiCommand: [str, None] = None,
+        apiCommandKeys: [list, None] = None,
+        **kwargs,
+    ):
         &#34;&#34;&#34;
         Required Arguments:
 
@@ -63,7 +74,7 @@ class appBar_data_star(ApiValidator):
                 - `&#34;lowerLeft&#34;`
                 - `&#34;upperRight&#34;`
                 - `&#34;lowerRight&#34;`
-        
+
         Optional Arguments:
 
         - `variant`:
@@ -96,29 +107,28 @@ class appBar_data_star(ApiValidator):
 
         &#34;&#34;&#34;
         return {
-            &#39;kwargs&#39;: kwargs,
-            &#39;accepted_values&#39;: {
+            &#34;kwargs&#34;: kwargs,
+            &#34;accepted_values&#34;: {
                 &#34;type&#34;: [&#34;session&#34;, &#34;settings&#34;, &#34;button&#34;, &#34;pane&#34;, &#34;page&#34;],
                 &#34;variant&#34;: [&#34;modal&#34;, &#34;wall&#34;] if type == &#34;pane&#34; else [],
                 &#34;bar&#34;: [&#34;upperLeft&#34;, &#34;lowerLeft&#34;, &#34;upperRight&#34;, &#34;lowerRight&#34;],
-            }
+            },
         }
 
     def __extend_spec__(self, **kwargs):
         color = self.data.get(&#34;color&#34;)
         if color:
-            self.__check_rgba_string_valid__(
-                rgba_string=color,
-                prepend_path=[&#34;color&#34;]
-            )
+            self.__check_rgba_string_valid__(rgba_string=color, prepend_path=[&#34;color&#34;])
+
 
 @type_enforced.Enforcer
 class appBar(ApiValidator):
     &#34;&#34;&#34;
     ## Api Path: appBar
     &#34;&#34;&#34;
+
     @staticmethod
-    def spec(data:dict=dict(), **kwargs):
+    def spec(data: dict = dict(), **kwargs):
         &#34;&#34;&#34;
         Optional Arguments:
 
@@ -127,10 +137,7 @@ class appBar(ApiValidator):
             - What: The data to pass to `appBar.data.*`.
             - Default: `{}`
         &#34;&#34;&#34;
-        return {
-            &#39;kwargs&#39;: kwargs,
-            &#39;accepted_values&#39;: {}
-        }
+        return {&#34;kwargs&#34;: kwargs, &#34;accepted_values&#34;: {}}
 
     def __extend_spec__(self, **kwargs):
         data = self.data.get(&#34;data&#34;, {})
@@ -163,8 +170,9 @@ class appBar(ApiValidator):
     &#34;&#34;&#34;
     ## Api Path: appBar
     &#34;&#34;&#34;
+
     @staticmethod
-    def spec(data:dict=dict(), **kwargs):
+    def spec(data: dict = dict(), **kwargs):
         &#34;&#34;&#34;
         Optional Arguments:
 
@@ -173,10 +181,7 @@ class appBar(ApiValidator):
             - What: The data to pass to `appBar.data.*`.
             - Default: `{}`
         &#34;&#34;&#34;
-        return {
-            &#39;kwargs&#39;: kwargs,
-            &#39;accepted_values&#39;: {}
-        }
+        return {&#34;kwargs&#34;: kwargs, &#34;accepted_values&#34;: {}}
 
     def __extend_spec__(self, **kwargs):
         data = self.data.get(&#34;data&#34;, {})
@@ -208,7 +213,7 @@ class appBar(ApiValidator):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def spec(data:dict=dict(), **kwargs):
+def spec(data: dict = dict(), **kwargs):
     &#34;&#34;&#34;
     Optional Arguments:
 
@@ -217,10 +222,7 @@ def spec(data:dict=dict(), **kwargs):
         - What: The data to pass to `appBar.data.*`.
         - Default: `{}`
     &#34;&#34;&#34;
-    return {
-        &#39;kwargs&#39;: kwargs,
-        &#39;accepted_values&#39;: {}
-    }</code></pre>
+    return {&#34;kwargs&#34;: kwargs, &#34;accepted_values&#34;: {}}</code></pre>
 </details>
 </dd>
 </dl>
@@ -238,10 +240,20 @@ def spec(data:dict=dict(), **kwargs):
 <pre><code class="python">@type_enforced.Enforcer
 class appBar_data_star(ApiValidator):
     &#34;&#34;&#34;
-    ## Api Path: appBar.data.*
+    ## Api Path: appBar.data.\*
     &#34;&#34;&#34;
+
     @staticmethod
-    def spec(icon:str, type:str, bar:str, variant:[str,None]=None, color:[str,None]=None, apiCommand:[str,None]=None, apiCommandKeys:[list,None]=None, **kwargs):
+    def spec(
+        icon: str,
+        type: str,
+        bar: str,
+        variant: [str, None] = None,
+        color: [str, None] = None,
+        apiCommand: [str, None] = None,
+        apiCommandKeys: [list, None] = None,
+        **kwargs,
+    ):
         &#34;&#34;&#34;
         Required Arguments:
 
@@ -265,7 +277,7 @@ class appBar_data_star(ApiValidator):
                 - `&#34;lowerLeft&#34;`
                 - `&#34;upperRight&#34;`
                 - `&#34;lowerRight&#34;`
-        
+
         Optional Arguments:
 
         - `variant`:
@@ -298,21 +310,18 @@ class appBar_data_star(ApiValidator):
 
         &#34;&#34;&#34;
         return {
-            &#39;kwargs&#39;: kwargs,
-            &#39;accepted_values&#39;: {
+            &#34;kwargs&#34;: kwargs,
+            &#34;accepted_values&#34;: {
                 &#34;type&#34;: [&#34;session&#34;, &#34;settings&#34;, &#34;button&#34;, &#34;pane&#34;, &#34;page&#34;],
                 &#34;variant&#34;: [&#34;modal&#34;, &#34;wall&#34;] if type == &#34;pane&#34; else [],
                 &#34;bar&#34;: [&#34;upperLeft&#34;, &#34;lowerLeft&#34;, &#34;upperRight&#34;, &#34;lowerRight&#34;],
-            }
+            },
         }
 
     def __extend_spec__(self, **kwargs):
         color = self.data.get(&#34;color&#34;)
         if color:
-            self.__check_rgba_string_valid__(
-                rgba_string=color,
-                prepend_path=[&#34;color&#34;]
-            )</code></pre>
+            self.__check_rgba_string_valid__(rgba_string=color, prepend_path=[&#34;color&#34;])</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -408,7 +417,16 @@ class appBar_data_star(ApiValidator):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def spec(icon:str, type:str, bar:str, variant:[str,None]=None, color:[str,None]=None, apiCommand:[str,None]=None, apiCommandKeys:[list,None]=None, **kwargs):
+def spec(
+    icon: str,
+    type: str,
+    bar: str,
+    variant: [str, None] = None,
+    color: [str, None] = None,
+    apiCommand: [str, None] = None,
+    apiCommandKeys: [list, None] = None,
+    **kwargs,
+):
     &#34;&#34;&#34;
     Required Arguments:
 
@@ -432,7 +450,7 @@ def spec(icon:str, type:str, bar:str, variant:[str,None]=None, color:[str,None]=
             - `&#34;lowerLeft&#34;`
             - `&#34;upperRight&#34;`
             - `&#34;lowerRight&#34;`
-    
+
     Optional Arguments:
 
     - `variant`:
@@ -465,12 +483,12 @@ def spec(icon:str, type:str, bar:str, variant:[str,None]=None, color:[str,None]=
 
     &#34;&#34;&#34;
     return {
-        &#39;kwargs&#39;: kwargs,
-        &#39;accepted_values&#39;: {
+        &#34;kwargs&#34;: kwargs,
+        &#34;accepted_values&#34;: {
             &#34;type&#34;: [&#34;session&#34;, &#34;settings&#34;, &#34;button&#34;, &#34;pane&#34;, &#34;page&#34;],
             &#34;variant&#34;: [&#34;modal&#34;, &#34;wall&#34;] if type == &#34;pane&#34; else [],
             &#34;bar&#34;: [&#34;upperLeft&#34;, &#34;lowerLeft&#34;, &#34;upperRight&#34;, &#34;lowerRight&#34;],
-        }
+        },
     }</code></pre>
 </details>
 </dd>

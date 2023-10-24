@@ -30,8 +30,9 @@
 <pre><code class="python">&#34;&#34;&#34;
 (Optional) Pass special arguments to the server that are not part of the API spec.
 &#34;&#34;&#34;
-from cave_utils.api.utils import *
+from cave_utils.api.utils import ApiValidator
 import type_enforced
+
 
 @type_enforced.Enforcer
 class extraKwargs(ApiValidator):
@@ -40,20 +41,20 @@ class extraKwargs(ApiValidator):
     &#34;&#34;&#34;
 
     @staticmethod
-    def spec(wipeExisting:bool=False, **kwargs):
+    def spec(wipeExisting: bool = False, **kwargs):
         &#34;&#34;&#34;
         Optional arguments:
 
         - `wipeExisting`:
             - Type: bool
             - What: If `True`, the server will delete all existing data before importing the new data. If `False`, the server will merge the new data with the existing data.
-                - Note: All data is merged at the top level. 
+                - Note: All data is merged at the top level.
                     - EG: If you update an item in `settings` you should pass the entire `settings` object when you return `session_data`.
             - Default: `False`
         &#34;&#34;&#34;
         return {
-            &#39;kwargs&#39;: kwargs,
-            &#39;accepted_values&#39;: {},
+            &#34;kwargs&#34;: kwargs,
+            &#34;accepted_values&#34;: {},
         }</code></pre>
 </details>
 </section>
@@ -83,20 +84,20 @@ class extraKwargs(ApiValidator):
     &#34;&#34;&#34;
 
     @staticmethod
-    def spec(wipeExisting:bool=False, **kwargs):
+    def spec(wipeExisting: bool = False, **kwargs):
         &#34;&#34;&#34;
         Optional arguments:
 
         - `wipeExisting`:
             - Type: bool
             - What: If `True`, the server will delete all existing data before importing the new data. If `False`, the server will merge the new data with the existing data.
-                - Note: All data is merged at the top level. 
+                - Note: All data is merged at the top level.
                     - EG: If you update an item in `settings` you should pass the entire `settings` object when you return `session_data`.
             - Default: `False`
         &#34;&#34;&#34;
         return {
-            &#39;kwargs&#39;: kwargs,
-            &#39;accepted_values&#39;: {},
+            &#34;kwargs&#34;: kwargs,
+            &#34;accepted_values&#34;: {},
         }</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -114,7 +115,7 @@ class extraKwargs(ApiValidator):
 <li><code>wipeExisting</code>:<ul>
 <li>Type: bool</li>
 <li>What: If <code>True</code>, the server will delete all existing data before importing the new data. If <code>False</code>, the server will merge the new data with the existing data.<ul>
-<li>Note: All data is merged at the top level. <ul>
+<li>Note: All data is merged at the top level.<ul>
 <li>EG: If you update an item in <code>settings</code> you should pass the entire <code>settings</code> object when you return <code>session_data</code>.</li>
 </ul>
 </li>
@@ -129,20 +130,20 @@ class extraKwargs(ApiValidator):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def spec(wipeExisting:bool=False, **kwargs):
+def spec(wipeExisting: bool = False, **kwargs):
     &#34;&#34;&#34;
     Optional arguments:
 
     - `wipeExisting`:
         - Type: bool
         - What: If `True`, the server will delete all existing data before importing the new data. If `False`, the server will merge the new data with the existing data.
-            - Note: All data is merged at the top level. 
+            - Note: All data is merged at the top level.
                 - EG: If you update an item in `settings` you should pass the entire `settings` object when you return `session_data`.
         - Default: `False`
     &#34;&#34;&#34;
     return {
-        &#39;kwargs&#39;: kwargs,
-        &#39;accepted_values&#39;: {},
+        &#34;kwargs&#34;: kwargs,
+        &#34;accepted_values&#34;: {},
     }</code></pre>
 </details>
 </dd>

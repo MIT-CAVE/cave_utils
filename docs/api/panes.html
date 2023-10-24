@@ -30,55 +30,68 @@
 <pre><code class="python">&#34;&#34;&#34;
 Build out an app bar with buttons to launch pages, launch panes and trigger api commands.
 &#34;&#34;&#34;
-from cave_utils.api.utils import *
+from cave_utils.api.utils import ApiValidator, CustomKeyValidator
+from cave_utils.api.general import props, values, layout
 import type_enforced
+
 
 @type_enforced.Enforcer
 class panes_data_star(ApiValidator):
     &#34;&#34;&#34;
-    ## Api Path: panes.data.*
+    ## Api Path: panes.data.\*
     &#34;&#34;&#34;
+
     @staticmethod
-    def spec(name:str, props:dict, values:[dict, None]=None, layout:[dict, None]=None, **kwargs):
+    def spec(
+        name: str, props: dict, values: [dict, None] = None, layout: [dict, None] = None, **kwargs
+    ):
         &#34;&#34;&#34;
         Required Arguments:
-        
+
         - `name`:
             - Type: str
             - What: The name of the pane.
         - `props`:
             - Type: dict
             - What: The props that will be rendered in the pane.
-            - See: `cave_utils.api.utils.PropValidator`
+            - See: `cave_utils.api.general.props`
         - `values`:
-            - Type: dict 
+            - Type: dict
             - What: The values that will be passed to the props.
             - Required: False
-            - See: `cave_utils.api.utils.PropValueValidator`
+            - See: `cave_utils.api.general.values`
         - `layout`:
             - Type: dict
             - What: The layout of the pane.
             - Required: False
-            - See: `cave_utils.api.utils.PropLayoutValidator`
+            - See: `cave_utils.api.general.layout`
         &#34;&#34;&#34;
-        return {
-            &#39;kwargs&#39;: kwargs,
-            &#39;accepted_values&#39;: {}
-        }
+        return {&#34;kwargs&#34;: kwargs, &#34;accepted_values&#34;: {}}
 
     def __extend_spec__(self, **kwargs):
         # Validate Props
         CustomKeyValidator(
-            data=self.data.get(&#34;props&#34;, {}), log=self.log, prepend_path=[&#34;props&#34;], validator=PropValidator, **kwargs
+            data=self.data.get(&#34;props&#34;, {}),
+            log=self.log,
+            prepend_path=[&#34;props&#34;],
+            validator=props,
+            **kwargs,
         )
         props_data = self.data.get(&#34;props&#34;, {})
-        PropLayoutValidator(
-            data=self.data.get(&#34;layout&#34;, {}), log=self.log, prepend_path=[&#34;layout&#34;], prop_id_list=list(props_data.keys()), **kwargs
+        layout(
+            data=self.data.get(&#34;layout&#34;, {}),
+            log=self.log,
+            prepend_path=[&#34;layout&#34;],
+            prop_id_list=list(props_data.keys()),
+            **kwargs,
         )
-        PropValueValidator(
-            data=self.data.get(&#34;values&#34;, {}), log=self.log, prepend_path=[&#34;values&#34;], props_data=props_data, **kwargs
+        values(
+            data=self.data.get(&#34;values&#34;, {}),
+            log=self.log,
+            prepend_path=[&#34;values&#34;],
+            props_data=props_data,
+            **kwargs,
         )
-
 
 
 @type_enforced.Enforcer
@@ -86,8 +99,9 @@ class panes(ApiValidator):
     &#34;&#34;&#34;
     ## Api Path: panes
     &#34;&#34;&#34;
+
     @staticmethod
-    def spec(data:dict=dict(), **kwargs):
+    def spec(data: dict = dict(), **kwargs):
         &#34;&#34;&#34;
         Optional Arguments:
 
@@ -96,10 +110,7 @@ class panes(ApiValidator):
             - What: The data to pass to `panes.data.*`.
             - Default: `{}`
         &#34;&#34;&#34;
-        return {
-            &#39;kwargs&#39;: kwargs,
-            &#39;accepted_values&#39;: {}
-        }
+        return {&#34;kwargs&#34;: kwargs, &#34;accepted_values&#34;: {}}
 
     def __extend_spec__(self, **kwargs):
         data = self.data.get(&#34;data&#34;, {})
@@ -132,8 +143,9 @@ class panes(ApiValidator):
     &#34;&#34;&#34;
     ## Api Path: panes
     &#34;&#34;&#34;
+
     @staticmethod
-    def spec(data:dict=dict(), **kwargs):
+    def spec(data: dict = dict(), **kwargs):
         &#34;&#34;&#34;
         Optional Arguments:
 
@@ -142,10 +154,7 @@ class panes(ApiValidator):
             - What: The data to pass to `panes.data.*`.
             - Default: `{}`
         &#34;&#34;&#34;
-        return {
-            &#39;kwargs&#39;: kwargs,
-            &#39;accepted_values&#39;: {}
-        }
+        return {&#34;kwargs&#34;: kwargs, &#34;accepted_values&#34;: {}}
 
     def __extend_spec__(self, **kwargs):
         data = self.data.get(&#34;data&#34;, {})
@@ -177,7 +186,7 @@ class panes(ApiValidator):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def spec(data:dict=dict(), **kwargs):
+def spec(data: dict = dict(), **kwargs):
     &#34;&#34;&#34;
     Optional Arguments:
 
@@ -186,10 +195,7 @@ def spec(data:dict=dict(), **kwargs):
         - What: The data to pass to `panes.data.*`.
         - Default: `{}`
     &#34;&#34;&#34;
-    return {
-        &#39;kwargs&#39;: kwargs,
-        &#39;accepted_values&#39;: {}
-    }</code></pre>
+    return {&#34;kwargs&#34;: kwargs, &#34;accepted_values&#34;: {}}</code></pre>
 </details>
 </dd>
 </dl>
@@ -207,47 +213,59 @@ def spec(data:dict=dict(), **kwargs):
 <pre><code class="python">@type_enforced.Enforcer
 class panes_data_star(ApiValidator):
     &#34;&#34;&#34;
-    ## Api Path: panes.data.*
+    ## Api Path: panes.data.\*
     &#34;&#34;&#34;
+
     @staticmethod
-    def spec(name:str, props:dict, values:[dict, None]=None, layout:[dict, None]=None, **kwargs):
+    def spec(
+        name: str, props: dict, values: [dict, None] = None, layout: [dict, None] = None, **kwargs
+    ):
         &#34;&#34;&#34;
         Required Arguments:
-        
+
         - `name`:
             - Type: str
             - What: The name of the pane.
         - `props`:
             - Type: dict
             - What: The props that will be rendered in the pane.
-            - See: `cave_utils.api.utils.PropValidator`
+            - See: `cave_utils.api.general.props`
         - `values`:
-            - Type: dict 
+            - Type: dict
             - What: The values that will be passed to the props.
             - Required: False
-            - See: `cave_utils.api.utils.PropValueValidator`
+            - See: `cave_utils.api.general.values`
         - `layout`:
             - Type: dict
             - What: The layout of the pane.
             - Required: False
-            - See: `cave_utils.api.utils.PropLayoutValidator`
+            - See: `cave_utils.api.general.layout`
         &#34;&#34;&#34;
-        return {
-            &#39;kwargs&#39;: kwargs,
-            &#39;accepted_values&#39;: {}
-        }
+        return {&#34;kwargs&#34;: kwargs, &#34;accepted_values&#34;: {}}
 
     def __extend_spec__(self, **kwargs):
         # Validate Props
         CustomKeyValidator(
-            data=self.data.get(&#34;props&#34;, {}), log=self.log, prepend_path=[&#34;props&#34;], validator=PropValidator, **kwargs
+            data=self.data.get(&#34;props&#34;, {}),
+            log=self.log,
+            prepend_path=[&#34;props&#34;],
+            validator=props,
+            **kwargs,
         )
         props_data = self.data.get(&#34;props&#34;, {})
-        PropLayoutValidator(
-            data=self.data.get(&#34;layout&#34;, {}), log=self.log, prepend_path=[&#34;layout&#34;], prop_id_list=list(props_data.keys()), **kwargs
+        layout(
+            data=self.data.get(&#34;layout&#34;, {}),
+            log=self.log,
+            prepend_path=[&#34;layout&#34;],
+            prop_id_list=list(props_data.keys()),
+            **kwargs,
         )
-        PropValueValidator(
-            data=self.data.get(&#34;values&#34;, {}), log=self.log, prepend_path=[&#34;values&#34;], props_data=props_data, **kwargs
+        values(
+            data=self.data.get(&#34;values&#34;, {}),
+            log=self.log,
+            prepend_path=[&#34;values&#34;],
+            props_data=props_data,
+            **kwargs,
         )</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -270,21 +288,21 @@ class panes_data_star(ApiValidator):
 <li><code>props</code>:<ul>
 <li>Type: dict</li>
 <li>What: The props that will be rendered in the pane.</li>
-<li>See: <code><a title="cave_utils.api.utils.PropValidator" href="utils.html#cave_utils.api.utils.PropValidator">PropValidator</a></code></li>
+<li>See: <code><a title="cave_utils.api.general.props" href="general.html#cave_utils.api.general.props">props</a></code></li>
 </ul>
 </li>
 <li><code>values</code>:<ul>
-<li>Type: dict </li>
+<li>Type: dict</li>
 <li>What: The values that will be passed to the props.</li>
 <li>Required: False</li>
-<li>See: <code><a title="cave_utils.api.utils.PropValueValidator" href="utils.html#cave_utils.api.utils.PropValueValidator">PropValueValidator</a></code></li>
+<li>See: <code><a title="cave_utils.api.general.values" href="general.html#cave_utils.api.general.values">values</a></code></li>
 </ul>
 </li>
 <li><code>layout</code>:<ul>
 <li>Type: dict</li>
 <li>What: The layout of the pane.</li>
 <li>Required: False</li>
-<li>See: <code><a title="cave_utils.api.utils.PropLayoutValidator" href="utils.html#cave_utils.api.utils.PropLayoutValidator">PropLayoutValidator</a></code></li>
+<li>See: <code><a title="cave_utils.api.general.layout" href="general.html#cave_utils.api.general.layout">layout</a></code></li>
 </ul>
 </li>
 </ul></div>
@@ -293,32 +311,31 @@ class panes_data_star(ApiValidator):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def spec(name:str, props:dict, values:[dict, None]=None, layout:[dict, None]=None, **kwargs):
+def spec(
+    name: str, props: dict, values: [dict, None] = None, layout: [dict, None] = None, **kwargs
+):
     &#34;&#34;&#34;
     Required Arguments:
-    
+
     - `name`:
         - Type: str
         - What: The name of the pane.
     - `props`:
         - Type: dict
         - What: The props that will be rendered in the pane.
-        - See: `cave_utils.api.utils.PropValidator`
+        - See: `cave_utils.api.general.props`
     - `values`:
-        - Type: dict 
+        - Type: dict
         - What: The values that will be passed to the props.
         - Required: False
-        - See: `cave_utils.api.utils.PropValueValidator`
+        - See: `cave_utils.api.general.values`
     - `layout`:
         - Type: dict
         - What: The layout of the pane.
         - Required: False
-        - See: `cave_utils.api.utils.PropLayoutValidator`
+        - See: `cave_utils.api.general.layout`
     &#34;&#34;&#34;
-    return {
-        &#39;kwargs&#39;: kwargs,
-        &#39;accepted_values&#39;: {}
-    }</code></pre>
+    return {&#34;kwargs&#34;: kwargs, &#34;accepted_values&#34;: {}}</code></pre>
 </details>
 </dd>
 </dl>

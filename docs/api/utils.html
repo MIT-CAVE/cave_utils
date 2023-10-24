@@ -35,6 +35,7 @@ import type_enforced
 import re
 from cave_utils.log import LogHelper, LogObject
 
+
 class ApiValidator:
     def __init__(self, **fields):
         self.__validate__(**fields)
@@ -42,9 +43,9 @@ class ApiValidator:
     def spec(self, **kwargs):
         &#34;&#34;&#34;
         The default spec method.
-         
+
         This provides a baseline spec for some utility validators.
-        
+
         This should be overridden by any non utility child class.
         &#34;&#34;&#34;
         return {
@@ -81,20 +82,12 @@ class ApiValidator:
             check_value = self.data.get(field)
             if isinstance(check_value, dict):
                 check_value = list(check_value.keys())
+            if isinstance(check_value, str):
+                check_value = [check_value]
             if isinstance(check_value, list):
-                value_diff = pamda.difference(check_value, accepted_values)
-                if len(value_diff) &gt; 0:
-                    self.__error__(
-                        path=[field],
-                        msg=f&#34;Invalid values (&#39;{value_diff}&#39;): Acceptable values are: {accepted_values if len(accepted_values)&gt;10 else accepted_values[:11] + [&#39;...&#39;]}&#34;,
-                    )
-                    continue
-            else:
-                if check_value not in accepted_values:
-                    self.__error__(
-                        path=[field],
-                        msg=f&#34;Invalid value (&#39;{check_value}&#39;): Acceptable values are: {accepted_values}&#34;,
-                    )
+                if self.__check_subset_valid__(
+                    subset=check_value, valid_values=accepted_values, prepend_path=[field]
+                ):
                     continue
 
         # Run additional Validations
@@ -125,7 +118,7 @@ class ApiValidator:
         self.log.add(path=path, msg=msg, level=&#34;warning&#34;)
 
     # Useful Validator Checks
-    def __check_rgba_string_valid__(self, rgba_string: str, prepend_path:list=list()):
+    def __check_rgba_string_valid__(self, rgba_string: str, prepend_path: list = list()):
         &#34;&#34;&#34;
         Validate an rgba string and if an issue is present, log an error
         &#34;&#34;&#34;
@@ -147,7 +140,7 @@ class ApiValidator:
         except:
             self.__error__(path=prepend_path, msg=&#34;Invalid RGBA string&#34;)
 
-    def __check_pixel_string_valid__(self, pixel_string: str, prepend_path:list=list()):
+    def __check_pixel_string_valid__(self, pixel_string: str, prepend_path: list = list()):
         &#34;&#34;&#34;
         Validate a pixel string and if an issue is present, log an error
         &#34;&#34;&#34;
@@ -160,7 +153,7 @@ class ApiValidator:
         except:
             self.__error__(path=prepend_path, msg=&#34;Invalid pixel string&#34;)
 
-    def __check_url_valid__(self, url: str, prepend_path:list=list()):
+    def __check_url_valid__(self, url: str, prepend_path: list = list()):
         &#34;&#34;&#34;
         Validate a url and if an issue is present, log an error
         &#34;&#34;&#34;
@@ -178,15 +171,29 @@ class ApiValidator:
         if re.match(regex, url) is None:
             self.__error__(path=prepend_path, msg=&#34;Invalid url&#34;)
 
-    def __check_subset_valid__(self, subset: list, valid_values: list, prepend_path:list=list()):
+    def __check_subset_valid__(
+        self,
+        subset: list,
+        valid_values: list,
+        prepend_path: list = list(),
+        valid_values_count: int = 6,
+    ):
         &#34;&#34;&#34;
         Validate a subset of values is in a set of valid values and if an issue is present, log an error
         &#34;&#34;&#34;
         invalid_values = pamda.difference(subset, valid_values)
         if len(invalid_values) &gt; 0:
-            self.__error__(path=prepend_path, msg=&#34;Invalid values selected: &#34; + str(invalid_values))
+            valid_values = (
+                valid_values[:valid_values_count] + [&#34;...&#34;]
+                if len(valid_values) &gt; valid_values_count
+                else valid_values
+            )
+            self.__error__(
+                path=prepend_path,
+                msg=f&#34;Invalid value(s) selected: {str(invalid_values)}. Accepted values are {valid_values}&#34;,
+            )
 
-    def __check_coord_path_valid__(self, coord_path: list, prepend_path:list=list()):
+    def __check_coord_path_valid__(self, coord_path: list, prepend_path: list = list()):
         &#34;&#34;&#34;
         Validate a coordinate path and if an issue is present, log an error
         &#34;&#34;&#34;
@@ -215,7 +222,7 @@ class ApiValidator:
         except:
             self.__error__(path=prepend_path, msg=&#34;Invalid coordinate path&#34;)
 
-    def __check_list_valid__(self, data: list, types: tuple, prepend_path:list=list()):
+    def __check_list_valid__(self, data: list, types: tuple, prepend_path: list = list()):
         &#34;&#34;&#34;
         Validate a list only contains certain object types and if an issue is present, log an error
         &#34;&#34;&#34;
@@ -223,10 +230,13 @@ class ApiValidator:
             types = (types,)
         for idx, item in enumerate(data):
             if not isinstance(item, types):
-                self.__error__(path=prepend_path, msg=f&#34;Invalid list item type at index: {idx} with type: {type(item)}&#34;)
+                self.__error__(
+                    path=prepend_path,
+                    msg=f&#34;Invalid list item type at index: {idx} with type: {type(item)}&#34;,
+                )
                 return
 
-    def __check_type__(self, value, check_type, prepend_path:list=list()):
+    def __check_type__(self, value, check_type, prepend_path: list = list()):
         &#34;&#34;&#34;
         Validate a value is a certain type and if an issue is present, log an error
 
@@ -242,14 +252,17 @@ class ApiValidator:
             - What: The type(s) to check against.
 
         Optional Arguments:
-        
+
         - `prepend_path`:
             - Type: list
             - What: The path to prepend to the error message.
             - Default: `[]`
         &#34;&#34;&#34;
         if not isinstance(value, check_type):
-            self.__error__(msg=f&#34;({value}) Invalid Type: Expected one of {check_type} but got type {type(value)} instead.&#34;, path=prepend_path)
+            self.__error__(
+                msg=f&#34;({value}) Invalid Type: Expected one of {check_type} but got type {type(value)} instead.&#34;,
+                path=prepend_path,
+            )
             return False
         return True
 
@@ -258,9 +271,11 @@ class ApiValidator:
 class CustomKeyValidator(ApiValidator):
     @staticmethod
     def spec(**kwargs):
-        for k,v in kwargs.items():
+        for k, v in kwargs.items():
             if not isinstance(v, dict):
-                raise Exception(f&#34;Error for field ({k}): Type {type(dict())} is required but instead received {type(v)}&#34;)
+                raise Exception(
+                    f&#34;Error for field ({k}): Type {type(dict())} is required but instead received {type(v)}&#34;
+                )
         return {
             &#34;kwargs&#34;: {},
             &#34;accepted_values&#34;: {},
@@ -269,637 +284,9 @@ class CustomKeyValidator(ApiValidator):
     def __extend_spec__(self, **kwargs):
         validator = kwargs.get(&#34;validator&#34;)
         assert validator is not None, &#34;Must pass validator to CustomKeyValidator&#34;
-        kwargs = {k:v for k,v in kwargs.items() if k != &#34;validator&#34;}
+        kwargs = {k: v for k, v in kwargs.items() if k != &#34;validator&#34;}
         for field, value in self.data.items():
-            validator(data=value, log=self.log, prepend_path=[field], **kwargs)
-
-
-@type_enforced.Enforcer
-class ColorByOptionValidator(ApiValidator):
-    @staticmethod
-    def spec (startGradientColor:str, endGradientColor:str, min:[float, int, None]=None, max:[float, int, None]=None, nullColor:[str, None]=None, **kwargs):
-        &#34;&#34;&#34;
-        Required Arguments:
-
-        - `startGradientColor`:
-            - Type: str
-            - What: The starting color for the gradient.
-            - Accepted Values:
-                - Any valid rgba string.
-            - Eg: `&#34;rgba(255, 255, 255, 1)&#34;`
-        - `endGradientColor`:
-            - Type: str
-            - What: The ending color for the gradient.
-            - Accepted Values:
-                - Any valid rgba string.
-            - Eg: `&#34;rgba(255, 255, 255, 1)&#34;`
-
-        Optional Arguments:
-
-        - `min`:
-            - Type: float | int | None
-            - What: The minimum value for calculating the gradient.
-            - Default: `None`
-            - Note: If None, the min of the relevant data will be used.
-        - `max`:
-            - Type: float | int | None
-            - What: The maximum value for calculating the gradient.
-            - Default: `None`
-            - Note: If None, the max of the relevant data will be used.
-        - `nullColor`:
-            - Type: str | None
-            - What: The color to use for null values.
-            - Default: `None`
-            - Note: If None, null values will not be shown
-
-        &#34;&#34;&#34;
-        return {
-            &#34;kwargs&#34;: kwargs,
-            &#34;accepted_values&#34;: {},
-        }
-
-    def __extend_spec__(self, **kwargs):
-        for field in [&#34;startGradientColor&#34;, &#34;endGradientColor&#34;, &#34;nullColor&#34;]:
-            rgba_string = self.data.get(field)
-            if rgba_string is not None:
-                self.__check_rgba_string_valid__(
-                    rgba_string=rgba_string,
-                    prepend_path=[field]
-                )
-
-
-@type_enforced.Enforcer
-class SizeByOptionValidator(ApiValidator):
-    @staticmethod
-    def spec (startSize:str, endSize:str, min:[float, int, None]=None, max:[float, int, None]=None, nullSize:[str, None]=None, **kwargs):
-        &#34;&#34;&#34;
-        Required Arguments:
-
-        - `startSize`:
-            - Type: str
-            - What: The starting size for the gradient.
-            - Accepted Values:
-                - Any valid pixel string.
-            - Eg: `&#34;10px&#34;`
-        - `endSize`:
-            - Type: str
-            - What: The ending size for the gradient.
-            - Accepted Values:
-                - Any valid pixel string.
-            - Eg: `&#34;10px&#34;`
-
-        Optional Arguments:
-
-        - `min`:
-            - Type: float | int | None
-            - What: The minimum value for calculating the size.
-            - Default: `None`
-            - Note: If None, the min of the relevant data will be used.
-        - `max`:
-            - Type: float | int | None
-            - What: The maximum value for calculating the size.
-            - Default: `None`
-            - Note: If None, the max of the relevant data will be used.
-        - `nullSize`:
-            - Type: str | None
-            - What: The size to use for null values.
-            - Default: `None`
-            - Note: If None, null values will not be shown
-
-        &#34;&#34;&#34;
-        return {
-            &#34;kwargs&#34;: kwargs,
-            &#34;accepted_values&#34;: {},
-        }
-
-    def __extend_spec__(self, **kwargs):
-        for field in [&#34;startSize&#34;, &#34;endSize&#34;, &#34;nullSize&#34;]:
-            field_value = self.data.get(field)
-            if field_value is not None:
-                self.__check_pixel_string_valid__(
-                    pixel_string=field_value, 
-                    prepend_path=[field]
-                )
-
-
-@type_enforced.Enforcer
-class PropValidator(ApiValidator):
-    @staticmethod
-    def spec (
-        name:str, 
-        type:str, 
-        help:[str,None]=None,
-        variant:[str,None]=None,
-        enabled:[bool,None]=None,
-        apiCommand:[str,None]=None,
-        apiCommandKeys:[list,None]=None,
-        options:[dict,None]=None,
-        placeholder:[str,None]=None,
-        maxValue:[float,int,None]=None,
-        minValue:[float,int,None]=None,
-        numberFormat:[dict,None]=None,
-        maxRows:[int,None]=None,
-        minRows:[int,None]=None,
-        rows:[int,None]=None,
-        notation:[str,None]=None,
-        precision:[int,None]=None,
-        notationDisplay:[str,None]=None,
-        unit:[str,None]=None,
-        views:[list,None]=None,
-        legendNotation:[str,None]=None,
-        legendPrecision:[int,None]=None,
-        legendNotationDisplay:[str,None]=None,
-        legendMinLabel:[str,None]=None,
-        legendMaxLabel:[str,None]=None,
-        **kwargs
-    ):
-        &#34;&#34;&#34;
-        Required Arguments:
-
-        - `name`:
-            - Type: str
-            - What: The name of the prop.
-        - `type`:
-            - Type: str
-            - What: The type of the prop.
-            - Accepted Values:
-                - `&#34;head&#34;`
-                - `&#34;num&#34;`
-                - `&#34;toggle&#34;`
-                - `&#34;button&#34;`
-                - `&#34;text&#34;`
-                - `&#34;selector&#34;`
-                - `&#34;date&#34;`
-                - `&#34;media&#34;`
-        
-        Optional Arguments:
-        
-        - `help`:
-            - Type: str | None
-            - What: The help text to display.
-            - Default: `None`
-        - `variant`:
-            - Type: str | None
-            - What: The variant of the prop.
-            - Accepted Values:
-                - Type: `&#34;head&#34;`
-                    - `&#34;column&#34;`
-                    - `&#34;row&#34;`
-                - Type: `&#34;text&#34;`
-                    - `&#34;textarea&#34;`
-                - Type: `&#34;num&#34;`
-                    - `&#34;slider&#34;`
-                - Type: `&#34;selector&#34;`
-                    - `&#34;dropdown&#34;`
-                    - `&#34;checkbox&#34;`
-                    - `&#34;radio&#34;`
-                    - `&#34;combobox&#34;`
-                    - `&#34;hstepper&#34;`
-                    - `&#34;vstepper&#34;`
-                    - `&#34;hradio&#34;`
-                    - `&#34;nested&#34;`
-                - Type: `&#34;date&#34;`
-                    - `&#34;date&#34;`
-                    - `&#34;time&#34;`
-                    - `&#34;datetime&#34;`
-                - Type: `&#34;media&#34;`
-                    - `&#34;picture&#34;`
-                    - `&#34;video&#34;`
-            - Default: `None`
-            - TODO: Check this
-        - `enabled`:
-            - Type: bool | None
-            - What: If `True`, the prop will be enabled.
-            - Default: `None`
-            - Note: If `None`, the prop will be enabled.
-        - `apiCommand`:
-            - Type: str | None
-            - What: The name of the api command to trigger.
-            - Default: `None`
-            - Note: if `None`, no `apiCommand` is triggered
-        - `apiCommandKeys`:
-            - Type: list | None
-            - What: The top level api keys to pass to your `execute_command` if an apiCommand is provded.
-            - Default: `None`
-            - Note: If `None` all api keys are passed to your `execute_command`.
-        - `options`:
-            - Type: dict | None
-            - What: The options for the prop. This only applies to `selector` props.
-            - Default: `None`
-            - Note: If `None`, no options are provided.
-            - Note: Only options provided here are valid for the prop value.
-        - `placeholder`:
-            - Type: str | None
-            - What: The placeholder text to display. This only applies to `text` props.
-            - Default: `None`
-            - Note: If `None`, no placeholder text is provided.
-        - `maxValue`:
-            - Type: float | int | None
-            - What: The maximum value for the prop. This only applies to `num` props.
-            - Default: `None`
-            - Note: If `None`, no maximum value is provided.
-        - `minValue`:
-            - Type: float | int | None
-            - What: The minimum value for the prop. This only applies to `num` props.
-            - Default: `None`
-            - Note: If `None`, no minimum value is provided.
-        - `numberFormat`:
-            - Type: dict | None
-            - What: The number format for the prop. This only applies to `num` props.
-            - Default: `None`
-            - Note: If `None`, no number format is provided.
-            - TODO: Check / Extend this.
-        - `maxRows`:
-            - Type: int | None
-            - What: The maximum number of rows to show for a `textarea` variant. This only applies to `text` props.
-            - Default: `None`
-            - Note: If `None`, no maximum number of rows is provided.
-        - `minRows`:
-            - Type: int | None
-            - What: The minimum number of rows to show for a `textarea` variant. This only applies to `text` props.
-            - Default: `None`
-            - Note: If `None`, no minimum number of rows is provided.
-        - `rows`:
-            - Type: int | None
-            - What: The number of rows to show for a `textarea` variant. This only applies to `text` props.
-            - Default: `None`
-            - Note: If `None`, no number of rows is provided.
-        - `notation`:
-            - Type: str | None
-            - What: The notation to use for the prop. This only applies to `num` props.
-            - Default: `None`
-            - Note: If `None`, no notation is provided.
-            - TODO: Check / Extend This.
-        - `precision`:
-            - Type: int | None
-            - What: The precision to use for the prop. This only applies to `num` props.
-            - Default: `None`
-            - Note: If `None`, no precision is provided.
-            - TODO: Check / Extend This.
-        - `notationDisplay`:
-            - Type: str | None
-            - What: The notation display to use for the prop. This only applies to `num` props.
-            - Default: `None`
-            - Note: If `None`, no notation display is provided.
-            - TODO: Check / Extend This.
-        - `unit`:
-            - Type: str | None
-            - What: The unit to use for the prop. This only applies to `num` props.
-            - Default: `None`
-            - Note: If `None`, no unit is provided.
-            - TODO: Check / Extend This.
-        - `views`:
-            - Type: list | None
-            - What: A list of the views to use for the prop. This only applies to `date` props.
-            - Default: `None`
-            - Note: If `None`, no views are provided.
-            - Valid Values: `[&#34;day&#34;, &#34;hours&#34;, &#34;minutes&#34;]`
-            - TODO: Check / Extend This.
-        - `legendNotation`:
-            - Type: str | None
-            - What: The legend notation to use for the prop. This only applies to `num` props.
-            - Default: `None`
-            - Note: If `None`, no legend notation is provided.
-            - TODO: Check / Extend This.
-        - `legendPrecision`:
-            - Type: int | None
-            - What: The legend precision to use for the prop. This only applies to `num` props.
-            - Default: `None`
-            - Note: If `None`, no legend precision is provided.
-            - TODO: Check / Extend This.
-        - `legendNotationDisplay`:
-            - Type: str | None
-            - What: The legend notation display to use for the prop. This only applies to `num` props.
-            - Default: `None`
-            - Note: If `None`, no legend notation display is provided.
-            - TODO: Check / Extend This.
-        - `legendMinLabel`:
-            - Type: str | None
-            - What: The legend minimum label to use for the prop. This only applies to `num` props.
-            - Default: `None`
-            - Note: If `None`, no legend minimum label is provided.
-            - TODO: Check / Extend This.
-        - `legendMaxLabel`:
-            - Type: str | None
-            - What: The legend maximum label to use for the prop. This only applies to `num` props.
-            - Default: `None`
-            - Note: If `None`, no legend maximum label is provided. 
-            - TODO: Check / Extend This.
-        &#34;&#34;&#34;
-        passed_values = {k:v for k,v in locals().items() if (v is not None) and k!=&#34;kwargs&#34;}
-        required_fields = [&#34;name&#34;, &#34;type&#34;]
-        optional_fields = [&#39;help&#39;, &#39;variant&#39;, &#39;enabled&#39;]
-        if type != &#34;head&#34;:
-            optional_fields += [&#34;apiCommand&#34;, &#34;apiCommandKeys&#34;]
-        if type == &#34;text&#34;:
-            optional_fields += [&#34;minRows&#34;, &#34;maxRows&#34;, &#34;rows&#34;]
-        if type == &#34;num&#34;:
-            if variant == &#34;slider&#34;:
-                required_fields += [&#34;maxValue&#34;, &#34;minValue&#34;]
-            else:
-                optional_fields += [&#34;maxValue&#34;, &#34;minValue&#34;]
-            optional_fields += [&#34;unit&#34;, &#34;numberFormat&#34;, &#34;notation&#34;, &#34;precision&#34;, &#34;notationDisplay&#34;, &#34;legendNotation&#34;, &#34;legendPrecision&#34;, &#34;legendNotationDisplay&#34;, &#34;legendMinLabel&#34;, &#34;legendMaxLabel&#34;]
-        if type == &#34;selector&#34;:
-            required_fields += [&#34;options&#34;]
-            optional_fields += [&#34;placeholder&#34;]
-        if type == &#34;date&#34;:
-            optional_fields += [&#34;views&#34;]
-        missing_required = pamda.difference(required_fields, list(passed_values.keys()))
-        if len(missing_required) &gt; 0:
-            raise Exception(f&#34;Missing required fields: {str(missing_required)}&#34;)
-        for k, v in passed_values.items():
-            if k not in required_fields + optional_fields:
-                kwargs[k] = v
-        return {
-            &#34;kwargs&#34;: kwargs,
-            &#34;accepted_values&#34;: {
-                &#34;type&#34;: [&#34;head&#34;, &#34;num&#34;, &#34;toggle&#34;, &#34;button&#34;, &#34;text&#34;, &#34;selector&#34;, &#34;date&#34;, &#34;media&#34;],
-                &#34;views&#34;: [&#34;year&#34;, &#34;month&#34;, &#34;day&#34;, &#34;hours&#34;, &#34;minutes&#34;, &#34;seconds&#34;],
-                &#34;legendNotation&#34;: [&#39;compact&#39;, &#39;precision&#39;, &#39;scientific&#39;],
-                # TODO: Valiate These
-                # TODO: Add Other value checks here
-                &#34;variant&#34;: {
-                    &#34;head&#34;: [&#34;column&#34;, &#34;row&#34;],
-                    &#34;text&#34;: [&#34;textarea&#34;],
-                    &#34;num&#34;: [&#34;slider&#34;],
-                    &#34;selector&#34;: [
-                        &#34;dropdown&#34;,
-                        &#34;checkbox&#34;,
-                        &#34;radio&#34;,
-                        &#34;combobox&#34;,
-                        &#34;hstepper&#34;,
-                        &#34;vstepper&#34;,
-                        &#34;hradio&#34;,
-                        &#34;nested&#34;,
-                    ],
-                    &#34;date&#34;: [&#34;date&#34;, &#34;time&#34;, &#34;datetime&#34;],
-                    &#34;media&#34;: [&#34;picture&#34;, &#34;video&#34;],
-                }.get(type, []),
-            },
-        }
-
-    def __extend_spec__(self, **kwargs):
-        if self.data.get(&#34;type&#34;) == &#34;selector&#34;:
-            CustomKeyValidator(
-                data=self.data.get(&#34;options&#34;, {}),
-                log=self.log,
-                prepend_path=[&#34;options&#34;],
-                validator=PropSelectorOptionsValidator,
-                variant = self.data.get(&#34;variant&#34;),
-                **kwargs,
-            )
-
-
-class PropSelectorOptionsValidator(ApiValidator):
-    @staticmethod
-    def spec(name:str, path:[list,None]=None, **kwargs):
-        &#34;&#34;&#34;
-        Required Arguments:
-
-        - `name`:
-            - Type: str
-            - What: The name of the option.
-        - `path`:
-            - Type: list | None
-            - What: The path to the option. This is only required for nested options.
-            - Default: `None`
-            - Note: If `None`, the option will not be selectable.
-        &#34;&#34;&#34;
-        if kwargs.get(&#34;variant&#34;) == &#34;nested&#34;:
-            if path is None:
-                raise Exception(&#34;Must provide a path for nested options&#34;)
-        return {
-            &#34;kwargs&#34;: kwargs,
-            &#34;accepted_values&#34;: {},
-        }
-
-    def __extend_spec__(self, **kwargs):
-        if kwargs.get(&#34;variant&#34;) == &#34;nested&#34;:
-            if not isinstance(self.data.get(&#34;path&#34;), list):
-                self.__error__(msg=&#34;`path` must be specified and a list of strings for nested options&#34;)
-                return
-            self.__check_list_valid__(
-                data=self.data.get(&#34;path&#34;, []), 
-                types=(str,), 
-                prepend_path=[&#34;path&#34;]
-            )
-
-@type_enforced.Enforcer
-class PropLayoutValidator(ApiValidator):
-    @staticmethod
-    def spec(type:str, numColumns:[str,int,None]=None, numRows:[str,int,None]=None, data:[dict,None]=None, itemId:[str,None]=None, column:[int,None]=None, row:[int,None]=None, **kwargs):
-        &#34;&#34;&#34;
-        Required Arguments:
-
-        - `type`:
-            - Type: str
-            - What: The type of the layout.
-            - Accepted Values:
-                - `&#34;grid&#34;`
-                - `&#34;item&#34;`
-        
-        Optional Arguments:
-
-        - `numColumns`:
-            - Type: str | int
-            - What: The number of columns for the grid layout. This only applies to `grid` layouts.
-            - Default: `&#34;auto&#34;`
-            - Note: If `&#34;auto&#34;`, the number of columns will be calculated based on the number of items.
-        - `numRows`:
-            - Type: str | int
-            - What: The number of rows for the grid layout. This only applies to `grid` layouts.
-            - Default: `&#34;auto&#34;`
-            - Note: If `&#34;auto&#34;`, the number of rows will be calculated based on the number of items.
-        - `data`:
-            - Type: dict | None
-            - What: The data for the layout. This only applies to `grid` layouts.
-            - Default: `None`
-            - Note: If `None`, no data is provided.
-            - Accepted Values:
-                - The prop keys from your api spec at the same level as `layout`.
-        - `itemId`:
-            - Type: str | None
-            - What: The id of the item for the layout. This only applies to `item` layouts.
-            - Default: `None`
-            - Note: If `None`, no item id is provided.
-        - `column`:
-            - Type: int | None
-            - What: The column in which to place this object in the current grid.
-            - Default: `None`
-            - Note: If `None`, no column is provided.
-        - `row`:
-            - Type: int | None
-            - What: The row in which to place this object in the current grid.
-            - Default: `None`
-            - Note: If `None`, no row is provided.
-        &#34;&#34;&#34;
-        passed_values = {k:v for k,v in locals().items() if (v is not None) and k!=&#34;kwargs&#34;}
-        if type == &#34;grid&#34;:
-            required_fields = [&#34;type&#34;, &#34;data&#34;]
-            optional_fields = [&#34;numColumns&#34;, &#34;numRows&#34;, &#34;column&#34;, &#34;row&#34;]
-        if type == &#34;item&#34;:
-            required_fields = [&#34;type&#34;, &#34;itemId&#34;]
-            optional_fields = [&#34;column&#34;, &#34;row&#34;]
-        missing_required = pamda.difference(required_fields, list(passed_values.keys()))
-        if len(missing_required) &gt; 0:
-            raise Exception(f&#34;Missing required fields: {str(missing_required)}&#34;)
-        for k, v in passed_values.items():
-            if k not in required_fields + optional_fields:
-                kwargs[k] = v
-        accepted_values = {
-            &#34;type&#34;: [&#34;grid&#34;, &#34;item&#34;],
-        }
-        if isinstance (numRows, str):
-            accepted_values[&#34;numRows&#34;] = [&#34;auto&#34;]
-        if isinstance (numColumns, str):
-            accepted_values[&#34;numColumns&#34;] = [&#34;auto&#34;]
-        return {
-            &#34;kwargs&#34;: kwargs,
-            &#34;accepted_values&#34;: {
-                &#34;type&#34;: [&#34;grid&#34;, &#34;item&#34;],
-            },
-        }
-
-    def __extend_spec__(self, **kwargs):
-        layout_type = self.data.get(&#34;type&#34;, None)
-        if layout_type == &#34;grid&#34;:
-            for field, value in self.data.get(&#34;data&#34;, {}).items():
-                PropLayoutValidator(data=value, log=self.log, prepend_path=[&#34;data&#34;, field], **kwargs)
-        if layout_type == &#34;item&#34;:
-            item_id = self.data.get(&#34;itemId&#34;, None)
-            prop_id_list = kwargs.get(&#34;prop_id_list&#34;, [])
-            if item_id not in prop_id_list:
-                self.__error__(msg=f&#34;`itemId` ({item_id}) does not match any valid prop ids {prop_id_list}&#34;)
-
-@type_enforced.Enforcer
-class PropValueValidator(ApiValidator):
-    @staticmethod
-    def spec(**kwargs):
-        &#34;&#34;&#34;
-        Accepts all arbitrary values depending on what you have in your props as part of the api spec.
-
-        The values you pass will be validated against the props in your api spec.
-        &#34;&#34;&#34;
-        return {
-            &#34;kwargs&#34;: {},
-            &#34;accepted_values&#34;: {},
-        }
-    
-    def __extend_spec__(self, **kwargs):
-        props_data = kwargs.get(&#34;props_data&#34;, {})
-        for prop_key, prop_value in self.data.items():
-            prop_spec = props_data.get(prop_key, {})
-            if not prop_spec:
-                self.__error__(msg=f&#34;`{prop_key}` does not match any valid prop ids {list(props_data.keys())}&#34;)
-                continue
-            prop_type = prop_spec.get(&#34;type&#34;, None)
-            acceptable_types = {
-                &#34;head&#34;: (str,),
-                &#34;num&#34;: (int, float),
-                &#34;toggle&#34;: (bool,),
-                &#34;button&#34;: (str,),
-                &#34;text&#34;: (str,),
-                &#34;selector&#34;: (list,),
-                &#34;date&#34;: (str,),
-                &#34;media&#34;: (str,),
-            }.get(prop_type, None)
-            if not self.__check_type__(prop_value, acceptable_types, prepend_path=[prop_key]):
-                continue
-            if prop_type == &#39;num&#39;:
-                min_value = prop_spec.get(&#34;minValue&#34;, float(&#34;-inf&#34;))
-                max_value = prop_spec.get(&#34;maxValue&#34;, float(&#34;inf&#34;))
-                if prop_value &lt; min_value or prop_value &gt; max_value:
-                    self.__error__(msg=f&#34;`{prop_key}` with the prop type of `{prop_type}` must be between {min_value} and {max_value} as defined by the api spec.&#34;)
-            elif prop_type == &#34;selector&#34;:
-                options = list(prop_spec.get(&#34;options&#34;, {}).keys())
-                self.__check_subset_valid__(prop_value, options, prepend_path=[prop_key])
-            elif prop_type==&#39;head&#39;:
-                self.__error__(msg=f&#34;`{prop_key}` with the prop type of `{prop_type}` can not have an associated value.&#34;)
-            elif prop_type == &#39;date&#39;:
-                pass
-                # TODO: Validate date string
-            elif prop_type == &#39;media&#39;:
-                self.__check_url_valid__(prop_value)
-
-
-class GeoJsonValidator(ApiValidator):
-    def __populate_data__(self, **kwargs):
-        self.field_types = {
-            &#34;geoJsonLayer&#34;: str,
-            &#34;geoJsonProp&#34;: str,
-        }
-        self.required_fields = [&#34;geoJsonLayer&#34;, &#34;geoJsonProp&#34;]
-        self.optional_fields = []
-        self.accepted_values = {}
-
-    def __extend_spec__(self, **kwargs):
-        self.__check_url_valid__(
-            url = self.data.get(&#34;geoJsonLayer&#34;, None),
-            prepend_path=[&#34;geoJsonLayer&#34;]
-        )
-
-
-class ViewportValidator(ApiValidator):
-    def __populate_data__(self, **kwargs):
-        is_optional_viewport = kwargs.get(&#34;is_optional_viewport&#34;, False)
-        self.field_types = {
-            &#34;latitude&#34;: (
-                float,
-                int,
-            ),
-            &#34;longitude&#34;: (
-                float,
-                int,
-            ),
-            &#34;zoom&#34;: (
-                float,
-                int,
-            ),
-            &#34;bearing&#34;: (
-                float,
-                int,
-            ),
-            &#34;pitch&#34;: (
-                float,
-                int,
-            ),
-            &#34;height&#34;: (
-                float,
-                int,
-            ),
-            &#34;altitude&#34;: (
-                float,
-                int,
-            ),
-            &#34;maxZoom&#34;: (
-                float,
-                int,
-            ),
-            &#34;minZoom&#34;: (
-                float,
-                int,
-            ),
-            &#34;icon&#34;: str,
-            &#34;name&#34;: str,
-            &#34;order&#34;: int,
-        }
-
-        self.accepted_values = {}
-
-        self.required_fields = [&#34;latitude&#34;, &#34;longitude&#34;, &#34;zoom&#34;]
-
-        self.optional_fields = [
-            &#34;maxZoom&#34;,
-            &#34;minZoom&#34;,
-            &#34;height&#34;,
-            &#34;altitude&#34;,
-            &#34;bearing&#34;,
-            &#34;pitch&#34;,
-            &#34;order&#34;,
-        ]
-
-        if is_optional_viewport:
-            self.required_fields += [&#34;icon&#34;, &#34;name&#34;]</code></pre>
+            validator(data=value, log=self.log, prepend_path=[field], **kwargs)</code></pre>
 </details>
 </section>
 <section>
@@ -928,9 +315,9 @@ class ViewportValidator(ApiValidator):
     def spec(self, **kwargs):
         &#34;&#34;&#34;
         The default spec method.
-         
+
         This provides a baseline spec for some utility validators.
-        
+
         This should be overridden by any non utility child class.
         &#34;&#34;&#34;
         return {
@@ -967,20 +354,12 @@ class ViewportValidator(ApiValidator):
             check_value = self.data.get(field)
             if isinstance(check_value, dict):
                 check_value = list(check_value.keys())
+            if isinstance(check_value, str):
+                check_value = [check_value]
             if isinstance(check_value, list):
-                value_diff = pamda.difference(check_value, accepted_values)
-                if len(value_diff) &gt; 0:
-                    self.__error__(
-                        path=[field],
-                        msg=f&#34;Invalid values (&#39;{value_diff}&#39;): Acceptable values are: {accepted_values if len(accepted_values)&gt;10 else accepted_values[:11] + [&#39;...&#39;]}&#34;,
-                    )
-                    continue
-            else:
-                if check_value not in accepted_values:
-                    self.__error__(
-                        path=[field],
-                        msg=f&#34;Invalid value (&#39;{check_value}&#39;): Acceptable values are: {accepted_values}&#34;,
-                    )
+                if self.__check_subset_valid__(
+                    subset=check_value, valid_values=accepted_values, prepend_path=[field]
+                ):
                     continue
 
         # Run additional Validations
@@ -1011,7 +390,7 @@ class ViewportValidator(ApiValidator):
         self.log.add(path=path, msg=msg, level=&#34;warning&#34;)
 
     # Useful Validator Checks
-    def __check_rgba_string_valid__(self, rgba_string: str, prepend_path:list=list()):
+    def __check_rgba_string_valid__(self, rgba_string: str, prepend_path: list = list()):
         &#34;&#34;&#34;
         Validate an rgba string and if an issue is present, log an error
         &#34;&#34;&#34;
@@ -1033,7 +412,7 @@ class ViewportValidator(ApiValidator):
         except:
             self.__error__(path=prepend_path, msg=&#34;Invalid RGBA string&#34;)
 
-    def __check_pixel_string_valid__(self, pixel_string: str, prepend_path:list=list()):
+    def __check_pixel_string_valid__(self, pixel_string: str, prepend_path: list = list()):
         &#34;&#34;&#34;
         Validate a pixel string and if an issue is present, log an error
         &#34;&#34;&#34;
@@ -1046,7 +425,7 @@ class ViewportValidator(ApiValidator):
         except:
             self.__error__(path=prepend_path, msg=&#34;Invalid pixel string&#34;)
 
-    def __check_url_valid__(self, url: str, prepend_path:list=list()):
+    def __check_url_valid__(self, url: str, prepend_path: list = list()):
         &#34;&#34;&#34;
         Validate a url and if an issue is present, log an error
         &#34;&#34;&#34;
@@ -1064,15 +443,29 @@ class ViewportValidator(ApiValidator):
         if re.match(regex, url) is None:
             self.__error__(path=prepend_path, msg=&#34;Invalid url&#34;)
 
-    def __check_subset_valid__(self, subset: list, valid_values: list, prepend_path:list=list()):
+    def __check_subset_valid__(
+        self,
+        subset: list,
+        valid_values: list,
+        prepend_path: list = list(),
+        valid_values_count: int = 6,
+    ):
         &#34;&#34;&#34;
         Validate a subset of values is in a set of valid values and if an issue is present, log an error
         &#34;&#34;&#34;
         invalid_values = pamda.difference(subset, valid_values)
         if len(invalid_values) &gt; 0:
-            self.__error__(path=prepend_path, msg=&#34;Invalid values selected: &#34; + str(invalid_values))
+            valid_values = (
+                valid_values[:valid_values_count] + [&#34;...&#34;]
+                if len(valid_values) &gt; valid_values_count
+                else valid_values
+            )
+            self.__error__(
+                path=prepend_path,
+                msg=f&#34;Invalid value(s) selected: {str(invalid_values)}. Accepted values are {valid_values}&#34;,
+            )
 
-    def __check_coord_path_valid__(self, coord_path: list, prepend_path:list=list()):
+    def __check_coord_path_valid__(self, coord_path: list, prepend_path: list = list()):
         &#34;&#34;&#34;
         Validate a coordinate path and if an issue is present, log an error
         &#34;&#34;&#34;
@@ -1101,7 +494,7 @@ class ViewportValidator(ApiValidator):
         except:
             self.__error__(path=prepend_path, msg=&#34;Invalid coordinate path&#34;)
 
-    def __check_list_valid__(self, data: list, types: tuple, prepend_path:list=list()):
+    def __check_list_valid__(self, data: list, types: tuple, prepend_path: list = list()):
         &#34;&#34;&#34;
         Validate a list only contains certain object types and if an issue is present, log an error
         &#34;&#34;&#34;
@@ -1109,10 +502,13 @@ class ViewportValidator(ApiValidator):
             types = (types,)
         for idx, item in enumerate(data):
             if not isinstance(item, types):
-                self.__error__(path=prepend_path, msg=f&#34;Invalid list item type at index: {idx} with type: {type(item)}&#34;)
+                self.__error__(
+                    path=prepend_path,
+                    msg=f&#34;Invalid list item type at index: {idx} with type: {type(item)}&#34;,
+                )
                 return
 
-    def __check_type__(self, value, check_type, prepend_path:list=list()):
+    def __check_type__(self, value, check_type, prepend_path: list = list()):
         &#34;&#34;&#34;
         Validate a value is a certain type and if an issue is present, log an error
 
@@ -1128,14 +524,17 @@ class ViewportValidator(ApiValidator):
             - What: The type(s) to check against.
 
         Optional Arguments:
-        
+
         - `prepend_path`:
             - Type: list
             - What: The path to prepend to the error message.
             - Default: `[]`
         &#34;&#34;&#34;
         if not isinstance(value, check_type):
-            self.__error__(msg=f&#34;({value}) Invalid Type: Expected one of {check_type} but got type {type(value)} instead.&#34;, path=prepend_path)
+            self.__error__(
+                msg=f&#34;({value}) Invalid Type: Expected one of {check_type} but got type {type(value)} instead.&#34;,
+                path=prepend_path,
+            )
             return False
         return True</code></pre>
 </details>
@@ -1145,8 +544,22 @@ class ViewportValidator(ApiValidator):
 <li><a title="cave_utils.api.appBar.appBar" href="appBar.html#cave_utils.api.appBar.appBar">appBar</a></li>
 <li><a title="cave_utils.api.appBar.appBar_data_star" href="appBar.html#cave_utils.api.appBar.appBar_data_star">appBar_data_star</a></li>
 <li><a title="cave_utils.api.extraKwargs.extraKwargs" href="extraKwargs.html#cave_utils.api.extraKwargs.extraKwargs">extraKwargs</a></li>
-<li><a title="cave_utils.api.pages.pages" href="pages/index.html#cave_utils.api.pages.pages">pages</a></li>
-<li><a title="cave_utils.api.pages.pages_data" href="pages/index.html#cave_utils.api.pages.pages_data">pages_data</a></li>
+<li><a title="cave_utils.api.general.GeoJsonValidator" href="general.html#cave_utils.api.general.GeoJsonValidator">GeoJsonValidator</a></li>
+<li><a title="cave_utils.api.general.layout" href="general.html#cave_utils.api.general.layout">layout</a></li>
+<li><a title="cave_utils.api.general.props" href="general.html#cave_utils.api.general.props">props</a></li>
+<li><a title="cave_utils.api.general.props_options" href="general.html#cave_utils.api.general.props_options">props_options</a></li>
+<li><a title="cave_utils.api.general.values" href="general.html#cave_utils.api.general.values">values</a></li>
+<li><a title="cave_utils.api.maps.colorByOptions" href="maps.html#cave_utils.api.maps.colorByOptions">colorByOptions</a></li>
+<li><a title="cave_utils.api.maps.maps" href="maps.html#cave_utils.api.maps.maps">maps</a></li>
+<li><a title="cave_utils.api.maps.maps_additionalMapStyles_star" href="maps.html#cave_utils.api.maps.maps_additionalMapStyles_star">maps_additionalMapStyles_star</a></li>
+<li><a title="cave_utils.api.maps.maps_data_star" href="maps.html#cave_utils.api.maps.maps_data_star">maps_data_star</a></li>
+<li><a title="cave_utils.api.maps.maps_data_star_legendGroups_star" href="maps.html#cave_utils.api.maps.maps_data_star_legendGroups_star">maps_data_star_legendGroups_star</a></li>
+<li><a title="cave_utils.api.maps.maps_data_star_legendGroups_star_data_star" href="maps.html#cave_utils.api.maps.maps_data_star_legendGroups_star_data_star">maps_data_star_legendGroups_star_data_star</a></li>
+<li><a title="cave_utils.api.maps.sizeByOptions" href="maps.html#cave_utils.api.maps.sizeByOptions">sizeByOptions</a></li>
+<li><a title="cave_utils.api.maps.viewport" href="maps.html#cave_utils.api.maps.viewport">viewport</a></li>
+<li><a title="cave_utils.api.pages.pages" href="pages.html#cave_utils.api.pages.pages">pages</a></li>
+<li><a title="cave_utils.api.pages.pages_data_star" href="pages.html#cave_utils.api.pages.pages_data_star">pages_data_star</a></li>
+<li><a title="cave_utils.api.pages.pages_data_star_pageLayout" href="pages.html#cave_utils.api.pages.pages_data_star_pageLayout">pages_data_star_pageLayout</a></li>
 <li><a title="cave_utils.api.panes.panes" href="panes.html#cave_utils.api.panes.panes">panes</a></li>
 <li><a title="cave_utils.api.panes.panes_data_star" href="panes.html#cave_utils.api.panes.panes_data_star">panes_data_star</a></li>
 <li><a title="cave_utils.api.settings.settings" href="settings.html#cave_utils.api.settings.settings">settings</a></li>
@@ -1154,15 +567,7 @@ class ViewportValidator(ApiValidator):
 <li><a title="cave_utils.api.settings.settings_demo" href="settings.html#cave_utils.api.settings.settings_demo">settings_demo</a></li>
 <li><a title="cave_utils.api.settings.settings_sync" href="settings.html#cave_utils.api.settings.settings_sync">settings_sync</a></li>
 <li><a title="cave_utils.api.settings.settings_time" href="settings.html#cave_utils.api.settings.settings_time">settings_time</a></li>
-<li><a title="cave_utils.api.utils.ColorByOptionValidator" href="#cave_utils.api.utils.ColorByOptionValidator">ColorByOptionValidator</a></li>
 <li><a title="cave_utils.api.utils.CustomKeyValidator" href="#cave_utils.api.utils.CustomKeyValidator">CustomKeyValidator</a></li>
-<li><a title="cave_utils.api.utils.GeoJsonValidator" href="#cave_utils.api.utils.GeoJsonValidator">GeoJsonValidator</a></li>
-<li><a title="cave_utils.api.utils.PropLayoutValidator" href="#cave_utils.api.utils.PropLayoutValidator">PropLayoutValidator</a></li>
-<li><a title="cave_utils.api.utils.PropSelectorOptionsValidator" href="#cave_utils.api.utils.PropSelectorOptionsValidator">PropSelectorOptionsValidator</a></li>
-<li><a title="cave_utils.api.utils.PropValidator" href="#cave_utils.api.utils.PropValidator">PropValidator</a></li>
-<li><a title="cave_utils.api.utils.PropValueValidator" href="#cave_utils.api.utils.PropValueValidator">PropValueValidator</a></li>
-<li><a title="cave_utils.api.utils.SizeByOptionValidator" href="#cave_utils.api.utils.SizeByOptionValidator">SizeByOptionValidator</a></li>
-<li><a title="cave_utils.api.utils.ViewportValidator" href="#cave_utils.api.utils.ViewportValidator">ViewportValidator</a></li>
 </ul>
 <h3>Methods</h3>
 <dl>
@@ -1180,182 +585,13 @@ class ViewportValidator(ApiValidator):
 <pre><code class="python">def spec(self, **kwargs):
     &#34;&#34;&#34;
     The default spec method.
-     
+
     This provides a baseline spec for some utility validators.
-    
+
     This should be overridden by any non utility child class.
     &#34;&#34;&#34;
     return {
         &#34;kwargs&#34;: {},
-        &#34;accepted_values&#34;: {},
-    }</code></pre>
-</details>
-</dd>
-</dl>
-</dd>
-<dt id="cave_utils.api.utils.ColorByOptionValidator"><code class="flex name class">
-<span>class <span class="ident">ColorByOptionValidator</span></span>
-<span>(</span><span>**fields)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@type_enforced.Enforcer
-class ColorByOptionValidator(ApiValidator):
-    @staticmethod
-    def spec (startGradientColor:str, endGradientColor:str, min:[float, int, None]=None, max:[float, int, None]=None, nullColor:[str, None]=None, **kwargs):
-        &#34;&#34;&#34;
-        Required Arguments:
-
-        - `startGradientColor`:
-            - Type: str
-            - What: The starting color for the gradient.
-            - Accepted Values:
-                - Any valid rgba string.
-            - Eg: `&#34;rgba(255, 255, 255, 1)&#34;`
-        - `endGradientColor`:
-            - Type: str
-            - What: The ending color for the gradient.
-            - Accepted Values:
-                - Any valid rgba string.
-            - Eg: `&#34;rgba(255, 255, 255, 1)&#34;`
-
-        Optional Arguments:
-
-        - `min`:
-            - Type: float | int | None
-            - What: The minimum value for calculating the gradient.
-            - Default: `None`
-            - Note: If None, the min of the relevant data will be used.
-        - `max`:
-            - Type: float | int | None
-            - What: The maximum value for calculating the gradient.
-            - Default: `None`
-            - Note: If None, the max of the relevant data will be used.
-        - `nullColor`:
-            - Type: str | None
-            - What: The color to use for null values.
-            - Default: `None`
-            - Note: If None, null values will not be shown
-
-        &#34;&#34;&#34;
-        return {
-            &#34;kwargs&#34;: kwargs,
-            &#34;accepted_values&#34;: {},
-        }
-
-    def __extend_spec__(self, **kwargs):
-        for field in [&#34;startGradientColor&#34;, &#34;endGradientColor&#34;, &#34;nullColor&#34;]:
-            rgba_string = self.data.get(field)
-            if rgba_string is not None:
-                self.__check_rgba_string_valid__(
-                    rgba_string=rgba_string,
-                    prepend_path=[field]
-                )</code></pre>
-</details>
-<h3>Ancestors</h3>
-<ul class="hlist">
-<li><a title="cave_utils.api.utils.ApiValidator" href="#cave_utils.api.utils.ApiValidator">ApiValidator</a></li>
-</ul>
-<h3>Static methods</h3>
-<dl>
-<dt id="cave_utils.api.utils.ColorByOptionValidator.spec"><code class="name flex">
-<span>def <span class="ident">spec</span></span>(<span>startGradientColor: str, endGradientColor: str, min: [<class 'float'>, <class 'int'>, None] = None, max: [<class 'float'>, <class 'int'>, None] = None, nullColor: [<class 'str'>, None] = None, **kwargs)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Required Arguments:</p>
-<ul>
-<li><code>startGradientColor</code>:<ul>
-<li>Type: str</li>
-<li>What: The starting color for the gradient.</li>
-<li>Accepted Values:<ul>
-<li>Any valid rgba string.</li>
-</ul>
-</li>
-<li>Eg: <code>"rgba(255, 255, 255, 1)"</code></li>
-</ul>
-</li>
-<li><code>endGradientColor</code>:<ul>
-<li>Type: str</li>
-<li>What: The ending color for the gradient.</li>
-<li>Accepted Values:<ul>
-<li>Any valid rgba string.</li>
-</ul>
-</li>
-<li>Eg: <code>"rgba(255, 255, 255, 1)"</code></li>
-</ul>
-</li>
-</ul>
-<p>Optional Arguments:</p>
-<ul>
-<li><code>min</code>:<ul>
-<li>Type: float | int | None</li>
-<li>What: The minimum value for calculating the gradient.</li>
-<li>Default: <code>None</code></li>
-<li>Note: If None, the min of the relevant data will be used.</li>
-</ul>
-</li>
-<li><code>max</code>:<ul>
-<li>Type: float | int | None</li>
-<li>What: The maximum value for calculating the gradient.</li>
-<li>Default: <code>None</code></li>
-<li>Note: If None, the max of the relevant data will be used.</li>
-</ul>
-</li>
-<li><code>nullColor</code>:<ul>
-<li>Type: str | None</li>
-<li>What: The color to use for null values.</li>
-<li>Default: <code>None</code></li>
-<li>Note: If None, null values will not be shown</li>
-</ul>
-</li>
-</ul></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@staticmethod
-def spec (startGradientColor:str, endGradientColor:str, min:[float, int, None]=None, max:[float, int, None]=None, nullColor:[str, None]=None, **kwargs):
-    &#34;&#34;&#34;
-    Required Arguments:
-
-    - `startGradientColor`:
-        - Type: str
-        - What: The starting color for the gradient.
-        - Accepted Values:
-            - Any valid rgba string.
-        - Eg: `&#34;rgba(255, 255, 255, 1)&#34;`
-    - `endGradientColor`:
-        - Type: str
-        - What: The ending color for the gradient.
-        - Accepted Values:
-            - Any valid rgba string.
-        - Eg: `&#34;rgba(255, 255, 255, 1)&#34;`
-
-    Optional Arguments:
-
-    - `min`:
-        - Type: float | int | None
-        - What: The minimum value for calculating the gradient.
-        - Default: `None`
-        - Note: If None, the min of the relevant data will be used.
-    - `max`:
-        - Type: float | int | None
-        - What: The maximum value for calculating the gradient.
-        - Default: `None`
-        - Note: If None, the max of the relevant data will be used.
-    - `nullColor`:
-        - Type: str | None
-        - What: The color to use for null values.
-        - Default: `None`
-        - Note: If None, null values will not be shown
-
-    &#34;&#34;&#34;
-    return {
-        &#34;kwargs&#34;: kwargs,
         &#34;accepted_values&#34;: {},
     }</code></pre>
 </details>
@@ -1376,9 +612,11 @@ def spec (startGradientColor:str, endGradientColor:str, min:[float, int, None]=N
 class CustomKeyValidator(ApiValidator):
     @staticmethod
     def spec(**kwargs):
-        for k,v in kwargs.items():
+        for k, v in kwargs.items():
             if not isinstance(v, dict):
-                raise Exception(f&#34;Error for field ({k}): Type {type(dict())} is required but instead received {type(v)}&#34;)
+                raise Exception(
+                    f&#34;Error for field ({k}): Type {type(dict())} is required but instead received {type(v)}&#34;
+                )
         return {
             &#34;kwargs&#34;: {},
             &#34;accepted_values&#34;: {},
@@ -1387,1527 +625,9 @@ class CustomKeyValidator(ApiValidator):
     def __extend_spec__(self, **kwargs):
         validator = kwargs.get(&#34;validator&#34;)
         assert validator is not None, &#34;Must pass validator to CustomKeyValidator&#34;
-        kwargs = {k:v for k,v in kwargs.items() if k != &#34;validator&#34;}
+        kwargs = {k: v for k, v in kwargs.items() if k != &#34;validator&#34;}
         for field, value in self.data.items():
             validator(data=value, log=self.log, prepend_path=[field], **kwargs)</code></pre>
-</details>
-<h3>Ancestors</h3>
-<ul class="hlist">
-<li><a title="cave_utils.api.utils.ApiValidator" href="#cave_utils.api.utils.ApiValidator">ApiValidator</a></li>
-</ul>
-<h3>Inherited members</h3>
-<ul class="hlist">
-<li><code><b><a title="cave_utils.api.utils.ApiValidator" href="#cave_utils.api.utils.ApiValidator">ApiValidator</a></b></code>:
-<ul class="hlist">
-<li><code><a title="cave_utils.api.utils.ApiValidator.spec" href="#cave_utils.api.utils.ApiValidator.spec">spec</a></code></li>
-</ul>
-</li>
-</ul>
-</dd>
-<dt id="cave_utils.api.utils.GeoJsonValidator"><code class="flex name class">
-<span>class <span class="ident">GeoJsonValidator</span></span>
-<span>(</span><span>**fields)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class GeoJsonValidator(ApiValidator):
-    def __populate_data__(self, **kwargs):
-        self.field_types = {
-            &#34;geoJsonLayer&#34;: str,
-            &#34;geoJsonProp&#34;: str,
-        }
-        self.required_fields = [&#34;geoJsonLayer&#34;, &#34;geoJsonProp&#34;]
-        self.optional_fields = []
-        self.accepted_values = {}
-
-    def __extend_spec__(self, **kwargs):
-        self.__check_url_valid__(
-            url = self.data.get(&#34;geoJsonLayer&#34;, None),
-            prepend_path=[&#34;geoJsonLayer&#34;]
-        )</code></pre>
-</details>
-<h3>Ancestors</h3>
-<ul class="hlist">
-<li><a title="cave_utils.api.utils.ApiValidator" href="#cave_utils.api.utils.ApiValidator">ApiValidator</a></li>
-</ul>
-<h3>Inherited members</h3>
-<ul class="hlist">
-<li><code><b><a title="cave_utils.api.utils.ApiValidator" href="#cave_utils.api.utils.ApiValidator">ApiValidator</a></b></code>:
-<ul class="hlist">
-<li><code><a title="cave_utils.api.utils.ApiValidator.spec" href="#cave_utils.api.utils.ApiValidator.spec">spec</a></code></li>
-</ul>
-</li>
-</ul>
-</dd>
-<dt id="cave_utils.api.utils.PropLayoutValidator"><code class="flex name class">
-<span>class <span class="ident">PropLayoutValidator</span></span>
-<span>(</span><span>**fields)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@type_enforced.Enforcer
-class PropLayoutValidator(ApiValidator):
-    @staticmethod
-    def spec(type:str, numColumns:[str,int,None]=None, numRows:[str,int,None]=None, data:[dict,None]=None, itemId:[str,None]=None, column:[int,None]=None, row:[int,None]=None, **kwargs):
-        &#34;&#34;&#34;
-        Required Arguments:
-
-        - `type`:
-            - Type: str
-            - What: The type of the layout.
-            - Accepted Values:
-                - `&#34;grid&#34;`
-                - `&#34;item&#34;`
-        
-        Optional Arguments:
-
-        - `numColumns`:
-            - Type: str | int
-            - What: The number of columns for the grid layout. This only applies to `grid` layouts.
-            - Default: `&#34;auto&#34;`
-            - Note: If `&#34;auto&#34;`, the number of columns will be calculated based on the number of items.
-        - `numRows`:
-            - Type: str | int
-            - What: The number of rows for the grid layout. This only applies to `grid` layouts.
-            - Default: `&#34;auto&#34;`
-            - Note: If `&#34;auto&#34;`, the number of rows will be calculated based on the number of items.
-        - `data`:
-            - Type: dict | None
-            - What: The data for the layout. This only applies to `grid` layouts.
-            - Default: `None`
-            - Note: If `None`, no data is provided.
-            - Accepted Values:
-                - The prop keys from your api spec at the same level as `layout`.
-        - `itemId`:
-            - Type: str | None
-            - What: The id of the item for the layout. This only applies to `item` layouts.
-            - Default: `None`
-            - Note: If `None`, no item id is provided.
-        - `column`:
-            - Type: int | None
-            - What: The column in which to place this object in the current grid.
-            - Default: `None`
-            - Note: If `None`, no column is provided.
-        - `row`:
-            - Type: int | None
-            - What: The row in which to place this object in the current grid.
-            - Default: `None`
-            - Note: If `None`, no row is provided.
-        &#34;&#34;&#34;
-        passed_values = {k:v for k,v in locals().items() if (v is not None) and k!=&#34;kwargs&#34;}
-        if type == &#34;grid&#34;:
-            required_fields = [&#34;type&#34;, &#34;data&#34;]
-            optional_fields = [&#34;numColumns&#34;, &#34;numRows&#34;, &#34;column&#34;, &#34;row&#34;]
-        if type == &#34;item&#34;:
-            required_fields = [&#34;type&#34;, &#34;itemId&#34;]
-            optional_fields = [&#34;column&#34;, &#34;row&#34;]
-        missing_required = pamda.difference(required_fields, list(passed_values.keys()))
-        if len(missing_required) &gt; 0:
-            raise Exception(f&#34;Missing required fields: {str(missing_required)}&#34;)
-        for k, v in passed_values.items():
-            if k not in required_fields + optional_fields:
-                kwargs[k] = v
-        accepted_values = {
-            &#34;type&#34;: [&#34;grid&#34;, &#34;item&#34;],
-        }
-        if isinstance (numRows, str):
-            accepted_values[&#34;numRows&#34;] = [&#34;auto&#34;]
-        if isinstance (numColumns, str):
-            accepted_values[&#34;numColumns&#34;] = [&#34;auto&#34;]
-        return {
-            &#34;kwargs&#34;: kwargs,
-            &#34;accepted_values&#34;: {
-                &#34;type&#34;: [&#34;grid&#34;, &#34;item&#34;],
-            },
-        }
-
-    def __extend_spec__(self, **kwargs):
-        layout_type = self.data.get(&#34;type&#34;, None)
-        if layout_type == &#34;grid&#34;:
-            for field, value in self.data.get(&#34;data&#34;, {}).items():
-                PropLayoutValidator(data=value, log=self.log, prepend_path=[&#34;data&#34;, field], **kwargs)
-        if layout_type == &#34;item&#34;:
-            item_id = self.data.get(&#34;itemId&#34;, None)
-            prop_id_list = kwargs.get(&#34;prop_id_list&#34;, [])
-            if item_id not in prop_id_list:
-                self.__error__(msg=f&#34;`itemId` ({item_id}) does not match any valid prop ids {prop_id_list}&#34;)</code></pre>
-</details>
-<h3>Ancestors</h3>
-<ul class="hlist">
-<li><a title="cave_utils.api.utils.ApiValidator" href="#cave_utils.api.utils.ApiValidator">ApiValidator</a></li>
-</ul>
-<h3>Static methods</h3>
-<dl>
-<dt id="cave_utils.api.utils.PropLayoutValidator.spec"><code class="name flex">
-<span>def <span class="ident">spec</span></span>(<span>type: str, numColumns: [<class 'str'>, <class 'int'>, None] = None, numRows: [<class 'str'>, <class 'int'>, None] = None, data: [<class 'dict'>, None] = None, itemId: [<class 'str'>, None] = None, column: [<class 'int'>, None] = None, row: [<class 'int'>, None] = None, **kwargs)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Required Arguments:</p>
-<ul>
-<li><code>type</code>:<ul>
-<li>Type: str</li>
-<li>What: The type of the layout.</li>
-<li>Accepted Values:<ul>
-<li><code>"grid"</code></li>
-<li><code>"item"</code></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<p>Optional Arguments:</p>
-<ul>
-<li><code>numColumns</code>:<ul>
-<li>Type: str | int</li>
-<li>What: The number of columns for the grid layout. This only applies to <code>grid</code> layouts.</li>
-<li>Default: <code>"auto"</code></li>
-<li>Note: If <code>"auto"</code>, the number of columns will be calculated based on the number of items.</li>
-</ul>
-</li>
-<li><code>numRows</code>:<ul>
-<li>Type: str | int</li>
-<li>What: The number of rows for the grid layout. This only applies to <code>grid</code> layouts.</li>
-<li>Default: <code>"auto"</code></li>
-<li>Note: If <code>"auto"</code>, the number of rows will be calculated based on the number of items.</li>
-</ul>
-</li>
-<li><code>data</code>:<ul>
-<li>Type: dict | None</li>
-<li>What: The data for the layout. This only applies to <code>grid</code> layouts.</li>
-<li>Default: <code>None</code></li>
-<li>Note: If <code>None</code>, no data is provided.</li>
-<li>Accepted Values:<ul>
-<li>The prop keys from your api spec at the same level as <code>layout</code>.</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><code>itemId</code>:<ul>
-<li>Type: str | None</li>
-<li>What: The id of the item for the layout. This only applies to <code>item</code> layouts.</li>
-<li>Default: <code>None</code></li>
-<li>Note: If <code>None</code>, no item id is provided.</li>
-</ul>
-</li>
-<li><code>column</code>:<ul>
-<li>Type: int | None</li>
-<li>What: The column in which to place this object in the current grid.</li>
-<li>Default: <code>None</code></li>
-<li>Note: If <code>None</code>, no column is provided.</li>
-</ul>
-</li>
-<li><code>row</code>:<ul>
-<li>Type: int | None</li>
-<li>What: The row in which to place this object in the current grid.</li>
-<li>Default: <code>None</code></li>
-<li>Note: If <code>None</code>, no row is provided.</li>
-</ul>
-</li>
-</ul></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@staticmethod
-def spec(type:str, numColumns:[str,int,None]=None, numRows:[str,int,None]=None, data:[dict,None]=None, itemId:[str,None]=None, column:[int,None]=None, row:[int,None]=None, **kwargs):
-    &#34;&#34;&#34;
-    Required Arguments:
-
-    - `type`:
-        - Type: str
-        - What: The type of the layout.
-        - Accepted Values:
-            - `&#34;grid&#34;`
-            - `&#34;item&#34;`
-    
-    Optional Arguments:
-
-    - `numColumns`:
-        - Type: str | int
-        - What: The number of columns for the grid layout. This only applies to `grid` layouts.
-        - Default: `&#34;auto&#34;`
-        - Note: If `&#34;auto&#34;`, the number of columns will be calculated based on the number of items.
-    - `numRows`:
-        - Type: str | int
-        - What: The number of rows for the grid layout. This only applies to `grid` layouts.
-        - Default: `&#34;auto&#34;`
-        - Note: If `&#34;auto&#34;`, the number of rows will be calculated based on the number of items.
-    - `data`:
-        - Type: dict | None
-        - What: The data for the layout. This only applies to `grid` layouts.
-        - Default: `None`
-        - Note: If `None`, no data is provided.
-        - Accepted Values:
-            - The prop keys from your api spec at the same level as `layout`.
-    - `itemId`:
-        - Type: str | None
-        - What: The id of the item for the layout. This only applies to `item` layouts.
-        - Default: `None`
-        - Note: If `None`, no item id is provided.
-    - `column`:
-        - Type: int | None
-        - What: The column in which to place this object in the current grid.
-        - Default: `None`
-        - Note: If `None`, no column is provided.
-    - `row`:
-        - Type: int | None
-        - What: The row in which to place this object in the current grid.
-        - Default: `None`
-        - Note: If `None`, no row is provided.
-    &#34;&#34;&#34;
-    passed_values = {k:v for k,v in locals().items() if (v is not None) and k!=&#34;kwargs&#34;}
-    if type == &#34;grid&#34;:
-        required_fields = [&#34;type&#34;, &#34;data&#34;]
-        optional_fields = [&#34;numColumns&#34;, &#34;numRows&#34;, &#34;column&#34;, &#34;row&#34;]
-    if type == &#34;item&#34;:
-        required_fields = [&#34;type&#34;, &#34;itemId&#34;]
-        optional_fields = [&#34;column&#34;, &#34;row&#34;]
-    missing_required = pamda.difference(required_fields, list(passed_values.keys()))
-    if len(missing_required) &gt; 0:
-        raise Exception(f&#34;Missing required fields: {str(missing_required)}&#34;)
-    for k, v in passed_values.items():
-        if k not in required_fields + optional_fields:
-            kwargs[k] = v
-    accepted_values = {
-        &#34;type&#34;: [&#34;grid&#34;, &#34;item&#34;],
-    }
-    if isinstance (numRows, str):
-        accepted_values[&#34;numRows&#34;] = [&#34;auto&#34;]
-    if isinstance (numColumns, str):
-        accepted_values[&#34;numColumns&#34;] = [&#34;auto&#34;]
-    return {
-        &#34;kwargs&#34;: kwargs,
-        &#34;accepted_values&#34;: {
-            &#34;type&#34;: [&#34;grid&#34;, &#34;item&#34;],
-        },
-    }</code></pre>
-</details>
-</dd>
-</dl>
-</dd>
-<dt id="cave_utils.api.utils.PropSelectorOptionsValidator"><code class="flex name class">
-<span>class <span class="ident">PropSelectorOptionsValidator</span></span>
-<span>(</span><span>**fields)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class PropSelectorOptionsValidator(ApiValidator):
-    @staticmethod
-    def spec(name:str, path:[list,None]=None, **kwargs):
-        &#34;&#34;&#34;
-        Required Arguments:
-
-        - `name`:
-            - Type: str
-            - What: The name of the option.
-        - `path`:
-            - Type: list | None
-            - What: The path to the option. This is only required for nested options.
-            - Default: `None`
-            - Note: If `None`, the option will not be selectable.
-        &#34;&#34;&#34;
-        if kwargs.get(&#34;variant&#34;) == &#34;nested&#34;:
-            if path is None:
-                raise Exception(&#34;Must provide a path for nested options&#34;)
-        return {
-            &#34;kwargs&#34;: kwargs,
-            &#34;accepted_values&#34;: {},
-        }
-
-    def __extend_spec__(self, **kwargs):
-        if kwargs.get(&#34;variant&#34;) == &#34;nested&#34;:
-            if not isinstance(self.data.get(&#34;path&#34;), list):
-                self.__error__(msg=&#34;`path` must be specified and a list of strings for nested options&#34;)
-                return
-            self.__check_list_valid__(
-                data=self.data.get(&#34;path&#34;, []), 
-                types=(str,), 
-                prepend_path=[&#34;path&#34;]
-            )</code></pre>
-</details>
-<h3>Ancestors</h3>
-<ul class="hlist">
-<li><a title="cave_utils.api.utils.ApiValidator" href="#cave_utils.api.utils.ApiValidator">ApiValidator</a></li>
-</ul>
-<h3>Static methods</h3>
-<dl>
-<dt id="cave_utils.api.utils.PropSelectorOptionsValidator.spec"><code class="name flex">
-<span>def <span class="ident">spec</span></span>(<span>name: str, path: [<class 'list'>, None] = None, **kwargs)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Required Arguments:</p>
-<ul>
-<li><code>name</code>:<ul>
-<li>Type: str</li>
-<li>What: The name of the option.</li>
-</ul>
-</li>
-<li><code>path</code>:<ul>
-<li>Type: list | None</li>
-<li>What: The path to the option. This is only required for nested options.</li>
-<li>Default: <code>None</code></li>
-<li>Note: If <code>None</code>, the option will not be selectable.</li>
-</ul>
-</li>
-</ul></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@staticmethod
-def spec(name:str, path:[list,None]=None, **kwargs):
-    &#34;&#34;&#34;
-    Required Arguments:
-
-    - `name`:
-        - Type: str
-        - What: The name of the option.
-    - `path`:
-        - Type: list | None
-        - What: The path to the option. This is only required for nested options.
-        - Default: `None`
-        - Note: If `None`, the option will not be selectable.
-    &#34;&#34;&#34;
-    if kwargs.get(&#34;variant&#34;) == &#34;nested&#34;:
-        if path is None:
-            raise Exception(&#34;Must provide a path for nested options&#34;)
-    return {
-        &#34;kwargs&#34;: kwargs,
-        &#34;accepted_values&#34;: {},
-    }</code></pre>
-</details>
-</dd>
-</dl>
-</dd>
-<dt id="cave_utils.api.utils.PropValidator"><code class="flex name class">
-<span>class <span class="ident">PropValidator</span></span>
-<span>(</span><span>**fields)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@type_enforced.Enforcer
-class PropValidator(ApiValidator):
-    @staticmethod
-    def spec (
-        name:str, 
-        type:str, 
-        help:[str,None]=None,
-        variant:[str,None]=None,
-        enabled:[bool,None]=None,
-        apiCommand:[str,None]=None,
-        apiCommandKeys:[list,None]=None,
-        options:[dict,None]=None,
-        placeholder:[str,None]=None,
-        maxValue:[float,int,None]=None,
-        minValue:[float,int,None]=None,
-        numberFormat:[dict,None]=None,
-        maxRows:[int,None]=None,
-        minRows:[int,None]=None,
-        rows:[int,None]=None,
-        notation:[str,None]=None,
-        precision:[int,None]=None,
-        notationDisplay:[str,None]=None,
-        unit:[str,None]=None,
-        views:[list,None]=None,
-        legendNotation:[str,None]=None,
-        legendPrecision:[int,None]=None,
-        legendNotationDisplay:[str,None]=None,
-        legendMinLabel:[str,None]=None,
-        legendMaxLabel:[str,None]=None,
-        **kwargs
-    ):
-        &#34;&#34;&#34;
-        Required Arguments:
-
-        - `name`:
-            - Type: str
-            - What: The name of the prop.
-        - `type`:
-            - Type: str
-            - What: The type of the prop.
-            - Accepted Values:
-                - `&#34;head&#34;`
-                - `&#34;num&#34;`
-                - `&#34;toggle&#34;`
-                - `&#34;button&#34;`
-                - `&#34;text&#34;`
-                - `&#34;selector&#34;`
-                - `&#34;date&#34;`
-                - `&#34;media&#34;`
-        
-        Optional Arguments:
-        
-        - `help`:
-            - Type: str | None
-            - What: The help text to display.
-            - Default: `None`
-        - `variant`:
-            - Type: str | None
-            - What: The variant of the prop.
-            - Accepted Values:
-                - Type: `&#34;head&#34;`
-                    - `&#34;column&#34;`
-                    - `&#34;row&#34;`
-                - Type: `&#34;text&#34;`
-                    - `&#34;textarea&#34;`
-                - Type: `&#34;num&#34;`
-                    - `&#34;slider&#34;`
-                - Type: `&#34;selector&#34;`
-                    - `&#34;dropdown&#34;`
-                    - `&#34;checkbox&#34;`
-                    - `&#34;radio&#34;`
-                    - `&#34;combobox&#34;`
-                    - `&#34;hstepper&#34;`
-                    - `&#34;vstepper&#34;`
-                    - `&#34;hradio&#34;`
-                    - `&#34;nested&#34;`
-                - Type: `&#34;date&#34;`
-                    - `&#34;date&#34;`
-                    - `&#34;time&#34;`
-                    - `&#34;datetime&#34;`
-                - Type: `&#34;media&#34;`
-                    - `&#34;picture&#34;`
-                    - `&#34;video&#34;`
-            - Default: `None`
-            - TODO: Check this
-        - `enabled`:
-            - Type: bool | None
-            - What: If `True`, the prop will be enabled.
-            - Default: `None`
-            - Note: If `None`, the prop will be enabled.
-        - `apiCommand`:
-            - Type: str | None
-            - What: The name of the api command to trigger.
-            - Default: `None`
-            - Note: if `None`, no `apiCommand` is triggered
-        - `apiCommandKeys`:
-            - Type: list | None
-            - What: The top level api keys to pass to your `execute_command` if an apiCommand is provded.
-            - Default: `None`
-            - Note: If `None` all api keys are passed to your `execute_command`.
-        - `options`:
-            - Type: dict | None
-            - What: The options for the prop. This only applies to `selector` props.
-            - Default: `None`
-            - Note: If `None`, no options are provided.
-            - Note: Only options provided here are valid for the prop value.
-        - `placeholder`:
-            - Type: str | None
-            - What: The placeholder text to display. This only applies to `text` props.
-            - Default: `None`
-            - Note: If `None`, no placeholder text is provided.
-        - `maxValue`:
-            - Type: float | int | None
-            - What: The maximum value for the prop. This only applies to `num` props.
-            - Default: `None`
-            - Note: If `None`, no maximum value is provided.
-        - `minValue`:
-            - Type: float | int | None
-            - What: The minimum value for the prop. This only applies to `num` props.
-            - Default: `None`
-            - Note: If `None`, no minimum value is provided.
-        - `numberFormat`:
-            - Type: dict | None
-            - What: The number format for the prop. This only applies to `num` props.
-            - Default: `None`
-            - Note: If `None`, no number format is provided.
-            - TODO: Check / Extend this.
-        - `maxRows`:
-            - Type: int | None
-            - What: The maximum number of rows to show for a `textarea` variant. This only applies to `text` props.
-            - Default: `None`
-            - Note: If `None`, no maximum number of rows is provided.
-        - `minRows`:
-            - Type: int | None
-            - What: The minimum number of rows to show for a `textarea` variant. This only applies to `text` props.
-            - Default: `None`
-            - Note: If `None`, no minimum number of rows is provided.
-        - `rows`:
-            - Type: int | None
-            - What: The number of rows to show for a `textarea` variant. This only applies to `text` props.
-            - Default: `None`
-            - Note: If `None`, no number of rows is provided.
-        - `notation`:
-            - Type: str | None
-            - What: The notation to use for the prop. This only applies to `num` props.
-            - Default: `None`
-            - Note: If `None`, no notation is provided.
-            - TODO: Check / Extend This.
-        - `precision`:
-            - Type: int | None
-            - What: The precision to use for the prop. This only applies to `num` props.
-            - Default: `None`
-            - Note: If `None`, no precision is provided.
-            - TODO: Check / Extend This.
-        - `notationDisplay`:
-            - Type: str | None
-            - What: The notation display to use for the prop. This only applies to `num` props.
-            - Default: `None`
-            - Note: If `None`, no notation display is provided.
-            - TODO: Check / Extend This.
-        - `unit`:
-            - Type: str | None
-            - What: The unit to use for the prop. This only applies to `num` props.
-            - Default: `None`
-            - Note: If `None`, no unit is provided.
-            - TODO: Check / Extend This.
-        - `views`:
-            - Type: list | None
-            - What: A list of the views to use for the prop. This only applies to `date` props.
-            - Default: `None`
-            - Note: If `None`, no views are provided.
-            - Valid Values: `[&#34;day&#34;, &#34;hours&#34;, &#34;minutes&#34;]`
-            - TODO: Check / Extend This.
-        - `legendNotation`:
-            - Type: str | None
-            - What: The legend notation to use for the prop. This only applies to `num` props.
-            - Default: `None`
-            - Note: If `None`, no legend notation is provided.
-            - TODO: Check / Extend This.
-        - `legendPrecision`:
-            - Type: int | None
-            - What: The legend precision to use for the prop. This only applies to `num` props.
-            - Default: `None`
-            - Note: If `None`, no legend precision is provided.
-            - TODO: Check / Extend This.
-        - `legendNotationDisplay`:
-            - Type: str | None
-            - What: The legend notation display to use for the prop. This only applies to `num` props.
-            - Default: `None`
-            - Note: If `None`, no legend notation display is provided.
-            - TODO: Check / Extend This.
-        - `legendMinLabel`:
-            - Type: str | None
-            - What: The legend minimum label to use for the prop. This only applies to `num` props.
-            - Default: `None`
-            - Note: If `None`, no legend minimum label is provided.
-            - TODO: Check / Extend This.
-        - `legendMaxLabel`:
-            - Type: str | None
-            - What: The legend maximum label to use for the prop. This only applies to `num` props.
-            - Default: `None`
-            - Note: If `None`, no legend maximum label is provided. 
-            - TODO: Check / Extend This.
-        &#34;&#34;&#34;
-        passed_values = {k:v for k,v in locals().items() if (v is not None) and k!=&#34;kwargs&#34;}
-        required_fields = [&#34;name&#34;, &#34;type&#34;]
-        optional_fields = [&#39;help&#39;, &#39;variant&#39;, &#39;enabled&#39;]
-        if type != &#34;head&#34;:
-            optional_fields += [&#34;apiCommand&#34;, &#34;apiCommandKeys&#34;]
-        if type == &#34;text&#34;:
-            optional_fields += [&#34;minRows&#34;, &#34;maxRows&#34;, &#34;rows&#34;]
-        if type == &#34;num&#34;:
-            if variant == &#34;slider&#34;:
-                required_fields += [&#34;maxValue&#34;, &#34;minValue&#34;]
-            else:
-                optional_fields += [&#34;maxValue&#34;, &#34;minValue&#34;]
-            optional_fields += [&#34;unit&#34;, &#34;numberFormat&#34;, &#34;notation&#34;, &#34;precision&#34;, &#34;notationDisplay&#34;, &#34;legendNotation&#34;, &#34;legendPrecision&#34;, &#34;legendNotationDisplay&#34;, &#34;legendMinLabel&#34;, &#34;legendMaxLabel&#34;]
-        if type == &#34;selector&#34;:
-            required_fields += [&#34;options&#34;]
-            optional_fields += [&#34;placeholder&#34;]
-        if type == &#34;date&#34;:
-            optional_fields += [&#34;views&#34;]
-        missing_required = pamda.difference(required_fields, list(passed_values.keys()))
-        if len(missing_required) &gt; 0:
-            raise Exception(f&#34;Missing required fields: {str(missing_required)}&#34;)
-        for k, v in passed_values.items():
-            if k not in required_fields + optional_fields:
-                kwargs[k] = v
-        return {
-            &#34;kwargs&#34;: kwargs,
-            &#34;accepted_values&#34;: {
-                &#34;type&#34;: [&#34;head&#34;, &#34;num&#34;, &#34;toggle&#34;, &#34;button&#34;, &#34;text&#34;, &#34;selector&#34;, &#34;date&#34;, &#34;media&#34;],
-                &#34;views&#34;: [&#34;year&#34;, &#34;month&#34;, &#34;day&#34;, &#34;hours&#34;, &#34;minutes&#34;, &#34;seconds&#34;],
-                &#34;legendNotation&#34;: [&#39;compact&#39;, &#39;precision&#39;, &#39;scientific&#39;],
-                # TODO: Valiate These
-                # TODO: Add Other value checks here
-                &#34;variant&#34;: {
-                    &#34;head&#34;: [&#34;column&#34;, &#34;row&#34;],
-                    &#34;text&#34;: [&#34;textarea&#34;],
-                    &#34;num&#34;: [&#34;slider&#34;],
-                    &#34;selector&#34;: [
-                        &#34;dropdown&#34;,
-                        &#34;checkbox&#34;,
-                        &#34;radio&#34;,
-                        &#34;combobox&#34;,
-                        &#34;hstepper&#34;,
-                        &#34;vstepper&#34;,
-                        &#34;hradio&#34;,
-                        &#34;nested&#34;,
-                    ],
-                    &#34;date&#34;: [&#34;date&#34;, &#34;time&#34;, &#34;datetime&#34;],
-                    &#34;media&#34;: [&#34;picture&#34;, &#34;video&#34;],
-                }.get(type, []),
-            },
-        }
-
-    def __extend_spec__(self, **kwargs):
-        if self.data.get(&#34;type&#34;) == &#34;selector&#34;:
-            CustomKeyValidator(
-                data=self.data.get(&#34;options&#34;, {}),
-                log=self.log,
-                prepend_path=[&#34;options&#34;],
-                validator=PropSelectorOptionsValidator,
-                variant = self.data.get(&#34;variant&#34;),
-                **kwargs,
-            )</code></pre>
-</details>
-<h3>Ancestors</h3>
-<ul class="hlist">
-<li><a title="cave_utils.api.utils.ApiValidator" href="#cave_utils.api.utils.ApiValidator">ApiValidator</a></li>
-</ul>
-<h3>Static methods</h3>
-<dl>
-<dt id="cave_utils.api.utils.PropValidator.spec"><code class="name flex">
-<span>def <span class="ident">spec</span></span>(<span>name: str, type: str, help: [<class 'str'>, None] = None, variant: [<class 'str'>, None] = None, enabled: [<class 'bool'>, None] = None, apiCommand: [<class 'str'>, None] = None, apiCommandKeys: [<class 'list'>, None] = None, options: [<class 'dict'>, None] = None, placeholder: [<class 'str'>, None] = None, maxValue: [<class 'float'>, <class 'int'>, None] = None, minValue: [<class 'float'>, <class 'int'>, None] = None, numberFormat: [<class 'dict'>, None] = None, maxRows: [<class 'int'>, None] = None, minRows: [<class 'int'>, None] = None, rows: [<class 'int'>, None] = None, notation: [<class 'str'>, None] = None, precision: [<class 'int'>, None] = None, notationDisplay: [<class 'str'>, None] = None, unit: [<class 'str'>, None] = None, views: [<class 'list'>, None] = None, legendNotation: [<class 'str'>, None] = None, legendPrecision: [<class 'int'>, None] = None, legendNotationDisplay: [<class 'str'>, None] = None, legendMinLabel: [<class 'str'>, None] = None, legendMaxLabel: [<class 'str'>, None] = None, **kwargs)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Required Arguments:</p>
-<ul>
-<li><code>name</code>:<ul>
-<li>Type: str</li>
-<li>What: The name of the prop.</li>
-</ul>
-</li>
-<li><code>type</code>:<ul>
-<li>Type: str</li>
-<li>What: The type of the prop.</li>
-<li>Accepted Values:<ul>
-<li><code>"head"</code></li>
-<li><code>"num"</code></li>
-<li><code>"toggle"</code></li>
-<li><code>"button"</code></li>
-<li><code>"text"</code></li>
-<li><code>"selector"</code></li>
-<li><code>"date"</code></li>
-<li><code>"media"</code></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<p>Optional Arguments:</p>
-<ul>
-<li><code>help</code>:<ul>
-<li>Type: str | None</li>
-<li>What: The help text to display.</li>
-<li>Default: <code>None</code></li>
-</ul>
-</li>
-<li><code>variant</code>:<ul>
-<li>Type: str | None</li>
-<li>What: The variant of the prop.</li>
-<li>Accepted Values:<ul>
-<li>Type: <code>"head"</code><ul>
-<li><code>"column"</code></li>
-<li><code>"row"</code></li>
-</ul>
-</li>
-<li>Type: <code>"text"</code><ul>
-<li><code>"textarea"</code></li>
-</ul>
-</li>
-<li>Type: <code>"num"</code><ul>
-<li><code>"slider"</code></li>
-</ul>
-</li>
-<li>Type: <code>"selector"</code><ul>
-<li><code>"dropdown"</code></li>
-<li><code>"checkbox"</code></li>
-<li><code>"radio"</code></li>
-<li><code>"combobox"</code></li>
-<li><code>"hstepper"</code></li>
-<li><code>"vstepper"</code></li>
-<li><code>"hradio"</code></li>
-<li><code>"nested"</code></li>
-</ul>
-</li>
-<li>Type: <code>"date"</code><ul>
-<li><code>"date"</code></li>
-<li><code>"time"</code></li>
-<li><code>"datetime"</code></li>
-</ul>
-</li>
-<li>Type: <code>"media"</code><ul>
-<li><code>"picture"</code></li>
-<li><code>"video"</code></li>
-</ul>
-</li>
-</ul>
-</li>
-<li>Default: <code>None</code></li>
-<li>TODO: Check this</li>
-</ul>
-</li>
-<li><code>enabled</code>:<ul>
-<li>Type: bool | None</li>
-<li>What: If <code>True</code>, the prop will be enabled.</li>
-<li>Default: <code>None</code></li>
-<li>Note: If <code>None</code>, the prop will be enabled.</li>
-</ul>
-</li>
-<li><code>apiCommand</code>:<ul>
-<li>Type: str | None</li>
-<li>What: The name of the api command to trigger.</li>
-<li>Default: <code>None</code></li>
-<li>Note: if <code>None</code>, no <code>apiCommand</code> is triggered</li>
-</ul>
-</li>
-<li><code>apiCommandKeys</code>:<ul>
-<li>Type: list | None</li>
-<li>What: The top level api keys to pass to your <code>execute_command</code> if an apiCommand is provded.</li>
-<li>Default: <code>None</code></li>
-<li>Note: If <code>None</code> all api keys are passed to your <code>execute_command</code>.</li>
-</ul>
-</li>
-<li><code>options</code>:<ul>
-<li>Type: dict | None</li>
-<li>What: The options for the prop. This only applies to <code>selector</code> props.</li>
-<li>Default: <code>None</code></li>
-<li>Note: If <code>None</code>, no options are provided.</li>
-<li>Note: Only options provided here are valid for the prop value.</li>
-</ul>
-</li>
-<li><code>placeholder</code>:<ul>
-<li>Type: str | None</li>
-<li>What: The placeholder text to display. This only applies to <code>text</code> props.</li>
-<li>Default: <code>None</code></li>
-<li>Note: If <code>None</code>, no placeholder text is provided.</li>
-</ul>
-</li>
-<li><code>maxValue</code>:<ul>
-<li>Type: float | int | None</li>
-<li>What: The maximum value for the prop. This only applies to <code>num</code> props.</li>
-<li>Default: <code>None</code></li>
-<li>Note: If <code>None</code>, no maximum value is provided.</li>
-</ul>
-</li>
-<li><code>minValue</code>:<ul>
-<li>Type: float | int | None</li>
-<li>What: The minimum value for the prop. This only applies to <code>num</code> props.</li>
-<li>Default: <code>None</code></li>
-<li>Note: If <code>None</code>, no minimum value is provided.</li>
-</ul>
-</li>
-<li><code>numberFormat</code>:<ul>
-<li>Type: dict | None</li>
-<li>What: The number format for the prop. This only applies to <code>num</code> props.</li>
-<li>Default: <code>None</code></li>
-<li>Note: If <code>None</code>, no number format is provided.</li>
-<li>TODO: Check / Extend this.</li>
-</ul>
-</li>
-<li><code>maxRows</code>:<ul>
-<li>Type: int | None</li>
-<li>What: The maximum number of rows to show for a <code>textarea</code> variant. This only applies to <code>text</code> props.</li>
-<li>Default: <code>None</code></li>
-<li>Note: If <code>None</code>, no maximum number of rows is provided.</li>
-</ul>
-</li>
-<li><code>minRows</code>:<ul>
-<li>Type: int | None</li>
-<li>What: The minimum number of rows to show for a <code>textarea</code> variant. This only applies to <code>text</code> props.</li>
-<li>Default: <code>None</code></li>
-<li>Note: If <code>None</code>, no minimum number of rows is provided.</li>
-</ul>
-</li>
-<li><code>rows</code>:<ul>
-<li>Type: int | None</li>
-<li>What: The number of rows to show for a <code>textarea</code> variant. This only applies to <code>text</code> props.</li>
-<li>Default: <code>None</code></li>
-<li>Note: If <code>None</code>, no number of rows is provided.</li>
-</ul>
-</li>
-<li><code>notation</code>:<ul>
-<li>Type: str | None</li>
-<li>What: The notation to use for the prop. This only applies to <code>num</code> props.</li>
-<li>Default: <code>None</code></li>
-<li>Note: If <code>None</code>, no notation is provided.</li>
-<li>TODO: Check / Extend This.</li>
-</ul>
-</li>
-<li><code>precision</code>:<ul>
-<li>Type: int | None</li>
-<li>What: The precision to use for the prop. This only applies to <code>num</code> props.</li>
-<li>Default: <code>None</code></li>
-<li>Note: If <code>None</code>, no precision is provided.</li>
-<li>TODO: Check / Extend This.</li>
-</ul>
-</li>
-<li><code>notationDisplay</code>:<ul>
-<li>Type: str | None</li>
-<li>What: The notation display to use for the prop. This only applies to <code>num</code> props.</li>
-<li>Default: <code>None</code></li>
-<li>Note: If <code>None</code>, no notation display is provided.</li>
-<li>TODO: Check / Extend This.</li>
-</ul>
-</li>
-<li><code>unit</code>:<ul>
-<li>Type: str | None</li>
-<li>What: The unit to use for the prop. This only applies to <code>num</code> props.</li>
-<li>Default: <code>None</code></li>
-<li>Note: If <code>None</code>, no unit is provided.</li>
-<li>TODO: Check / Extend This.</li>
-</ul>
-</li>
-<li><code>views</code>:<ul>
-<li>Type: list | None</li>
-<li>What: A list of the views to use for the prop. This only applies to <code>date</code> props.</li>
-<li>Default: <code>None</code></li>
-<li>Note: If <code>None</code>, no views are provided.</li>
-<li>Valid Values: <code>["day", "hours", "minutes"]</code></li>
-<li>TODO: Check / Extend This.</li>
-</ul>
-</li>
-<li><code>legendNotation</code>:<ul>
-<li>Type: str | None</li>
-<li>What: The legend notation to use for the prop. This only applies to <code>num</code> props.</li>
-<li>Default: <code>None</code></li>
-<li>Note: If <code>None</code>, no legend notation is provided.</li>
-<li>TODO: Check / Extend This.</li>
-</ul>
-</li>
-<li><code>legendPrecision</code>:<ul>
-<li>Type: int | None</li>
-<li>What: The legend precision to use for the prop. This only applies to <code>num</code> props.</li>
-<li>Default: <code>None</code></li>
-<li>Note: If <code>None</code>, no legend precision is provided.</li>
-<li>TODO: Check / Extend This.</li>
-</ul>
-</li>
-<li><code>legendNotationDisplay</code>:<ul>
-<li>Type: str | None</li>
-<li>What: The legend notation display to use for the prop. This only applies to <code>num</code> props.</li>
-<li>Default: <code>None</code></li>
-<li>Note: If <code>None</code>, no legend notation display is provided.</li>
-<li>TODO: Check / Extend This.</li>
-</ul>
-</li>
-<li><code>legendMinLabel</code>:<ul>
-<li>Type: str | None</li>
-<li>What: The legend minimum label to use for the prop. This only applies to <code>num</code> props.</li>
-<li>Default: <code>None</code></li>
-<li>Note: If <code>None</code>, no legend minimum label is provided.</li>
-<li>TODO: Check / Extend This.</li>
-</ul>
-</li>
-<li><code>legendMaxLabel</code>:<ul>
-<li>Type: str | None</li>
-<li>What: The legend maximum label to use for the prop. This only applies to <code>num</code> props.</li>
-<li>Default: <code>None</code></li>
-<li>Note: If <code>None</code>, no legend maximum label is provided. </li>
-<li>TODO: Check / Extend This.</li>
-</ul>
-</li>
-</ul></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@staticmethod
-def spec (
-    name:str, 
-    type:str, 
-    help:[str,None]=None,
-    variant:[str,None]=None,
-    enabled:[bool,None]=None,
-    apiCommand:[str,None]=None,
-    apiCommandKeys:[list,None]=None,
-    options:[dict,None]=None,
-    placeholder:[str,None]=None,
-    maxValue:[float,int,None]=None,
-    minValue:[float,int,None]=None,
-    numberFormat:[dict,None]=None,
-    maxRows:[int,None]=None,
-    minRows:[int,None]=None,
-    rows:[int,None]=None,
-    notation:[str,None]=None,
-    precision:[int,None]=None,
-    notationDisplay:[str,None]=None,
-    unit:[str,None]=None,
-    views:[list,None]=None,
-    legendNotation:[str,None]=None,
-    legendPrecision:[int,None]=None,
-    legendNotationDisplay:[str,None]=None,
-    legendMinLabel:[str,None]=None,
-    legendMaxLabel:[str,None]=None,
-    **kwargs
-):
-    &#34;&#34;&#34;
-    Required Arguments:
-
-    - `name`:
-        - Type: str
-        - What: The name of the prop.
-    - `type`:
-        - Type: str
-        - What: The type of the prop.
-        - Accepted Values:
-            - `&#34;head&#34;`
-            - `&#34;num&#34;`
-            - `&#34;toggle&#34;`
-            - `&#34;button&#34;`
-            - `&#34;text&#34;`
-            - `&#34;selector&#34;`
-            - `&#34;date&#34;`
-            - `&#34;media&#34;`
-    
-    Optional Arguments:
-    
-    - `help`:
-        - Type: str | None
-        - What: The help text to display.
-        - Default: `None`
-    - `variant`:
-        - Type: str | None
-        - What: The variant of the prop.
-        - Accepted Values:
-            - Type: `&#34;head&#34;`
-                - `&#34;column&#34;`
-                - `&#34;row&#34;`
-            - Type: `&#34;text&#34;`
-                - `&#34;textarea&#34;`
-            - Type: `&#34;num&#34;`
-                - `&#34;slider&#34;`
-            - Type: `&#34;selector&#34;`
-                - `&#34;dropdown&#34;`
-                - `&#34;checkbox&#34;`
-                - `&#34;radio&#34;`
-                - `&#34;combobox&#34;`
-                - `&#34;hstepper&#34;`
-                - `&#34;vstepper&#34;`
-                - `&#34;hradio&#34;`
-                - `&#34;nested&#34;`
-            - Type: `&#34;date&#34;`
-                - `&#34;date&#34;`
-                - `&#34;time&#34;`
-                - `&#34;datetime&#34;`
-            - Type: `&#34;media&#34;`
-                - `&#34;picture&#34;`
-                - `&#34;video&#34;`
-        - Default: `None`
-        - TODO: Check this
-    - `enabled`:
-        - Type: bool | None
-        - What: If `True`, the prop will be enabled.
-        - Default: `None`
-        - Note: If `None`, the prop will be enabled.
-    - `apiCommand`:
-        - Type: str | None
-        - What: The name of the api command to trigger.
-        - Default: `None`
-        - Note: if `None`, no `apiCommand` is triggered
-    - `apiCommandKeys`:
-        - Type: list | None
-        - What: The top level api keys to pass to your `execute_command` if an apiCommand is provded.
-        - Default: `None`
-        - Note: If `None` all api keys are passed to your `execute_command`.
-    - `options`:
-        - Type: dict | None
-        - What: The options for the prop. This only applies to `selector` props.
-        - Default: `None`
-        - Note: If `None`, no options are provided.
-        - Note: Only options provided here are valid for the prop value.
-    - `placeholder`:
-        - Type: str | None
-        - What: The placeholder text to display. This only applies to `text` props.
-        - Default: `None`
-        - Note: If `None`, no placeholder text is provided.
-    - `maxValue`:
-        - Type: float | int | None
-        - What: The maximum value for the prop. This only applies to `num` props.
-        - Default: `None`
-        - Note: If `None`, no maximum value is provided.
-    - `minValue`:
-        - Type: float | int | None
-        - What: The minimum value for the prop. This only applies to `num` props.
-        - Default: `None`
-        - Note: If `None`, no minimum value is provided.
-    - `numberFormat`:
-        - Type: dict | None
-        - What: The number format for the prop. This only applies to `num` props.
-        - Default: `None`
-        - Note: If `None`, no number format is provided.
-        - TODO: Check / Extend this.
-    - `maxRows`:
-        - Type: int | None
-        - What: The maximum number of rows to show for a `textarea` variant. This only applies to `text` props.
-        - Default: `None`
-        - Note: If `None`, no maximum number of rows is provided.
-    - `minRows`:
-        - Type: int | None
-        - What: The minimum number of rows to show for a `textarea` variant. This only applies to `text` props.
-        - Default: `None`
-        - Note: If `None`, no minimum number of rows is provided.
-    - `rows`:
-        - Type: int | None
-        - What: The number of rows to show for a `textarea` variant. This only applies to `text` props.
-        - Default: `None`
-        - Note: If `None`, no number of rows is provided.
-    - `notation`:
-        - Type: str | None
-        - What: The notation to use for the prop. This only applies to `num` props.
-        - Default: `None`
-        - Note: If `None`, no notation is provided.
-        - TODO: Check / Extend This.
-    - `precision`:
-        - Type: int | None
-        - What: The precision to use for the prop. This only applies to `num` props.
-        - Default: `None`
-        - Note: If `None`, no precision is provided.
-        - TODO: Check / Extend This.
-    - `notationDisplay`:
-        - Type: str | None
-        - What: The notation display to use for the prop. This only applies to `num` props.
-        - Default: `None`
-        - Note: If `None`, no notation display is provided.
-        - TODO: Check / Extend This.
-    - `unit`:
-        - Type: str | None
-        - What: The unit to use for the prop. This only applies to `num` props.
-        - Default: `None`
-        - Note: If `None`, no unit is provided.
-        - TODO: Check / Extend This.
-    - `views`:
-        - Type: list | None
-        - What: A list of the views to use for the prop. This only applies to `date` props.
-        - Default: `None`
-        - Note: If `None`, no views are provided.
-        - Valid Values: `[&#34;day&#34;, &#34;hours&#34;, &#34;minutes&#34;]`
-        - TODO: Check / Extend This.
-    - `legendNotation`:
-        - Type: str | None
-        - What: The legend notation to use for the prop. This only applies to `num` props.
-        - Default: `None`
-        - Note: If `None`, no legend notation is provided.
-        - TODO: Check / Extend This.
-    - `legendPrecision`:
-        - Type: int | None
-        - What: The legend precision to use for the prop. This only applies to `num` props.
-        - Default: `None`
-        - Note: If `None`, no legend precision is provided.
-        - TODO: Check / Extend This.
-    - `legendNotationDisplay`:
-        - Type: str | None
-        - What: The legend notation display to use for the prop. This only applies to `num` props.
-        - Default: `None`
-        - Note: If `None`, no legend notation display is provided.
-        - TODO: Check / Extend This.
-    - `legendMinLabel`:
-        - Type: str | None
-        - What: The legend minimum label to use for the prop. This only applies to `num` props.
-        - Default: `None`
-        - Note: If `None`, no legend minimum label is provided.
-        - TODO: Check / Extend This.
-    - `legendMaxLabel`:
-        - Type: str | None
-        - What: The legend maximum label to use for the prop. This only applies to `num` props.
-        - Default: `None`
-        - Note: If `None`, no legend maximum label is provided. 
-        - TODO: Check / Extend This.
-    &#34;&#34;&#34;
-    passed_values = {k:v for k,v in locals().items() if (v is not None) and k!=&#34;kwargs&#34;}
-    required_fields = [&#34;name&#34;, &#34;type&#34;]
-    optional_fields = [&#39;help&#39;, &#39;variant&#39;, &#39;enabled&#39;]
-    if type != &#34;head&#34;:
-        optional_fields += [&#34;apiCommand&#34;, &#34;apiCommandKeys&#34;]
-    if type == &#34;text&#34;:
-        optional_fields += [&#34;minRows&#34;, &#34;maxRows&#34;, &#34;rows&#34;]
-    if type == &#34;num&#34;:
-        if variant == &#34;slider&#34;:
-            required_fields += [&#34;maxValue&#34;, &#34;minValue&#34;]
-        else:
-            optional_fields += [&#34;maxValue&#34;, &#34;minValue&#34;]
-        optional_fields += [&#34;unit&#34;, &#34;numberFormat&#34;, &#34;notation&#34;, &#34;precision&#34;, &#34;notationDisplay&#34;, &#34;legendNotation&#34;, &#34;legendPrecision&#34;, &#34;legendNotationDisplay&#34;, &#34;legendMinLabel&#34;, &#34;legendMaxLabel&#34;]
-    if type == &#34;selector&#34;:
-        required_fields += [&#34;options&#34;]
-        optional_fields += [&#34;placeholder&#34;]
-    if type == &#34;date&#34;:
-        optional_fields += [&#34;views&#34;]
-    missing_required = pamda.difference(required_fields, list(passed_values.keys()))
-    if len(missing_required) &gt; 0:
-        raise Exception(f&#34;Missing required fields: {str(missing_required)}&#34;)
-    for k, v in passed_values.items():
-        if k not in required_fields + optional_fields:
-            kwargs[k] = v
-    return {
-        &#34;kwargs&#34;: kwargs,
-        &#34;accepted_values&#34;: {
-            &#34;type&#34;: [&#34;head&#34;, &#34;num&#34;, &#34;toggle&#34;, &#34;button&#34;, &#34;text&#34;, &#34;selector&#34;, &#34;date&#34;, &#34;media&#34;],
-            &#34;views&#34;: [&#34;year&#34;, &#34;month&#34;, &#34;day&#34;, &#34;hours&#34;, &#34;minutes&#34;, &#34;seconds&#34;],
-            &#34;legendNotation&#34;: [&#39;compact&#39;, &#39;precision&#39;, &#39;scientific&#39;],
-            # TODO: Valiate These
-            # TODO: Add Other value checks here
-            &#34;variant&#34;: {
-                &#34;head&#34;: [&#34;column&#34;, &#34;row&#34;],
-                &#34;text&#34;: [&#34;textarea&#34;],
-                &#34;num&#34;: [&#34;slider&#34;],
-                &#34;selector&#34;: [
-                    &#34;dropdown&#34;,
-                    &#34;checkbox&#34;,
-                    &#34;radio&#34;,
-                    &#34;combobox&#34;,
-                    &#34;hstepper&#34;,
-                    &#34;vstepper&#34;,
-                    &#34;hradio&#34;,
-                    &#34;nested&#34;,
-                ],
-                &#34;date&#34;: [&#34;date&#34;, &#34;time&#34;, &#34;datetime&#34;],
-                &#34;media&#34;: [&#34;picture&#34;, &#34;video&#34;],
-            }.get(type, []),
-        },
-    }</code></pre>
-</details>
-</dd>
-</dl>
-</dd>
-<dt id="cave_utils.api.utils.PropValueValidator"><code class="flex name class">
-<span>class <span class="ident">PropValueValidator</span></span>
-<span>(</span><span>**fields)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@type_enforced.Enforcer
-class PropValueValidator(ApiValidator):
-    @staticmethod
-    def spec(**kwargs):
-        &#34;&#34;&#34;
-        Accepts all arbitrary values depending on what you have in your props as part of the api spec.
-
-        The values you pass will be validated against the props in your api spec.
-        &#34;&#34;&#34;
-        return {
-            &#34;kwargs&#34;: {},
-            &#34;accepted_values&#34;: {},
-        }
-    
-    def __extend_spec__(self, **kwargs):
-        props_data = kwargs.get(&#34;props_data&#34;, {})
-        for prop_key, prop_value in self.data.items():
-            prop_spec = props_data.get(prop_key, {})
-            if not prop_spec:
-                self.__error__(msg=f&#34;`{prop_key}` does not match any valid prop ids {list(props_data.keys())}&#34;)
-                continue
-            prop_type = prop_spec.get(&#34;type&#34;, None)
-            acceptable_types = {
-                &#34;head&#34;: (str,),
-                &#34;num&#34;: (int, float),
-                &#34;toggle&#34;: (bool,),
-                &#34;button&#34;: (str,),
-                &#34;text&#34;: (str,),
-                &#34;selector&#34;: (list,),
-                &#34;date&#34;: (str,),
-                &#34;media&#34;: (str,),
-            }.get(prop_type, None)
-            if not self.__check_type__(prop_value, acceptable_types, prepend_path=[prop_key]):
-                continue
-            if prop_type == &#39;num&#39;:
-                min_value = prop_spec.get(&#34;minValue&#34;, float(&#34;-inf&#34;))
-                max_value = prop_spec.get(&#34;maxValue&#34;, float(&#34;inf&#34;))
-                if prop_value &lt; min_value or prop_value &gt; max_value:
-                    self.__error__(msg=f&#34;`{prop_key}` with the prop type of `{prop_type}` must be between {min_value} and {max_value} as defined by the api spec.&#34;)
-            elif prop_type == &#34;selector&#34;:
-                options = list(prop_spec.get(&#34;options&#34;, {}).keys())
-                self.__check_subset_valid__(prop_value, options, prepend_path=[prop_key])
-            elif prop_type==&#39;head&#39;:
-                self.__error__(msg=f&#34;`{prop_key}` with the prop type of `{prop_type}` can not have an associated value.&#34;)
-            elif prop_type == &#39;date&#39;:
-                pass
-                # TODO: Validate date string
-            elif prop_type == &#39;media&#39;:
-                self.__check_url_valid__(prop_value)</code></pre>
-</details>
-<h3>Ancestors</h3>
-<ul class="hlist">
-<li><a title="cave_utils.api.utils.ApiValidator" href="#cave_utils.api.utils.ApiValidator">ApiValidator</a></li>
-</ul>
-<h3>Static methods</h3>
-<dl>
-<dt id="cave_utils.api.utils.PropValueValidator.spec"><code class="name flex">
-<span>def <span class="ident">spec</span></span>(<span>**kwargs)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Accepts all arbitrary values depending on what you have in your props as part of the api spec.</p>
-<p>The values you pass will be validated against the props in your api spec.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@staticmethod
-def spec(**kwargs):
-    &#34;&#34;&#34;
-    Accepts all arbitrary values depending on what you have in your props as part of the api spec.
-
-    The values you pass will be validated against the props in your api spec.
-    &#34;&#34;&#34;
-    return {
-        &#34;kwargs&#34;: {},
-        &#34;accepted_values&#34;: {},
-    }</code></pre>
-</details>
-</dd>
-</dl>
-</dd>
-<dt id="cave_utils.api.utils.SizeByOptionValidator"><code class="flex name class">
-<span>class <span class="ident">SizeByOptionValidator</span></span>
-<span>(</span><span>**fields)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@type_enforced.Enforcer
-class SizeByOptionValidator(ApiValidator):
-    @staticmethod
-    def spec (startSize:str, endSize:str, min:[float, int, None]=None, max:[float, int, None]=None, nullSize:[str, None]=None, **kwargs):
-        &#34;&#34;&#34;
-        Required Arguments:
-
-        - `startSize`:
-            - Type: str
-            - What: The starting size for the gradient.
-            - Accepted Values:
-                - Any valid pixel string.
-            - Eg: `&#34;10px&#34;`
-        - `endSize`:
-            - Type: str
-            - What: The ending size for the gradient.
-            - Accepted Values:
-                - Any valid pixel string.
-            - Eg: `&#34;10px&#34;`
-
-        Optional Arguments:
-
-        - `min`:
-            - Type: float | int | None
-            - What: The minimum value for calculating the size.
-            - Default: `None`
-            - Note: If None, the min of the relevant data will be used.
-        - `max`:
-            - Type: float | int | None
-            - What: The maximum value for calculating the size.
-            - Default: `None`
-            - Note: If None, the max of the relevant data will be used.
-        - `nullSize`:
-            - Type: str | None
-            - What: The size to use for null values.
-            - Default: `None`
-            - Note: If None, null values will not be shown
-
-        &#34;&#34;&#34;
-        return {
-            &#34;kwargs&#34;: kwargs,
-            &#34;accepted_values&#34;: {},
-        }
-
-    def __extend_spec__(self, **kwargs):
-        for field in [&#34;startSize&#34;, &#34;endSize&#34;, &#34;nullSize&#34;]:
-            field_value = self.data.get(field)
-            if field_value is not None:
-                self.__check_pixel_string_valid__(
-                    pixel_string=field_value, 
-                    prepend_path=[field]
-                )</code></pre>
-</details>
-<h3>Ancestors</h3>
-<ul class="hlist">
-<li><a title="cave_utils.api.utils.ApiValidator" href="#cave_utils.api.utils.ApiValidator">ApiValidator</a></li>
-</ul>
-<h3>Static methods</h3>
-<dl>
-<dt id="cave_utils.api.utils.SizeByOptionValidator.spec"><code class="name flex">
-<span>def <span class="ident">spec</span></span>(<span>startSize: str, endSize: str, min: [<class 'float'>, <class 'int'>, None] = None, max: [<class 'float'>, <class 'int'>, None] = None, nullSize: [<class 'str'>, None] = None, **kwargs)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Required Arguments:</p>
-<ul>
-<li><code>startSize</code>:<ul>
-<li>Type: str</li>
-<li>What: The starting size for the gradient.</li>
-<li>Accepted Values:<ul>
-<li>Any valid pixel string.</li>
-</ul>
-</li>
-<li>Eg: <code>"10px"</code></li>
-</ul>
-</li>
-<li><code>endSize</code>:<ul>
-<li>Type: str</li>
-<li>What: The ending size for the gradient.</li>
-<li>Accepted Values:<ul>
-<li>Any valid pixel string.</li>
-</ul>
-</li>
-<li>Eg: <code>"10px"</code></li>
-</ul>
-</li>
-</ul>
-<p>Optional Arguments:</p>
-<ul>
-<li><code>min</code>:<ul>
-<li>Type: float | int | None</li>
-<li>What: The minimum value for calculating the size.</li>
-<li>Default: <code>None</code></li>
-<li>Note: If None, the min of the relevant data will be used.</li>
-</ul>
-</li>
-<li><code>max</code>:<ul>
-<li>Type: float | int | None</li>
-<li>What: The maximum value for calculating the size.</li>
-<li>Default: <code>None</code></li>
-<li>Note: If None, the max of the relevant data will be used.</li>
-</ul>
-</li>
-<li><code>nullSize</code>:<ul>
-<li>Type: str | None</li>
-<li>What: The size to use for null values.</li>
-<li>Default: <code>None</code></li>
-<li>Note: If None, null values will not be shown</li>
-</ul>
-</li>
-</ul></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@staticmethod
-def spec (startSize:str, endSize:str, min:[float, int, None]=None, max:[float, int, None]=None, nullSize:[str, None]=None, **kwargs):
-    &#34;&#34;&#34;
-    Required Arguments:
-
-    - `startSize`:
-        - Type: str
-        - What: The starting size for the gradient.
-        - Accepted Values:
-            - Any valid pixel string.
-        - Eg: `&#34;10px&#34;`
-    - `endSize`:
-        - Type: str
-        - What: The ending size for the gradient.
-        - Accepted Values:
-            - Any valid pixel string.
-        - Eg: `&#34;10px&#34;`
-
-    Optional Arguments:
-
-    - `min`:
-        - Type: float | int | None
-        - What: The minimum value for calculating the size.
-        - Default: `None`
-        - Note: If None, the min of the relevant data will be used.
-    - `max`:
-        - Type: float | int | None
-        - What: The maximum value for calculating the size.
-        - Default: `None`
-        - Note: If None, the max of the relevant data will be used.
-    - `nullSize`:
-        - Type: str | None
-        - What: The size to use for null values.
-        - Default: `None`
-        - Note: If None, null values will not be shown
-
-    &#34;&#34;&#34;
-    return {
-        &#34;kwargs&#34;: kwargs,
-        &#34;accepted_values&#34;: {},
-    }</code></pre>
-</details>
-</dd>
-</dl>
-</dd>
-<dt id="cave_utils.api.utils.ViewportValidator"><code class="flex name class">
-<span>class <span class="ident">ViewportValidator</span></span>
-<span>(</span><span>**fields)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class ViewportValidator(ApiValidator):
-    def __populate_data__(self, **kwargs):
-        is_optional_viewport = kwargs.get(&#34;is_optional_viewport&#34;, False)
-        self.field_types = {
-            &#34;latitude&#34;: (
-                float,
-                int,
-            ),
-            &#34;longitude&#34;: (
-                float,
-                int,
-            ),
-            &#34;zoom&#34;: (
-                float,
-                int,
-            ),
-            &#34;bearing&#34;: (
-                float,
-                int,
-            ),
-            &#34;pitch&#34;: (
-                float,
-                int,
-            ),
-            &#34;height&#34;: (
-                float,
-                int,
-            ),
-            &#34;altitude&#34;: (
-                float,
-                int,
-            ),
-            &#34;maxZoom&#34;: (
-                float,
-                int,
-            ),
-            &#34;minZoom&#34;: (
-                float,
-                int,
-            ),
-            &#34;icon&#34;: str,
-            &#34;name&#34;: str,
-            &#34;order&#34;: int,
-        }
-
-        self.accepted_values = {}
-
-        self.required_fields = [&#34;latitude&#34;, &#34;longitude&#34;, &#34;zoom&#34;]
-
-        self.optional_fields = [
-            &#34;maxZoom&#34;,
-            &#34;minZoom&#34;,
-            &#34;height&#34;,
-            &#34;altitude&#34;,
-            &#34;bearing&#34;,
-            &#34;pitch&#34;,
-            &#34;order&#34;,
-        ]
-
-        if is_optional_viewport:
-            self.required_fields += [&#34;icon&#34;, &#34;name&#34;]</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -2945,49 +665,7 @@ def spec (startSize:str, endSize:str, min:[float, int, None]=None, max:[float, i
 </ul>
 </li>
 <li>
-<h4><code><a title="cave_utils.api.utils.ColorByOptionValidator" href="#cave_utils.api.utils.ColorByOptionValidator">ColorByOptionValidator</a></code></h4>
-<ul class="">
-<li><code><a title="cave_utils.api.utils.ColorByOptionValidator.spec" href="#cave_utils.api.utils.ColorByOptionValidator.spec">spec</a></code></li>
-</ul>
-</li>
-<li>
 <h4><code><a title="cave_utils.api.utils.CustomKeyValidator" href="#cave_utils.api.utils.CustomKeyValidator">CustomKeyValidator</a></code></h4>
-</li>
-<li>
-<h4><code><a title="cave_utils.api.utils.GeoJsonValidator" href="#cave_utils.api.utils.GeoJsonValidator">GeoJsonValidator</a></code></h4>
-</li>
-<li>
-<h4><code><a title="cave_utils.api.utils.PropLayoutValidator" href="#cave_utils.api.utils.PropLayoutValidator">PropLayoutValidator</a></code></h4>
-<ul class="">
-<li><code><a title="cave_utils.api.utils.PropLayoutValidator.spec" href="#cave_utils.api.utils.PropLayoutValidator.spec">spec</a></code></li>
-</ul>
-</li>
-<li>
-<h4><code><a title="cave_utils.api.utils.PropSelectorOptionsValidator" href="#cave_utils.api.utils.PropSelectorOptionsValidator">PropSelectorOptionsValidator</a></code></h4>
-<ul class="">
-<li><code><a title="cave_utils.api.utils.PropSelectorOptionsValidator.spec" href="#cave_utils.api.utils.PropSelectorOptionsValidator.spec">spec</a></code></li>
-</ul>
-</li>
-<li>
-<h4><code><a title="cave_utils.api.utils.PropValidator" href="#cave_utils.api.utils.PropValidator">PropValidator</a></code></h4>
-<ul class="">
-<li><code><a title="cave_utils.api.utils.PropValidator.spec" href="#cave_utils.api.utils.PropValidator.spec">spec</a></code></li>
-</ul>
-</li>
-<li>
-<h4><code><a title="cave_utils.api.utils.PropValueValidator" href="#cave_utils.api.utils.PropValueValidator">PropValueValidator</a></code></h4>
-<ul class="">
-<li><code><a title="cave_utils.api.utils.PropValueValidator.spec" href="#cave_utils.api.utils.PropValueValidator.spec">spec</a></code></li>
-</ul>
-</li>
-<li>
-<h4><code><a title="cave_utils.api.utils.SizeByOptionValidator" href="#cave_utils.api.utils.SizeByOptionValidator">SizeByOptionValidator</a></code></h4>
-<ul class="">
-<li><code><a title="cave_utils.api.utils.SizeByOptionValidator.spec" href="#cave_utils.api.utils.SizeByOptionValidator.spec">spec</a></code></li>
-</ul>
-</li>
-<li>
-<h4><code><a title="cave_utils.api.utils.ViewportValidator" href="#cave_utils.api.utils.ViewportValidator">ViewportValidator</a></code></h4>
 </li>
 </ul>
 </li>

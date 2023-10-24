@@ -1,14 +1,14 @@
 """
 Build out an app bar with buttons to launch pages, launch panes and trigger api commands.
 """
-from cave_utils.api.utils import *
+from cave_utils.api.utils import ApiValidator, CustomKeyValidator
 import type_enforced
 
 
 @type_enforced.Enforcer
 class appBar_data_star(ApiValidator):
     """
-    ## Api Path: appBar.data.*
+    ## Api Path: appBar.data.\*
     """
 
     @staticmethod
