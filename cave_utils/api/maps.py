@@ -7,8 +7,8 @@ import type_enforced
 @type_enforced.Enforcer
 class viewport(ApiValidator):
     """
-    ## Api Path: maps.data.\*.defaultViewport
-    ## Api Path: maps.data.\*.optionalViewports.\*
+    ## Api Path: maps.data.*.defaultViewport
+    ## Api Path: maps.data.*.optionalViewports.*
     """
     @staticmethod
     def spec(latitude: [int, float], longitude: [int, float], zoom: [int, float], bearing: [int, float, None] = None, pitch: [int, float, None] = None, maxZoom: [int, float, None] = None, minZoom: [int, float, None] = None, icon: [str, None] = None, name: [str, None] = None, **kwargs):
@@ -100,7 +100,7 @@ class viewport(ApiValidator):
 @type_enforced.Enforcer
 class colorByOptions(ApiValidator):
     """
-    ## Api Path: maps.data.\*.legendGroups.\*.data.\*.colorByOptions
+    ## Api Path: maps.data.*.legendGroups.*.data.*.colorByOptions
     """
     @staticmethod
     def spec(
@@ -255,7 +255,7 @@ class sizeByOptions(ApiValidator):
 @type_enforced.Enforcer
 class maps_data_star_legendGroups_star_data_star(ApiValidator):
     """
-    ## Api Path: maps.data.\*.legendGroups.\*.data.\*
+    ## Api Path: maps.data.*.legendGroups.*.data.*
     """
     @staticmethod
     def spec(
@@ -405,7 +405,7 @@ class maps_data_star_legendGroups_star_data_star(ApiValidator):
 @type_enforced.Enforcer
 class maps_data_star_legendGroups_star(ApiValidator):
     """
-    ## Api Path: maps.data.\*.legendGroups.\*
+    ## Api Path: maps.data.*.legendGroups.*
     """
     @staticmethod
     def spec(
@@ -438,7 +438,7 @@ class maps_data_star_legendGroups_star(ApiValidator):
 @type_enforced.Enforcer
 class maps_data_star(ApiValidator):
     """
-    ## Api Path: maps.data.\*
+    ## Api Path: maps.data.*
     """
 
     @staticmethod
@@ -521,7 +521,7 @@ class maps_data_star(ApiValidator):
 @type_enforced.Enforcer
 class maps_additionalMapStyles_star(ApiValidator):
     """
-    ## Api Path: maps.additionalMapStyles.\*
+    ## Api Path: maps.additionalMapStyles.*
     """
 
     @staticmethod

@@ -7,7 +7,7 @@ import type_enforced
 @type_enforced.Enforcer
 class pages_data_star_pageLayout(ApiValidator):
     """
-    ## Api Path: pages.data.\*.pageLayout
+    ## Api Path: pages.data.*.pageLayout
     """
     @staticmethod
     def spec(
@@ -98,7 +98,7 @@ class pages_data_star_pageLayout(ApiValidator):
 @type_enforced.Enforcer
 class pages_data_star(ApiValidator):
     """
-    ## Api Path: pages.data.\*
+    ## Api Path: pages.data.*
     """
 
     @staticmethod

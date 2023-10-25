@@ -9,7 +9,7 @@ import type_enforced
 @type_enforced.Enforcer
 class panes_data_star(ApiValidator):
     """
-    ## Api Path: panes.data.\*
+    ## Api Path: panes.data.*
     """
 
     @staticmethod

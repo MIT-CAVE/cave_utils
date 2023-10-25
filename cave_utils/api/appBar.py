@@ -8,7 +8,7 @@ import type_enforced
 @type_enforced.Enforcer
 class appBar_data_star(ApiValidator):
     """
-    ## Api Path: appBar.data.\*
+    ## Api Path: appBar.data.*
     """
 
     @staticmethod

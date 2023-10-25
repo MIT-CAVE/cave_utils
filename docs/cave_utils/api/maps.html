@@ -134,8 +134,8 @@
 </span><span id="L-7"><a href="#L-7"><span class="linenos">  7</span></a><span class="nd">@type_enforced</span><span class="o">.</span><span class="n">Enforcer</span>
 </span><span id="L-8"><a href="#L-8"><span class="linenos">  8</span></a><span class="k">class</span> <span class="nc">viewport</span><span class="p">(</span><span class="n">ApiValidator</span><span class="p">):</span>
 </span><span id="L-9"><a href="#L-9"><span class="linenos">  9</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-10"><a href="#L-10"><span class="linenos"> 10</span></a><span class="sd">    ## Api Path: maps.data.\*.defaultViewport</span>
-</span><span id="L-11"><a href="#L-11"><span class="linenos"> 11</span></a><span class="sd">    ## Api Path: maps.data.\*.optionalViewports.\*</span>
+</span><span id="L-10"><a href="#L-10"><span class="linenos"> 10</span></a><span class="sd">    ## Api Path: maps.data.*.defaultViewport</span>
+</span><span id="L-11"><a href="#L-11"><span class="linenos"> 11</span></a><span class="sd">    ## Api Path: maps.data.*.optionalViewports.*</span>
 </span><span id="L-12"><a href="#L-12"><span class="linenos"> 12</span></a><span class="sd">    &quot;&quot;&quot;</span>
 </span><span id="L-13"><a href="#L-13"><span class="linenos"> 13</span></a>    <span class="nd">@staticmethod</span>
 </span><span id="L-14"><a href="#L-14"><span class="linenos"> 14</span></a>    <span class="k">def</span> <span class="nf">spec</span><span class="p">(</span><span class="n">latitude</span><span class="p">:</span> <span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="n">longitude</span><span class="p">:</span> <span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="n">zoom</span><span class="p">:</span> <span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="n">bearing</span><span class="p">:</span> <span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">pitch</span><span class="p">:</span> <span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">maxZoom</span><span class="p">:</span> <span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">minZoom</span><span class="p">:</span> <span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">icon</span><span class="p">:</span> <span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -227,7 +227,7 @@
 </span><span id="L-100"><a href="#L-100"><span class="linenos">100</span></a><span class="nd">@type_enforced</span><span class="o">.</span><span class="n">Enforcer</span>
 </span><span id="L-101"><a href="#L-101"><span class="linenos">101</span></a><span class="k">class</span> <span class="nc">colorByOptions</span><span class="p">(</span><span class="n">ApiValidator</span><span class="p">):</span>
 </span><span id="L-102"><a href="#L-102"><span class="linenos">102</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-103"><a href="#L-103"><span class="linenos">103</span></a><span class="sd">    ## Api Path: maps.data.\*.legendGroups.\*.data.\*.colorByOptions</span>
+</span><span id="L-103"><a href="#L-103"><span class="linenos">103</span></a><span class="sd">    ## Api Path: maps.data.*.legendGroups.*.data.*.colorByOptions</span>
 </span><span id="L-104"><a href="#L-104"><span class="linenos">104</span></a><span class="sd">    &quot;&quot;&quot;</span>
 </span><span id="L-105"><a href="#L-105"><span class="linenos">105</span></a>    <span class="nd">@staticmethod</span>
 </span><span id="L-106"><a href="#L-106"><span class="linenos">106</span></a>    <span class="k">def</span> <span class="nf">spec</span><span class="p">(</span>
@@ -382,7 +382,7 @@
 </span><span id="L-255"><a href="#L-255"><span class="linenos">255</span></a><span class="nd">@type_enforced</span><span class="o">.</span><span class="n">Enforcer</span>
 </span><span id="L-256"><a href="#L-256"><span class="linenos">256</span></a><span class="k">class</span> <span class="nc">maps_data_star_legendGroups_star_data_star</span><span class="p">(</span><span class="n">ApiValidator</span><span class="p">):</span>
 </span><span id="L-257"><a href="#L-257"><span class="linenos">257</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-258"><a href="#L-258"><span class="linenos">258</span></a><span class="sd">    ## Api Path: maps.data.\*.legendGroups.\*.data.\*</span>
+</span><span id="L-258"><a href="#L-258"><span class="linenos">258</span></a><span class="sd">    ## Api Path: maps.data.*.legendGroups.*.data.*</span>
 </span><span id="L-259"><a href="#L-259"><span class="linenos">259</span></a><span class="sd">    &quot;&quot;&quot;</span>
 </span><span id="L-260"><a href="#L-260"><span class="linenos">260</span></a>    <span class="nd">@staticmethod</span>
 </span><span id="L-261"><a href="#L-261"><span class="linenos">261</span></a>    <span class="k">def</span> <span class="nf">spec</span><span class="p">(</span>
@@ -532,7 +532,7 @@
 </span><span id="L-405"><a href="#L-405"><span class="linenos">405</span></a><span class="nd">@type_enforced</span><span class="o">.</span><span class="n">Enforcer</span>
 </span><span id="L-406"><a href="#L-406"><span class="linenos">406</span></a><span class="k">class</span> <span class="nc">maps_data_star_legendGroups_star</span><span class="p">(</span><span class="n">ApiValidator</span><span class="p">):</span>
 </span><span id="L-407"><a href="#L-407"><span class="linenos">407</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-408"><a href="#L-408"><span class="linenos">408</span></a><span class="sd">    ## Api Path: maps.data.\*.legendGroups.\*</span>
+</span><span id="L-408"><a href="#L-408"><span class="linenos">408</span></a><span class="sd">    ## Api Path: maps.data.*.legendGroups.*</span>
 </span><span id="L-409"><a href="#L-409"><span class="linenos">409</span></a><span class="sd">    &quot;&quot;&quot;</span>
 </span><span id="L-410"><a href="#L-410"><span class="linenos">410</span></a>    <span class="nd">@staticmethod</span>
 </span><span id="L-411"><a href="#L-411"><span class="linenos">411</span></a>    <span class="k">def</span> <span class="nf">spec</span><span class="p">(</span>
@@ -565,7 +565,7 @@
 </span><span id="L-438"><a href="#L-438"><span class="linenos">438</span></a><span class="nd">@type_enforced</span><span class="o">.</span><span class="n">Enforcer</span>
 </span><span id="L-439"><a href="#L-439"><span class="linenos">439</span></a><span class="k">class</span> <span class="nc">maps_data_star</span><span class="p">(</span><span class="n">ApiValidator</span><span class="p">):</span>
 </span><span id="L-440"><a href="#L-440"><span class="linenos">440</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-441"><a href="#L-441"><span class="linenos">441</span></a><span class="sd">    ## Api Path: maps.data.\*</span>
+</span><span id="L-441"><a href="#L-441"><span class="linenos">441</span></a><span class="sd">    ## Api Path: maps.data.*</span>
 </span><span id="L-442"><a href="#L-442"><span class="linenos">442</span></a><span class="sd">    &quot;&quot;&quot;</span>
 </span><span id="L-443"><a href="#L-443"><span class="linenos">443</span></a>
 </span><span id="L-444"><a href="#L-444"><span class="linenos">444</span></a>    <span class="nd">@staticmethod</span>
@@ -648,7 +648,7 @@
 </span><span id="L-521"><a href="#L-521"><span class="linenos">521</span></a><span class="nd">@type_enforced</span><span class="o">.</span><span class="n">Enforcer</span>
 </span><span id="L-522"><a href="#L-522"><span class="linenos">522</span></a><span class="k">class</span> <span class="nc">maps_additionalMapStyles_star</span><span class="p">(</span><span class="n">ApiValidator</span><span class="p">):</span>
 </span><span id="L-523"><a href="#L-523"><span class="linenos">523</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-524"><a href="#L-524"><span class="linenos">524</span></a><span class="sd">    ## Api Path: maps.additionalMapStyles.\*</span>
+</span><span id="L-524"><a href="#L-524"><span class="linenos">524</span></a><span class="sd">    ## Api Path: maps.additionalMapStyles.*</span>
 </span><span id="L-525"><a href="#L-525"><span class="linenos">525</span></a><span class="sd">    &quot;&quot;&quot;</span>
 </span><span id="L-526"><a href="#L-526"><span class="linenos">526</span></a>
 </span><span id="L-527"><a href="#L-527"><span class="linenos">527</span></a>    <span class="nd">@staticmethod</span>
@@ -742,8 +742,8 @@
             <div class="pdoc-code codehilite"><pre><span></span><span id="viewport-8"><a href="#viewport-8"><span class="linenos"> 8</span></a><span class="nd">@type_enforced</span><span class="o">.</span><span class="n">Enforcer</span>
 </span><span id="viewport-9"><a href="#viewport-9"><span class="linenos"> 9</span></a><span class="k">class</span> <span class="nc">viewport</span><span class="p">(</span><span class="n">ApiValidator</span><span class="p">):</span>
 </span><span id="viewport-10"><a href="#viewport-10"><span class="linenos">10</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="viewport-11"><a href="#viewport-11"><span class="linenos">11</span></a><span class="sd">    ## Api Path: maps.data.\*.defaultViewport</span>
-</span><span id="viewport-12"><a href="#viewport-12"><span class="linenos">12</span></a><span class="sd">    ## Api Path: maps.data.\*.optionalViewports.\*</span>
+</span><span id="viewport-11"><a href="#viewport-11"><span class="linenos">11</span></a><span class="sd">    ## Api Path: maps.data.*.defaultViewport</span>
+</span><span id="viewport-12"><a href="#viewport-12"><span class="linenos">12</span></a><span class="sd">    ## Api Path: maps.data.*.optionalViewports.*</span>
 </span><span id="viewport-13"><a href="#viewport-13"><span class="linenos">13</span></a><span class="sd">    &quot;&quot;&quot;</span>
 </span><span id="viewport-14"><a href="#viewport-14"><span class="linenos">14</span></a>    <span class="nd">@staticmethod</span>
 </span><span id="viewport-15"><a href="#viewport-15"><span class="linenos">15</span></a>    <span class="k">def</span> <span class="nf">spec</span><span class="p">(</span><span class="n">latitude</span><span class="p">:</span> <span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="n">longitude</span><span class="p">:</span> <span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="n">zoom</span><span class="p">:</span> <span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="n">bearing</span><span class="p">:</span> <span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">pitch</span><span class="p">:</span> <span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">maxZoom</span><span class="p">:</span> <span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">minZoom</span><span class="p">:</span> <span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">icon</span><span class="p">:</span> <span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -836,7 +836,7 @@
 
             <div class="docstring"><h2 id="api-path-mapsdatadefaultviewport">Api Path: maps.data.*.defaultViewport</h2>
 
-<h2 id="api-path-mapsdataoptionalviewports">Api Path: maps.data.*.optionalViewports.*</h2>
+<h2 id="api-path-mapsdataoptionalviewports">Api Path: maps.data.<em>.optionalViewports.</em></h2>
 </div>
 
 
@@ -1001,7 +1001,7 @@
             <div class="pdoc-code codehilite"><pre><span></span><span id="colorByOptions-101"><a href="#colorByOptions-101"><span class="linenos">101</span></a><span class="nd">@type_enforced</span><span class="o">.</span><span class="n">Enforcer</span>
 </span><span id="colorByOptions-102"><a href="#colorByOptions-102"><span class="linenos">102</span></a><span class="k">class</span> <span class="nc">colorByOptions</span><span class="p">(</span><span class="n">ApiValidator</span><span class="p">):</span>
 </span><span id="colorByOptions-103"><a href="#colorByOptions-103"><span class="linenos">103</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="colorByOptions-104"><a href="#colorByOptions-104"><span class="linenos">104</span></a><span class="sd">    ## Api Path: maps.data.\*.legendGroups.\*.data.\*.colorByOptions</span>
+</span><span id="colorByOptions-104"><a href="#colorByOptions-104"><span class="linenos">104</span></a><span class="sd">    ## Api Path: maps.data.*.legendGroups.*.data.*.colorByOptions</span>
 </span><span id="colorByOptions-105"><a href="#colorByOptions-105"><span class="linenos">105</span></a><span class="sd">    &quot;&quot;&quot;</span>
 </span><span id="colorByOptions-106"><a href="#colorByOptions-106"><span class="linenos">106</span></a>    <span class="nd">@staticmethod</span>
 </span><span id="colorByOptions-107"><a href="#colorByOptions-107"><span class="linenos">107</span></a>    <span class="k">def</span> <span class="nf">spec</span><span class="p">(</span>
@@ -1078,7 +1078,7 @@
 </span></pre></div>
 
 
-            <div class="docstring"><h2 id="api-path-mapsdatalegendgroupsdatacolorbyoptions">Api Path: maps.data.*.legendGroups.*.data.*.colorByOptions</h2>
+            <div class="docstring"><h2 id="api-path-mapsdatalegendgroupsdatacolorbyoptions">Api Path: maps.data.<em>.legendGroups.</em>.data.*.colorByOptions</h2>
 </div>
 
 
@@ -1502,7 +1502,7 @@
             <div class="pdoc-code codehilite"><pre><span></span><span id="maps_data_star_legendGroups_star_data_star-256"><a href="#maps_data_star_legendGroups_star_data_star-256"><span class="linenos">256</span></a><span class="nd">@type_enforced</span><span class="o">.</span><span class="n">Enforcer</span>
 </span><span id="maps_data_star_legendGroups_star_data_star-257"><a href="#maps_data_star_legendGroups_star_data_star-257"><span class="linenos">257</span></a><span class="k">class</span> <span class="nc">maps_data_star_legendGroups_star_data_star</span><span class="p">(</span><span class="n">ApiValidator</span><span class="p">):</span>
 </span><span id="maps_data_star_legendGroups_star_data_star-258"><a href="#maps_data_star_legendGroups_star_data_star-258"><span class="linenos">258</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="maps_data_star_legendGroups_star_data_star-259"><a href="#maps_data_star_legendGroups_star_data_star-259"><span class="linenos">259</span></a><span class="sd">    ## Api Path: maps.data.\*.legendGroups.\*.data.\*</span>
+</span><span id="maps_data_star_legendGroups_star_data_star-259"><a href="#maps_data_star_legendGroups_star_data_star-259"><span class="linenos">259</span></a><span class="sd">    ## Api Path: maps.data.*.legendGroups.*.data.*</span>
 </span><span id="maps_data_star_legendGroups_star_data_star-260"><a href="#maps_data_star_legendGroups_star_data_star-260"><span class="linenos">260</span></a><span class="sd">    &quot;&quot;&quot;</span>
 </span><span id="maps_data_star_legendGroups_star_data_star-261"><a href="#maps_data_star_legendGroups_star_data_star-261"><span class="linenos">261</span></a>    <span class="nd">@staticmethod</span>
 </span><span id="maps_data_star_legendGroups_star_data_star-262"><a href="#maps_data_star_legendGroups_star_data_star-262"><span class="linenos">262</span></a>    <span class="k">def</span> <span class="nf">spec</span><span class="p">(</span>
@@ -1650,7 +1650,7 @@
 </span></pre></div>
 
 
-            <div class="docstring"><h2 id="api-path-mapsdatalegendgroupsdata">Api Path: maps.data.*.legendGroups.*.data.*</h2>
+            <div class="docstring"><h2 id="api-path-mapsdatalegendgroupsdata">Api Path: maps.data.<em>.legendGroups.</em>.data.*</h2>
 </div>
 
 
@@ -1925,7 +1925,7 @@
             <div class="pdoc-code codehilite"><pre><span></span><span id="maps_data_star_legendGroups_star-406"><a href="#maps_data_star_legendGroups_star-406"><span class="linenos">406</span></a><span class="nd">@type_enforced</span><span class="o">.</span><span class="n">Enforcer</span>
 </span><span id="maps_data_star_legendGroups_star-407"><a href="#maps_data_star_legendGroups_star-407"><span class="linenos">407</span></a><span class="k">class</span> <span class="nc">maps_data_star_legendGroups_star</span><span class="p">(</span><span class="n">ApiValidator</span><span class="p">):</span>
 </span><span id="maps_data_star_legendGroups_star-408"><a href="#maps_data_star_legendGroups_star-408"><span class="linenos">408</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="maps_data_star_legendGroups_star-409"><a href="#maps_data_star_legendGroups_star-409"><span class="linenos">409</span></a><span class="sd">    ## Api Path: maps.data.\*.legendGroups.\*</span>
+</span><span id="maps_data_star_legendGroups_star-409"><a href="#maps_data_star_legendGroups_star-409"><span class="linenos">409</span></a><span class="sd">    ## Api Path: maps.data.*.legendGroups.*</span>
 </span><span id="maps_data_star_legendGroups_star-410"><a href="#maps_data_star_legendGroups_star-410"><span class="linenos">410</span></a><span class="sd">    &quot;&quot;&quot;</span>
 </span><span id="maps_data_star_legendGroups_star-411"><a href="#maps_data_star_legendGroups_star-411"><span class="linenos">411</span></a>    <span class="nd">@staticmethod</span>
 </span><span id="maps_data_star_legendGroups_star-412"><a href="#maps_data_star_legendGroups_star-412"><span class="linenos">412</span></a>    <span class="k">def</span> <span class="nf">spec</span><span class="p">(</span>
@@ -1957,7 +1957,7 @@
 </span></pre></div>
 
 
-            <div class="docstring"><h2 id="api-path-mapsdatalegendgroups">Api Path: maps.data.*.legendGroups.*</h2>
+            <div class="docstring"><h2 id="api-path-mapsdatalegendgroups">Api Path: maps.data.<em>.legendGroups.</em></h2>
 </div>
 
 
@@ -2038,7 +2038,7 @@
             <div class="pdoc-code codehilite"><pre><span></span><span id="maps_data_star-439"><a href="#maps_data_star-439"><span class="linenos">439</span></a><span class="nd">@type_enforced</span><span class="o">.</span><span class="n">Enforcer</span>
 </span><span id="maps_data_star-440"><a href="#maps_data_star-440"><span class="linenos">440</span></a><span class="k">class</span> <span class="nc">maps_data_star</span><span class="p">(</span><span class="n">ApiValidator</span><span class="p">):</span>
 </span><span id="maps_data_star-441"><a href="#maps_data_star-441"><span class="linenos">441</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="maps_data_star-442"><a href="#maps_data_star-442"><span class="linenos">442</span></a><span class="sd">    ## Api Path: maps.data.\*</span>
+</span><span id="maps_data_star-442"><a href="#maps_data_star-442"><span class="linenos">442</span></a><span class="sd">    ## Api Path: maps.data.*</span>
 </span><span id="maps_data_star-443"><a href="#maps_data_star-443"><span class="linenos">443</span></a><span class="sd">    &quot;&quot;&quot;</span>
 </span><span id="maps_data_star-444"><a href="#maps_data_star-444"><span class="linenos">444</span></a>
 </span><span id="maps_data_star-445"><a href="#maps_data_star-445"><span class="linenos">445</span></a>    <span class="nd">@staticmethod</span>
@@ -2252,7 +2252,7 @@
             <div class="pdoc-code codehilite"><pre><span></span><span id="maps_additionalMapStyles_star-522"><a href="#maps_additionalMapStyles_star-522"><span class="linenos">522</span></a><span class="nd">@type_enforced</span><span class="o">.</span><span class="n">Enforcer</span>
 </span><span id="maps_additionalMapStyles_star-523"><a href="#maps_additionalMapStyles_star-523"><span class="linenos">523</span></a><span class="k">class</span> <span class="nc">maps_additionalMapStyles_star</span><span class="p">(</span><span class="n">ApiValidator</span><span class="p">):</span>
 </span><span id="maps_additionalMapStyles_star-524"><a href="#maps_additionalMapStyles_star-524"><span class="linenos">524</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="maps_additionalMapStyles_star-525"><a href="#maps_additionalMapStyles_star-525"><span class="linenos">525</span></a><span class="sd">    ## Api Path: maps.additionalMapStyles.\*</span>
+</span><span id="maps_additionalMapStyles_star-525"><a href="#maps_additionalMapStyles_star-525"><span class="linenos">525</span></a><span class="sd">    ## Api Path: maps.additionalMapStyles.*</span>
 </span><span id="maps_additionalMapStyles_star-526"><a href="#maps_additionalMapStyles_star-526"><span class="linenos">526</span></a><span class="sd">    &quot;&quot;&quot;</span>
 </span><span id="maps_additionalMapStyles_star-527"><a href="#maps_additionalMapStyles_star-527"><span class="linenos">527</span></a>
 </span><span id="maps_additionalMapStyles_star-528"><a href="#maps_additionalMapStyles_star-528"><span class="linenos">528</span></a>    <span class="nd">@staticmethod</span>
