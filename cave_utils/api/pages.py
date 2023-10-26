@@ -11,7 +11,7 @@ class pages_data_star_pageLayout(ApiValidator):
     """
     @staticmethod
     def spec(
-        type: str = 'groupedOutputs', 
+        type: str = 'groupedOutput', 
         variant: str = 'bar', 
         mapId: [str, None] = None,
         groupingId: [list, None] = None,
@@ -37,7 +37,12 @@ class pages_data_star_pageLayout(ApiValidator):
             - Type: str
             - What: The variant of the page layout.
             - Default: `'bar'`
-            - Accepted Values: `['bar', 'line', 'table', 'map']`
+            - Accepted Values: 
+                - TODO: Update this list
+                - Type: `groupedOutput`
+                    - `['bar', 'line', 'table', 'box_plot', 'cumulative_line']`
+                - Type: `globalOutput`
+                    - `['bar', 'line', 'table']`
         - `mapId`:
             - Type: str
             - What: The id of the map to use.
@@ -84,15 +89,31 @@ class pages_data_star_pageLayout(ApiValidator):
             - What: Whether or not the layout should be maximized.
             - Default: `False`
         """
+        if type == 'globalOutput':
+            variant_options = ['bar', 'line', 'table']
+        elif type == 'groupedOutput':
+            variant_options = ['bar', 'line', 'table', 'box_plot', 'cumulative_line']
+        else:
+            variant_options = []
         return {"kwargs": kwargs, "accepted_values": {
             # TODO: Validate these are correct
             'type': ['groupedOutput', 'globalOutput', 'map'],
-            'variant': ['bar', 'line', 'table', 'map', 'box_plot', 'cumulative_line'],
+            'variant': variant_options,
             'statAggregation': ['sum', 'mean', 'median', 'min', 'max', 'count'],
         }}
 
     def __extend_spec__(self, **kwargs):
-        # TODO: Validate globalOutput, groupingId, groupingLevel, statId, groupedOutputDataId
+        globalOutput = self.data.get("globalOutput")
+        if globalOutput is not None:
+            self.__check_subset_valid__(
+                subset=globalOutput, valid_values=kwargs.get("globalOuputs_validPropIds", []), prepend_path=["globalOutput"]
+            )
+        mapId = self.data.get("mapId")
+        if mapId is not None:
+            self.__check_subset_valid__(
+                subset=[mapId], valid_values=kwargs.get("maps_validMapIds", []), prepend_path=["mapId"]
+            )
+        # TODO: Validate groupingId, groupingLevel, statId, groupedOutputDataId, mapId
         pass
 
 @type_enforced.Enforcer

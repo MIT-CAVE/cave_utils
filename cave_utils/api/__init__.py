@@ -12,6 +12,7 @@ from cave_utils.api.appBar import appBar
 from cave_utils.api.panes import panes
 from cave_utils.api.pages import pages
 from cave_utils.api.maps import maps
+from cave_utils.api.globalOutputs import globalOutputs
 
 
 class Root(ApiValidator):
@@ -102,20 +103,61 @@ class Root(ApiValidator):
             root_data=self.data,
             **kwargs,
         )
-        # Validate appBar
-        appBar(data=self.data.get("appBar", {}), log=self.log, prepend_path=["appBar"], **kwargs)
         # Validate panes
-        panes(data=self.data.get("panes", {}), log=self.log, prepend_path=["panes"], **kwargs)
-        # Validate maps
-        maps(data=self.data.get("maps", {}), log=self.log, prepend_path=["maps"], **kwargs)
+        panes_data = self.data.get("panes")
+        pane_validPaneIds = []
+        if panes_data is not None:
+            panes(data=panes_data, log=self.log, prepend_path=["panes"], **kwargs)
+            pane_validPaneIds = list(panes_data.get("data", {}).keys())
         # Validate mapFeatures
         # TODO
+        # Validate maps
+        maps_data = self.data.get("maps")
+        maps_validMapIds = []
+        if maps_data is not None:
+            # TODO: Validate mapFeatures
+            maps(data=maps_data, log=self.log, prepend_path=["maps"], **kwargs)
+            maps_validMapIds = list(maps_data.get("data", {}).keys())
         # Validate globalOutputs
-        # TODO
+        globalOutputs_data = self.data.get("globalOutputs", None)
+        globalOuputs_validPropIds = []
+        if globalOutputs_data is not None:
+            globalOutputs(
+                data=globalOutputs_data,
+                log=self.log,
+                prepend_path=["globalOutputs"],
+                **kwargs,
+            )
+            globalOuputs_validPropIds = list(globalOutputs_data.get("values", {}).keys())
+
         # Validate groupedOutputs
         # TODO
         # Validate pages
-        pages(data=self.data.get("pages", {}), log=self.log, prepend_path=["pages"], **kwargs)
+        pages_data = self.data.get("pages")
+        page_validPageIds = []
+        if pages_data is not None:
+            pages(
+                data=pages_data, 
+                log=self.log, 
+                prepend_path=["pages"],
+                # Special Kwargs:
+                globalOuputs_validPropIds=globalOuputs_validPropIds,
+                maps_validMapIds=maps_validMapIds,
+                **kwargs
+            )
+            page_validPageIds = list(pages_data.get("data", {}).keys())
+        # Validate appBar
+        appBar_data = self.data.get("appBar")
+        if appBar_data is not None:
+            appBar(
+                data=appBar_data, 
+                log=self.log, 
+                prepend_path=["appBar"], 
+                # Special kwargs to validate panes and pages are valid:
+                page_validPageIds=page_validPageIds,
+                pane_validPaneIds=pane_validPaneIds,
+                **kwargs
+            )
 
 
 class Validator:

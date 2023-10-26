@@ -90,6 +90,21 @@ class appBar_data_star(ApiValidator):
         color = self.data.get("color")
         if color:
             self.__check_rgba_string_valid__(rgba_string=color, prepend_path=["color"])
+        # Validate pageIds
+        bar_type = self.data.get("type")
+        if bar_type == 'page':
+            self.__check_subset_valid__(
+                subset=[kwargs.get('CustomKeyValidatorFieldId')],
+                valid_values=kwargs.get("page_validPageIds", []),
+                prepend_path=[],
+            )
+        if bar_type == 'pane':
+            self.__check_subset_valid__(
+                subset=[kwargs.get('CustomKeyValidatorFieldId')],
+                valid_values=kwargs.get("pane_validPaneIds", []),
+                prepend_path=[],
+            )
+
 
 
 @type_enforced.Enforcer

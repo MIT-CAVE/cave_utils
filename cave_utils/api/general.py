@@ -34,6 +34,9 @@ class props(ApiValidator):
         legendNotationDisplay: [str, None] = None,
         legendMinLabel: [str, None] = None,
         legendMaxLabel: [str, None] = None,
+        icon: [str, None] = None,
+        trailingZeros: [bool, None] = None,
+        unitPlacement: [str, None] = None,
         **kwargs,
     ):
         """
@@ -64,14 +67,18 @@ class props(ApiValidator):
         - `variant`:
             - Type: str | None
             - What: The variant of the prop.
+            - TODO: Validate accepted values
             - Accepted Values:
                 - Type: `"head"`
                     - `"column"`
                     - `"row"`
+                    - `"icon"`
                 - Type: `"text"`
                     - `"textarea"`
                 - Type: `"num"`
+                    - TODO: add the default icon variant here
                     - `"slider"`
+                    - `"icon"`
                 - Type: `"selector"`
                     - `"dropdown"`
                     - `"checkbox"`
@@ -208,12 +215,34 @@ class props(ApiValidator):
             - Default: `None`
             - Note: If `None`, no legend maximum label is provided.
             - TODO: Check / Extend This.
+        - `icon`:
+            - Type: str | None
+            - What: The icon to use for the prop.
+            - Default: `None`
+            - TODO: Validate this this is correct and validate that the icon exists.
+            - Note: Icon is only used for `head` props.
+        - `trailingZeros`:
+            - TODO: Validate this is correct
+            - Type: bool | None
+            - What: Whether or not to show trailing zeros when precision is specified
+            - Note: This ensures that all prcision digits are shown. EG: 1.5 -> 1.500 when precision is 3
+            - Default: `None`
+            - Note: This only applies to `num` props.
+        - `unitPlacement`:
+            - TODO: Validate this is correct
+            - Type: str | None
+            - What: Where to place the unit.
+            - Default: `None`
+            - Accepted Values:[`before`, `after`]
         """
         passed_values = {k: v for k, v in locals().items() if (v is not None) and k != "kwargs"}
         required_fields = ["name", "type"]
         optional_fields = ["help", "variant", "enabled"]
         if type != "head":
             optional_fields += ["apiCommand", "apiCommandKeys"]
+        if type == "head":
+            if variant == 'icon':
+                required_fields += ["icon"]
         if type == "text":
             optional_fields += ["minRows", "maxRows", "rows"]
         if type == "num":
@@ -221,6 +250,8 @@ class props(ApiValidator):
                 required_fields += ["maxValue", "minValue"]
             else:
                 optional_fields += ["maxValue", "minValue"]
+            if variant == "icon":
+                required_fields += ["icon"]
             optional_fields += [
                 "unit",
                 "numberFormat",
@@ -232,6 +263,8 @@ class props(ApiValidator):
                 "legendNotationDisplay",
                 "legendMinLabel",
                 "legendMaxLabel",
+                "trailingZeros",
+                "unitPlacement",
             ]
         if type == "selector":
             required_fields += ["options"]
@@ -250,12 +283,13 @@ class props(ApiValidator):
                 "type": ["head", "num", "toggle", "button", "text", "selector", "date", "media"],
                 "views": ["year", "month", "day", "hours", "minutes", "seconds"],
                 "legendNotation": ["compact", "precision", "scientific"],
+                "unitPlacement": ["before", "after"],
                 # TODO: Valiate These
                 # TODO: Add Other value checks here
                 "variant": {
-                    "head": ["column", "row"],
+                    "head": ["column", "row", "icon"],
                     "text": ["textarea"],
-                    "num": ["slider"],
+                    "num": ["slider", "icon"],
                     "selector": [
                         "dropdown",
                         "checkbox",

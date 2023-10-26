@@ -87,7 +87,7 @@ class panes_paneState_star(ApiValidator):
             - Type: str
             - What: The type of item to render.
             - Default: `pane`
-            # TODO: Validate valid values
+            # TODO: There are other valid values such that we can display map modals
             - Valid Values: `pane`
         - `open`:
             - Type: str

@@ -255,6 +255,6 @@ class CustomKeyValidator(ApiValidator):
     def __extend_spec__(self, **kwargs):
         validator = kwargs.get("validator")
         assert validator is not None, "Must pass validator to CustomKeyValidator"
-        kwargs = {k: v for k, v in kwargs.items() if k != "validator"}
+        kwargs = {k: v for k, v in kwargs.items() if k not in ["validator", "CustomKeyValidatorFieldId"]}
         for field, value in self.data.items():
-            validator(data=value, log=self.log, prepend_path=[field], **kwargs)
+            validator(data=value, log=self.log, prepend_path=[field], CustomKeyValidatorFieldId=field, **kwargs)

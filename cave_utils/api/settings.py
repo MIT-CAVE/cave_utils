@@ -4,9 +4,6 @@ Configure general settings for your applicaton like the icons to use, how to syn
 from cave_utils.api.utils import *
 import type_enforced
 
-# TODO: Add actual docs with real default values.
-
-
 @type_enforced.Enforcer
 class settings_time(ApiValidator):
     """
