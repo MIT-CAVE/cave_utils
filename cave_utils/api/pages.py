@@ -32,7 +32,7 @@ class pages_data_star_pageLayout(ApiValidator):
             - Type: str
             - What: The type of the page layout.
             - Default: `'groupedOutputs'`
-            - Accepted Values: `['groupedOutputs', 'globalOutputs', 'map']`
+            - Accepted Values: `['groupedOutput', 'globalOutput', 'map']`
         - `variant`:
             - Type: str
             - What: The variant of the page layout.
@@ -86,7 +86,7 @@ class pages_data_star_pageLayout(ApiValidator):
         """
         return {"kwargs": kwargs, "accepted_values": {
             # TODO: Validate these are correct
-            'type': ['groupedOutputs', 'globalOutputs', 'map'],
+            'type': ['groupedOutput', 'globalOutput', 'map'],
             'variant': ['bar', 'line', 'table', 'map', 'box_plot', 'cumulative_line'],
             'statAggregation': ['sum', 'mean', 'median', 'min', 'max', 'count'],
         }}

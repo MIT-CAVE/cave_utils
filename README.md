@@ -38,6 +38,9 @@ pip install cave_utils
     `cave test test_init.py`
 
 # Live Utils Development 
+
+## Using Live Validation
+
 1. In your cave_app, update the following file:
 
     `utils/run_server.sh`
@@ -56,11 +59,21 @@ pip install cave_utils
     python "$APP_DIR/manage.py" runserver 0.0.0.0:8000 2>&1 | pipe_log "INFO"
     ```
 
-2. In your cave_app, set `LIVE_API_VALIDATION=True` in the `.env` file
+2. Remove `cave_utils` from the root `requirements.txt` file
+
+3. In your cave_app, set `LIVE_API_VALIDATION=True` in the `.env` file
     - This will validate your data every time an api command is called for each session
     - Outputs will be stored in `logs/validation/{session_name}.log`
 
-3. Use the following command to run your cave_app:
+4. Use the following command to run your cave_app:
     `cave run --docker-args "--volume {local_path_to_cave_utils}/cave_utils:/cave_utils"`
-    
-    As you edit cave_utils, the logs will be updated live
+    - As you edit cave_utils, the logs will be updated live
+
+## Using interactive mode and running tests
+
+1. Run cave_app in interactive mode mounting cave_utils as a volume:
+    `cave run --docker-args "--volume {local_path_to_cave_utils}/cave_utils:/cave_utils" -it`
+2. Then install cave utils in the docker container:
+    `pip install -e /cave_utils`
+3. Then run some tests (eg `validate_all_examples.py`): 
+    `python cave_api/tests/validate_all_examples.py`
