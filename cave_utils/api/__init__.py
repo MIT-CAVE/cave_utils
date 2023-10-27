@@ -13,6 +13,7 @@ from cave_utils.api.panes import panes
 from cave_utils.api.pages import pages
 from cave_utils.api.maps import maps
 from cave_utils.api.globalOutputs import globalOutputs
+from cave_utils.api.mapFeatures import mapFeatures
 
 
 class Root(ApiValidator):
@@ -110,13 +111,22 @@ class Root(ApiValidator):
             panes(data=panes_data, log=self.log, prepend_path=["panes"], **kwargs)
             pane_validPaneIds = list(panes_data.get("data", {}).keys())
         # Validate mapFeatures
-        # TODO
+        mapFeatures_data = self.data.get("mapFeatures")
+        mapFeatures_feature_props = {}
+        if mapFeatures_data is not None:
+            mapFeatures(
+                data=mapFeatures_data,
+                log=self.log,
+                prepend_path=["mapFeatures"],
+                **kwargs,
+            )
+            for key, value in mapFeatures_data.get("data", {}).items():
+                mapFeatures_feature_props[key] = value.get("props", {})
         # Validate maps
         maps_data = self.data.get("maps")
         maps_validMapIds = []
         if maps_data is not None:
-            # TODO: Validate mapFeatures
-            maps(data=maps_data, log=self.log, prepend_path=["maps"], **kwargs)
+            maps(data=maps_data, log=self.log, prepend_path=["maps"], mapFeatures_feature_props=mapFeatures_feature_props, **kwargs)
             maps_validMapIds = list(maps_data.get("data", {}).keys())
         # Validate globalOutputs
         globalOutputs_data = self.data.get("globalOutputs", None)

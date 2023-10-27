@@ -350,7 +350,7 @@ class props_options(ApiValidator):
                     msg="`path` must be specified and a list of strings for nested options"
                 )
                 return
-            self.__check_list_valid__(
+            self.__check_type_list__(
                 data=self.data.get("path", []), types=(str,), prepend_path=["path"]
             )
 
@@ -512,19 +512,78 @@ class values(ApiValidator):
             elif prop_type == "media":
                 self.__check_url_valid__(prop_value)
 
+@type_enforced.Enforcer
+class valueLists(ApiValidator):
+    @staticmethod
+    def spec(**kwargs):
+        """
+        Accepts all arbitrary values depending on what you have in your props as part of the api spec.
 
-class GeoJsonValidator(ApiValidator):
-    def __populate_data__(self, **kwargs):
-        self.field_types = {
-            "geoJsonLayer": str,
-            "geoJsonProp": str,
+        The valueLists you pass will be validated against the props in your api spec.
+        """
+        return {
+            "kwargs": {},
+            "accepted_values": {},
         }
-        self.required_fields = ["geoJsonLayer", "geoJsonProp"]
-        self.optional_fields = []
-        self.accepted_values = {}
 
     def __extend_spec__(self, **kwargs):
-        self.__check_url_valid__(
-            url=self.data.get("geoJsonLayer", None), prepend_path=["geoJsonLayer"]
-        )
-
+        props_data = kwargs.get("props_data", {})
+        for prop_key, prop_value_list in self.data.items():
+            if not isinstance(prop_value_list, list):
+                self.__error__(
+                    msg=f"`{prop_key}` must be a list of values for valueLists",
+                    path = [prop_key]
+                )
+                continue
+            prop_spec = props_data.get(prop_key, {})
+            if not prop_spec:
+                self.__error__(
+                    msg=f"`{prop_key}` does not match any valid prop ids {list(props_data.keys())}"
+                )
+                continue
+            prop_type = prop_spec.get("type", None)
+            acceptable_types = {
+                "head": (str,),
+                "num": (int, float),
+                "toggle": (bool,),
+                "button": (str,),
+                "text": (str,),
+                "selector": (list,),
+                "date": (str,),
+                "media": (str,),
+            }.get(prop_type, None)
+            if not self.__check_type_list__(
+                data=prop_value_list, types=acceptable_types, prepend_path=[prop_key]
+            ):
+                continue
+            if prop_type == "num":
+                # Validate minimum is met
+                min_value = prop_spec.get("minValue")
+                if min_value is not None:
+                    prop_value_list_min = min(prop_value_list)
+                    if prop_value_list_min < min_value:
+                        self.__error__(
+                            msg=f"`{prop_key}` has a value that is less than {min_value} as defined by the api spec."
+                        )
+                # Validate maximum is met
+                max_value = prop_spec.get("maxValue")
+                if max_value is not None:
+                    prop_value_list_max = max(prop_value_list)
+                    if prop_value_list_max > max_value:
+                        self.__error__(
+                            msg=f"`{prop_key}` has a value that is greater than {max_value} as defined by the api spec."
+                        )
+            elif prop_type == "selector":
+                options = list(prop_spec.get("options", {}).keys())
+                prop_value_list_set = list(set(pamda.flatten(prop_value_list)))
+                self.__check_subset_valid__(prop_value_list_set, options, prepend_path=[prop_key])
+            elif prop_type == "head":
+                self.__error__(
+                    msg=f"`{prop_key}` with the prop type of `{prop_type}` can not have an associated value."
+                )
+            elif prop_type == "date":
+                pass
+                # TODO: Validate date string
+            elif prop_type == "media":
+                for prop_value in prop_value_list:
+                    self.__check_url_valid__(prop_value)

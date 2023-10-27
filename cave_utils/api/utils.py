@@ -151,6 +151,8 @@ class ApiValidator:
     ):
         """
         Validate a subset of values is in a set of valid values and if an issue is present, log an error
+
+        Returns True if the subset check passed and False otherwise
         """
         invalid_values = pamda.difference(subset, valid_values)
         if len(invalid_values) > 0:
@@ -163,6 +165,8 @@ class ApiValidator:
                 path=prepend_path,
                 msg=f"Invalid value(s) selected: {str(invalid_values)}. Accepted values are {valid_values}",
             )
+            return False
+        return True
 
     def __check_coord_path_valid__(self, coord_path: list, prepend_path: list = list()):
         """
@@ -193,9 +197,11 @@ class ApiValidator:
         except:
             self.__error__(path=prepend_path, msg="Invalid coordinate path")
 
-    def __check_list_valid__(self, data: list, types: tuple, prepend_path: list = list()):
+    def __check_type_list__(self, data: list, types: tuple, prepend_path: list = list()):
         """
         Validate a list only contains certain object types and if an issue is present, log an error
+
+        Returns True if the type check passed and False otherwise
         """
         if not isinstance(types, tuple):
             types = (types,)
@@ -205,7 +211,8 @@ class ApiValidator:
                     path=prepend_path,
                     msg=f"Invalid list item type at index: {idx} with type: {type(item)}",
                 )
-                return
+                return False
+        return True
 
     def __check_type__(self, value, check_type, prepend_path: list = list()):
         """

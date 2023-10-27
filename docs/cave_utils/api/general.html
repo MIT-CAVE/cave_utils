@@ -67,8 +67,11 @@
 
             </li>
             <li>
-                    <a class="class" href="#GeoJsonValidator">GeoJsonValidator</a>
+                    <a class="class" href="#valueLists">valueLists</a>
                             <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#valueLists.spec">spec</a>
+                        </li>
                 </ul>
 
             </li>
@@ -447,7 +450,7 @@
 </span><span id="L-350"><a href="#L-350"><span class="linenos">350</span></a>                    <span class="n">msg</span><span class="o">=</span><span class="s2">&quot;`path` must be specified and a list of strings for nested options&quot;</span>
 </span><span id="L-351"><a href="#L-351"><span class="linenos">351</span></a>                <span class="p">)</span>
 </span><span id="L-352"><a href="#L-352"><span class="linenos">352</span></a>                <span class="k">return</span>
-</span><span id="L-353"><a href="#L-353"><span class="linenos">353</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">__check_list_valid__</span><span class="p">(</span>
+</span><span id="L-353"><a href="#L-353"><span class="linenos">353</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">__check_type_list__</span><span class="p">(</span>
 </span><span id="L-354"><a href="#L-354"><span class="linenos">354</span></a>                <span class="n">data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;path&quot;</span><span class="p">,</span> <span class="p">[]),</span> <span class="n">types</span><span class="o">=</span><span class="p">(</span><span class="nb">str</span><span class="p">,),</span> <span class="n">prepend_path</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;path&quot;</span><span class="p">]</span>
 </span><span id="L-355"><a href="#L-355"><span class="linenos">355</span></a>            <span class="p">)</span>
 </span><span id="L-356"><a href="#L-356"><span class="linenos">356</span></a>
@@ -609,21 +612,81 @@
 </span><span id="L-512"><a href="#L-512"><span class="linenos">512</span></a>            <span class="k">elif</span> <span class="n">prop_type</span> <span class="o">==</span> <span class="s2">&quot;media&quot;</span><span class="p">:</span>
 </span><span id="L-513"><a href="#L-513"><span class="linenos">513</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">__check_url_valid__</span><span class="p">(</span><span class="n">prop_value</span><span class="p">)</span>
 </span><span id="L-514"><a href="#L-514"><span class="linenos">514</span></a>
-</span><span id="L-515"><a href="#L-515"><span class="linenos">515</span></a>
-</span><span id="L-516"><a href="#L-516"><span class="linenos">516</span></a><span class="k">class</span> <span class="nc">GeoJsonValidator</span><span class="p">(</span><span class="n">ApiValidator</span><span class="p">):</span>
-</span><span id="L-517"><a href="#L-517"><span class="linenos">517</span></a>    <span class="k">def</span> <span class="nf">__populate_data__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-</span><span id="L-518"><a href="#L-518"><span class="linenos">518</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">field_types</span> <span class="o">=</span> <span class="p">{</span>
-</span><span id="L-519"><a href="#L-519"><span class="linenos">519</span></a>            <span class="s2">&quot;geoJsonLayer&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-</span><span id="L-520"><a href="#L-520"><span class="linenos">520</span></a>            <span class="s2">&quot;geoJsonProp&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-</span><span id="L-521"><a href="#L-521"><span class="linenos">521</span></a>        <span class="p">}</span>
-</span><span id="L-522"><a href="#L-522"><span class="linenos">522</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">required_fields</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;geoJsonLayer&quot;</span><span class="p">,</span> <span class="s2">&quot;geoJsonProp&quot;</span><span class="p">]</span>
-</span><span id="L-523"><a href="#L-523"><span class="linenos">523</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">optional_fields</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span id="L-524"><a href="#L-524"><span class="linenos">524</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">accepted_values</span> <span class="o">=</span> <span class="p">{}</span>
-</span><span id="L-525"><a href="#L-525"><span class="linenos">525</span></a>
-</span><span id="L-526"><a href="#L-526"><span class="linenos">526</span></a>    <span class="k">def</span> <span class="nf">__extend_spec__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-</span><span id="L-527"><a href="#L-527"><span class="linenos">527</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__check_url_valid__</span><span class="p">(</span>
-</span><span id="L-528"><a href="#L-528"><span class="linenos">528</span></a>            <span class="n">url</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;geoJsonLayer&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="n">prepend_path</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;geoJsonLayer&quot;</span><span class="p">]</span>
-</span><span id="L-529"><a href="#L-529"><span class="linenos">529</span></a>        <span class="p">)</span>
+</span><span id="L-515"><a href="#L-515"><span class="linenos">515</span></a><span class="nd">@type_enforced</span><span class="o">.</span><span class="n">Enforcer</span>
+</span><span id="L-516"><a href="#L-516"><span class="linenos">516</span></a><span class="k">class</span> <span class="nc">valueLists</span><span class="p">(</span><span class="n">ApiValidator</span><span class="p">):</span>
+</span><span id="L-517"><a href="#L-517"><span class="linenos">517</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="L-518"><a href="#L-518"><span class="linenos">518</span></a>    <span class="k">def</span> <span class="nf">spec</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+</span><span id="L-519"><a href="#L-519"><span class="linenos">519</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-520"><a href="#L-520"><span class="linenos">520</span></a><span class="sd">        Accepts all arbitrary values depending on what you have in your props as part of the api spec.</span>
+</span><span id="L-521"><a href="#L-521"><span class="linenos">521</span></a>
+</span><span id="L-522"><a href="#L-522"><span class="linenos">522</span></a><span class="sd">        The valueLists you pass will be validated against the props in your api spec.</span>
+</span><span id="L-523"><a href="#L-523"><span class="linenos">523</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-524"><a href="#L-524"><span class="linenos">524</span></a>        <span class="k">return</span> <span class="p">{</span>
+</span><span id="L-525"><a href="#L-525"><span class="linenos">525</span></a>            <span class="s2">&quot;kwargs&quot;</span><span class="p">:</span> <span class="p">{},</span>
+</span><span id="L-526"><a href="#L-526"><span class="linenos">526</span></a>            <span class="s2">&quot;accepted_values&quot;</span><span class="p">:</span> <span class="p">{},</span>
+</span><span id="L-527"><a href="#L-527"><span class="linenos">527</span></a>        <span class="p">}</span>
+</span><span id="L-528"><a href="#L-528"><span class="linenos">528</span></a>
+</span><span id="L-529"><a href="#L-529"><span class="linenos">529</span></a>    <span class="k">def</span> <span class="nf">__extend_spec__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+</span><span id="L-530"><a href="#L-530"><span class="linenos">530</span></a>        <span class="n">props_data</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;props_data&quot;</span><span class="p">,</span> <span class="p">{})</span>
+</span><span id="L-531"><a href="#L-531"><span class="linenos">531</span></a>        <span class="k">for</span> <span class="n">prop_key</span><span class="p">,</span> <span class="n">prop_value_list</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+</span><span id="L-532"><a href="#L-532"><span class="linenos">532</span></a>            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">prop_value_list</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+</span><span id="L-533"><a href="#L-533"><span class="linenos">533</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">__error__</span><span class="p">(</span>
+</span><span id="L-534"><a href="#L-534"><span class="linenos">534</span></a>                    <span class="n">msg</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;`</span><span class="si">{</span><span class="n">prop_key</span><span class="si">}</span><span class="s2">` must be a list of values for valueLists&quot;</span><span class="p">,</span>
+</span><span id="L-535"><a href="#L-535"><span class="linenos">535</span></a>                    <span class="n">path</span> <span class="o">=</span> <span class="p">[</span><span class="n">prop_key</span><span class="p">]</span>
+</span><span id="L-536"><a href="#L-536"><span class="linenos">536</span></a>                <span class="p">)</span>
+</span><span id="L-537"><a href="#L-537"><span class="linenos">537</span></a>                <span class="k">continue</span>
+</span><span id="L-538"><a href="#L-538"><span class="linenos">538</span></a>            <span class="n">prop_spec</span> <span class="o">=</span> <span class="n">props_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">prop_key</span><span class="p">,</span> <span class="p">{})</span>
+</span><span id="L-539"><a href="#L-539"><span class="linenos">539</span></a>            <span class="k">if</span> <span class="ow">not</span> <span class="n">prop_spec</span><span class="p">:</span>
+</span><span id="L-540"><a href="#L-540"><span class="linenos">540</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">__error__</span><span class="p">(</span>
+</span><span id="L-541"><a href="#L-541"><span class="linenos">541</span></a>                    <span class="n">msg</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;`</span><span class="si">{</span><span class="n">prop_key</span><span class="si">}</span><span class="s2">` does not match any valid prop ids </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">props_data</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="L-542"><a href="#L-542"><span class="linenos">542</span></a>                <span class="p">)</span>
+</span><span id="L-543"><a href="#L-543"><span class="linenos">543</span></a>                <span class="k">continue</span>
+</span><span id="L-544"><a href="#L-544"><span class="linenos">544</span></a>            <span class="n">prop_type</span> <span class="o">=</span> <span class="n">prop_spec</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+</span><span id="L-545"><a href="#L-545"><span class="linenos">545</span></a>            <span class="n">acceptable_types</span> <span class="o">=</span> <span class="p">{</span>
+</span><span id="L-546"><a href="#L-546"><span class="linenos">546</span></a>                <span class="s2">&quot;head&quot;</span><span class="p">:</span> <span class="p">(</span><span class="nb">str</span><span class="p">,),</span>
+</span><span id="L-547"><a href="#L-547"><span class="linenos">547</span></a>                <span class="s2">&quot;num&quot;</span><span class="p">:</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span>
+</span><span id="L-548"><a href="#L-548"><span class="linenos">548</span></a>                <span class="s2">&quot;toggle&quot;</span><span class="p">:</span> <span class="p">(</span><span class="nb">bool</span><span class="p">,),</span>
+</span><span id="L-549"><a href="#L-549"><span class="linenos">549</span></a>                <span class="s2">&quot;button&quot;</span><span class="p">:</span> <span class="p">(</span><span class="nb">str</span><span class="p">,),</span>
+</span><span id="L-550"><a href="#L-550"><span class="linenos">550</span></a>                <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="p">(</span><span class="nb">str</span><span class="p">,),</span>
+</span><span id="L-551"><a href="#L-551"><span class="linenos">551</span></a>                <span class="s2">&quot;selector&quot;</span><span class="p">:</span> <span class="p">(</span><span class="nb">list</span><span class="p">,),</span>
+</span><span id="L-552"><a href="#L-552"><span class="linenos">552</span></a>                <span class="s2">&quot;date&quot;</span><span class="p">:</span> <span class="p">(</span><span class="nb">str</span><span class="p">,),</span>
+</span><span id="L-553"><a href="#L-553"><span class="linenos">553</span></a>                <span class="s2">&quot;media&quot;</span><span class="p">:</span> <span class="p">(</span><span class="nb">str</span><span class="p">,),</span>
+</span><span id="L-554"><a href="#L-554"><span class="linenos">554</span></a>            <span class="p">}</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">prop_type</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+</span><span id="L-555"><a href="#L-555"><span class="linenos">555</span></a>            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__check_type_list__</span><span class="p">(</span>
+</span><span id="L-556"><a href="#L-556"><span class="linenos">556</span></a>                <span class="n">data</span><span class="o">=</span><span class="n">prop_value_list</span><span class="p">,</span> <span class="n">types</span><span class="o">=</span><span class="n">acceptable_types</span><span class="p">,</span> <span class="n">prepend_path</span><span class="o">=</span><span class="p">[</span><span class="n">prop_key</span><span class="p">]</span>
+</span><span id="L-557"><a href="#L-557"><span class="linenos">557</span></a>            <span class="p">):</span>
+</span><span id="L-558"><a href="#L-558"><span class="linenos">558</span></a>                <span class="k">continue</span>
+</span><span id="L-559"><a href="#L-559"><span class="linenos">559</span></a>            <span class="k">if</span> <span class="n">prop_type</span> <span class="o">==</span> <span class="s2">&quot;num&quot;</span><span class="p">:</span>
+</span><span id="L-560"><a href="#L-560"><span class="linenos">560</span></a>                <span class="c1"># Validate minimum is met</span>
+</span><span id="L-561"><a href="#L-561"><span class="linenos">561</span></a>                <span class="n">min_value</span> <span class="o">=</span> <span class="n">prop_spec</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;minValue&quot;</span><span class="p">)</span>
+</span><span id="L-562"><a href="#L-562"><span class="linenos">562</span></a>                <span class="k">if</span> <span class="n">min_value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="L-563"><a href="#L-563"><span class="linenos">563</span></a>                    <span class="n">prop_value_list_min</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">prop_value_list</span><span class="p">)</span>
+</span><span id="L-564"><a href="#L-564"><span class="linenos">564</span></a>                    <span class="k">if</span> <span class="n">prop_value_list_min</span> <span class="o">&lt;</span> <span class="n">min_value</span><span class="p">:</span>
+</span><span id="L-565"><a href="#L-565"><span class="linenos">565</span></a>                        <span class="bp">self</span><span class="o">.</span><span class="n">__error__</span><span class="p">(</span>
+</span><span id="L-566"><a href="#L-566"><span class="linenos">566</span></a>                            <span class="n">msg</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;`</span><span class="si">{</span><span class="n">prop_key</span><span class="si">}</span><span class="s2">` has a value that is less than </span><span class="si">{</span><span class="n">min_value</span><span class="si">}</span><span class="s2"> as defined by the api spec.&quot;</span>
+</span><span id="L-567"><a href="#L-567"><span class="linenos">567</span></a>                        <span class="p">)</span>
+</span><span id="L-568"><a href="#L-568"><span class="linenos">568</span></a>                <span class="c1"># Validate maximum is met</span>
+</span><span id="L-569"><a href="#L-569"><span class="linenos">569</span></a>                <span class="n">max_value</span> <span class="o">=</span> <span class="n">prop_spec</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;maxValue&quot;</span><span class="p">)</span>
+</span><span id="L-570"><a href="#L-570"><span class="linenos">570</span></a>                <span class="k">if</span> <span class="n">max_value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="L-571"><a href="#L-571"><span class="linenos">571</span></a>                    <span class="n">prop_value_list_max</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">prop_value_list</span><span class="p">)</span>
+</span><span id="L-572"><a href="#L-572"><span class="linenos">572</span></a>                    <span class="k">if</span> <span class="n">prop_value_list_max</span> <span class="o">&gt;</span> <span class="n">max_value</span><span class="p">:</span>
+</span><span id="L-573"><a href="#L-573"><span class="linenos">573</span></a>                        <span class="bp">self</span><span class="o">.</span><span class="n">__error__</span><span class="p">(</span>
+</span><span id="L-574"><a href="#L-574"><span class="linenos">574</span></a>                            <span class="n">msg</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;`</span><span class="si">{</span><span class="n">prop_key</span><span class="si">}</span><span class="s2">` has a value that is greater than </span><span class="si">{</span><span class="n">max_value</span><span class="si">}</span><span class="s2"> as defined by the api spec.&quot;</span>
+</span><span id="L-575"><a href="#L-575"><span class="linenos">575</span></a>                        <span class="p">)</span>
+</span><span id="L-576"><a href="#L-576"><span class="linenos">576</span></a>            <span class="k">elif</span> <span class="n">prop_type</span> <span class="o">==</span> <span class="s2">&quot;selector&quot;</span><span class="p">:</span>
+</span><span id="L-577"><a href="#L-577"><span class="linenos">577</span></a>                <span class="n">options</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">prop_spec</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;options&quot;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+</span><span id="L-578"><a href="#L-578"><span class="linenos">578</span></a>                <span class="n">prop_value_list_set</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">pamda</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="n">prop_value_list</span><span class="p">)))</span>
+</span><span id="L-579"><a href="#L-579"><span class="linenos">579</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">__check_subset_valid__</span><span class="p">(</span><span class="n">prop_value_list_set</span><span class="p">,</span> <span class="n">options</span><span class="p">,</span> <span class="n">prepend_path</span><span class="o">=</span><span class="p">[</span><span class="n">prop_key</span><span class="p">])</span>
+</span><span id="L-580"><a href="#L-580"><span class="linenos">580</span></a>            <span class="k">elif</span> <span class="n">prop_type</span> <span class="o">==</span> <span class="s2">&quot;head&quot;</span><span class="p">:</span>
+</span><span id="L-581"><a href="#L-581"><span class="linenos">581</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">__error__</span><span class="p">(</span>
+</span><span id="L-582"><a href="#L-582"><span class="linenos">582</span></a>                    <span class="n">msg</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;`</span><span class="si">{</span><span class="n">prop_key</span><span class="si">}</span><span class="s2">` with the prop type of `</span><span class="si">{</span><span class="n">prop_type</span><span class="si">}</span><span class="s2">` can not have an associated value.&quot;</span>
+</span><span id="L-583"><a href="#L-583"><span class="linenos">583</span></a>                <span class="p">)</span>
+</span><span id="L-584"><a href="#L-584"><span class="linenos">584</span></a>            <span class="k">elif</span> <span class="n">prop_type</span> <span class="o">==</span> <span class="s2">&quot;date&quot;</span><span class="p">:</span>
+</span><span id="L-585"><a href="#L-585"><span class="linenos">585</span></a>                <span class="k">pass</span>
+</span><span id="L-586"><a href="#L-586"><span class="linenos">586</span></a>                <span class="c1"># TODO: Validate date string</span>
+</span><span id="L-587"><a href="#L-587"><span class="linenos">587</span></a>            <span class="k">elif</span> <span class="n">prop_type</span> <span class="o">==</span> <span class="s2">&quot;media&quot;</span><span class="p">:</span>
+</span><span id="L-588"><a href="#L-588"><span class="linenos">588</span></a>                <span class="k">for</span> <span class="n">prop_value</span> <span class="ow">in</span> <span class="n">prop_value_list</span><span class="p">:</span>
+</span><span id="L-589"><a href="#L-589"><span class="linenos">589</span></a>                    <span class="bp">self</span><span class="o">.</span><span class="n">__check_url_valid__</span><span class="p">(</span><span class="n">prop_value</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -1596,7 +1659,7 @@
 </span><span id="props_options-351"><a href="#props_options-351"><span class="linenos">351</span></a>                    <span class="n">msg</span><span class="o">=</span><span class="s2">&quot;`path` must be specified and a list of strings for nested options&quot;</span>
 </span><span id="props_options-352"><a href="#props_options-352"><span class="linenos">352</span></a>                <span class="p">)</span>
 </span><span id="props_options-353"><a href="#props_options-353"><span class="linenos">353</span></a>                <span class="k">return</span>
-</span><span id="props_options-354"><a href="#props_options-354"><span class="linenos">354</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">__check_list_valid__</span><span class="p">(</span>
+</span><span id="props_options-354"><a href="#props_options-354"><span class="linenos">354</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">__check_type_list__</span><span class="p">(</span>
 </span><span id="props_options-355"><a href="#props_options-355"><span class="linenos">355</span></a>                <span class="n">data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;path&quot;</span><span class="p">,</span> <span class="p">[]),</span> <span class="n">types</span><span class="o">=</span><span class="p">(</span><span class="nb">str</span><span class="p">,),</span> <span class="n">prepend_path</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;path&quot;</span><span class="p">]</span>
 </span><span id="props_options-356"><a href="#props_options-356"><span class="linenos">356</span></a>            <span class="p">)</span>
 </span></pre></div>
@@ -2079,42 +2142,136 @@
                                 </dl>
                             </div>
                 </section>
-                <section id="GeoJsonValidator">
-                            <input id="GeoJsonValidator-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                <section id="valueLists">
+                            <input id="valueLists-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr class">
-            
-    <span class="def">class</span>
-    <span class="name">GeoJsonValidator</span><wbr>(<span class="base"><a href="utils.html#ApiValidator">cave_utils.api.utils.ApiValidator</a></span>):
+                    <div class="decorator">@type_enforced.Enforcer</div>
 
-                <label class="view-source-button" for="GeoJsonValidator-view-source"><span>View Source</span></label>
+    <span class="def">class</span>
+    <span class="name">valueLists</span><wbr>(<span class="base"><a href="utils.html#ApiValidator">cave_utils.api.utils.ApiValidator</a></span>):
+
+                <label class="view-source-button" for="valueLists-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#GeoJsonValidator"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="GeoJsonValidator-517"><a href="#GeoJsonValidator-517"><span class="linenos">517</span></a><span class="k">class</span> <span class="nc">GeoJsonValidator</span><span class="p">(</span><span class="n">ApiValidator</span><span class="p">):</span>
-</span><span id="GeoJsonValidator-518"><a href="#GeoJsonValidator-518"><span class="linenos">518</span></a>    <span class="k">def</span> <span class="nf">__populate_data__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-</span><span id="GeoJsonValidator-519"><a href="#GeoJsonValidator-519"><span class="linenos">519</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">field_types</span> <span class="o">=</span> <span class="p">{</span>
-</span><span id="GeoJsonValidator-520"><a href="#GeoJsonValidator-520"><span class="linenos">520</span></a>            <span class="s2">&quot;geoJsonLayer&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-</span><span id="GeoJsonValidator-521"><a href="#GeoJsonValidator-521"><span class="linenos">521</span></a>            <span class="s2">&quot;geoJsonProp&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-</span><span id="GeoJsonValidator-522"><a href="#GeoJsonValidator-522"><span class="linenos">522</span></a>        <span class="p">}</span>
-</span><span id="GeoJsonValidator-523"><a href="#GeoJsonValidator-523"><span class="linenos">523</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">required_fields</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;geoJsonLayer&quot;</span><span class="p">,</span> <span class="s2">&quot;geoJsonProp&quot;</span><span class="p">]</span>
-</span><span id="GeoJsonValidator-524"><a href="#GeoJsonValidator-524"><span class="linenos">524</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">optional_fields</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span id="GeoJsonValidator-525"><a href="#GeoJsonValidator-525"><span class="linenos">525</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">accepted_values</span> <span class="o">=</span> <span class="p">{}</span>
-</span><span id="GeoJsonValidator-526"><a href="#GeoJsonValidator-526"><span class="linenos">526</span></a>
-</span><span id="GeoJsonValidator-527"><a href="#GeoJsonValidator-527"><span class="linenos">527</span></a>    <span class="k">def</span> <span class="nf">__extend_spec__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-</span><span id="GeoJsonValidator-528"><a href="#GeoJsonValidator-528"><span class="linenos">528</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__check_url_valid__</span><span class="p">(</span>
-</span><span id="GeoJsonValidator-529"><a href="#GeoJsonValidator-529"><span class="linenos">529</span></a>            <span class="n">url</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;geoJsonLayer&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="n">prepend_path</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;geoJsonLayer&quot;</span><span class="p">]</span>
-</span><span id="GeoJsonValidator-530"><a href="#GeoJsonValidator-530"><span class="linenos">530</span></a>        <span class="p">)</span>
+    <a class="headerlink" href="#valueLists"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="valueLists-516"><a href="#valueLists-516"><span class="linenos">516</span></a><span class="nd">@type_enforced</span><span class="o">.</span><span class="n">Enforcer</span>
+</span><span id="valueLists-517"><a href="#valueLists-517"><span class="linenos">517</span></a><span class="k">class</span> <span class="nc">valueLists</span><span class="p">(</span><span class="n">ApiValidator</span><span class="p">):</span>
+</span><span id="valueLists-518"><a href="#valueLists-518"><span class="linenos">518</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="valueLists-519"><a href="#valueLists-519"><span class="linenos">519</span></a>    <span class="k">def</span> <span class="nf">spec</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+</span><span id="valueLists-520"><a href="#valueLists-520"><span class="linenos">520</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="valueLists-521"><a href="#valueLists-521"><span class="linenos">521</span></a><span class="sd">        Accepts all arbitrary values depending on what you have in your props as part of the api spec.</span>
+</span><span id="valueLists-522"><a href="#valueLists-522"><span class="linenos">522</span></a>
+</span><span id="valueLists-523"><a href="#valueLists-523"><span class="linenos">523</span></a><span class="sd">        The valueLists you pass will be validated against the props in your api spec.</span>
+</span><span id="valueLists-524"><a href="#valueLists-524"><span class="linenos">524</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="valueLists-525"><a href="#valueLists-525"><span class="linenos">525</span></a>        <span class="k">return</span> <span class="p">{</span>
+</span><span id="valueLists-526"><a href="#valueLists-526"><span class="linenos">526</span></a>            <span class="s2">&quot;kwargs&quot;</span><span class="p">:</span> <span class="p">{},</span>
+</span><span id="valueLists-527"><a href="#valueLists-527"><span class="linenos">527</span></a>            <span class="s2">&quot;accepted_values&quot;</span><span class="p">:</span> <span class="p">{},</span>
+</span><span id="valueLists-528"><a href="#valueLists-528"><span class="linenos">528</span></a>        <span class="p">}</span>
+</span><span id="valueLists-529"><a href="#valueLists-529"><span class="linenos">529</span></a>
+</span><span id="valueLists-530"><a href="#valueLists-530"><span class="linenos">530</span></a>    <span class="k">def</span> <span class="nf">__extend_spec__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+</span><span id="valueLists-531"><a href="#valueLists-531"><span class="linenos">531</span></a>        <span class="n">props_data</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;props_data&quot;</span><span class="p">,</span> <span class="p">{})</span>
+</span><span id="valueLists-532"><a href="#valueLists-532"><span class="linenos">532</span></a>        <span class="k">for</span> <span class="n">prop_key</span><span class="p">,</span> <span class="n">prop_value_list</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+</span><span id="valueLists-533"><a href="#valueLists-533"><span class="linenos">533</span></a>            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">prop_value_list</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+</span><span id="valueLists-534"><a href="#valueLists-534"><span class="linenos">534</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">__error__</span><span class="p">(</span>
+</span><span id="valueLists-535"><a href="#valueLists-535"><span class="linenos">535</span></a>                    <span class="n">msg</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;`</span><span class="si">{</span><span class="n">prop_key</span><span class="si">}</span><span class="s2">` must be a list of values for valueLists&quot;</span><span class="p">,</span>
+</span><span id="valueLists-536"><a href="#valueLists-536"><span class="linenos">536</span></a>                    <span class="n">path</span> <span class="o">=</span> <span class="p">[</span><span class="n">prop_key</span><span class="p">]</span>
+</span><span id="valueLists-537"><a href="#valueLists-537"><span class="linenos">537</span></a>                <span class="p">)</span>
+</span><span id="valueLists-538"><a href="#valueLists-538"><span class="linenos">538</span></a>                <span class="k">continue</span>
+</span><span id="valueLists-539"><a href="#valueLists-539"><span class="linenos">539</span></a>            <span class="n">prop_spec</span> <span class="o">=</span> <span class="n">props_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">prop_key</span><span class="p">,</span> <span class="p">{})</span>
+</span><span id="valueLists-540"><a href="#valueLists-540"><span class="linenos">540</span></a>            <span class="k">if</span> <span class="ow">not</span> <span class="n">prop_spec</span><span class="p">:</span>
+</span><span id="valueLists-541"><a href="#valueLists-541"><span class="linenos">541</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">__error__</span><span class="p">(</span>
+</span><span id="valueLists-542"><a href="#valueLists-542"><span class="linenos">542</span></a>                    <span class="n">msg</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;`</span><span class="si">{</span><span class="n">prop_key</span><span class="si">}</span><span class="s2">` does not match any valid prop ids </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">props_data</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="valueLists-543"><a href="#valueLists-543"><span class="linenos">543</span></a>                <span class="p">)</span>
+</span><span id="valueLists-544"><a href="#valueLists-544"><span class="linenos">544</span></a>                <span class="k">continue</span>
+</span><span id="valueLists-545"><a href="#valueLists-545"><span class="linenos">545</span></a>            <span class="n">prop_type</span> <span class="o">=</span> <span class="n">prop_spec</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+</span><span id="valueLists-546"><a href="#valueLists-546"><span class="linenos">546</span></a>            <span class="n">acceptable_types</span> <span class="o">=</span> <span class="p">{</span>
+</span><span id="valueLists-547"><a href="#valueLists-547"><span class="linenos">547</span></a>                <span class="s2">&quot;head&quot;</span><span class="p">:</span> <span class="p">(</span><span class="nb">str</span><span class="p">,),</span>
+</span><span id="valueLists-548"><a href="#valueLists-548"><span class="linenos">548</span></a>                <span class="s2">&quot;num&quot;</span><span class="p">:</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span>
+</span><span id="valueLists-549"><a href="#valueLists-549"><span class="linenos">549</span></a>                <span class="s2">&quot;toggle&quot;</span><span class="p">:</span> <span class="p">(</span><span class="nb">bool</span><span class="p">,),</span>
+</span><span id="valueLists-550"><a href="#valueLists-550"><span class="linenos">550</span></a>                <span class="s2">&quot;button&quot;</span><span class="p">:</span> <span class="p">(</span><span class="nb">str</span><span class="p">,),</span>
+</span><span id="valueLists-551"><a href="#valueLists-551"><span class="linenos">551</span></a>                <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="p">(</span><span class="nb">str</span><span class="p">,),</span>
+</span><span id="valueLists-552"><a href="#valueLists-552"><span class="linenos">552</span></a>                <span class="s2">&quot;selector&quot;</span><span class="p">:</span> <span class="p">(</span><span class="nb">list</span><span class="p">,),</span>
+</span><span id="valueLists-553"><a href="#valueLists-553"><span class="linenos">553</span></a>                <span class="s2">&quot;date&quot;</span><span class="p">:</span> <span class="p">(</span><span class="nb">str</span><span class="p">,),</span>
+</span><span id="valueLists-554"><a href="#valueLists-554"><span class="linenos">554</span></a>                <span class="s2">&quot;media&quot;</span><span class="p">:</span> <span class="p">(</span><span class="nb">str</span><span class="p">,),</span>
+</span><span id="valueLists-555"><a href="#valueLists-555"><span class="linenos">555</span></a>            <span class="p">}</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">prop_type</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+</span><span id="valueLists-556"><a href="#valueLists-556"><span class="linenos">556</span></a>            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__check_type_list__</span><span class="p">(</span>
+</span><span id="valueLists-557"><a href="#valueLists-557"><span class="linenos">557</span></a>                <span class="n">data</span><span class="o">=</span><span class="n">prop_value_list</span><span class="p">,</span> <span class="n">types</span><span class="o">=</span><span class="n">acceptable_types</span><span class="p">,</span> <span class="n">prepend_path</span><span class="o">=</span><span class="p">[</span><span class="n">prop_key</span><span class="p">]</span>
+</span><span id="valueLists-558"><a href="#valueLists-558"><span class="linenos">558</span></a>            <span class="p">):</span>
+</span><span id="valueLists-559"><a href="#valueLists-559"><span class="linenos">559</span></a>                <span class="k">continue</span>
+</span><span id="valueLists-560"><a href="#valueLists-560"><span class="linenos">560</span></a>            <span class="k">if</span> <span class="n">prop_type</span> <span class="o">==</span> <span class="s2">&quot;num&quot;</span><span class="p">:</span>
+</span><span id="valueLists-561"><a href="#valueLists-561"><span class="linenos">561</span></a>                <span class="c1"># Validate minimum is met</span>
+</span><span id="valueLists-562"><a href="#valueLists-562"><span class="linenos">562</span></a>                <span class="n">min_value</span> <span class="o">=</span> <span class="n">prop_spec</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;minValue&quot;</span><span class="p">)</span>
+</span><span id="valueLists-563"><a href="#valueLists-563"><span class="linenos">563</span></a>                <span class="k">if</span> <span class="n">min_value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="valueLists-564"><a href="#valueLists-564"><span class="linenos">564</span></a>                    <span class="n">prop_value_list_min</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">prop_value_list</span><span class="p">)</span>
+</span><span id="valueLists-565"><a href="#valueLists-565"><span class="linenos">565</span></a>                    <span class="k">if</span> <span class="n">prop_value_list_min</span> <span class="o">&lt;</span> <span class="n">min_value</span><span class="p">:</span>
+</span><span id="valueLists-566"><a href="#valueLists-566"><span class="linenos">566</span></a>                        <span class="bp">self</span><span class="o">.</span><span class="n">__error__</span><span class="p">(</span>
+</span><span id="valueLists-567"><a href="#valueLists-567"><span class="linenos">567</span></a>                            <span class="n">msg</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;`</span><span class="si">{</span><span class="n">prop_key</span><span class="si">}</span><span class="s2">` has a value that is less than </span><span class="si">{</span><span class="n">min_value</span><span class="si">}</span><span class="s2"> as defined by the api spec.&quot;</span>
+</span><span id="valueLists-568"><a href="#valueLists-568"><span class="linenos">568</span></a>                        <span class="p">)</span>
+</span><span id="valueLists-569"><a href="#valueLists-569"><span class="linenos">569</span></a>                <span class="c1"># Validate maximum is met</span>
+</span><span id="valueLists-570"><a href="#valueLists-570"><span class="linenos">570</span></a>                <span class="n">max_value</span> <span class="o">=</span> <span class="n">prop_spec</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;maxValue&quot;</span><span class="p">)</span>
+</span><span id="valueLists-571"><a href="#valueLists-571"><span class="linenos">571</span></a>                <span class="k">if</span> <span class="n">max_value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="valueLists-572"><a href="#valueLists-572"><span class="linenos">572</span></a>                    <span class="n">prop_value_list_max</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">prop_value_list</span><span class="p">)</span>
+</span><span id="valueLists-573"><a href="#valueLists-573"><span class="linenos">573</span></a>                    <span class="k">if</span> <span class="n">prop_value_list_max</span> <span class="o">&gt;</span> <span class="n">max_value</span><span class="p">:</span>
+</span><span id="valueLists-574"><a href="#valueLists-574"><span class="linenos">574</span></a>                        <span class="bp">self</span><span class="o">.</span><span class="n">__error__</span><span class="p">(</span>
+</span><span id="valueLists-575"><a href="#valueLists-575"><span class="linenos">575</span></a>                            <span class="n">msg</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;`</span><span class="si">{</span><span class="n">prop_key</span><span class="si">}</span><span class="s2">` has a value that is greater than </span><span class="si">{</span><span class="n">max_value</span><span class="si">}</span><span class="s2"> as defined by the api spec.&quot;</span>
+</span><span id="valueLists-576"><a href="#valueLists-576"><span class="linenos">576</span></a>                        <span class="p">)</span>
+</span><span id="valueLists-577"><a href="#valueLists-577"><span class="linenos">577</span></a>            <span class="k">elif</span> <span class="n">prop_type</span> <span class="o">==</span> <span class="s2">&quot;selector&quot;</span><span class="p">:</span>
+</span><span id="valueLists-578"><a href="#valueLists-578"><span class="linenos">578</span></a>                <span class="n">options</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">prop_spec</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;options&quot;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+</span><span id="valueLists-579"><a href="#valueLists-579"><span class="linenos">579</span></a>                <span class="n">prop_value_list_set</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">pamda</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="n">prop_value_list</span><span class="p">)))</span>
+</span><span id="valueLists-580"><a href="#valueLists-580"><span class="linenos">580</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">__check_subset_valid__</span><span class="p">(</span><span class="n">prop_value_list_set</span><span class="p">,</span> <span class="n">options</span><span class="p">,</span> <span class="n">prepend_path</span><span class="o">=</span><span class="p">[</span><span class="n">prop_key</span><span class="p">])</span>
+</span><span id="valueLists-581"><a href="#valueLists-581"><span class="linenos">581</span></a>            <span class="k">elif</span> <span class="n">prop_type</span> <span class="o">==</span> <span class="s2">&quot;head&quot;</span><span class="p">:</span>
+</span><span id="valueLists-582"><a href="#valueLists-582"><span class="linenos">582</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">__error__</span><span class="p">(</span>
+</span><span id="valueLists-583"><a href="#valueLists-583"><span class="linenos">583</span></a>                    <span class="n">msg</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;`</span><span class="si">{</span><span class="n">prop_key</span><span class="si">}</span><span class="s2">` with the prop type of `</span><span class="si">{</span><span class="n">prop_type</span><span class="si">}</span><span class="s2">` can not have an associated value.&quot;</span>
+</span><span id="valueLists-584"><a href="#valueLists-584"><span class="linenos">584</span></a>                <span class="p">)</span>
+</span><span id="valueLists-585"><a href="#valueLists-585"><span class="linenos">585</span></a>            <span class="k">elif</span> <span class="n">prop_type</span> <span class="o">==</span> <span class="s2">&quot;date&quot;</span><span class="p">:</span>
+</span><span id="valueLists-586"><a href="#valueLists-586"><span class="linenos">586</span></a>                <span class="k">pass</span>
+</span><span id="valueLists-587"><a href="#valueLists-587"><span class="linenos">587</span></a>                <span class="c1"># TODO: Validate date string</span>
+</span><span id="valueLists-588"><a href="#valueLists-588"><span class="linenos">588</span></a>            <span class="k">elif</span> <span class="n">prop_type</span> <span class="o">==</span> <span class="s2">&quot;media&quot;</span><span class="p">:</span>
+</span><span id="valueLists-589"><a href="#valueLists-589"><span class="linenos">589</span></a>                <span class="k">for</span> <span class="n">prop_value</span> <span class="ow">in</span> <span class="n">prop_value_list</span><span class="p">:</span>
+</span><span id="valueLists-590"><a href="#valueLists-590"><span class="linenos">590</span></a>                    <span class="bp">self</span><span class="o">.</span><span class="n">__check_url_valid__</span><span class="p">(</span><span class="n">prop_value</span><span class="p">)</span>
 </span></pre></div>
 
 
     
 
+                            <div id="valueLists.spec" class="classattr">
+                                        <input id="valueLists.spec-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+                    <div class="decorator">@staticmethod</div>
+
+        <span class="def">def</span>
+        <span class="name">spec</span><span class="signature pdoc-code condensed">(<span class="param"><span class="o">**</span><span class="n">kwargs</span></span><span class="return-annotation">):</span></span>
+
+                <label class="view-source-button" for="valueLists.spec-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#valueLists.spec"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="valueLists.spec-518"><a href="#valueLists.spec-518"><span class="linenos">518</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="valueLists.spec-519"><a href="#valueLists.spec-519"><span class="linenos">519</span></a>    <span class="k">def</span> <span class="nf">spec</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+</span><span id="valueLists.spec-520"><a href="#valueLists.spec-520"><span class="linenos">520</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="valueLists.spec-521"><a href="#valueLists.spec-521"><span class="linenos">521</span></a><span class="sd">        Accepts all arbitrary values depending on what you have in your props as part of the api spec.</span>
+</span><span id="valueLists.spec-522"><a href="#valueLists.spec-522"><span class="linenos">522</span></a>
+</span><span id="valueLists.spec-523"><a href="#valueLists.spec-523"><span class="linenos">523</span></a><span class="sd">        The valueLists you pass will be validated against the props in your api spec.</span>
+</span><span id="valueLists.spec-524"><a href="#valueLists.spec-524"><span class="linenos">524</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="valueLists.spec-525"><a href="#valueLists.spec-525"><span class="linenos">525</span></a>        <span class="k">return</span> <span class="p">{</span>
+</span><span id="valueLists.spec-526"><a href="#valueLists.spec-526"><span class="linenos">526</span></a>            <span class="s2">&quot;kwargs&quot;</span><span class="p">:</span> <span class="p">{},</span>
+</span><span id="valueLists.spec-527"><a href="#valueLists.spec-527"><span class="linenos">527</span></a>            <span class="s2">&quot;accepted_values&quot;</span><span class="p">:</span> <span class="p">{},</span>
+</span><span id="valueLists.spec-528"><a href="#valueLists.spec-528"><span class="linenos">528</span></a>        <span class="p">}</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Accepts all arbitrary values depending on what you have in your props as part of the api spec.</p>
+
+<p>The valueLists you pass will be validated against the props in your api spec.</p>
+</div>
+
+
+                            </div>
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
                                     <div><dt><a href="utils.html#ApiValidator">cave_utils.api.utils.ApiValidator</a></dt>
-                                <dd id="GeoJsonValidator.__init__" class="function"><a href="utils.html#ApiValidator.__init__">ApiValidator</a></dd>
-                <dd id="GeoJsonValidator.spec" class="function"><a href="utils.html#ApiValidator.spec">spec</a></dd>
+                                <dd id="valueLists.__init__" class="function"><a href="utils.html#ApiValidator.__init__">ApiValidator</a></dd>
 
             </div>
                                 </dl>

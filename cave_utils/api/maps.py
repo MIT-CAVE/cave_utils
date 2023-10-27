@@ -170,10 +170,49 @@ class colorByOptions(ApiValidator):
             }
 
     def __extend_spec__(self, **kwargs):
-        for field in ["startGradientColor", "endGradientColor", "nullColor"]:
-            rgba_string = self.data.get(field)
-            if rgba_string is not None:
-                self.__check_rgba_string_valid__(rgba_string=rgba_string, prepend_path=[field])
+        prop_data = kwargs.get('colorBy_availableProps').get(kwargs.get('CustomKeyValidatorFieldId'))
+        if prop_data is None:
+            return
+        prop_type = prop_data.get("type")
+        if prop_type == "num":
+            for obj_key in ['startGradientColor', 'endGradientColor', 'nullColor']:
+                obj_val = self.data.get(obj_key)
+                if obj_val is not None:
+                    self.__check_rgba_string_valid__(rgba_string=obj_val, prepend_path=[obj_key])
+                if obj_key in ['startGradientColor', 'endGradientColor'] and obj_val==None:
+                    self.__error__(
+                        msg=f"Missing key `{obj_key}`"
+                    )
+            for obj_key in ['min', 'max']:
+                obj_val = self.data.get(obj_key)
+                if obj_val is not None:
+                    if not isinstance(obj_val, (int, float)):
+                        self.__error__(
+                            msg=f"Invalid `{obj_key}` ({obj_val}) must be a number"
+                        )
+                        continue
+        elif prop_type == "toggle":
+            for key, value in self.data.items():
+                if not self.__check_subset_valid__(
+                    subset=[key],
+                    valid_values=['true', 'false', 'nullColor'],
+                    prepend_path=[],
+                ):
+                    return
+                self.__check_rgba_string_valid__(rgba_string=value, prepend_path=[key])
+        elif prop_type == "selector":
+            for key, value in self.data.items():
+                if not self.__check_subset_valid__(
+                    subset=[key],
+                    valid_values=list(prop_data.get("options").keys()) + ['nullColor'],
+                    prepend_path=[],
+                ):
+                    return
+                self.__check_rgba_string_valid__(rgba_string=value, prepend_path=[key])
+        else:
+            self.__error__(
+                msg=f"Invalid prop type ({prop_type}) for colorByOptions"
+            )
 
 
 @type_enforced.Enforcer
@@ -246,10 +285,31 @@ class sizeByOptions(ApiValidator):
             }
 
     def __extend_spec__(self, **kwargs):
-        for field in ["startSize", "endSize", "nullSize"]:
-            field_value = self.data.get(field)
-            if field_value is not None:
-                self.__check_pixel_string_valid__(pixel_string=field_value, prepend_path=[field])
+        prop_data = kwargs.get('sizeBy_availableProps').get(kwargs.get('CustomKeyValidatorFieldId'))
+        if prop_data is None:
+            return
+        prop_type = prop_data.get("type")
+        if prop_type == "num":
+            for obj_key in ['startSize', 'endSize', 'nullSize']:
+                obj_val = self.data.get(obj_key)
+                if obj_val is not None:
+                    self.__check_pixel_string_valid__(pixel_string=obj_val, prepend_path=[obj_key])
+                if obj_key in ['startSize', 'endSize'] and obj_val==None:
+                    self.__error__(
+                        msg=f"Missing key `{obj_key}`"
+                    )
+            for obj_key in ['min', 'max']:
+                obj_val = self.data.get(obj_key)
+                if obj_val is not None:
+                    if not isinstance(obj_val, (int, float)):
+                        self.__error__(
+                            msg=f"Invalid `{obj_key}` ({obj_val}) must be a number"
+                        )
+                        continue
+        else:
+            self.__error__(
+                msg=f"Invalid prop type ({prop_type}) for sizeByOptions"
+            )
 
 
 @type_enforced.Enforcer
@@ -370,10 +430,30 @@ class maps_data_star_legendGroups_star_data_star(ApiValidator):
         }}
     
     def __extend_spec__(self, **kwargs):
+        mapFeatures_feature_props = kwargs.get("mapFeatures_feature_props", {})
+        field_id=kwargs.get("CustomKeyValidatorFieldId")
+        if not self.__check_subset_valid__(
+            subset=[field_id],
+            valid_values=list(mapFeatures_feature_props.keys()),
+            prepend_path=[],
+        ):
+            return
+        available_props = mapFeatures_feature_props.get(field_id)
+        colorBy_availableProps = {k:v for k,v in available_props.items() if v.get("type") in ["num", 'toggle', 'selector']}
+        sizeBy_availableProps = {k:v for k,v in available_props.items() if v.get("type") in ["num"]}
+
         passed_colorByOptions = self.data.get("colorByOptions", {})
         passed_sizeByOptions = self.data.get("sizeByOptions", {})
-        # TODO: Pass mapFeatures in to validate sizeBy/colorBy/lineBy/groupings
-        # TODO: Pass props into colorByOptions and sizeByOptions
+        if not self.__check_subset_valid__(
+            subset=list(passed_colorByOptions.keys()),
+            valid_values=list(colorBy_availableProps.keys()),
+            prepend_path=["colorByOptions"],
+        ) or not self.__check_subset_valid__(
+            subset=list(passed_sizeByOptions.keys()),
+            valid_values=list(sizeBy_availableProps.keys()),
+            prepend_path=["sizeByOptions"],
+        ):
+            return
         # to validate that option values are valid
         if passed_colorByOptions is not None:
             CustomKeyValidator(
@@ -381,6 +461,8 @@ class maps_data_star_legendGroups_star_data_star(ApiValidator):
                 log = self.log,
                 prepend_path = ["colorByOptions"],
                 validator = colorByOptions,
+                # Custom Key for available props
+                colorBy_availableProps = colorBy_availableProps,
                 **kwargs
             )
         if passed_sizeByOptions is not None:
@@ -389,6 +471,8 @@ class maps_data_star_legendGroups_star_data_star(ApiValidator):
                 log = self.log,
                 prepend_path = ["sizeByOptions"],
                 validator = sizeByOptions,
+                # Custom Key for available props
+                sizeBy_availableProps = sizeBy_availableProps,
                 **kwargs
             )
         for by in ["colorBy", "sizeBy"]:
@@ -399,6 +483,8 @@ class maps_data_star_legendGroups_star_data_star(ApiValidator):
                     self.__error__(
                         msg=f"Invalid `{by}` ({by_value}) must be one of {available_options}"
                     )
+        colorByOptions_keys = list(passed_colorByOptions.keys())
+        sizeByOptions_keys = list(passed_sizeByOptions.keys())
         # TODO: Validate Icons
 
 

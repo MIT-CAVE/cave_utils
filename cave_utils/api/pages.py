@@ -113,7 +113,7 @@ class pages_data_star_pageLayout(ApiValidator):
             self.__check_subset_valid__(
                 subset=[mapId], valid_values=kwargs.get("maps_validMapIds", []), prepend_path=["mapId"]
             )
-        # TODO: Validate groupingId, groupingLevel, statId, groupedOutputDataId, mapId
+        # TODO: Validate groupingId, groupingLevel, statId, groupedOutputDataId
         pass
 
 @type_enforced.Enforcer
@@ -139,7 +139,6 @@ class pages_data_star(ApiValidator):
         return {"kwargs": kwargs, "accepted_values": {}}
 
     def __extend_spec__(self, **kwargs):
-        # TODO: Pass in groupingLevels, GroupingIds, groupedDataOutputIds, and statIds, globalOutputDataIds, mapIds
         for idx, pageLayout in enumerate(self.data.get("pageLayout", [])):
             pages_data_star_pageLayout(
                 data=pageLayout,
