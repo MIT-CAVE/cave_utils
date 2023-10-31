@@ -35,6 +35,7 @@ class Root(ApiValidator):
         groupedOutputs: dict = dict(),
         globalOutputs: dict = dict(),
         extraKwargs: dict = dict(),
+        associated: dict = dict(),
         **kwargs,
     ):
         """
@@ -81,6 +82,11 @@ class Root(ApiValidator):
             - Type: dict
             - What: Special arguments to be passed to the server.
             - Default: `{}`
+        - `associated`:
+            - Type: dict
+            - What: Data associated with the session.
+            - Default: `{}`
+            - Note: This data structure is reserved for system use. It is not intended to be used by the user.
 
         """
         return {
@@ -130,7 +136,7 @@ class Root(ApiValidator):
             maps(data=maps_data, log=self.log, prepend_path=["maps"], mapFeatures_feature_props=mapFeatures_feature_props, **kwargs)
             maps_validMapIds = list(maps_data.get("data", {}).keys())
         # Validate globalOutputs
-        globalOutputs_data = self.data.get("globalOutputs", None)
+        globalOutputs_data = self.data.get("globalOutputs")
         globalOuputs_validPropIds = []
         if globalOutputs_data is not None:
             globalOutputs(
