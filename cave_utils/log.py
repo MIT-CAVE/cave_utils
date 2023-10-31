@@ -1,5 +1,3 @@
-from pamda import pamda
-from pprint import pp
 import type_enforced, os
 
 
