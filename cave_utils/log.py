@@ -24,7 +24,7 @@ class LogObject:
     def write_logs(self, path:str, level:[str,None]=None, max_count:[int,None]=None):
         if path[:1] != "/":
             path = os.getcwd() + "/" + path
-        path.replace("/./", "/")
+        path = path.replace("/./", "/")
         os.makedirs(os.path.dirname(path), exist_ok=True)
         with open(path, "w") as f:
             for i in self.get_logs(level=level, max_count=max_count):
