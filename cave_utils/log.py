@@ -1,6 +1,5 @@
 from pamda import pamda
 from pprint import pp
-from pathlib import Path
 import type_enforced, os
 
 
@@ -27,7 +26,7 @@ class LogObject:
     def write_logs(self, path:str, level:[str,None]=None, max_count:[int,None]=None):
         if path[:1] != "/":
             path = os.getcwd() + "/" + path
-        Path(path).parent.mkdir(parents=True, exist_ok=True)
+        os.makedirs(os.path.dirname(path), exist_ok=True)
         with open(path, "w") as f:
             for i in self.get_logs(level=level, max_count=max_count):
                 f.write(f"{i['level']}: {i['path']}\n\t{i['msg']}\n")
