@@ -103,18 +103,82 @@ class pages_data_star_pageLayout(ApiValidator):
         }}
 
     def __extend_spec__(self, **kwargs):
-        globalOutput = self.data.get("globalOutput")
-        if globalOutput is not None:
-            self.__check_subset_valid__(
-                subset=globalOutput, valid_values=kwargs.get("globalOuputs_validPropIds", []), prepend_path=["globalOutput"]
-            )
-        mapId = self.data.get("mapId")
-        if mapId is not None:
-            self.__check_subset_valid__(
-                subset=[mapId], valid_values=kwargs.get("maps_validMapIds", []), prepend_path=["mapId"]
-            )
-        # TODO: Validate groupingId, groupingLevel, statId, groupedOutputDataId
-        pass
+        pageLayout_type = self.data.get("type", "groupedOutput")
+        # Validate globalOutput
+        if pageLayout_type == 'globalOutput':
+            globalOutput = self.data.get("globalOutput")
+            if globalOutput is not None:
+                self.__check_subset_valid__(
+                    subset=globalOutput, valid_values=kwargs.get("globalOuputs_validPropIds", []), prepend_path=["globalOutput"]
+                )
+            else:
+                self.__error__(
+                    msg="`globalOutput` is required for `globalOutput` type pageLayouts.",
+                    prepend_path=["globalOutput"],
+                )
+        # Validate map
+        elif pageLayout_type == 'map':
+            mapId = self.data.get("mapId")
+            if mapId is not None:
+                self.__check_subset_valid__(
+                    subset=[mapId], valid_values=kwargs.get("maps_validMapIds", []), prepend_path=["mapId"]
+                )
+            else:
+                self.__error__(
+                    msg="`mapId` is required for `map` type pageLayouts.",
+                    prepend_path=["mapId"],
+                )
+        # Validate groupedOutput
+        else:
+            # Validate groupedOutputDataId
+            groupedOutputDataId = self.data.get("groupedOutputDataId")
+            if groupedOutputDataId is not None:
+                self.__check_type__(groupedOutputDataId, str, prepend_path=["groupedOutputDataId"])
+                # Ensure that the groupedOutputDataId is valid
+                self.__check_subset_valid__(
+                    subset=[groupedOutputDataId], 
+                    valid_values=list(kwargs.get("groupedOutputs_validGroupIds",{}).keys()), 
+                    prepend_path=["groupedOutputDataId"]
+                )
+            # Validate statId
+            statId = self.data.get("statId")
+            if statId is not None:
+                self.__check_type__(statId, str, prepend_path=["statId"])
+                # Ensure that the statId is valid
+                self.__check_subset_valid__(
+                    subset=[statId], 
+                    valid_values=list(kwargs.get("groupedOutputs_validStatIds",{}).get(groupedOutputDataId,[])), 
+                    prepend_path=["statId"]
+                )
+            # Validate groupingId
+            groupingId = self.data.get("groupingId")
+            if groupingId is not None:
+                self.__check_type__(groupingId, list, prepend_path=["groupingId"])
+                # Ensure that the groupingId is valid
+                self.__check_subset_valid__(
+                    subset=groupingId, 
+                    valid_values=list(kwargs.get("groupedOutputs_validGroupIds",{}).get(groupedOutputDataId,[])), 
+                    prepend_path=["groupingId"]
+                )
+            # Validate groupingLevel
+            groupingLevel = self.data.get("groupingLevel")
+            if groupingLevel is not None:
+                self.__check_type__(groupingLevel, list, prepend_path=["groupingLevel"])
+                if len(groupingId) != len(groupingLevel):
+                    self.__error__(
+                        msg="`groupingId` and `groupingLevel` must be the same length.",
+                    )
+                    return
+                for idx, groupingId_item in enumerate(groupingId):
+                    groupingLevel_item = groupingLevel[idx]
+                    self.__check_subset_valid__(
+                        subset=[groupingLevel_item],
+                        valid_values=list(kwargs.get("groupedOutputs_validLevelIds",{}).get(groupingId_item,[])),
+                        prepend_path=["groupingLevel", idx],
+                    )
+
+            
+
 
 @type_enforced.Enforcer
 class pages_data_star(ApiValidator):

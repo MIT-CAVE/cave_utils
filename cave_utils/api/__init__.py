@@ -14,6 +14,7 @@ from cave_utils.api.pages import pages
 from cave_utils.api.maps import maps
 from cave_utils.api.globalOutputs import globalOutputs
 from cave_utils.api.mapFeatures import mapFeatures
+from cave_utils.api.groupedOutputs import groupedOutputs
 
 
 class Root(ApiValidator):
@@ -139,9 +140,31 @@ class Root(ApiValidator):
                 **kwargs,
             )
             globalOuputs_validPropIds = list(globalOutputs_data.get("values", {}).keys())
-
         # Validate groupedOutputs
-        # TODO
+        groupedOutputs_data = self.data.get("groupedOutputs")
+        groupedOutputs_validLevelIds = {}
+        groupedOutputs_validStatIds = {}
+        groupedOutputs_validGroupIds = {}
+        if groupedOutputs_data is not None:
+            groupedOutputs(
+                data=groupedOutputs_data,
+                log=self.log,
+                prepend_path=["groupedOutputs"],
+                **kwargs,
+            )
+            # Populate valid ids for each relevant groupedOutput to be used in pages.
+            try:
+                groupedOutputs_validLevelIds = {k:list(v.get('levels').keys()) for k,v in groupedOutputs_data.get("groupings", {}).items()}
+            except:
+                pass
+            try:
+                groupedOutputs_validStatIds = {k:list(v.get('stats').keys()) for k,v in groupedOutputs_data.get("data", {}).items()}
+            except:
+                pass
+            try:
+                groupedOutputs_validGroupIds = {k:list(v.get('groupLists').keys()) for k,v in groupedOutputs_data.get("data", {}).items()}
+            except:
+                pass
         # Validate pages
         pages_data = self.data.get("pages")
         page_validPageIds = []
@@ -150,9 +173,12 @@ class Root(ApiValidator):
                 data=pages_data, 
                 log=self.log, 
                 prepend_path=["pages"],
-                # Special Kwargs:
+                # Special Kwargs to validate globalOutputs, groupedOutputs and maps are valid:
                 globalOuputs_validPropIds=globalOuputs_validPropIds,
                 maps_validMapIds=maps_validMapIds,
+                groupedOutputs_validLevelIds=groupedOutputs_validLevelIds,
+                groupedOutputs_validStatIds=groupedOutputs_validStatIds,
+                groupedOutputs_validGroupIds=groupedOutputs_validGroupIds,
                 **kwargs
             )
             page_validPageIds = list(pages_data.get("data", {}).keys())

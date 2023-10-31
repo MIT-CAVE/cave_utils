@@ -1,5 +1,6 @@
 """
-Build out an app bar with buttons to launch pages, launch panes and trigger api commands.
+Create global outputs for that allow for simple charts and tables. 
+These outputs should be general to the entire application and can be compared across sessions.
 """
 from cave_utils.api.utils import ApiValidator, CustomKeyValidator
 from cave_utils.api.general import props, values, layout

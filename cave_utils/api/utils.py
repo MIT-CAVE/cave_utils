@@ -209,7 +209,24 @@ class ApiValidator:
             if not isinstance(item, types):
                 self.__error__(
                     path=prepend_path,
-                    msg=f"Invalid list item type at index: {idx} with type: {type(item)}",
+                    msg=f"Invalid list item type at index: {idx} with type: {type(item)}. Expected one of {types}",
+                )
+                return False
+        return True
+    
+    def __check_type_dict__(self, data: dict, types: tuple, prepend_path: list = list()):
+        """
+        Validate a dict only contains certain object types for values and if an issue is present, log an error
+
+        Returns True if the type check passed and False otherwise
+        """
+        if not isinstance(types, tuple):
+            types = (types,)
+        for key, value in data.items():
+            if not isinstance(value, types):
+                self.__error__(
+                    path=prepend_path,
+                    msg=f"Invalid dict item type at key: {key} with type: {type(value)}. Expected one of {types}",
                 )
                 return False
         return True
