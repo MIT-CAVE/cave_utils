@@ -83,7 +83,7 @@
                         <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos">  1</span></a><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="L-2"><a href="#L-2"><span class="linenos">  2</span></a><span class="sd">Build out an app bar with buttons to launch pages, launch panes and trigger api commands.</span>
 </span><span id="L-3"><a href="#L-3"><span class="linenos">  3</span></a><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-4"><a href="#L-4"><span class="linenos">  4</span></a><span class="kn">from</span> <span class="nn">cave_utils.api.utils</span> <span class="kn">import</span> <span class="n">ApiValidator</span><span class="p">,</span> <span class="n">CustomKeyValidator</span>
+</span><span id="L-4"><a href="#L-4"><span class="linenos">  4</span></a><span class="kn">from</span> <span class="nn">cave_utils.api_utils.validator_utils</span> <span class="kn">import</span> <span class="n">ApiValidator</span><span class="p">,</span> <span class="n">CustomKeyValidator</span>
 </span><span id="L-5"><a href="#L-5"><span class="linenos">  5</span></a><span class="kn">import</span> <span class="nn">type_enforced</span>
 </span><span id="L-6"><a href="#L-6"><span class="linenos">  6</span></a>
 </span><span id="L-7"><a href="#L-7"><span class="linenos">  7</span></a><span class="nd">@type_enforced</span><span class="o">.</span><span class="n">Enforcer</span>
@@ -172,7 +172,7 @@
 </span><span id="L-90"><a href="#L-90"><span class="linenos"> 90</span></a><span class="sd">            - Default: `False`</span>
 </span><span id="L-91"><a href="#L-91"><span class="linenos"> 91</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="L-92"><a href="#L-92"><span class="linenos"> 92</span></a>        <span class="k">if</span> <span class="nb">type</span> <span class="o">==</span> <span class="s1">&#39;globalOutput&#39;</span><span class="p">:</span>
-</span><span id="L-93"><a href="#L-93"><span class="linenos"> 93</span></a>            <span class="n">variant_options</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;bar&#39;</span><span class="p">,</span> <span class="s1">&#39;line&#39;</span><span class="p">,</span> <span class="s1">&#39;table&#39;</span><span class="p">]</span>
+</span><span id="L-93"><a href="#L-93"><span class="linenos"> 93</span></a>            <span class="n">variant_options</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;bar&#39;</span><span class="p">,</span> <span class="s1">&#39;line&#39;</span><span class="p">,</span> <span class="s1">&#39;table&#39;</span><span class="p">,</span> <span class="s1">&#39;overview&#39;</span><span class="p">]</span>
 </span><span id="L-94"><a href="#L-94"><span class="linenos"> 94</span></a>        <span class="k">elif</span> <span class="nb">type</span> <span class="o">==</span> <span class="s1">&#39;groupedOutput&#39;</span><span class="p">:</span>
 </span><span id="L-95"><a href="#L-95"><span class="linenos"> 95</span></a>            <span class="n">variant_options</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;bar&#39;</span><span class="p">,</span> <span class="s1">&#39;line&#39;</span><span class="p">,</span> <span class="s1">&#39;table&#39;</span><span class="p">,</span> <span class="s1">&#39;box_plot&#39;</span><span class="p">,</span> <span class="s1">&#39;cumulative_line&#39;</span><span class="p">]</span>
 </span><span id="L-96"><a href="#L-96"><span class="linenos"> 96</span></a>        <span class="k">else</span><span class="p">:</span>
@@ -193,10 +193,10 @@
 </span><span id="L-111"><a href="#L-111"><span class="linenos">111</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">__check_subset_valid__</span><span class="p">(</span>
 </span><span id="L-112"><a href="#L-112"><span class="linenos">112</span></a>                    <span class="n">subset</span><span class="o">=</span><span class="n">globalOutput</span><span class="p">,</span> <span class="n">valid_values</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;globalOuputs_validPropIds&quot;</span><span class="p">,</span> <span class="p">[]),</span> <span class="n">prepend_path</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;globalOutput&quot;</span><span class="p">]</span>
 </span><span id="L-113"><a href="#L-113"><span class="linenos">113</span></a>                <span class="p">)</span>
-</span><span id="L-114"><a href="#L-114"><span class="linenos">114</span></a>            <span class="k">else</span><span class="p">:</span>
+</span><span id="L-114"><a href="#L-114"><span class="linenos">114</span></a>            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;variant&quot;</span><span class="p">)</span> <span class="o">!=</span> <span class="s1">&#39;overview&#39;</span><span class="p">:</span>
 </span><span id="L-115"><a href="#L-115"><span class="linenos">115</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">__error__</span><span class="p">(</span>
-</span><span id="L-116"><a href="#L-116"><span class="linenos">116</span></a>                    <span class="n">msg</span><span class="o">=</span><span class="s2">&quot;`globalOutput` is required for `globalOutput` type pageLayouts.&quot;</span><span class="p">,</span>
-</span><span id="L-117"><a href="#L-117"><span class="linenos">117</span></a>                    <span class="n">prepend_path</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;globalOutput&quot;</span><span class="p">],</span>
+</span><span id="L-116"><a href="#L-116"><span class="linenos">116</span></a>                    <span class="n">msg</span><span class="o">=</span><span class="s2">&quot;`globalOutput` is a required key for `globalOutput` type pageLayouts when variant is not `overview`.&quot;</span><span class="p">,</span>
+</span><span id="L-117"><a href="#L-117"><span class="linenos">117</span></a>                    <span class="n">path</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;globalOutput&quot;</span><span class="p">],</span>
 </span><span id="L-118"><a href="#L-118"><span class="linenos">118</span></a>                <span class="p">)</span>
 </span><span id="L-119"><a href="#L-119"><span class="linenos">119</span></a>        <span class="c1"># Validate map</span>
 </span><span id="L-120"><a href="#L-120"><span class="linenos">120</span></a>        <span class="k">elif</span> <span class="n">pageLayout_type</span> <span class="o">==</span> <span class="s1">&#39;map&#39;</span><span class="p">:</span>
@@ -334,7 +334,7 @@
                     <div class="decorator">@type_enforced.Enforcer</div>
 
     <span class="def">class</span>
-    <span class="name">pages_data_star_pageLayout</span><wbr>(<span class="base"><a href="utils.html#ApiValidator">cave_utils.api.utils.ApiValidator</a></span>):
+    <span class="name">pages_data_star_pageLayout</span><wbr>(<span class="base"><a href="../api_utils/validator_utils.html#ApiValidator">cave_utils.api_utils.validator_utils.ApiValidator</a></span>):
 
                 <label class="view-source-button" for="pages_data_star_pageLayout-view-source"><span>View Source</span></label>
 
@@ -426,7 +426,7 @@
 </span><span id="pages_data_star_pageLayout-91"><a href="#pages_data_star_pageLayout-91"><span class="linenos"> 91</span></a><span class="sd">            - Default: `False`</span>
 </span><span id="pages_data_star_pageLayout-92"><a href="#pages_data_star_pageLayout-92"><span class="linenos"> 92</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="pages_data_star_pageLayout-93"><a href="#pages_data_star_pageLayout-93"><span class="linenos"> 93</span></a>        <span class="k">if</span> <span class="nb">type</span> <span class="o">==</span> <span class="s1">&#39;globalOutput&#39;</span><span class="p">:</span>
-</span><span id="pages_data_star_pageLayout-94"><a href="#pages_data_star_pageLayout-94"><span class="linenos"> 94</span></a>            <span class="n">variant_options</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;bar&#39;</span><span class="p">,</span> <span class="s1">&#39;line&#39;</span><span class="p">,</span> <span class="s1">&#39;table&#39;</span><span class="p">]</span>
+</span><span id="pages_data_star_pageLayout-94"><a href="#pages_data_star_pageLayout-94"><span class="linenos"> 94</span></a>            <span class="n">variant_options</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;bar&#39;</span><span class="p">,</span> <span class="s1">&#39;line&#39;</span><span class="p">,</span> <span class="s1">&#39;table&#39;</span><span class="p">,</span> <span class="s1">&#39;overview&#39;</span><span class="p">]</span>
 </span><span id="pages_data_star_pageLayout-95"><a href="#pages_data_star_pageLayout-95"><span class="linenos"> 95</span></a>        <span class="k">elif</span> <span class="nb">type</span> <span class="o">==</span> <span class="s1">&#39;groupedOutput&#39;</span><span class="p">:</span>
 </span><span id="pages_data_star_pageLayout-96"><a href="#pages_data_star_pageLayout-96"><span class="linenos"> 96</span></a>            <span class="n">variant_options</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;bar&#39;</span><span class="p">,</span> <span class="s1">&#39;line&#39;</span><span class="p">,</span> <span class="s1">&#39;table&#39;</span><span class="p">,</span> <span class="s1">&#39;box_plot&#39;</span><span class="p">,</span> <span class="s1">&#39;cumulative_line&#39;</span><span class="p">]</span>
 </span><span id="pages_data_star_pageLayout-97"><a href="#pages_data_star_pageLayout-97"><span class="linenos"> 97</span></a>        <span class="k">else</span><span class="p">:</span>
@@ -447,10 +447,10 @@
 </span><span id="pages_data_star_pageLayout-112"><a href="#pages_data_star_pageLayout-112"><span class="linenos">112</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">__check_subset_valid__</span><span class="p">(</span>
 </span><span id="pages_data_star_pageLayout-113"><a href="#pages_data_star_pageLayout-113"><span class="linenos">113</span></a>                    <span class="n">subset</span><span class="o">=</span><span class="n">globalOutput</span><span class="p">,</span> <span class="n">valid_values</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;globalOuputs_validPropIds&quot;</span><span class="p">,</span> <span class="p">[]),</span> <span class="n">prepend_path</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;globalOutput&quot;</span><span class="p">]</span>
 </span><span id="pages_data_star_pageLayout-114"><a href="#pages_data_star_pageLayout-114"><span class="linenos">114</span></a>                <span class="p">)</span>
-</span><span id="pages_data_star_pageLayout-115"><a href="#pages_data_star_pageLayout-115"><span class="linenos">115</span></a>            <span class="k">else</span><span class="p">:</span>
+</span><span id="pages_data_star_pageLayout-115"><a href="#pages_data_star_pageLayout-115"><span class="linenos">115</span></a>            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;variant&quot;</span><span class="p">)</span> <span class="o">!=</span> <span class="s1">&#39;overview&#39;</span><span class="p">:</span>
 </span><span id="pages_data_star_pageLayout-116"><a href="#pages_data_star_pageLayout-116"><span class="linenos">116</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">__error__</span><span class="p">(</span>
-</span><span id="pages_data_star_pageLayout-117"><a href="#pages_data_star_pageLayout-117"><span class="linenos">117</span></a>                    <span class="n">msg</span><span class="o">=</span><span class="s2">&quot;`globalOutput` is required for `globalOutput` type pageLayouts.&quot;</span><span class="p">,</span>
-</span><span id="pages_data_star_pageLayout-118"><a href="#pages_data_star_pageLayout-118"><span class="linenos">118</span></a>                    <span class="n">prepend_path</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;globalOutput&quot;</span><span class="p">],</span>
+</span><span id="pages_data_star_pageLayout-117"><a href="#pages_data_star_pageLayout-117"><span class="linenos">117</span></a>                    <span class="n">msg</span><span class="o">=</span><span class="s2">&quot;`globalOutput` is a required key for `globalOutput` type pageLayouts when variant is not `overview`.&quot;</span><span class="p">,</span>
+</span><span id="pages_data_star_pageLayout-118"><a href="#pages_data_star_pageLayout-118"><span class="linenos">118</span></a>                    <span class="n">path</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;globalOutput&quot;</span><span class="p">],</span>
 </span><span id="pages_data_star_pageLayout-119"><a href="#pages_data_star_pageLayout-119"><span class="linenos">119</span></a>                <span class="p">)</span>
 </span><span id="pages_data_star_pageLayout-120"><a href="#pages_data_star_pageLayout-120"><span class="linenos">120</span></a>        <span class="c1"># Validate map</span>
 </span><span id="pages_data_star_pageLayout-121"><a href="#pages_data_star_pageLayout-121"><span class="linenos">121</span></a>        <span class="k">elif</span> <span class="n">pageLayout_type</span> <span class="o">==</span> <span class="s1">&#39;map&#39;</span><span class="p">:</span>
@@ -612,7 +612,7 @@
 </span><span id="pages_data_star_pageLayout.spec-91"><a href="#pages_data_star_pageLayout.spec-91"><span class="linenos"> 91</span></a><span class="sd">            - Default: `False`</span>
 </span><span id="pages_data_star_pageLayout.spec-92"><a href="#pages_data_star_pageLayout.spec-92"><span class="linenos"> 92</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="pages_data_star_pageLayout.spec-93"><a href="#pages_data_star_pageLayout.spec-93"><span class="linenos"> 93</span></a>        <span class="k">if</span> <span class="nb">type</span> <span class="o">==</span> <span class="s1">&#39;globalOutput&#39;</span><span class="p">:</span>
-</span><span id="pages_data_star_pageLayout.spec-94"><a href="#pages_data_star_pageLayout.spec-94"><span class="linenos"> 94</span></a>            <span class="n">variant_options</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;bar&#39;</span><span class="p">,</span> <span class="s1">&#39;line&#39;</span><span class="p">,</span> <span class="s1">&#39;table&#39;</span><span class="p">]</span>
+</span><span id="pages_data_star_pageLayout.spec-94"><a href="#pages_data_star_pageLayout.spec-94"><span class="linenos"> 94</span></a>            <span class="n">variant_options</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;bar&#39;</span><span class="p">,</span> <span class="s1">&#39;line&#39;</span><span class="p">,</span> <span class="s1">&#39;table&#39;</span><span class="p">,</span> <span class="s1">&#39;overview&#39;</span><span class="p">]</span>
 </span><span id="pages_data_star_pageLayout.spec-95"><a href="#pages_data_star_pageLayout.spec-95"><span class="linenos"> 95</span></a>        <span class="k">elif</span> <span class="nb">type</span> <span class="o">==</span> <span class="s1">&#39;groupedOutput&#39;</span><span class="p">:</span>
 </span><span id="pages_data_star_pageLayout.spec-96"><a href="#pages_data_star_pageLayout.spec-96"><span class="linenos"> 96</span></a>            <span class="n">variant_options</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;bar&#39;</span><span class="p">,</span> <span class="s1">&#39;line&#39;</span><span class="p">,</span> <span class="s1">&#39;table&#39;</span><span class="p">,</span> <span class="s1">&#39;box_plot&#39;</span><span class="p">,</span> <span class="s1">&#39;cumulative_line&#39;</span><span class="p">]</span>
 </span><span id="pages_data_star_pageLayout.spec-97"><a href="#pages_data_star_pageLayout.spec-97"><span class="linenos"> 97</span></a>        <span class="k">else</span><span class="p">:</span>
@@ -729,8 +729,8 @@
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
-                                    <div><dt><a href="utils.html#ApiValidator">cave_utils.api.utils.ApiValidator</a></dt>
-                                <dd id="pages_data_star_pageLayout.__init__" class="function"><a href="utils.html#ApiValidator.__init__">ApiValidator</a></dd>
+                                    <div><dt><a href="../api_utils/validator_utils.html#ApiValidator">cave_utils.api_utils.validator_utils.ApiValidator</a></dt>
+                                <dd id="pages_data_star_pageLayout.__init__" class="function"><a href="../api_utils/validator_utils.html#ApiValidator.__init__">ApiValidator</a></dd>
 
             </div>
                                 </dl>
@@ -742,7 +742,7 @@
                     <div class="decorator">@type_enforced.Enforcer</div>
 
     <span class="def">class</span>
-    <span class="name">pages_data_star</span><wbr>(<span class="base"><a href="utils.html#ApiValidator">cave_utils.api.utils.ApiValidator</a></span>):
+    <span class="name">pages_data_star</span><wbr>(<span class="base"><a href="../api_utils/validator_utils.html#ApiValidator">cave_utils.api_utils.validator_utils.ApiValidator</a></span>):
 
                 <label class="view-source-button" for="pages_data_star-view-source"><span>View Source</span></label>
 
@@ -838,8 +838,8 @@
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
-                                    <div><dt><a href="utils.html#ApiValidator">cave_utils.api.utils.ApiValidator</a></dt>
-                                <dd id="pages_data_star.__init__" class="function"><a href="utils.html#ApiValidator.__init__">ApiValidator</a></dd>
+                                    <div><dt><a href="../api_utils/validator_utils.html#ApiValidator">cave_utils.api_utils.validator_utils.ApiValidator</a></dt>
+                                <dd id="pages_data_star.__init__" class="function"><a href="../api_utils/validator_utils.html#ApiValidator.__init__">ApiValidator</a></dd>
 
             </div>
                                 </dl>
@@ -851,7 +851,7 @@
                     <div class="decorator">@type_enforced.Enforcer</div>
 
     <span class="def">class</span>
-    <span class="name">pages</span><wbr>(<span class="base"><a href="utils.html#ApiValidator">cave_utils.api.utils.ApiValidator</a></span>):
+    <span class="name">pages</span><wbr>(<span class="base"><a href="../api_utils/validator_utils.html#ApiValidator">cave_utils.api_utils.validator_utils.ApiValidator</a></span>):
 
                 <label class="view-source-button" for="pages-view-source"><span>View Source</span></label>
 
@@ -946,8 +946,8 @@
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
-                                    <div><dt><a href="utils.html#ApiValidator">cave_utils.api.utils.ApiValidator</a></dt>
-                                <dd id="pages.__init__" class="function"><a href="utils.html#ApiValidator.__init__">ApiValidator</a></dd>
+                                    <div><dt><a href="../api_utils/validator_utils.html#ApiValidator">cave_utils.api_utils.validator_utils.ApiValidator</a></dt>
+                                <dd id="pages.__init__" class="function"><a href="../api_utils/validator_utils.html#ApiValidator.__init__">ApiValidator</a></dd>
 
             </div>
                                 </dl>

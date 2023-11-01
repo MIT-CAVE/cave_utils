@@ -1,4 +1,4 @@
-from cave_utils.api import Validator
+from cave_utils import Validator
 
 example = {
     "settings": {

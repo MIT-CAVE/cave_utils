@@ -1,11 +1,17 @@
 """
-This module is designed to help you validate your data against the CAVE API.
+# API
 
-It also serves to document the API and provide a reference for the data structures.
+This module serves to document the `cave_app` API data structures.
 
-.. include:: ./documentation.md
+## API Reference
+
+Classes represent the actual API items and should have relevant API documentation for each item at the class level. In this current module, the `root` class represents the root of the API. The method `spec` details exactly what must be passed to root as well as other relevant documentation.
+
+Submodules (and their classes) are used to define the api at each level. You can use the links on the left to navigate into the API and get detailed documentation for each API item at each level.
+
+See the left hand side for all available submodules.
 """
-from cave_utils.api.utils import *
+from cave_utils.api_utils.validator_utils import *
 from cave_utils.api.extraKwargs import extraKwargs
 from cave_utils.api.settings import settings
 from cave_utils.api.appBar import appBar
@@ -36,7 +42,6 @@ class Root(ApiValidator):
         groupedOutputs: dict = dict(),
         globalOutputs: dict = dict(),
         extraKwargs: dict = dict(),
-        associated: dict = dict(),
         **kwargs,
     ):
         """
@@ -46,12 +51,12 @@ class Root(ApiValidator):
             - Type: dict
             - What: General settings for your application.
             - Note: 'settings.iconUrl' is the only required field in `settings`
-            - See: `settings.settings`
+            - See: `cave_utils.api.settings`
         - `appBar`:
             - Type: dict
             - What: Settings for the app bar.
             - Note: 'appBar.data' is required, and should have at least one item in it.
-            - See: `appBar.appBar`
+            - See: `cave_utils.api.appBar`
 
         Optional Arguments:
 
@@ -59,37 +64,39 @@ class Root(ApiValidator):
             - Type: dict
             - What: Configure panes for your application.
             - Default: `{}`
+            - See: `cave_utils.api.panes`
         - `pages`:
             - Type: dict
             - What: Configure pages for your application.
             - Default: `{}`
+            - See: `cave_utils.api.pages`
         - `maps`:
             - Type: dict
             - What: Configure map views and settings for your application.
             - Default: `{}`
+            - See: `cave_utils.api.maps`
         - `mapFeatures`:
             - Type: dict
             - What: Configure map features (interactive items on the map) for your application.
             - Default: `{}`
+            - See: `cave_utils.api.mapFeatures`
         - `groupedOutputs`:
             - Type: dict
             - What: Configure data that can be sliced and diced for charts and tables based on arbitrary groups.
             - Default: `{}`
+            - See: `cave_utils.api.groupedOutputs`
         - `globalOutputs`:
             - Type: dict
             - What: Configure data that is general to the entire application and can be compared across sessions.
             - Default: `{}`
+            - See: `cave_utils.api.globalOutputs`
         - `extraKwargs`:
             - Type: dict
             - What: Special arguments to be passed to the server.
             - Default: `{}`
-        - `associated`:
-            - Type: dict
-            - What: Data associated with the session.
-            - Default: `{}`
-            - Note: This data structure is reserved for system use. It is not intended to be used by the user.
-
+            - See: `cave_utils.api.extraKwargs`
         """
+        kwargs = {k:v for k,v in kwargs.items() if k != 'associated'}
         return {
             "kwargs": kwargs,
             "accepted_values": {},
@@ -201,27 +208,3 @@ class Root(ApiValidator):
                 pane_validPaneIds=pane_validPaneIds,
                 **kwargs
             )
-
-@type_enforced.Enforcer
-class Validator:
-    def __init__(self, session_data, ignore_keys: list = list(), **kwargs):
-        """
-        Util to validate your session_data against the API spec.
-
-        Required Arguments:
-
-        - `session_data`:
-            - Type: dict
-            - What: The data to validate.
-            - Note: This should be the data you are sending to the server.
-
-        Optional Arguments:
-
-        - `ignore_keys`:
-            - Type: list
-            - What: Keys to ignore when validating.
-            - Note: Any keys specified here will be not be validated if encountered in the data at any level.
-        """
-        self.session_data = session_data
-        self.log = LogObject()
-        Root(data=self.session_data, log=self.log, prepend_path=[], ignore_keys=set(ignore_keys))

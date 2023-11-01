@@ -2,8 +2,8 @@
 Create global outputs for that allow for simple charts and tables. 
 These outputs should be general to the entire application and can be compared across sessions.
 """
-from cave_utils.api.utils import ApiValidator, CustomKeyValidator
-from cave_utils.api.general import props, values, layout
+from cave_utils.api_utils.validator_utils import ApiValidator, CustomKeyValidator
+from cave_utils.api_utils.general import props, values, layout
 import type_enforced
 
 
@@ -23,12 +23,12 @@ class globalOutputs(ApiValidator):
         - `props`:
             - Type: dict
             - What: The props that will be rendered as global outputs.
-            - See: `cave_utils.api.general.props`
+            - See: `cave_utils.api_utils.general.props`
         - `values`:
             - Type: dict
             - What: The values that will be passed to the props.
             - Required: False
-            - See: `cave_utils.api.general.values`
+            - See: `cave_utils.api_utils.general.values`
 
         Optional Arguments:
 
@@ -36,7 +36,7 @@ class globalOutputs(ApiValidator):
             - Type: dict
             - What: The layout of the pane.
             - Required: False
-            - See: `cave_utils.api.general.layout`
+            - See: `cave_utils.api_utils.general.layout`
         """
         return {"kwargs": kwargs, "accepted_values": {}}
 

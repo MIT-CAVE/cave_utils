@@ -1,7 +1,7 @@
 """
 Configure general settings for your applicaton like the icons to use, how to sync data with the server, and more.
 """
-from cave_utils.api.utils import *
+from cave_utils.api_utils.validator_utils import *
 import type_enforced
 
 @type_enforced.Enforcer

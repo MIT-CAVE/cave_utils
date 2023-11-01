@@ -1,8 +1,8 @@
 """
 Build out an app bar with buttons to launch pages, launch panes and trigger api commands.
 """
-from cave_utils.api.utils import ApiValidator, CustomKeyValidator
-from cave_utils.api.general import props, valueLists, layout
+from cave_utils.api_utils.validator_utils import ApiValidator, CustomKeyValidator
+from cave_utils.api_utils.general import props, valueLists, layout
 import type_enforced
 from pamda import pamda
 
@@ -132,7 +132,7 @@ class mapFeatures_data_star_data(ApiValidator):
         - `valueLists`:
             - Type: dict
             - What: The value lists of the map feature.
-            - See: `cave_utils.api.general.valueLists`
+            - See: `cave_utils.api_utils.general.valueLists`
         """
         return {"kwargs": kwargs, "accepted_values": {}}
     
@@ -206,11 +206,11 @@ class mapFeatures_data_star(ApiValidator):
         - `props`:
             - Type: dict
             - What: The props that will be rendered in the map feature.
-            - See: `cave_utils.api.general.props`
+            - See: `cave_utils.api_utils.general.props`
         - `data`:
             - Type: dict
             - What: The data that will be passed to the props.
-            - See: `cave_utils.api.general.values`
+            - See: `cave_utils.api_utils.general.values`
         
         Optional Arguments:
 
@@ -218,7 +218,7 @@ class mapFeatures_data_star(ApiValidator):
             - Type: dict
             - What: The layout of the map feature.
             - Required: False
-            - See: `cave_utils.api.general.layout`
+            - See: `cave_utils.api_utils.general.layout`
         - `geoJson`:
             - Type: dict
             - What: A dictionary specifying the geoJson data to use.

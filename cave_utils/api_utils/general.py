@@ -3,7 +3,7 @@ General API Spec items that are found in multiple places. This is not a key that
 """
 from pamda import pamda
 import type_enforced
-from cave_utils.api.utils import ApiValidator, CustomKeyValidator
+from cave_utils.api_utils.validator_utils import ApiValidator, CustomKeyValidator
 
 @type_enforced.Enforcer
 class props(ApiValidator):
