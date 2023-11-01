@@ -13,7 +13,9 @@ Make sure you have Python 3.9.x (or higher) installed on your system. You can do
 pip install cave_utils
 ```
 
-# Getting Started
+
+# Running Validator Tests
+
 ## Example:
 1. In your cave_app, update the following file:
 
@@ -28,16 +30,17 @@ pip install cave_utils
 
     x = Validator(init_session_data)
 
-    x.print_errors()
-    # x.print_warnings()
-    # x.write_warnings('./warnings.txt')
-    # x.write_errors('./errors.txt')
+    x.log.print_logs()
+    # x.log.print_logs(level="error")
+    # x.log.print_logs(level="warning")
+    # x.log.print_logs(max_count=10)
     ```
 
 2. Run the following command:
     `cave test test_init.py`
 
-# Live Utils Development 
+
+# cave_utils development
 
 ## Using Live Validation
 

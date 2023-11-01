@@ -118,9 +118,9 @@ class Root(ApiValidator):
             panes(data=panes_data, log=self.log, prepend_path=["panes"], **kwargs)
             pane_validPaneIds = list(panes_data.get("data", {}).keys())
         # Validate mapFeatures
-        mapFeatures_data = self.data.get("mapFeatures")
+        mapFeatures_data = self.data.get("mapFeatures", dict())
         mapFeatures_feature_props = {}
-        if mapFeatures_data is not None:
+        if mapFeatures_data != {}:
             mapFeatures(
                 data=mapFeatures_data,
                 log=self.log,
@@ -130,15 +130,15 @@ class Root(ApiValidator):
             for key, value in mapFeatures_data.get("data", {}).items():
                 mapFeatures_feature_props[key] = value.get("props", {})
         # Validate maps
-        maps_data = self.data.get("maps")
+        maps_data = self.data.get("maps", dict())
         maps_validMapIds = []
-        if maps_data is not None:
+        if maps_data != {}:
             maps(data=maps_data, log=self.log, prepend_path=["maps"], mapFeatures_feature_props=mapFeatures_feature_props, **kwargs)
             maps_validMapIds = list(maps_data.get("data", {}).keys())
         # Validate globalOutputs
-        globalOutputs_data = self.data.get("globalOutputs")
+        globalOutputs_data = self.data.get("globalOutputs", dict())
         globalOuputs_validPropIds = []
-        if globalOutputs_data is not None:
+        if globalOutputs_data != {}:
             globalOutputs(
                 data=globalOutputs_data,
                 log=self.log,
@@ -147,11 +147,11 @@ class Root(ApiValidator):
             )
             globalOuputs_validPropIds = list(globalOutputs_data.get("values", {}).keys())
         # Validate groupedOutputs
-        groupedOutputs_data = self.data.get("groupedOutputs")
+        groupedOutputs_data = self.data.get("groupedOutputs",dict())
         groupedOutputs_validLevelIds = {}
         groupedOutputs_validStatIds = {}
         groupedOutputs_validGroupIds = {}
-        if groupedOutputs_data is not None:
+        if groupedOutputs_data != {}:
             groupedOutputs(
                 data=groupedOutputs_data,
                 log=self.log,
@@ -172,9 +172,9 @@ class Root(ApiValidator):
             except:
                 pass
         # Validate pages
-        pages_data = self.data.get("pages")
+        pages_data = self.data.get("pages", dict())
         page_validPageIds = []
-        if pages_data is not None:
+        if pages_data != {}:
             pages(
                 data=pages_data, 
                 log=self.log, 
@@ -189,8 +189,8 @@ class Root(ApiValidator):
             )
             page_validPageIds = list(pages_data.get("data", {}).keys())
         # Validate appBar
-        appBar_data = self.data.get("appBar")
-        if appBar_data is not None:
+        appBar_data = self.data.get("appBar", dict())
+        if appBar_data != {}:
             appBar(
                 data=appBar_data, 
                 log=self.log, 
