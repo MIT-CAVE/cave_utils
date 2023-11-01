@@ -5,7 +5,7 @@ Basic utilities for the MIT Cave App. This package is intended to be used by the
 Setup
 ----------
 
-Make sure you have Python 3.7.x (or higher) installed on your system. You can download it [here](https://www.python.org/downloads/).
+Make sure you have Python 3.9.x (or higher) installed on your system. You can download it [here](https://www.python.org/downloads/).
 
 ### Installation
 
@@ -77,3 +77,26 @@ pip install cave_utils
     `pip install -e /cave_utils`
 3. Then run some tests (eg `validate_all_examples.py`): 
     `python cave_api/tests/validate_all_examples.py`
+
+# Generate Documentation
+
+1. Set up your virtual environment
+    - `python3 -m virtualenv venv`
+    - `source venv/bin/activate`
+    - `pip install -r requirements.txt`
+2. Update the docs
+    - `source venv/bin/activate`
+    - `./update_documentation.sh`
+
+# Generate a New Release
+
+1. Set up your virtual environment
+    - `python3 -m virtualenv venv`
+    - `source venv/bin/activate`
+    - `pip install -r requirements.txt`
+2. Update the version number in:
+    - `setup.cfg`
+    - `pyproject.toml`
+3. Update the release
+    - `source venv/bin/activate`
+    - `./update_version.sh`
