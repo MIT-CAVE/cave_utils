@@ -90,7 +90,7 @@ class pages_data_star_pageLayout(ApiValidator):
             - Default: `False`
         """
         if type == 'globalOutput':
-            variant_options = ['bar', 'line', 'table']
+            variant_options = ['bar', 'line', 'table', 'overview']
         elif type == 'groupedOutput':
             variant_options = ['bar', 'line', 'table', 'box_plot', 'cumulative_line']
         else:
@@ -111,10 +111,10 @@ class pages_data_star_pageLayout(ApiValidator):
                 self.__check_subset_valid__(
                     subset=globalOutput, valid_values=kwargs.get("globalOuputs_validPropIds", []), prepend_path=["globalOutput"]
                 )
-            else:
+            elif self.data.get("variant") != 'overview':
                 self.__error__(
-                    msg="`globalOutput` is required for `globalOutput` type pageLayouts.",
-                    prepend_path=["globalOutput"],
+                    msg="`globalOutput` is a required key for `globalOutput` type pageLayouts when variant is not `overview`.",
+                    path=["globalOutput"],
                 )
         # Validate map
         elif pageLayout_type == 'map':

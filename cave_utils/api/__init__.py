@@ -15,8 +15,9 @@ from cave_utils.api.maps import maps
 from cave_utils.api.globalOutputs import globalOutputs
 from cave_utils.api.mapFeatures import mapFeatures
 from cave_utils.api.groupedOutputs import groupedOutputs
+import type_enforced
 
-
+@type_enforced.Enforcer
 class Root(ApiValidator):
     """
     The root of the CAVE API data structure.
@@ -201,7 +202,7 @@ class Root(ApiValidator):
                 **kwargs
             )
 
-
+@type_enforced.Enforcer
 class Validator:
     def __init__(self, session_data, ignore_keys: list = list(), **kwargs):
         """
@@ -223,11 +224,4 @@ class Validator:
         """
         self.session_data = session_data
         self.log = LogObject()
-        assert isinstance(
-            ignore_keys,
-            (
-                list,
-                set,
-            ),
-        ), "`ignore_keys` must be a list of strings or set of strings"
         Root(data=self.session_data, log=self.log, prepend_path=[], ignore_keys=set(ignore_keys))
