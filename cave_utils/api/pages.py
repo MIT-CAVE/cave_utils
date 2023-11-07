@@ -1,204 +1,53 @@
 """
-Build out an app bar with buttons to launch pages, launch panes and trigger api commands.
+Configure your application's pages.
 """
 from cave_utils.api_utils.validator_utils import ApiValidator, CustomKeyValidator
 import type_enforced
 
-@type_enforced.Enforcer
-class pages_data_star_pageLayout(ApiValidator):
-    """
-    ## Api Path: pages.data.*.pageLayout
-    """
-    @staticmethod
-    def spec(
-        type: str = 'groupedOutput', 
-        variant: str = 'bar', 
-        mapId: [str, None] = None,
-        groupingId: [list, None] = None,
-        sessions: [list, None] = None,
-        globalOutput: [list, None] = None,
-        groupingLevel:[list, None] = None,
-        lockedLayout: bool=False,
-        statAggregation: str = "sum",
-        groupedOutputDataId: [str, None] = None,
-        statId: [str, None] = None,
-        showToolbar: bool = True,
-        maximized: bool = False,
-        **kwargs):
-        """
-        Optional Arguments:
 
-        - `type`:
-            - Type: str
-            - What: The type of the page layout.
-            - Default: `'groupedOutputs'`
-            - Accepted Values: `['groupedOutput', 'globalOutput', 'map']`
-        - `variant`:
-            - Type: str
-            - What: The variant of the page layout.
-            - Default: `'bar'`
-            - Accepted Values: 
-                - TODO: Update this list
-                - Type: `groupedOutput`
-                    - `['bar', 'line', 'table', 'box_plot', 'cumulative_line']`
-                - Type: `globalOutput`
-                    - `['bar', 'line', 'table']`
-        - `mapId`:
-            - Type: str
-            - What: The id of the map to use.
-            - Default: `None`
-        - `groupingId`:
-            - Type: list
-            - What: The ids of the grouping to use.
-            - Default: `None`
-        - `sessions`:
-            - Type: list
-            - What: The ids of the sessions to use.
-            - Default: `None`
-        - `globalOutput`:
-            - Type: list
-            - What: The ids of the global outputs to use.
-            - Default: `None`
-        - `groupingLevel`:
-            - Type: list
-            - What: The ids of the grouping levels to use.
-            - Default: `None`
-        - `lockedLayout`:
-            - Type: bool
-            - What: Whether or not the layout should be locked.
-            - Default: `False`
-        - `statAggregation`:
-            - Type: str
-            - What: The stat aggregation to use.
-            - Default: `'sum'`
-            - Accepted Values: `['sum', 'mean', 'median', 'min', 'max', 'count']`
-        - `groupedOutputDataId`:
-            - Type: str
-            - What: The id of the grouped output data to use.
-            - Default: `None`
-        - `statId`:
-            - Type: str
-            - What: The id of the stat to use.
-            - Default: `None`
-        - `showToolbar`:
-            - Type: bool
-            - What: Whether or not the toolbar should be shown.
-            - Default: `True`
-        - `maximized`:
-            - Type: bool
-            - What: Whether or not the layout should be maximized.
-            - Default: `False`
+@type_enforced.Enforcer
+class pages(ApiValidator):
+    """
+    The pages are located under the path **`pages`**.
+    """
+
+    @staticmethod
+    def spec(currentPage: [str, None] = None, data: dict = dict(), **kwargs):
         """
-        if type == 'globalOutput':
-            variant_options = ['bar', 'line', 'table', 'overview']
-        elif type == 'groupedOutput':
-            variant_options = ['bar', 'line', 'table', 'box_plot', 'cumulative_line']
-        else:
-            variant_options = []
-        return {"kwargs": kwargs, "accepted_values": {
-            # TODO: Validate these are correct
-            'type': ['groupedOutput', 'globalOutput', 'map'],
-            'variant': variant_options,
-            'statAggregation': ['sum', 'mean', 'median', 'min', 'max', 'count'],
-        }}
+        Arguments:
+
+        * **`current_page`**: `[str]` = `None` &rarr; The id of the current page that is being rendered.
+        * **`data`**: `[dict]` = `{}` &rarr; The data to pass to `pages.data.*`.
+        """
+        return {"kwargs": kwargs, "accepted_values": {}}
 
     def __extend_spec__(self, **kwargs):
-        pageLayout_type = self.data.get("type", "groupedOutput")
-        # Validate globalOutput
-        if pageLayout_type == 'globalOutput':
-            globalOutput = self.data.get("globalOutput")
-            if globalOutput is not None:
-                self.__check_subset_valid__(
-                    subset=globalOutput, valid_values=kwargs.get("globalOuputs_validPropIds", []), prepend_path=["globalOutput"]
-                )
-            elif self.data.get("variant") != 'overview':
-                self.__error__(
-                    msg="`globalOutput` is a required key for `globalOutput` type pageLayouts when variant is not `overview`.",
-                    path=["globalOutput"],
-                )
-        # Validate map
-        elif pageLayout_type == 'map':
-            mapId = self.data.get("mapId")
-            if mapId is not None:
-                self.__check_subset_valid__(
-                    subset=[mapId], valid_values=kwargs.get("maps_validMapIds", []), prepend_path=["mapId"]
-                )
-            else:
-                self.__error__(
-                    msg="`mapId` is required for `map` type pageLayouts.",
-                    prepend_path=["mapId"],
-                )
-        # Validate groupedOutput
-        else:
-            # Validate groupedOutputDataId
-            groupedOutputDataId = self.data.get("groupedOutputDataId")
-            if groupedOutputDataId is not None:
-                self.__check_type__(groupedOutputDataId, str, prepend_path=["groupedOutputDataId"])
-                # Ensure that the groupedOutputDataId is valid
-                self.__check_subset_valid__(
-                    subset=[groupedOutputDataId], 
-                    valid_values=list(kwargs.get("groupedOutputs_validGroupIds",{}).keys()), 
-                    prepend_path=["groupedOutputDataId"]
-                )
-            # Validate statId
-            statId = self.data.get("statId")
-            if statId is not None:
-                self.__check_type__(statId, str, prepend_path=["statId"])
-                # Ensure that the statId is valid
-                self.__check_subset_valid__(
-                    subset=[statId], 
-                    valid_values=list(kwargs.get("groupedOutputs_validStatIds",{}).get(groupedOutputDataId,[])), 
-                    prepend_path=["statId"]
-                )
-            # Validate groupingId
-            groupingId = self.data.get("groupingId")
-            if groupingId is not None:
-                self.__check_type__(groupingId, list, prepend_path=["groupingId"])
-                # Ensure that the groupingId is valid
-                self.__check_subset_valid__(
-                    subset=groupingId, 
-                    valid_values=list(kwargs.get("groupedOutputs_validGroupIds",{}).get(groupedOutputDataId,[])), 
-                    prepend_path=["groupingId"]
-                )
-            # Validate groupingLevel
-            groupingLevel = self.data.get("groupingLevel")
-            if groupingLevel is not None:
-                self.__check_type__(groupingLevel, list, prepend_path=["groupingLevel"])
-                if len(groupingId) != len(groupingLevel):
-                    self.__error__(
-                        msg="`groupingId` and `groupingLevel` must be the same length.",
-                    )
-                    return
-                for idx, groupingId_item in enumerate(groupingId):
-                    groupingLevel_item = groupingLevel[idx]
-                    self.__check_subset_valid__(
-                        subset=[groupingLevel_item],
-                        valid_values=list(kwargs.get("groupedOutputs_validLevelIds",{}).get(groupingId_item,[])),
-                        prepend_path=["groupingLevel", idx],
-                    )
-
-            
+        data = self.data.get("data", {})
+        CustomKeyValidator(
+            data=data, log=self.log, prepend_path=["data"], validator=pages_data_star, **kwargs
+        )
+        currentPage = self.data.get("currentPage")
+        if isinstance(currentPage, str):
+            self.__check_subset_valid__(
+                subset=[currentPage], valid_values=list(data.keys()), prepend_path=["currentPage"]
+            )
 
 
 @type_enforced.Enforcer
 class pages_data_star(ApiValidator):
     """
-    ## Api Path: pages.data.*
+    The pages data are located under the path **`pages.data`**.
     """
 
     @staticmethod
     def spec(pageLayout: list, lockedLayout: bool = False, **kwargs):
         """
-        Required Arguments:
+        Arguments:
 
-        - `pageLayout`:
-            - Type: list
-            - What: The layout of the page.
-            - See: `cave_utils.api.pages.pages_data_star_pageLayout`
-        - `lockedLayout`:
-            - Type: bool
-            - What: Whether or not the layout should be locked.
-            - Default: `False`
+        * **`pageLayout`**: `[list]` = `{}` &rarr; The layout of the page.
+            * **See**: `cave_utils.api.pages.pages_data_star_pageLayout`.
+        * **`lockedLayout`**: `[bool]` = `False` &rarr; Whether or not the layout should be locked.
+            * **See**: `cave_utils.api.pages.pages_data_star_pageLayout`.
         """
         return {"kwargs": kwargs, "accepted_values": {}}
 
@@ -213,32 +62,205 @@ class pages_data_star(ApiValidator):
 
 
 @type_enforced.Enforcer
-class pages(ApiValidator):
+class pages_data_star_pageLayout(ApiValidator):
     """
-    ## Api Path: pages
+    The page layouts are located under the path **`pages.data.pageLayout`**.
     """
+
     @staticmethod
-    def spec(currentPage: [str, None] = None, data: dict = dict(), **kwargs):
+    def spec(
+        type: str = "groupedOutput",
+        variant: str = "bar",
+        mapId: [str, None] = None,
+        groupingId: [list, None] = None,
+        sessions: [list, None] = None,
+        globalOutput: [list, None] = None,
+        groupingLevel: [list, None] = None,
+        lockedLayout: bool = False,
+        statAggregation: str = "sum",
+        groupedOutputDataId: [str, None] = None,
+        statId: [str, None] = None,
+        showToolbar: bool = True,
+        maximized: bool = False,
+        **kwargs,
+    ):
         """
-        Optional Arguments:
-        - `current_page`:
-            - Type: str
-            - What: The id of the current page that is being rendered.
-            - Default: `None`
-        - `data`:
-            - Type: dict
-            - What: The data to pass to `pages.data.*`.
-            - Default: `{}`
+        Arguments:
+
+        * **`type`**: `[str]` = `"groupedOutputs"` &rarr; The type of the page layout.
+            * **Accepted values**:
+                * `"groupedOutput"`: The `unit` appears after the value.
+                * `"globalOutput"`: The `unit` appears after the value, separated by a space.
+                * `"map"`: The `unit` appears before the value.
+        * **`variant`**: `[str]` = `"bar"` &rarr; The variant of the page layout.
+            * Accepted Values:
+                * When **`type`** == `"groupedOutput"`:
+                    * `"area"`: An [area chart][]
+                    * `"bar"`: A [bar chart][]
+                    * `"box_plot"`: A [box plot chart][]
+                    * `"cumulative_line"`: A cumulative line chart
+                    * `"gauge"`: A [gauge chart][]
+                    * `"heatmap"`: A [heatmap chart][]
+                    * `"line"`: A [line chart][]
+                    * `"scatter"`: A [scatter chart][]
+                    * `"stacked_area"`: An [stacked area chart][]
+                    * `"stacked_waterfall"`: An [stacked waterfall chart][]
+                    * `"sunburst"`: A [sunburst chart][]
+                    * `"table"`: A table showing the aggregated values.
+                    * `"treemap"`: A [treemap chart][]
+                    * `"waterfall"`: A [waterfall chart][]
+                * When **`type`** == `"globalOutput"`:
+                    * `"bar"`: A [bar chart][]
+                    * `"line"`: A [line chart][]
+                    * `"table"`: A [table chart][]
+                    * `"overview"`: A summary of the global outputs presented in a KPI-like format
+                * Otherwise:
+                    * `None`
+        * **`mapId`**: `[str]` = `None` &rarr; The id of the map to use.
+        * **`groupingId`**: `[list]` = `None` &rarr; The ids of the grouping to use.
+        * **`sessions`**: `[list]` = `None` &rarr; The ids of the sessions to use.
+        * **`globalOutput`**: `[list]` = `None` &rarr; The ids of the global outputs to use.
+        * **`groupingLevel`**: `[list]` = `None` &rarr; The ids of the grouping levels to use.
+        * **`lockedLayout`**: `[bool]` = `False` &rarr; Whether or not the layout should be locked.
+        * **`statAggregation`**: `[str]` = `"sum"` &rarr; A stat aggregation function to apply to the chart data.
+            * **Accepted values**:
+                * `"sum"`: Add up aggregated data
+                * `"mean"`: Calculate the mean of the aggregated data
+                * `"min"`: Find the minimum values within the aggregated data
+                * `"max"`: Find the maximum values the aggregated data
+        * **`groupedOutputDataId`**: `[str]` = `None` &rarr; The id of the grouped output data to use.
+        * **`groupedOutputDataId`**: `[str]` = `None` &rarr; The id of the stat to use.
+        * **`showToolbar`**: `[bool]` = `None` &rarr; Whether or not the chart toolbar should be shown.
+            * **Note**: If unspecified (i.e., `None`), its value will be determined by `settings.showToolbar`.
+        * **`maximized`**: `[bool]` = `False` &rarr; Whether or not the layout should be maximized.
+            * **Note**: If more than one chart belonging to the same page layout is set to `True`, the first one found in the list will take precedence.
+
+        [area chart]: https://en.wikipedia.org/wiki/Area_chart
+        [bar chart]: https://en.wikipedia.org/wiki/Bar_chart
+        [box plot chart]: https://en.wikipedia.org/wiki/Box_plot
+        [cumulative line chart]: TODO: Find an example of this
+        [gauge chart]: https://echarts.apache.org/examples/en/index.html#chart-type-gauge
+        [heatmap chart]: https://en.wikipedia.org/wiki/Heat_map
+        [line chart]: https://en.wikipedia.org/wiki/Line_chart
+        [scatter chart]: https://en.wikipedia.org/wiki/Scatter_plot
+        [stacked area chart]: https://en.wikipedia.org/wiki/Area_chart
+        [stacked waterfall chart]: https://en.wikipedia.org/wiki/Waterfall_chart
+        [sunburst chart]: https://en.wikipedia.org/wiki/Pie_chart#Ring_chart,_sunburst_chart,_and_multilevel_pie_chart
+        [table chart]:
+        [treemap chart]: https://en.wikipedia.org/wiki/Treemapping
+        [waterfall chart]: https://en.wikipedia.org/wiki/Waterfall_chart
         """
-        return {"kwargs": kwargs, "accepted_values": {}}
+        if type == "globalOutput":
+            variant_options = ["bar", "line", "table", "overview"]
+        elif type == "groupedOutput":
+            variant_options = [
+                "area",
+                "bar",
+                "box_plot",
+                "cumulative_line",
+                "gauge",
+                "heatmap",
+                "line",
+                "scatter",
+                "stacked_area",
+                "stacked_waterfall",
+                "sunburst",
+                "table",
+                "treemap",
+                "waterfall",
+            ]
+        else:
+            variant_options = []
+        return {
+            "kwargs": kwargs,
+            "accepted_values": {
+                "type": ["groupedOutput", "globalOutput", "map"],
+                "variant": variant_options,
+                "statAggregation": ["sum", "mean", "min", "max"],
+            },
+        }
 
     def __extend_spec__(self, **kwargs):
-        data = self.data.get("data", {})
-        CustomKeyValidator(
-            data=data, log=self.log, prepend_path=["data"], validator=pages_data_star, **kwargs
-        )
-        currentPage = self.data.get("currentPage")
-        if isinstance(currentPage, str):
-            self.__check_subset_valid__(
-                subset=[currentPage], valid_values=list(data.keys()), prepend_path=["currentPage"]
-            )
+        pageLayout_type = self.data.get("type", "groupedOutput")
+        # Validate globalOutput
+        if pageLayout_type == "globalOutput":
+            globalOutput = self.data.get("globalOutput")
+            if globalOutput is not None:
+                self.__check_subset_valid__(
+                    subset=globalOutput,
+                    valid_values=kwargs.get("globalOuputs_validPropIds", []),
+                    prepend_path=["globalOutput"],
+                )
+            elif self.data.get("variant") != "overview":
+                self.__error__(
+                    msg="`globalOutput` is a required key for `globalOutput` type pageLayouts when variant is not `overview`.",
+                    path=["globalOutput"],
+                )
+        # Validate map
+        elif pageLayout_type == "map":
+            mapId = self.data.get("mapId")
+            if mapId is not None:
+                self.__check_subset_valid__(
+                    subset=[mapId],
+                    valid_values=kwargs.get("maps_validMapIds", []),
+                    prepend_path=["mapId"],
+                )
+            else:
+                self.__error__(
+                    msg="`mapId` is required for `map` type pageLayouts.",
+                    prepend_path=["mapId"],
+                )
+        # Validate groupedOutput
+        else:
+            # Validate groupedOutputDataId
+            groupedOutputDataId = self.data.get("groupedOutputDataId")
+            if groupedOutputDataId is not None:
+                self.__check_type__(groupedOutputDataId, str, prepend_path=["groupedOutputDataId"])
+                # Ensure that the groupedOutputDataId is valid
+                self.__check_subset_valid__(
+                    subset=[groupedOutputDataId],
+                    valid_values=list(kwargs.get("groupedOutputs_validGroupIds", {}).keys()),
+                    prepend_path=["groupedOutputDataId"],
+                )
+            # Validate statId
+            statId = self.data.get("statId")
+            if statId is not None:
+                self.__check_type__(statId, str, prepend_path=["statId"])
+                # Ensure that the statId is valid
+                self.__check_subset_valid__(
+                    subset=[statId],
+                    valid_values=list(
+                        kwargs.get("groupedOutputs_validStatIds", {}).get(groupedOutputDataId, [])
+                    ),
+                    prepend_path=["statId"],
+                )
+            # Validate groupingId
+            groupingId = self.data.get("groupingId")
+            if groupingId is not None:
+                self.__check_type__(groupingId, list, prepend_path=["groupingId"])
+                # Ensure that the groupingId is valid
+                self.__check_subset_valid__(
+                    subset=groupingId,
+                    valid_values=list(
+                        kwargs.get("groupedOutputs_validGroupIds", {}).get(groupedOutputDataId, [])
+                    ),
+                    prepend_path=["groupingId"],
+                )
+            # Validate groupingLevel
+            groupingLevel = self.data.get("groupingLevel")
+            if groupingLevel is not None:
+                self.__check_type__(groupingLevel, list, prepend_path=["groupingLevel"])
+                if len(groupingId) != len(groupingLevel):
+                    self.__error__(
+                        msg="`groupingId` and `groupingLevel` must be the same length.",
+                    )
+                    return
+                for idx, groupingId_item in enumerate(groupingId):
+                    groupingLevel_item = groupingLevel[idx]
+                    self.__check_subset_valid__(
+                        subset=[groupingLevel_item],
+                        valid_values=list(
+                            kwargs.get("groupedOutputs_validLevelIds", {}).get(groupingId_item, [])
+                        ),
+                        prepend_path=["groupingLevel", idx],
+                    )

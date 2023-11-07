@@ -1,5 +1,5 @@
 """
-Build out an app bar with buttons to launch pages, launch panes and trigger api commands.
+Create visualizations for your map, including `arc`s, `node`s, and `geo`s, and customize their appearance.
 """
 from cave_utils.api_utils.validator_utils import ApiValidator, CustomKeyValidator
 from cave_utils.api_utils.general import props, valueLists, layout
@@ -13,7 +13,7 @@ class mapFeatures_data_star_data_location(ApiValidator):
         """
         Accepts all arbitrary values.
 
-        The location lists you pass will be validated based on other selections in your api spec.
+        The location lists you pass will be validated based on other selections in your API spec.
 
         # TODO: Add docs here given the extended spec below.
         """
@@ -124,7 +124,7 @@ class mapFeatures_data_star_data(ApiValidator):
     def spec(location:dict, valueLists:dict, **kwargs):
         """
         Required Arguments:
-        
+
         - `location`:
             - Type: dict
             - What: The location lists of the map feature.
@@ -135,7 +135,7 @@ class mapFeatures_data_star_data(ApiValidator):
             - See: `cave_utils.api_utils.general.valueLists`
         """
         return {"kwargs": kwargs, "accepted_values": {}}
-    
+
     def __extend_spec__(self, **kwargs):
         valueLists_data = self.data.get("valueLists", {})
         valueLists(
@@ -158,7 +158,7 @@ class mapFeatures_data_star_data(ApiValidator):
                 msg=f"location and valueLists keys must have the same length.",
                 path = []
             )
-        
+
 
 
 @type_enforced.Enforcer
@@ -171,7 +171,7 @@ class mapFeatures_data_star_geoJson(ApiValidator):
     def spec(geoJsonLayer:str, geoJsonProp:str, **kwargs):
         """
         Required Arguments:
-        
+
         - `geoJsonLayer`:
             - Type: str
             - What: The url of the geoJson layer to use.
@@ -180,7 +180,7 @@ class mapFeatures_data_star_geoJson(ApiValidator):
             - What: The `properties` key (from the object fetched from the geoJsonLayer url) to match with the value at `mapFeatures.data.*.data.location.geoJsonValue.*`.
         """
         return {"kwargs": kwargs, "accepted_values": {}}
-    
+
     def __extend_spec__(self, **kwargs):
         self.__check_url_valid__(url=self.data.get("geoJsonLayer"), prepend_path=["geoJsonLayer"])
 
@@ -195,7 +195,7 @@ class mapFeatures_data_star(ApiValidator):
     def spec(type:str, name:str, props: dict, data:dict, layout:[dict,None]=None, geoJson:[dict,None]=None, **kwargs):
         """
         Required Arguments:
-        
+
         - `type`:
             - Type: str
             - What: The type of the map feature.
@@ -211,7 +211,7 @@ class mapFeatures_data_star(ApiValidator):
             - Type: dict
             - What: The data that will be passed to the props.
             - See: `cave_utils.api_utils.general.values`
-        
+
         Optional Arguments:
 
         - `layout`:

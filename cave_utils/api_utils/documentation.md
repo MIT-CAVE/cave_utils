@@ -2,7 +2,7 @@
 
 This code can be used directly for validation purposes:
 
-```
+```py
 from cave_utils import Validator
 
 session_data = {
@@ -12,7 +12,7 @@ session_data = {
     # All of your session data to validate here
 }
 
-x=Validator(
+x = Validator(
     session_data=session_data,
 )
 

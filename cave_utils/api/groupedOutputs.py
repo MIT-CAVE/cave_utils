@@ -1,5 +1,5 @@
 """
-Create grouped outputs for creating generalized charts and tables.
+Create grouped outputs for building generalized charts and tables.
 """
 from cave_utils.api_utils.validator_utils import ApiValidator, CustomKeyValidator
 from cave_utils.api_utils.general import props, values, layout
@@ -8,9 +8,48 @@ from pamda import pamda
 
 
 @type_enforced.Enforcer
+class groupedOutputs(ApiValidator):
+    """
+    The grouped outputs are located under the path **`groupedOutputs`**.
+    """
+
+    @staticmethod
+    def spec(
+        groupings:dict, data:dict, **kwargs
+    ):
+        """
+        Arguments:
+
+        * **`groupings`**: `[dict]` &rarr; A dictionary of groupings that are available for the data.
+            * **See**: `groupedOutputs.groupings`
+        * **`data`**: `[dict]` &rarr; The data to be grouped.
+            * **See**: `groupedOutputs.data`
+        """
+        return {"kwargs": kwargs, "accepted_values": {}}
+
+    def __extend_spec__(self, **kwargs):
+        groupedOutputs_groupings = self.data.get("groupings", {})
+        CustomKeyValidator(
+            data=groupedOutputs_groupings,
+            log=self.log,
+            prepend_path=["groupings"],
+            validator=groupedOutputs_groupings_star,
+            **kwargs,
+        )
+        groupedOutputs_data = self.data.get("data", {})
+        CustomKeyValidator(
+            data=groupedOutputs_data,
+            log=self.log,
+            prepend_path=["data"],
+            validator=groupedOutputs_data_star,
+            available_groups={k:v.get('data',{}).get('id',[]) for k,v in groupedOutputs_groupings.items()},
+            **kwargs,
+        )
+
+@type_enforced.Enforcer
 class groupedOutputs_groupings_star_data(ApiValidator):
     """
-    ## Api Path: groupedOutputs.groupings.*.data
+    The grouped outputs data is located under the path **`groupedOutputs.groupings.*.data`**.
     """
     @staticmethod
     def spec(
@@ -18,21 +57,15 @@ class groupedOutputs_groupings_star_data(ApiValidator):
         **kwargs
     ):
         """
-        Required Arguments:
+        Arguments:
 
-        - `id`:
-            - Type: list
-            - What: The id of the data to be grouped.
-        
-        Optional Arguments:
-        
-        - `customKeyHere`:
-            - Type: list
-            - What: The names of the data to be grouped for this feature/level.
-            - Note: Each key listed here must be in `groupedOutputs.groupings.*.levels.*`
+        * **`id`**: `[list]` &rarr; The id of the data to be grouped.
+        * **`customKeyHere`**: `[list]` &rarr;
+            * The names of the data to be grouped for this feature/level.
+            * **Note**: Each key listed here must be in `groupedOutputs.groupings.*.levels.*`
         """
         return {"kwargs": {}, "accepted_values": {}}
-    
+
     def __extend_spec__(self, **kwargs):
         keys = list(self.data.keys())
         expected_keys = kwargs.get("acceptable_data_keys", [])+['id']
@@ -57,7 +90,7 @@ class groupedOutputs_groupings_star_data(ApiValidator):
             self.__error__(
                 msg="All values must be lists of the same length.",
             )
-        
+
 
 
 @type_enforced.Enforcer
@@ -94,7 +127,7 @@ class groupedOutputs_groupings_star_levels_star(ApiValidator):
         #     - Note: All items in this list must be defined in `groupedOutputs.groupings.*.levels.*.values.*`
         # """
         return {"kwargs": kwargs, "accepted_values": {}}
-    
+
     def __extend_spec__(self, **kwargs):
         parent = self.data.get("parent")
         if parent is not None:
@@ -107,7 +140,7 @@ class groupedOutputs_groupings_star_levels_star(ApiValidator):
         #     self.__check_subset_valid__(
         #         subset=ordering, valid_values=kwargs.get("acceptable_data_keys", []), prepend_path=["ordering"]
         #     )
-        
+
 
 @type_enforced.Enforcer
 class groupedOutputs_groupings_star(ApiValidator):
@@ -133,9 +166,9 @@ class groupedOutputs_groupings_star(ApiValidator):
         - `name`:
             - Type: str
             - What: The name of the grouping.
-        
+
         Optional Arguments:
-        
+
         - `layoutDirection`:
             - Type: str
             - What: The direction of the grouping levels in the layout.
@@ -243,7 +276,7 @@ class groupedOutputs_data_star_valueLists(ApiValidator):
         Each value must be a list of integers or floats.
         """
         return {"kwargs": {}, "accepted_values": {}}
-    
+
     def __extend_spec__(self, **kwargs):
         for key, value in self.data.items():
             self.__check_type_list__(data=value, types=(int, float), prepend_path=[key])
@@ -252,7 +285,7 @@ class groupedOutputs_data_star_valueLists(ApiValidator):
 @type_enforced.Enforcer
 class groupedOutputs_data_star(ApiValidator):
     """
-    ## Api Path: groupedOutputs.data.*
+    The grouped outputs data is located under the path **`groupedOutputs.data.*`**.
     """
 
     @staticmethod
@@ -260,20 +293,14 @@ class groupedOutputs_data_star(ApiValidator):
         stats:dict, valueLists:dict, groupLists:dict, **kwargs
     ):
         """
-        Required Arguments:
+        Arguments:
 
-        - `stats`:
-            - Type: dict
-            - What: A dictionary of stats that are available for the data.
-            - See: `cave_utils.api.groupedOutputs.groupedOutputs_data_star_stats`
-        - `valueLists`:
-            - Type: dict
-            - What: A dictionary of lists that make up the stats for the data.
-            - TODO: Flesh out this description
-        - `groupLists`:
-            - Type: dict
-            - What: A dictionary of lists that make up the groupings for the data.
-            - TODO: Flesh out this description
+        * **`stats`**: `[dict]` &rarr; A dictionary of stats that are available for the data.
+            * **See**: `cave_utils.api.groupedOutputs.groupedOutputs_data_star_stats`
+        **`valueLists`**: `[dict]` &rarr; A dictionary of lists that make up the stats for the data.
+            * TODO: Flesh out this description
+        **`groupLists`**: `[dict]` &rarr; A dictionary of lists that make up the groupings for the data.
+            * TODO: Flesh out this description
         """
         return {"kwargs": kwargs, "accepted_values": {}}
 
@@ -297,7 +324,7 @@ class groupedOutputs_data_star(ApiValidator):
             list_lengths.append(len(value))
             self.__check_type_list__(data=value, types=(int, float), prepend_path=["valueLists", key])
         # Ensure Valid Group Lists
-        available_groups = kwargs.get("available_groups", {}) 
+        available_groups = kwargs.get("available_groups", {})
         groupLists_data = self.data.get("groupLists", {})
         self.__check_subset_valid__(
             subset=list(groupLists_data.keys()), valid_values=list(available_groups.keys()) , prepend_path=["groupLists"]
@@ -319,48 +346,5 @@ class groupedOutputs_data_star(ApiValidator):
             self.__error__(
                 msg="All values in groupedOutputs.data.*.groupLists and groupedOutputs.data.*.valueLists must be lists of the same length.",
             )
-        
 
-@type_enforced.Enforcer
-class groupedOutputs(ApiValidator):
-    """
-    ## Api Path: groupedOutputs
-    """
 
-    @staticmethod
-    def spec(
-        groupings:dict, data:dict, **kwargs
-    ):
-        """
-        Required Arguments:
-
-        - `groupings`:
-            - Type: dict
-            - What: A dictionary of groupings that are available for the data.
-            - See: `groupedOutputs.groupings`
-        - `data`:
-            - Type: dict
-            - What: The data to be grouped.
-            - See: `groupedOutputs.data`
-
-        """
-        return {"kwargs": kwargs, "accepted_values": {}}
-
-    def __extend_spec__(self, **kwargs):
-        groupedOutputs_groupings = self.data.get("groupings", {})
-        CustomKeyValidator(
-            data=groupedOutputs_groupings,
-            log=self.log,
-            prepend_path=["groupings"],
-            validator=groupedOutputs_groupings_star,
-            **kwargs,
-        )
-        groupedOutputs_data = self.data.get("data", {})
-        CustomKeyValidator(
-            data=groupedOutputs_data,
-            log=self.log,
-            prepend_path=["data"],
-            validator=groupedOutputs_data_star,
-            available_groups={k:v.get('data',{}).get('id',[]) for k,v in groupedOutputs_groupings.items()},
-            **kwargs,
-        )

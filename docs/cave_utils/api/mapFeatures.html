@@ -22,7 +22,7 @@
   <path fill-rule="evenodd" d="M4.146 8.354a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H14.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3z"/>
 </svg>                &nbsp;cave_utils.api</a>
 
-<a href="https://cave.mit.edu">            <img src="https://cave.mit.edu/wp-content/uploads/2022/12/MIT-CTL-CAVE-logo@4x.png" class="logo" alt="project logo"/>
+<a href="https://github.com/MIT-CAVE/cave_app">            <img src="https://cave.mit.edu/wp-content/uploads/2022/12/MIT-CTL-CAVE-logo@4x.png" class="logo" alt="project logo"/>
 </a>
             <input type="search" placeholder="Search..." role="searchbox" aria-label="search"
                    pattern=".+" required>
@@ -92,7 +92,7 @@
                     <h1 class="modulename">
 <a href="./../../cave_utils.html">cave_utils</a><wbr>.<a href="./../api.html">api</a><wbr>.mapFeatures    </h1>
 
-                        <div class="docstring"><p>Build out an app bar with buttons to launch pages, launch panes and trigger api commands.</p>
+                        <div class="docstring"><p>Create visualizations for your map, including <code>arc</code>s, <code>node</code>s, and <code>geo</code>s, and customize their appearance.</p>
 </div>
 
                         <input id="mod-mapFeatures-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
@@ -100,7 +100,7 @@
                         <label class="view-source-button" for="mod-mapFeatures-view-source"><span>View Source</span></label>
 
                         <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos">  1</span></a><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-2"><a href="#L-2"><span class="linenos">  2</span></a><span class="sd">Build out an app bar with buttons to launch pages, launch panes and trigger api commands.</span>
+</span><span id="L-2"><a href="#L-2"><span class="linenos">  2</span></a><span class="sd">Create visualizations for your map, including `arc`s, `node`s, and `geo`s, and customize their appearance.</span>
 </span><span id="L-3"><a href="#L-3"><span class="linenos">  3</span></a><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="L-4"><a href="#L-4"><span class="linenos">  4</span></a><span class="kn">from</span> <span class="nn">cave_utils.api_utils.validator_utils</span> <span class="kn">import</span> <span class="n">ApiValidator</span><span class="p">,</span> <span class="n">CustomKeyValidator</span>
 </span><span id="L-5"><a href="#L-5"><span class="linenos">  5</span></a><span class="kn">from</span> <span class="nn">cave_utils.api_utils.general</span> <span class="kn">import</span> <span class="n">props</span><span class="p">,</span> <span class="n">valueLists</span><span class="p">,</span> <span class="n">layout</span>
@@ -114,7 +114,7 @@
 </span><span id="L-13"><a href="#L-13"><span class="linenos"> 13</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="L-14"><a href="#L-14"><span class="linenos"> 14</span></a><span class="sd">        Accepts all arbitrary values.</span>
 </span><span id="L-15"><a href="#L-15"><span class="linenos"> 15</span></a>
-</span><span id="L-16"><a href="#L-16"><span class="linenos"> 16</span></a><span class="sd">        The location lists you pass will be validated based on other selections in your api spec.</span>
+</span><span id="L-16"><a href="#L-16"><span class="linenos"> 16</span></a><span class="sd">        The location lists you pass will be validated based on other selections in your API spec.</span>
 </span><span id="L-17"><a href="#L-17"><span class="linenos"> 17</span></a>
 </span><span id="L-18"><a href="#L-18"><span class="linenos"> 18</span></a><span class="sd">        # TODO: Add docs here given the extended spec below.</span>
 </span><span id="L-19"><a href="#L-19"><span class="linenos"> 19</span></a><span class="sd">        &quot;&quot;&quot;</span>
@@ -225,7 +225,7 @@
 </span><span id="L-124"><a href="#L-124"><span class="linenos">124</span></a>    <span class="k">def</span> <span class="nf">spec</span><span class="p">(</span><span class="n">location</span><span class="p">:</span><span class="nb">dict</span><span class="p">,</span> <span class="n">valueLists</span><span class="p">:</span><span class="nb">dict</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 </span><span id="L-125"><a href="#L-125"><span class="linenos">125</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="L-126"><a href="#L-126"><span class="linenos">126</span></a><span class="sd">        Required Arguments:</span>
-</span><span id="L-127"><a href="#L-127"><span class="linenos">127</span></a><span class="sd">        </span>
+</span><span id="L-127"><a href="#L-127"><span class="linenos">127</span></a>
 </span><span id="L-128"><a href="#L-128"><span class="linenos">128</span></a><span class="sd">        - `location`:</span>
 </span><span id="L-129"><a href="#L-129"><span class="linenos">129</span></a><span class="sd">            - Type: dict</span>
 </span><span id="L-130"><a href="#L-130"><span class="linenos">130</span></a><span class="sd">            - What: The location lists of the map feature.</span>
@@ -236,7 +236,7 @@
 </span><span id="L-135"><a href="#L-135"><span class="linenos">135</span></a><span class="sd">            - See: `cave_utils.api_utils.general.valueLists`</span>
 </span><span id="L-136"><a href="#L-136"><span class="linenos">136</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="L-137"><a href="#L-137"><span class="linenos">137</span></a>        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;kwargs&quot;</span><span class="p">:</span> <span class="n">kwargs</span><span class="p">,</span> <span class="s2">&quot;accepted_values&quot;</span><span class="p">:</span> <span class="p">{}}</span>
-</span><span id="L-138"><a href="#L-138"><span class="linenos">138</span></a>    
+</span><span id="L-138"><a href="#L-138"><span class="linenos">138</span></a>
 </span><span id="L-139"><a href="#L-139"><span class="linenos">139</span></a>    <span class="k">def</span> <span class="nf">__extend_spec__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 </span><span id="L-140"><a href="#L-140"><span class="linenos">140</span></a>        <span class="n">valueLists_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;valueLists&quot;</span><span class="p">,</span> <span class="p">{})</span>
 </span><span id="L-141"><a href="#L-141"><span class="linenos">141</span></a>        <span class="n">valueLists</span><span class="p">(</span>
@@ -259,7 +259,7 @@
 </span><span id="L-158"><a href="#L-158"><span class="linenos">158</span></a>                <span class="n">msg</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;location and valueLists keys must have the same length.&quot;</span><span class="p">,</span>
 </span><span id="L-159"><a href="#L-159"><span class="linenos">159</span></a>                <span class="n">path</span> <span class="o">=</span> <span class="p">[]</span>
 </span><span id="L-160"><a href="#L-160"><span class="linenos">160</span></a>            <span class="p">)</span>
-</span><span id="L-161"><a href="#L-161"><span class="linenos">161</span></a>        
+</span><span id="L-161"><a href="#L-161"><span class="linenos">161</span></a>
 </span><span id="L-162"><a href="#L-162"><span class="linenos">162</span></a>
 </span><span id="L-163"><a href="#L-163"><span class="linenos">163</span></a>
 </span><span id="L-164"><a href="#L-164"><span class="linenos">164</span></a><span class="nd">@type_enforced</span><span class="o">.</span><span class="n">Enforcer</span>
@@ -272,7 +272,7 @@
 </span><span id="L-171"><a href="#L-171"><span class="linenos">171</span></a>    <span class="k">def</span> <span class="nf">spec</span><span class="p">(</span><span class="n">geoJsonLayer</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">geoJsonProp</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 </span><span id="L-172"><a href="#L-172"><span class="linenos">172</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="L-173"><a href="#L-173"><span class="linenos">173</span></a><span class="sd">        Required Arguments:</span>
-</span><span id="L-174"><a href="#L-174"><span class="linenos">174</span></a><span class="sd">        </span>
+</span><span id="L-174"><a href="#L-174"><span class="linenos">174</span></a>
 </span><span id="L-175"><a href="#L-175"><span class="linenos">175</span></a><span class="sd">        - `geoJsonLayer`:</span>
 </span><span id="L-176"><a href="#L-176"><span class="linenos">176</span></a><span class="sd">            - Type: str</span>
 </span><span id="L-177"><a href="#L-177"><span class="linenos">177</span></a><span class="sd">            - What: The url of the geoJson layer to use.</span>
@@ -281,7 +281,7 @@
 </span><span id="L-180"><a href="#L-180"><span class="linenos">180</span></a><span class="sd">            - What: The `properties` key (from the object fetched from the geoJsonLayer url) to match with the value at `mapFeatures.data.*.data.location.geoJsonValue.*`.</span>
 </span><span id="L-181"><a href="#L-181"><span class="linenos">181</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="L-182"><a href="#L-182"><span class="linenos">182</span></a>        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;kwargs&quot;</span><span class="p">:</span> <span class="n">kwargs</span><span class="p">,</span> <span class="s2">&quot;accepted_values&quot;</span><span class="p">:</span> <span class="p">{}}</span>
-</span><span id="L-183"><a href="#L-183"><span class="linenos">183</span></a>    
+</span><span id="L-183"><a href="#L-183"><span class="linenos">183</span></a>
 </span><span id="L-184"><a href="#L-184"><span class="linenos">184</span></a>    <span class="k">def</span> <span class="nf">__extend_spec__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 </span><span id="L-185"><a href="#L-185"><span class="linenos">185</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__check_url_valid__</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;geoJsonLayer&quot;</span><span class="p">),</span> <span class="n">prepend_path</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;geoJsonLayer&quot;</span><span class="p">])</span>
 </span><span id="L-186"><a href="#L-186"><span class="linenos">186</span></a>
@@ -296,7 +296,7 @@
 </span><span id="L-195"><a href="#L-195"><span class="linenos">195</span></a>    <span class="k">def</span> <span class="nf">spec</span><span class="p">(</span><span class="nb">type</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">props</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span><span class="nb">dict</span><span class="p">,</span> <span class="n">layout</span><span class="p">:[</span><span class="nb">dict</span><span class="p">,</span><span class="kc">None</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">geoJson</span><span class="p">:[</span><span class="nb">dict</span><span class="p">,</span><span class="kc">None</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 </span><span id="L-196"><a href="#L-196"><span class="linenos">196</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="L-197"><a href="#L-197"><span class="linenos">197</span></a><span class="sd">        Required Arguments:</span>
-</span><span id="L-198"><a href="#L-198"><span class="linenos">198</span></a><span class="sd">        </span>
+</span><span id="L-198"><a href="#L-198"><span class="linenos">198</span></a>
 </span><span id="L-199"><a href="#L-199"><span class="linenos">199</span></a><span class="sd">        - `type`:</span>
 </span><span id="L-200"><a href="#L-200"><span class="linenos">200</span></a><span class="sd">            - Type: str</span>
 </span><span id="L-201"><a href="#L-201"><span class="linenos">201</span></a><span class="sd">            - What: The type of the map feature.</span>
@@ -312,7 +312,7 @@
 </span><span id="L-211"><a href="#L-211"><span class="linenos">211</span></a><span class="sd">            - Type: dict</span>
 </span><span id="L-212"><a href="#L-212"><span class="linenos">212</span></a><span class="sd">            - What: The data that will be passed to the props.</span>
 </span><span id="L-213"><a href="#L-213"><span class="linenos">213</span></a><span class="sd">            - See: `cave_utils.api_utils.general.values`</span>
-</span><span id="L-214"><a href="#L-214"><span class="linenos">214</span></a><span class="sd">        </span>
+</span><span id="L-214"><a href="#L-214"><span class="linenos">214</span></a>
 </span><span id="L-215"><a href="#L-215"><span class="linenos">215</span></a><span class="sd">        Optional Arguments:</span>
 </span><span id="L-216"><a href="#L-216"><span class="linenos">216</span></a>
 </span><span id="L-217"><a href="#L-217"><span class="linenos">217</span></a><span class="sd">        - `layout`:</span>
@@ -422,7 +422,7 @@
 </span><span id="mapFeatures_data_star_data_location-14"><a href="#mapFeatures_data_star_data_location-14"><span class="linenos"> 14</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="mapFeatures_data_star_data_location-15"><a href="#mapFeatures_data_star_data_location-15"><span class="linenos"> 15</span></a><span class="sd">        Accepts all arbitrary values.</span>
 </span><span id="mapFeatures_data_star_data_location-16"><a href="#mapFeatures_data_star_data_location-16"><span class="linenos"> 16</span></a>
-</span><span id="mapFeatures_data_star_data_location-17"><a href="#mapFeatures_data_star_data_location-17"><span class="linenos"> 17</span></a><span class="sd">        The location lists you pass will be validated based on other selections in your api spec.</span>
+</span><span id="mapFeatures_data_star_data_location-17"><a href="#mapFeatures_data_star_data_location-17"><span class="linenos"> 17</span></a><span class="sd">        The location lists you pass will be validated based on other selections in your API spec.</span>
 </span><span id="mapFeatures_data_star_data_location-18"><a href="#mapFeatures_data_star_data_location-18"><span class="linenos"> 18</span></a>
 </span><span id="mapFeatures_data_star_data_location-19"><a href="#mapFeatures_data_star_data_location-19"><span class="linenos"> 19</span></a><span class="sd">        # TODO: Add docs here given the extended spec below.</span>
 </span><span id="mapFeatures_data_star_data_location-20"><a href="#mapFeatures_data_star_data_location-20"><span class="linenos"> 20</span></a><span class="sd">        &quot;&quot;&quot;</span>
@@ -544,7 +544,7 @@
 </span><span id="mapFeatures_data_star_data_location.spec-14"><a href="#mapFeatures_data_star_data_location.spec-14"><span class="linenos">14</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="mapFeatures_data_star_data_location.spec-15"><a href="#mapFeatures_data_star_data_location.spec-15"><span class="linenos">15</span></a><span class="sd">        Accepts all arbitrary values.</span>
 </span><span id="mapFeatures_data_star_data_location.spec-16"><a href="#mapFeatures_data_star_data_location.spec-16"><span class="linenos">16</span></a>
-</span><span id="mapFeatures_data_star_data_location.spec-17"><a href="#mapFeatures_data_star_data_location.spec-17"><span class="linenos">17</span></a><span class="sd">        The location lists you pass will be validated based on other selections in your api spec.</span>
+</span><span id="mapFeatures_data_star_data_location.spec-17"><a href="#mapFeatures_data_star_data_location.spec-17"><span class="linenos">17</span></a><span class="sd">        The location lists you pass will be validated based on other selections in your API spec.</span>
 </span><span id="mapFeatures_data_star_data_location.spec-18"><a href="#mapFeatures_data_star_data_location.spec-18"><span class="linenos">18</span></a>
 </span><span id="mapFeatures_data_star_data_location.spec-19"><a href="#mapFeatures_data_star_data_location.spec-19"><span class="linenos">19</span></a><span class="sd">        # TODO: Add docs here given the extended spec below.</span>
 </span><span id="mapFeatures_data_star_data_location.spec-20"><a href="#mapFeatures_data_star_data_location.spec-20"><span class="linenos">20</span></a><span class="sd">        &quot;&quot;&quot;</span>
@@ -557,7 +557,7 @@
 
             <div class="docstring"><p>Accepts all arbitrary values.</p>
 
-<p>The location lists you pass will be validated based on other selections in your api spec.</p>
+<p>The location lists you pass will be validated based on other selections in your API spec.</p>
 
 <h1 id="todo-add-docs-here-given-the-extended-spec-below">TODO: Add docs here given the extended spec below.</h1>
 </div>
@@ -595,7 +595,7 @@
 </span><span id="mapFeatures_data_star_data-125"><a href="#mapFeatures_data_star_data-125"><span class="linenos">125</span></a>    <span class="k">def</span> <span class="nf">spec</span><span class="p">(</span><span class="n">location</span><span class="p">:</span><span class="nb">dict</span><span class="p">,</span> <span class="n">valueLists</span><span class="p">:</span><span class="nb">dict</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 </span><span id="mapFeatures_data_star_data-126"><a href="#mapFeatures_data_star_data-126"><span class="linenos">126</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="mapFeatures_data_star_data-127"><a href="#mapFeatures_data_star_data-127"><span class="linenos">127</span></a><span class="sd">        Required Arguments:</span>
-</span><span id="mapFeatures_data_star_data-128"><a href="#mapFeatures_data_star_data-128"><span class="linenos">128</span></a><span class="sd">        </span>
+</span><span id="mapFeatures_data_star_data-128"><a href="#mapFeatures_data_star_data-128"><span class="linenos">128</span></a>
 </span><span id="mapFeatures_data_star_data-129"><a href="#mapFeatures_data_star_data-129"><span class="linenos">129</span></a><span class="sd">        - `location`:</span>
 </span><span id="mapFeatures_data_star_data-130"><a href="#mapFeatures_data_star_data-130"><span class="linenos">130</span></a><span class="sd">            - Type: dict</span>
 </span><span id="mapFeatures_data_star_data-131"><a href="#mapFeatures_data_star_data-131"><span class="linenos">131</span></a><span class="sd">            - What: The location lists of the map feature.</span>
@@ -606,7 +606,7 @@
 </span><span id="mapFeatures_data_star_data-136"><a href="#mapFeatures_data_star_data-136"><span class="linenos">136</span></a><span class="sd">            - See: `cave_utils.api_utils.general.valueLists`</span>
 </span><span id="mapFeatures_data_star_data-137"><a href="#mapFeatures_data_star_data-137"><span class="linenos">137</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="mapFeatures_data_star_data-138"><a href="#mapFeatures_data_star_data-138"><span class="linenos">138</span></a>        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;kwargs&quot;</span><span class="p">:</span> <span class="n">kwargs</span><span class="p">,</span> <span class="s2">&quot;accepted_values&quot;</span><span class="p">:</span> <span class="p">{}}</span>
-</span><span id="mapFeatures_data_star_data-139"><a href="#mapFeatures_data_star_data-139"><span class="linenos">139</span></a>    
+</span><span id="mapFeatures_data_star_data-139"><a href="#mapFeatures_data_star_data-139"><span class="linenos">139</span></a>
 </span><span id="mapFeatures_data_star_data-140"><a href="#mapFeatures_data_star_data-140"><span class="linenos">140</span></a>    <span class="k">def</span> <span class="nf">__extend_spec__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 </span><span id="mapFeatures_data_star_data-141"><a href="#mapFeatures_data_star_data-141"><span class="linenos">141</span></a>        <span class="n">valueLists_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;valueLists&quot;</span><span class="p">,</span> <span class="p">{})</span>
 </span><span id="mapFeatures_data_star_data-142"><a href="#mapFeatures_data_star_data-142"><span class="linenos">142</span></a>        <span class="n">valueLists</span><span class="p">(</span>
@@ -652,7 +652,7 @@
 </span><span id="mapFeatures_data_star_data.spec-125"><a href="#mapFeatures_data_star_data.spec-125"><span class="linenos">125</span></a>    <span class="k">def</span> <span class="nf">spec</span><span class="p">(</span><span class="n">location</span><span class="p">:</span><span class="nb">dict</span><span class="p">,</span> <span class="n">valueLists</span><span class="p">:</span><span class="nb">dict</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 </span><span id="mapFeatures_data_star_data.spec-126"><a href="#mapFeatures_data_star_data.spec-126"><span class="linenos">126</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="mapFeatures_data_star_data.spec-127"><a href="#mapFeatures_data_star_data.spec-127"><span class="linenos">127</span></a><span class="sd">        Required Arguments:</span>
-</span><span id="mapFeatures_data_star_data.spec-128"><a href="#mapFeatures_data_star_data.spec-128"><span class="linenos">128</span></a><span class="sd">        </span>
+</span><span id="mapFeatures_data_star_data.spec-128"><a href="#mapFeatures_data_star_data.spec-128"><span class="linenos">128</span></a>
 </span><span id="mapFeatures_data_star_data.spec-129"><a href="#mapFeatures_data_star_data.spec-129"><span class="linenos">129</span></a><span class="sd">        - `location`:</span>
 </span><span id="mapFeatures_data_star_data.spec-130"><a href="#mapFeatures_data_star_data.spec-130"><span class="linenos">130</span></a><span class="sd">            - Type: dict</span>
 </span><span id="mapFeatures_data_star_data.spec-131"><a href="#mapFeatures_data_star_data.spec-131"><span class="linenos">131</span></a><span class="sd">            - What: The location lists of the map feature.</span>
@@ -718,7 +718,7 @@
 </span><span id="mapFeatures_data_star_geoJson-172"><a href="#mapFeatures_data_star_geoJson-172"><span class="linenos">172</span></a>    <span class="k">def</span> <span class="nf">spec</span><span class="p">(</span><span class="n">geoJsonLayer</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">geoJsonProp</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 </span><span id="mapFeatures_data_star_geoJson-173"><a href="#mapFeatures_data_star_geoJson-173"><span class="linenos">173</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="mapFeatures_data_star_geoJson-174"><a href="#mapFeatures_data_star_geoJson-174"><span class="linenos">174</span></a><span class="sd">        Required Arguments:</span>
-</span><span id="mapFeatures_data_star_geoJson-175"><a href="#mapFeatures_data_star_geoJson-175"><span class="linenos">175</span></a><span class="sd">        </span>
+</span><span id="mapFeatures_data_star_geoJson-175"><a href="#mapFeatures_data_star_geoJson-175"><span class="linenos">175</span></a>
 </span><span id="mapFeatures_data_star_geoJson-176"><a href="#mapFeatures_data_star_geoJson-176"><span class="linenos">176</span></a><span class="sd">        - `geoJsonLayer`:</span>
 </span><span id="mapFeatures_data_star_geoJson-177"><a href="#mapFeatures_data_star_geoJson-177"><span class="linenos">177</span></a><span class="sd">            - Type: str</span>
 </span><span id="mapFeatures_data_star_geoJson-178"><a href="#mapFeatures_data_star_geoJson-178"><span class="linenos">178</span></a><span class="sd">            - What: The url of the geoJson layer to use.</span>
@@ -727,7 +727,7 @@
 </span><span id="mapFeatures_data_star_geoJson-181"><a href="#mapFeatures_data_star_geoJson-181"><span class="linenos">181</span></a><span class="sd">            - What: The `properties` key (from the object fetched from the geoJsonLayer url) to match with the value at `mapFeatures.data.*.data.location.geoJsonValue.*`.</span>
 </span><span id="mapFeatures_data_star_geoJson-182"><a href="#mapFeatures_data_star_geoJson-182"><span class="linenos">182</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="mapFeatures_data_star_geoJson-183"><a href="#mapFeatures_data_star_geoJson-183"><span class="linenos">183</span></a>        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;kwargs&quot;</span><span class="p">:</span> <span class="n">kwargs</span><span class="p">,</span> <span class="s2">&quot;accepted_values&quot;</span><span class="p">:</span> <span class="p">{}}</span>
-</span><span id="mapFeatures_data_star_geoJson-184"><a href="#mapFeatures_data_star_geoJson-184"><span class="linenos">184</span></a>    
+</span><span id="mapFeatures_data_star_geoJson-184"><a href="#mapFeatures_data_star_geoJson-184"><span class="linenos">184</span></a>
 </span><span id="mapFeatures_data_star_geoJson-185"><a href="#mapFeatures_data_star_geoJson-185"><span class="linenos">185</span></a>    <span class="k">def</span> <span class="nf">__extend_spec__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 </span><span id="mapFeatures_data_star_geoJson-186"><a href="#mapFeatures_data_star_geoJson-186"><span class="linenos">186</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__check_url_valid__</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;geoJsonLayer&quot;</span><span class="p">),</span> <span class="n">prepend_path</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;geoJsonLayer&quot;</span><span class="p">])</span>
 </span></pre></div>
@@ -753,7 +753,7 @@
 </span><span id="mapFeatures_data_star_geoJson.spec-172"><a href="#mapFeatures_data_star_geoJson.spec-172"><span class="linenos">172</span></a>    <span class="k">def</span> <span class="nf">spec</span><span class="p">(</span><span class="n">geoJsonLayer</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">geoJsonProp</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 </span><span id="mapFeatures_data_star_geoJson.spec-173"><a href="#mapFeatures_data_star_geoJson.spec-173"><span class="linenos">173</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="mapFeatures_data_star_geoJson.spec-174"><a href="#mapFeatures_data_star_geoJson.spec-174"><span class="linenos">174</span></a><span class="sd">        Required Arguments:</span>
-</span><span id="mapFeatures_data_star_geoJson.spec-175"><a href="#mapFeatures_data_star_geoJson.spec-175"><span class="linenos">175</span></a><span class="sd">        </span>
+</span><span id="mapFeatures_data_star_geoJson.spec-175"><a href="#mapFeatures_data_star_geoJson.spec-175"><span class="linenos">175</span></a>
 </span><span id="mapFeatures_data_star_geoJson.spec-176"><a href="#mapFeatures_data_star_geoJson.spec-176"><span class="linenos">176</span></a><span class="sd">        - `geoJsonLayer`:</span>
 </span><span id="mapFeatures_data_star_geoJson.spec-177"><a href="#mapFeatures_data_star_geoJson.spec-177"><span class="linenos">177</span></a><span class="sd">            - Type: str</span>
 </span><span id="mapFeatures_data_star_geoJson.spec-178"><a href="#mapFeatures_data_star_geoJson.spec-178"><span class="linenos">178</span></a><span class="sd">            - What: The url of the geoJson layer to use.</span>
@@ -815,7 +815,7 @@
 </span><span id="mapFeatures_data_star-196"><a href="#mapFeatures_data_star-196"><span class="linenos">196</span></a>    <span class="k">def</span> <span class="nf">spec</span><span class="p">(</span><span class="nb">type</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">props</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span><span class="nb">dict</span><span class="p">,</span> <span class="n">layout</span><span class="p">:[</span><span class="nb">dict</span><span class="p">,</span><span class="kc">None</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">geoJson</span><span class="p">:[</span><span class="nb">dict</span><span class="p">,</span><span class="kc">None</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 </span><span id="mapFeatures_data_star-197"><a href="#mapFeatures_data_star-197"><span class="linenos">197</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="mapFeatures_data_star-198"><a href="#mapFeatures_data_star-198"><span class="linenos">198</span></a><span class="sd">        Required Arguments:</span>
-</span><span id="mapFeatures_data_star-199"><a href="#mapFeatures_data_star-199"><span class="linenos">199</span></a><span class="sd">        </span>
+</span><span id="mapFeatures_data_star-199"><a href="#mapFeatures_data_star-199"><span class="linenos">199</span></a>
 </span><span id="mapFeatures_data_star-200"><a href="#mapFeatures_data_star-200"><span class="linenos">200</span></a><span class="sd">        - `type`:</span>
 </span><span id="mapFeatures_data_star-201"><a href="#mapFeatures_data_star-201"><span class="linenos">201</span></a><span class="sd">            - Type: str</span>
 </span><span id="mapFeatures_data_star-202"><a href="#mapFeatures_data_star-202"><span class="linenos">202</span></a><span class="sd">            - What: The type of the map feature.</span>
@@ -831,7 +831,7 @@
 </span><span id="mapFeatures_data_star-212"><a href="#mapFeatures_data_star-212"><span class="linenos">212</span></a><span class="sd">            - Type: dict</span>
 </span><span id="mapFeatures_data_star-213"><a href="#mapFeatures_data_star-213"><span class="linenos">213</span></a><span class="sd">            - What: The data that will be passed to the props.</span>
 </span><span id="mapFeatures_data_star-214"><a href="#mapFeatures_data_star-214"><span class="linenos">214</span></a><span class="sd">            - See: `cave_utils.api_utils.general.values`</span>
-</span><span id="mapFeatures_data_star-215"><a href="#mapFeatures_data_star-215"><span class="linenos">215</span></a><span class="sd">        </span>
+</span><span id="mapFeatures_data_star-215"><a href="#mapFeatures_data_star-215"><span class="linenos">215</span></a>
 </span><span id="mapFeatures_data_star-216"><a href="#mapFeatures_data_star-216"><span class="linenos">216</span></a><span class="sd">        Optional Arguments:</span>
 </span><span id="mapFeatures_data_star-217"><a href="#mapFeatures_data_star-217"><span class="linenos">217</span></a>
 </span><span id="mapFeatures_data_star-218"><a href="#mapFeatures_data_star-218"><span class="linenos">218</span></a><span class="sd">        - `layout`:</span>
@@ -918,7 +918,7 @@
 </span><span id="mapFeatures_data_star.spec-196"><a href="#mapFeatures_data_star.spec-196"><span class="linenos">196</span></a>    <span class="k">def</span> <span class="nf">spec</span><span class="p">(</span><span class="nb">type</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">props</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span><span class="nb">dict</span><span class="p">,</span> <span class="n">layout</span><span class="p">:[</span><span class="nb">dict</span><span class="p">,</span><span class="kc">None</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">geoJson</span><span class="p">:[</span><span class="nb">dict</span><span class="p">,</span><span class="kc">None</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 </span><span id="mapFeatures_data_star.spec-197"><a href="#mapFeatures_data_star.spec-197"><span class="linenos">197</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="mapFeatures_data_star.spec-198"><a href="#mapFeatures_data_star.spec-198"><span class="linenos">198</span></a><span class="sd">        Required Arguments:</span>
-</span><span id="mapFeatures_data_star.spec-199"><a href="#mapFeatures_data_star.spec-199"><span class="linenos">199</span></a><span class="sd">        </span>
+</span><span id="mapFeatures_data_star.spec-199"><a href="#mapFeatures_data_star.spec-199"><span class="linenos">199</span></a>
 </span><span id="mapFeatures_data_star.spec-200"><a href="#mapFeatures_data_star.spec-200"><span class="linenos">200</span></a><span class="sd">        - `type`:</span>
 </span><span id="mapFeatures_data_star.spec-201"><a href="#mapFeatures_data_star.spec-201"><span class="linenos">201</span></a><span class="sd">            - Type: str</span>
 </span><span id="mapFeatures_data_star.spec-202"><a href="#mapFeatures_data_star.spec-202"><span class="linenos">202</span></a><span class="sd">            - What: The type of the map feature.</span>
@@ -934,7 +934,7 @@
 </span><span id="mapFeatures_data_star.spec-212"><a href="#mapFeatures_data_star.spec-212"><span class="linenos">212</span></a><span class="sd">            - Type: dict</span>
 </span><span id="mapFeatures_data_star.spec-213"><a href="#mapFeatures_data_star.spec-213"><span class="linenos">213</span></a><span class="sd">            - What: The data that will be passed to the props.</span>
 </span><span id="mapFeatures_data_star.spec-214"><a href="#mapFeatures_data_star.spec-214"><span class="linenos">214</span></a><span class="sd">            - See: `cave_utils.api_utils.general.values`</span>
-</span><span id="mapFeatures_data_star.spec-215"><a href="#mapFeatures_data_star.spec-215"><span class="linenos">215</span></a><span class="sd">        </span>
+</span><span id="mapFeatures_data_star.spec-215"><a href="#mapFeatures_data_star.spec-215"><span class="linenos">215</span></a>
 </span><span id="mapFeatures_data_star.spec-216"><a href="#mapFeatures_data_star.spec-216"><span class="linenos">216</span></a><span class="sd">        Optional Arguments:</span>
 </span><span id="mapFeatures_data_star.spec-217"><a href="#mapFeatures_data_star.spec-217"><span class="linenos">217</span></a>
 </span><span id="mapFeatures_data_star.spec-218"><a href="#mapFeatures_data_star.spec-218"><span class="linenos">218</span></a><span class="sd">        - `layout`:</span>

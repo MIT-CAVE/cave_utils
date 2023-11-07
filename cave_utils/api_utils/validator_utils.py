@@ -13,7 +13,7 @@ class ApiValidator:
 
     def spec(self, **kwargs):
         """
-        The default spec method.
+        The default `spec` method.
 
         This provides a baseline spec for some utility validators.
 
@@ -26,7 +26,7 @@ class ApiValidator:
 
     def __validate__(self, data, log: LogObject, prepend_path: list = list(), **kwargs):
         """
-        Run the api validation process for the passed data.
+        Run the API validation process for the passed data.
         """
         self.data = data
         self.ignore_keys = kwargs.get("ignore_keys", set())
@@ -68,7 +68,7 @@ class ApiValidator:
         except Exception as e:
             self.__error__(
                 path=[],
-                msg=f"Extended spec validations failed (likely due to another error with your api data). Error: {e}",
+                msg=f"Extended spec validations failed (likely due to another error with your API data). Error: {e}",
             )
 
     # Placeholder method for additional validations
@@ -213,7 +213,7 @@ class ApiValidator:
                 )
                 return False
         return True
-    
+
     def __check_type_dict__(self, data: dict, types: tuple, prepend_path: list = list()):
         """
         Validate a dict only contains certain object types for values and if an issue is present, log an error

@@ -1,6 +1,6 @@
-"""
-Create global outputs for that allow for simple charts and tables. 
-These outputs should be general to the entire application and can be compared across sessions.
+"""Create outputs that allow for simple charts and tables to present some totalization or global outcome of the data.
+
+These outputs should be general to the entire application and they can be compared across sessions.
 """
 from cave_utils.api_utils.validator_utils import ApiValidator, CustomKeyValidator
 from cave_utils.api_utils.general import props, values, layout
@@ -10,7 +10,7 @@ import type_enforced
 @type_enforced.Enforcer
 class globalOutputs(ApiValidator):
     """
-    ## Api Path: globalOutputs
+    The global outputs data is located under the path **`globalOutputs`**.
     """
 
     @staticmethod
@@ -18,26 +18,16 @@ class globalOutputs(ApiValidator):
         props: dict, values: [dict, None] = None, layout: [dict, None] = None, **kwargs
     ):
         """
-        Required Arguments:
+        Arguments:
 
-        - `props`:
-            - Type: dict
-            - What: The props that will be rendered as global outputs.
-            - See: `cave_utils.api_utils.general.props`
-        - `values`:
-            - Type: dict
-            - What: The values that will be passed to the props.
-            - Required: False
-            - See: `cave_utils.api_utils.general.values`
-
-        Optional Arguments:
-
-        - `layout`:
-            - Type: dict
-            - What: The layout of the pane.
-            - Required: False
-            - See: `cave_utils.api_utils.general.layout`
+        * **`props`**: `[dict]` &rarr; The props that will be rendered as global outputs.
+        * **`values`**: `[dict]` = `None` &rarr;
+            * The values to be assigned to the respective props. Each value is associated with its corresponding prop based on the key name used in `props`.
+        * **`layout`**: `[dict]` =`{"type": "grid", "numColumns": "auto", "numRows": "auto"}` &rarr;
+            * The layout of the global outputs when the "Overview" chart is selected.
+            * **See**: `cave_utils.api_utils.general.layout`
         """
+
         return {"kwargs": kwargs, "accepted_values": {}}
 
     def __extend_spec__(self, **kwargs):

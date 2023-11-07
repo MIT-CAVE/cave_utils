@@ -22,7 +22,7 @@
   <path fill-rule="evenodd" d="M4.146 8.354a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H14.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3z"/>
 </svg>                &nbsp;cave_utils.api_utils</a>
 
-<a href="https://cave.mit.edu">            <img src="https://cave.mit.edu/wp-content/uploads/2022/12/MIT-CTL-CAVE-logo@4x.png" class="logo" alt="project logo"/>
+<a href="https://github.com/MIT-CAVE/cave_app">            <img src="https://cave.mit.edu/wp-content/uploads/2022/12/MIT-CTL-CAVE-logo@4x.png" class="logo" alt="project logo"/>
 </a>
             <input type="search" placeholder="Search..." role="searchbox" aria-label="search"
                    pattern=".+" required>
@@ -141,7 +141,7 @@
 </span><span id="L-40"><a href="#L-40"><span class="linenos"> 40</span></a>        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
 </span><span id="L-41"><a href="#L-41"><span class="linenos"> 41</span></a>    <span class="p">):</span>
 </span><span id="L-42"><a href="#L-42"><span class="linenos"> 42</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-43"><a href="#L-43"><span class="linenos"> 43</span></a><span class="sd">        Required Arguments:</span>
+</span><span id="L-43"><a href="#L-43"><span class="linenos"> 43</span></a><span class="sd">        Arguments:</span>
 </span><span id="L-44"><a href="#L-44"><span class="linenos"> 44</span></a>
 </span><span id="L-45"><a href="#L-45"><span class="linenos"> 45</span></a><span class="sd">        - `name`:</span>
 </span><span id="L-46"><a href="#L-46"><span class="linenos"> 46</span></a><span class="sd">            - Type: str</span>
@@ -205,14 +205,14 @@
 </span><span id="L-104"><a href="#L-104"><span class="linenos">104</span></a><span class="sd">            - Note: If `None`, the prop will be enabled.</span>
 </span><span id="L-105"><a href="#L-105"><span class="linenos">105</span></a><span class="sd">        - `apiCommand`:</span>
 </span><span id="L-106"><a href="#L-106"><span class="linenos">106</span></a><span class="sd">            - Type: str | None</span>
-</span><span id="L-107"><a href="#L-107"><span class="linenos">107</span></a><span class="sd">            - What: The name of the api command to trigger.</span>
+</span><span id="L-107"><a href="#L-107"><span class="linenos">107</span></a><span class="sd">            - What: The name of the API command to trigger.</span>
 </span><span id="L-108"><a href="#L-108"><span class="linenos">108</span></a><span class="sd">            - Default: `None`</span>
 </span><span id="L-109"><a href="#L-109"><span class="linenos">109</span></a><span class="sd">            - Note: if `None`, no `apiCommand` is triggered</span>
 </span><span id="L-110"><a href="#L-110"><span class="linenos">110</span></a><span class="sd">        - `apiCommandKeys`:</span>
 </span><span id="L-111"><a href="#L-111"><span class="linenos">111</span></a><span class="sd">            - Type: list | None</span>
-</span><span id="L-112"><a href="#L-112"><span class="linenos">112</span></a><span class="sd">            - What: The top level api keys to pass to your `execute_command` if an apiCommand is provded.</span>
+</span><span id="L-112"><a href="#L-112"><span class="linenos">112</span></a><span class="sd">            - What: The top level API keys to pass to your `execute_command` if an `apiCommand` is provided.</span>
 </span><span id="L-113"><a href="#L-113"><span class="linenos">113</span></a><span class="sd">            - Default: `None`</span>
-</span><span id="L-114"><a href="#L-114"><span class="linenos">114</span></a><span class="sd">            - Note: If `None` all api keys are passed to your `execute_command`.</span>
+</span><span id="L-114"><a href="#L-114"><span class="linenos">114</span></a><span class="sd">            - Note: If `None` all API keys are passed to your `execute_command`.</span>
 </span><span id="L-115"><a href="#L-115"><span class="linenos">115</span></a><span class="sd">        - `options`:</span>
 </span><span id="L-116"><a href="#L-116"><span class="linenos">116</span></a><span class="sd">            - Type: dict | None</span>
 </span><span id="L-117"><a href="#L-117"><span class="linenos">117</span></a><span class="sd">            - What: The options for the prop. This only applies to `selector` props.</span>
@@ -497,7 +497,7 @@
 </span><span id="L-396"><a href="#L-396"><span class="linenos">396</span></a><span class="sd">            - Default: `None`</span>
 </span><span id="L-397"><a href="#L-397"><span class="linenos">397</span></a><span class="sd">            - Note: If `None`, no data is provided.</span>
 </span><span id="L-398"><a href="#L-398"><span class="linenos">398</span></a><span class="sd">            - Accepted Values:</span>
-</span><span id="L-399"><a href="#L-399"><span class="linenos">399</span></a><span class="sd">                - The prop keys from your api spec at the same level as `layout`.</span>
+</span><span id="L-399"><a href="#L-399"><span class="linenos">399</span></a><span class="sd">                - The prop keys from your API spec at the same level as `layout`.</span>
 </span><span id="L-400"><a href="#L-400"><span class="linenos">400</span></a><span class="sd">        - `itemId`:</span>
 </span><span id="L-401"><a href="#L-401"><span class="linenos">401</span></a><span class="sd">            - Type: str | None</span>
 </span><span id="L-402"><a href="#L-402"><span class="linenos">402</span></a><span class="sd">            - What: The id of the item for the layout. This only applies to `item` layouts.</span>
@@ -562,9 +562,9 @@
 </span><span id="L-461"><a href="#L-461"><span class="linenos">461</span></a>    <span class="nd">@staticmethod</span>
 </span><span id="L-462"><a href="#L-462"><span class="linenos">462</span></a>    <span class="k">def</span> <span class="nf">spec</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 </span><span id="L-463"><a href="#L-463"><span class="linenos">463</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-464"><a href="#L-464"><span class="linenos">464</span></a><span class="sd">        Accepts all arbitrary values depending on what you have in your props as part of the api spec.</span>
+</span><span id="L-464"><a href="#L-464"><span class="linenos">464</span></a><span class="sd">        Accepts all arbitrary values depending on what you have in your props as part of the API spec.</span>
 </span><span id="L-465"><a href="#L-465"><span class="linenos">465</span></a>
-</span><span id="L-466"><a href="#L-466"><span class="linenos">466</span></a><span class="sd">        The values you pass will be validated against the props in your api spec.</span>
+</span><span id="L-466"><a href="#L-466"><span class="linenos">466</span></a><span class="sd">        The values you pass will be validated against the props in your API spec.</span>
 </span><span id="L-467"><a href="#L-467"><span class="linenos">467</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="L-468"><a href="#L-468"><span class="linenos">468</span></a>        <span class="k">return</span> <span class="p">{</span>
 </span><span id="L-469"><a href="#L-469"><span class="linenos">469</span></a>            <span class="s2">&quot;kwargs&quot;</span><span class="p">:</span> <span class="p">{},</span>
@@ -598,7 +598,7 @@
 </span><span id="L-497"><a href="#L-497"><span class="linenos">497</span></a>                <span class="n">max_value</span> <span class="o">=</span> <span class="n">prop_spec</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;maxValue&quot;</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;inf&quot;</span><span class="p">))</span>
 </span><span id="L-498"><a href="#L-498"><span class="linenos">498</span></a>                <span class="k">if</span> <span class="n">prop_value</span> <span class="o">&lt;</span> <span class="n">min_value</span> <span class="ow">or</span> <span class="n">prop_value</span> <span class="o">&gt;</span> <span class="n">max_value</span><span class="p">:</span>
 </span><span id="L-499"><a href="#L-499"><span class="linenos">499</span></a>                    <span class="bp">self</span><span class="o">.</span><span class="n">__error__</span><span class="p">(</span>
-</span><span id="L-500"><a href="#L-500"><span class="linenos">500</span></a>                        <span class="n">msg</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;`</span><span class="si">{</span><span class="n">prop_key</span><span class="si">}</span><span class="s2">` with the prop type of `</span><span class="si">{</span><span class="n">prop_type</span><span class="si">}</span><span class="s2">` must be between </span><span class="si">{</span><span class="n">min_value</span><span class="si">}</span><span class="s2"> and </span><span class="si">{</span><span class="n">max_value</span><span class="si">}</span><span class="s2"> as defined by the api spec.&quot;</span>
+</span><span id="L-500"><a href="#L-500"><span class="linenos">500</span></a>                        <span class="n">msg</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;`</span><span class="si">{</span><span class="n">prop_key</span><span class="si">}</span><span class="s2">` with the prop type of `</span><span class="si">{</span><span class="n">prop_type</span><span class="si">}</span><span class="s2">` must be between </span><span class="si">{</span><span class="n">min_value</span><span class="si">}</span><span class="s2"> and </span><span class="si">{</span><span class="n">max_value</span><span class="si">}</span><span class="s2"> as defined by the API spec.&quot;</span>
 </span><span id="L-501"><a href="#L-501"><span class="linenos">501</span></a>                    <span class="p">)</span>
 </span><span id="L-502"><a href="#L-502"><span class="linenos">502</span></a>            <span class="k">elif</span> <span class="n">prop_type</span> <span class="o">==</span> <span class="s2">&quot;selector&quot;</span><span class="p">:</span>
 </span><span id="L-503"><a href="#L-503"><span class="linenos">503</span></a>                <span class="n">options</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">prop_spec</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;options&quot;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
@@ -618,9 +618,9 @@
 </span><span id="L-517"><a href="#L-517"><span class="linenos">517</span></a>    <span class="nd">@staticmethod</span>
 </span><span id="L-518"><a href="#L-518"><span class="linenos">518</span></a>    <span class="k">def</span> <span class="nf">spec</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 </span><span id="L-519"><a href="#L-519"><span class="linenos">519</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-520"><a href="#L-520"><span class="linenos">520</span></a><span class="sd">        Accepts all arbitrary values depending on what you have in your props as part of the api spec.</span>
+</span><span id="L-520"><a href="#L-520"><span class="linenos">520</span></a><span class="sd">        Accepts all arbitrary values depending on what you have in your props as part of the API spec.</span>
 </span><span id="L-521"><a href="#L-521"><span class="linenos">521</span></a>
-</span><span id="L-522"><a href="#L-522"><span class="linenos">522</span></a><span class="sd">        The valueLists you pass will be validated against the props in your api spec.</span>
+</span><span id="L-522"><a href="#L-522"><span class="linenos">522</span></a><span class="sd">        The valueLists you pass will be validated against the props in your API spec.</span>
 </span><span id="L-523"><a href="#L-523"><span class="linenos">523</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="L-524"><a href="#L-524"><span class="linenos">524</span></a>        <span class="k">return</span> <span class="p">{</span>
 </span><span id="L-525"><a href="#L-525"><span class="linenos">525</span></a>            <span class="s2">&quot;kwargs&quot;</span><span class="p">:</span> <span class="p">{},</span>
@@ -664,7 +664,7 @@
 </span><span id="L-563"><a href="#L-563"><span class="linenos">563</span></a>                    <span class="n">prop_value_list_min</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">prop_value_list</span><span class="p">)</span>
 </span><span id="L-564"><a href="#L-564"><span class="linenos">564</span></a>                    <span class="k">if</span> <span class="n">prop_value_list_min</span> <span class="o">&lt;</span> <span class="n">min_value</span><span class="p">:</span>
 </span><span id="L-565"><a href="#L-565"><span class="linenos">565</span></a>                        <span class="bp">self</span><span class="o">.</span><span class="n">__error__</span><span class="p">(</span>
-</span><span id="L-566"><a href="#L-566"><span class="linenos">566</span></a>                            <span class="n">msg</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;`</span><span class="si">{</span><span class="n">prop_key</span><span class="si">}</span><span class="s2">` has a value that is less than </span><span class="si">{</span><span class="n">min_value</span><span class="si">}</span><span class="s2"> as defined by the api spec.&quot;</span>
+</span><span id="L-566"><a href="#L-566"><span class="linenos">566</span></a>                            <span class="n">msg</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;`</span><span class="si">{</span><span class="n">prop_key</span><span class="si">}</span><span class="s2">` has a value that is less than </span><span class="si">{</span><span class="n">min_value</span><span class="si">}</span><span class="s2"> as defined by the API spec.&quot;</span>
 </span><span id="L-567"><a href="#L-567"><span class="linenos">567</span></a>                        <span class="p">)</span>
 </span><span id="L-568"><a href="#L-568"><span class="linenos">568</span></a>                <span class="c1"># Validate maximum is met</span>
 </span><span id="L-569"><a href="#L-569"><span class="linenos">569</span></a>                <span class="n">max_value</span> <span class="o">=</span> <span class="n">prop_spec</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;maxValue&quot;</span><span class="p">)</span>
@@ -672,7 +672,7 @@
 </span><span id="L-571"><a href="#L-571"><span class="linenos">571</span></a>                    <span class="n">prop_value_list_max</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">prop_value_list</span><span class="p">)</span>
 </span><span id="L-572"><a href="#L-572"><span class="linenos">572</span></a>                    <span class="k">if</span> <span class="n">prop_value_list_max</span> <span class="o">&gt;</span> <span class="n">max_value</span><span class="p">:</span>
 </span><span id="L-573"><a href="#L-573"><span class="linenos">573</span></a>                        <span class="bp">self</span><span class="o">.</span><span class="n">__error__</span><span class="p">(</span>
-</span><span id="L-574"><a href="#L-574"><span class="linenos">574</span></a>                            <span class="n">msg</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;`</span><span class="si">{</span><span class="n">prop_key</span><span class="si">}</span><span class="s2">` has a value that is greater than </span><span class="si">{</span><span class="n">max_value</span><span class="si">}</span><span class="s2"> as defined by the api spec.&quot;</span>
+</span><span id="L-574"><a href="#L-574"><span class="linenos">574</span></a>                            <span class="n">msg</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;`</span><span class="si">{</span><span class="n">prop_key</span><span class="si">}</span><span class="s2">` has a value that is greater than </span><span class="si">{</span><span class="n">max_value</span><span class="si">}</span><span class="s2"> as defined by the API spec.&quot;</span>
 </span><span id="L-575"><a href="#L-575"><span class="linenos">575</span></a>                        <span class="p">)</span>
 </span><span id="L-576"><a href="#L-576"><span class="linenos">576</span></a>            <span class="k">elif</span> <span class="n">prop_type</span> <span class="o">==</span> <span class="s2">&quot;selector&quot;</span><span class="p">:</span>
 </span><span id="L-577"><a href="#L-577"><span class="linenos">577</span></a>                <span class="n">options</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">prop_spec</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;options&quot;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
@@ -739,7 +739,7 @@
 </span><span id="props-41"><a href="#props-41"><span class="linenos"> 41</span></a>        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
 </span><span id="props-42"><a href="#props-42"><span class="linenos"> 42</span></a>    <span class="p">):</span>
 </span><span id="props-43"><a href="#props-43"><span class="linenos"> 43</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="props-44"><a href="#props-44"><span class="linenos"> 44</span></a><span class="sd">        Required Arguments:</span>
+</span><span id="props-44"><a href="#props-44"><span class="linenos"> 44</span></a><span class="sd">        Arguments:</span>
 </span><span id="props-45"><a href="#props-45"><span class="linenos"> 45</span></a>
 </span><span id="props-46"><a href="#props-46"><span class="linenos"> 46</span></a><span class="sd">        - `name`:</span>
 </span><span id="props-47"><a href="#props-47"><span class="linenos"> 47</span></a><span class="sd">            - Type: str</span>
@@ -803,14 +803,14 @@
 </span><span id="props-105"><a href="#props-105"><span class="linenos">105</span></a><span class="sd">            - Note: If `None`, the prop will be enabled.</span>
 </span><span id="props-106"><a href="#props-106"><span class="linenos">106</span></a><span class="sd">        - `apiCommand`:</span>
 </span><span id="props-107"><a href="#props-107"><span class="linenos">107</span></a><span class="sd">            - Type: str | None</span>
-</span><span id="props-108"><a href="#props-108"><span class="linenos">108</span></a><span class="sd">            - What: The name of the api command to trigger.</span>
+</span><span id="props-108"><a href="#props-108"><span class="linenos">108</span></a><span class="sd">            - What: The name of the API command to trigger.</span>
 </span><span id="props-109"><a href="#props-109"><span class="linenos">109</span></a><span class="sd">            - Default: `None`</span>
 </span><span id="props-110"><a href="#props-110"><span class="linenos">110</span></a><span class="sd">            - Note: if `None`, no `apiCommand` is triggered</span>
 </span><span id="props-111"><a href="#props-111"><span class="linenos">111</span></a><span class="sd">        - `apiCommandKeys`:</span>
 </span><span id="props-112"><a href="#props-112"><span class="linenos">112</span></a><span class="sd">            - Type: list | None</span>
-</span><span id="props-113"><a href="#props-113"><span class="linenos">113</span></a><span class="sd">            - What: The top level api keys to pass to your `execute_command` if an apiCommand is provded.</span>
+</span><span id="props-113"><a href="#props-113"><span class="linenos">113</span></a><span class="sd">            - What: The top level API keys to pass to your `execute_command` if an `apiCommand` is provided.</span>
 </span><span id="props-114"><a href="#props-114"><span class="linenos">114</span></a><span class="sd">            - Default: `None`</span>
-</span><span id="props-115"><a href="#props-115"><span class="linenos">115</span></a><span class="sd">            - Note: If `None` all api keys are passed to your `execute_command`.</span>
+</span><span id="props-115"><a href="#props-115"><span class="linenos">115</span></a><span class="sd">            - Note: If `None` all API keys are passed to your `execute_command`.</span>
 </span><span id="props-116"><a href="#props-116"><span class="linenos">116</span></a><span class="sd">        - `options`:</span>
 </span><span id="props-117"><a href="#props-117"><span class="linenos">117</span></a><span class="sd">            - Type: dict | None</span>
 </span><span id="props-118"><a href="#props-118"><span class="linenos">118</span></a><span class="sd">            - What: The options for the prop. This only applies to `selector` props.</span>
@@ -1065,7 +1065,7 @@
 </span><span id="props.spec-41"><a href="#props.spec-41"><span class="linenos"> 41</span></a>        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
 </span><span id="props.spec-42"><a href="#props.spec-42"><span class="linenos"> 42</span></a>    <span class="p">):</span>
 </span><span id="props.spec-43"><a href="#props.spec-43"><span class="linenos"> 43</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="props.spec-44"><a href="#props.spec-44"><span class="linenos"> 44</span></a><span class="sd">        Required Arguments:</span>
+</span><span id="props.spec-44"><a href="#props.spec-44"><span class="linenos"> 44</span></a><span class="sd">        Arguments:</span>
 </span><span id="props.spec-45"><a href="#props.spec-45"><span class="linenos"> 45</span></a>
 </span><span id="props.spec-46"><a href="#props.spec-46"><span class="linenos"> 46</span></a><span class="sd">        - `name`:</span>
 </span><span id="props.spec-47"><a href="#props.spec-47"><span class="linenos"> 47</span></a><span class="sd">            - Type: str</span>
@@ -1129,14 +1129,14 @@
 </span><span id="props.spec-105"><a href="#props.spec-105"><span class="linenos">105</span></a><span class="sd">            - Note: If `None`, the prop will be enabled.</span>
 </span><span id="props.spec-106"><a href="#props.spec-106"><span class="linenos">106</span></a><span class="sd">        - `apiCommand`:</span>
 </span><span id="props.spec-107"><a href="#props.spec-107"><span class="linenos">107</span></a><span class="sd">            - Type: str | None</span>
-</span><span id="props.spec-108"><a href="#props.spec-108"><span class="linenos">108</span></a><span class="sd">            - What: The name of the api command to trigger.</span>
+</span><span id="props.spec-108"><a href="#props.spec-108"><span class="linenos">108</span></a><span class="sd">            - What: The name of the API command to trigger.</span>
 </span><span id="props.spec-109"><a href="#props.spec-109"><span class="linenos">109</span></a><span class="sd">            - Default: `None`</span>
 </span><span id="props.spec-110"><a href="#props.spec-110"><span class="linenos">110</span></a><span class="sd">            - Note: if `None`, no `apiCommand` is triggered</span>
 </span><span id="props.spec-111"><a href="#props.spec-111"><span class="linenos">111</span></a><span class="sd">        - `apiCommandKeys`:</span>
 </span><span id="props.spec-112"><a href="#props.spec-112"><span class="linenos">112</span></a><span class="sd">            - Type: list | None</span>
-</span><span id="props.spec-113"><a href="#props.spec-113"><span class="linenos">113</span></a><span class="sd">            - What: The top level api keys to pass to your `execute_command` if an apiCommand is provded.</span>
+</span><span id="props.spec-113"><a href="#props.spec-113"><span class="linenos">113</span></a><span class="sd">            - What: The top level API keys to pass to your `execute_command` if an `apiCommand` is provided.</span>
 </span><span id="props.spec-114"><a href="#props.spec-114"><span class="linenos">114</span></a><span class="sd">            - Default: `None`</span>
-</span><span id="props.spec-115"><a href="#props.spec-115"><span class="linenos">115</span></a><span class="sd">            - Note: If `None` all api keys are passed to your `execute_command`.</span>
+</span><span id="props.spec-115"><a href="#props.spec-115"><span class="linenos">115</span></a><span class="sd">            - Note: If `None` all API keys are passed to your `execute_command`.</span>
 </span><span id="props.spec-116"><a href="#props.spec-116"><span class="linenos">116</span></a><span class="sd">        - `options`:</span>
 </span><span id="props.spec-117"><a href="#props.spec-117"><span class="linenos">117</span></a><span class="sd">            - Type: dict | None</span>
 </span><span id="props.spec-118"><a href="#props.spec-118"><span class="linenos">118</span></a><span class="sd">            - What: The options for the prop. This only applies to `selector` props.</span>
@@ -1333,7 +1333,7 @@
 </span></pre></div>
 
 
-            <div class="docstring"><p>Required Arguments:</p>
+            <div class="docstring"><p>Arguments:</p>
 
 <ul>
 <li><code>name</code>:
@@ -1427,16 +1427,16 @@
 <li><code>apiCommand</code>:
 <ul>
 <li>Type: str | None</li>
-<li>What: The name of the api command to trigger.</li>
+<li>What: The name of the API command to trigger.</li>
 <li>Default: <code>None</code></li>
 <li>Note: if <code>None</code>, no <code>apiCommand</code> is triggered</li>
 </ul></li>
 <li><code>apiCommandKeys</code>:
 <ul>
 <li>Type: list | None</li>
-<li>What: The top level api keys to pass to your <code>execute_command</code> if an apiCommand is provded.</li>
+<li>What: The top level API keys to pass to your <code>execute_command</code> if an <code>apiCommand</code> is provided.</li>
 <li>Default: <code>None</code></li>
-<li>Note: If <code>None</code> all api keys are passed to your <code>execute_command</code>.</li>
+<li>Note: If <code>None</code> all API keys are passed to your <code>execute_command</code>.</li>
 </ul></li>
 <li><code>options</code>:
 <ul>
@@ -1789,7 +1789,7 @@
 </span><span id="layout-397"><a href="#layout-397"><span class="linenos">397</span></a><span class="sd">            - Default: `None`</span>
 </span><span id="layout-398"><a href="#layout-398"><span class="linenos">398</span></a><span class="sd">            - Note: If `None`, no data is provided.</span>
 </span><span id="layout-399"><a href="#layout-399"><span class="linenos">399</span></a><span class="sd">            - Accepted Values:</span>
-</span><span id="layout-400"><a href="#layout-400"><span class="linenos">400</span></a><span class="sd">                - The prop keys from your api spec at the same level as `layout`.</span>
+</span><span id="layout-400"><a href="#layout-400"><span class="linenos">400</span></a><span class="sd">                - The prop keys from your API spec at the same level as `layout`.</span>
 </span><span id="layout-401"><a href="#layout-401"><span class="linenos">401</span></a><span class="sd">        - `itemId`:</span>
 </span><span id="layout-402"><a href="#layout-402"><span class="linenos">402</span></a><span class="sd">            - Type: str | None</span>
 </span><span id="layout-403"><a href="#layout-403"><span class="linenos">403</span></a><span class="sd">            - What: The id of the item for the layout. This only applies to `item` layouts.</span>
@@ -1903,7 +1903,7 @@
 </span><span id="layout.spec-397"><a href="#layout.spec-397"><span class="linenos">397</span></a><span class="sd">            - Default: `None`</span>
 </span><span id="layout.spec-398"><a href="#layout.spec-398"><span class="linenos">398</span></a><span class="sd">            - Note: If `None`, no data is provided.</span>
 </span><span id="layout.spec-399"><a href="#layout.spec-399"><span class="linenos">399</span></a><span class="sd">            - Accepted Values:</span>
-</span><span id="layout.spec-400"><a href="#layout.spec-400"><span class="linenos">400</span></a><span class="sd">                - The prop keys from your api spec at the same level as `layout`.</span>
+</span><span id="layout.spec-400"><a href="#layout.spec-400"><span class="linenos">400</span></a><span class="sd">                - The prop keys from your API spec at the same level as `layout`.</span>
 </span><span id="layout.spec-401"><a href="#layout.spec-401"><span class="linenos">401</span></a><span class="sd">        - `itemId`:</span>
 </span><span id="layout.spec-402"><a href="#layout.spec-402"><span class="linenos">402</span></a><span class="sd">            - Type: str | None</span>
 </span><span id="layout.spec-403"><a href="#layout.spec-403"><span class="linenos">403</span></a><span class="sd">            - What: The id of the item for the layout. This only applies to `item` layouts.</span>
@@ -1989,7 +1989,7 @@
 <li>Note: If <code>None</code>, no data is provided.</li>
 <li>Accepted Values:
 <ul>
-<li>The prop keys from your api spec at the same level as <code><a href="#layout">layout</a></code>.</li>
+<li>The prop keys from your API spec at the same level as <code><a href="#layout">layout</a></code>.</li>
 </ul></li>
 </ul></li>
 <li><code>itemId</code>:
@@ -2045,9 +2045,9 @@
 </span><span id="values-462"><a href="#values-462"><span class="linenos">462</span></a>    <span class="nd">@staticmethod</span>
 </span><span id="values-463"><a href="#values-463"><span class="linenos">463</span></a>    <span class="k">def</span> <span class="nf">spec</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 </span><span id="values-464"><a href="#values-464"><span class="linenos">464</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="values-465"><a href="#values-465"><span class="linenos">465</span></a><span class="sd">        Accepts all arbitrary values depending on what you have in your props as part of the api spec.</span>
+</span><span id="values-465"><a href="#values-465"><span class="linenos">465</span></a><span class="sd">        Accepts all arbitrary values depending on what you have in your props as part of the API spec.</span>
 </span><span id="values-466"><a href="#values-466"><span class="linenos">466</span></a>
-</span><span id="values-467"><a href="#values-467"><span class="linenos">467</span></a><span class="sd">        The values you pass will be validated against the props in your api spec.</span>
+</span><span id="values-467"><a href="#values-467"><span class="linenos">467</span></a><span class="sd">        The values you pass will be validated against the props in your API spec.</span>
 </span><span id="values-468"><a href="#values-468"><span class="linenos">468</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="values-469"><a href="#values-469"><span class="linenos">469</span></a>        <span class="k">return</span> <span class="p">{</span>
 </span><span id="values-470"><a href="#values-470"><span class="linenos">470</span></a>            <span class="s2">&quot;kwargs&quot;</span><span class="p">:</span> <span class="p">{},</span>
@@ -2081,7 +2081,7 @@
 </span><span id="values-498"><a href="#values-498"><span class="linenos">498</span></a>                <span class="n">max_value</span> <span class="o">=</span> <span class="n">prop_spec</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;maxValue&quot;</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;inf&quot;</span><span class="p">))</span>
 </span><span id="values-499"><a href="#values-499"><span class="linenos">499</span></a>                <span class="k">if</span> <span class="n">prop_value</span> <span class="o">&lt;</span> <span class="n">min_value</span> <span class="ow">or</span> <span class="n">prop_value</span> <span class="o">&gt;</span> <span class="n">max_value</span><span class="p">:</span>
 </span><span id="values-500"><a href="#values-500"><span class="linenos">500</span></a>                    <span class="bp">self</span><span class="o">.</span><span class="n">__error__</span><span class="p">(</span>
-</span><span id="values-501"><a href="#values-501"><span class="linenos">501</span></a>                        <span class="n">msg</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;`</span><span class="si">{</span><span class="n">prop_key</span><span class="si">}</span><span class="s2">` with the prop type of `</span><span class="si">{</span><span class="n">prop_type</span><span class="si">}</span><span class="s2">` must be between </span><span class="si">{</span><span class="n">min_value</span><span class="si">}</span><span class="s2"> and </span><span class="si">{</span><span class="n">max_value</span><span class="si">}</span><span class="s2"> as defined by the api spec.&quot;</span>
+</span><span id="values-501"><a href="#values-501"><span class="linenos">501</span></a>                        <span class="n">msg</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;`</span><span class="si">{</span><span class="n">prop_key</span><span class="si">}</span><span class="s2">` with the prop type of `</span><span class="si">{</span><span class="n">prop_type</span><span class="si">}</span><span class="s2">` must be between </span><span class="si">{</span><span class="n">min_value</span><span class="si">}</span><span class="s2"> and </span><span class="si">{</span><span class="n">max_value</span><span class="si">}</span><span class="s2"> as defined by the API spec.&quot;</span>
 </span><span id="values-502"><a href="#values-502"><span class="linenos">502</span></a>                    <span class="p">)</span>
 </span><span id="values-503"><a href="#values-503"><span class="linenos">503</span></a>            <span class="k">elif</span> <span class="n">prop_type</span> <span class="o">==</span> <span class="s2">&quot;selector&quot;</span><span class="p">:</span>
 </span><span id="values-504"><a href="#values-504"><span class="linenos">504</span></a>                <span class="n">options</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">prop_spec</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;options&quot;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
@@ -2115,9 +2115,9 @@
             <div class="pdoc-code codehilite"><pre><span></span><span id="values.spec-462"><a href="#values.spec-462"><span class="linenos">462</span></a>    <span class="nd">@staticmethod</span>
 </span><span id="values.spec-463"><a href="#values.spec-463"><span class="linenos">463</span></a>    <span class="k">def</span> <span class="nf">spec</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 </span><span id="values.spec-464"><a href="#values.spec-464"><span class="linenos">464</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="values.spec-465"><a href="#values.spec-465"><span class="linenos">465</span></a><span class="sd">        Accepts all arbitrary values depending on what you have in your props as part of the api spec.</span>
+</span><span id="values.spec-465"><a href="#values.spec-465"><span class="linenos">465</span></a><span class="sd">        Accepts all arbitrary values depending on what you have in your props as part of the API spec.</span>
 </span><span id="values.spec-466"><a href="#values.spec-466"><span class="linenos">466</span></a>
-</span><span id="values.spec-467"><a href="#values.spec-467"><span class="linenos">467</span></a><span class="sd">        The values you pass will be validated against the props in your api spec.</span>
+</span><span id="values.spec-467"><a href="#values.spec-467"><span class="linenos">467</span></a><span class="sd">        The values you pass will be validated against the props in your API spec.</span>
 </span><span id="values.spec-468"><a href="#values.spec-468"><span class="linenos">468</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="values.spec-469"><a href="#values.spec-469"><span class="linenos">469</span></a>        <span class="k">return</span> <span class="p">{</span>
 </span><span id="values.spec-470"><a href="#values.spec-470"><span class="linenos">470</span></a>            <span class="s2">&quot;kwargs&quot;</span><span class="p">:</span> <span class="p">{},</span>
@@ -2126,9 +2126,9 @@
 </span></pre></div>
 
 
-            <div class="docstring"><p>Accepts all arbitrary values depending on what you have in your props as part of the api spec.</p>
+            <div class="docstring"><p>Accepts all arbitrary values depending on what you have in your props as part of the API spec.</p>
 
-<p>The values you pass will be validated against the props in your api spec.</p>
+<p>The values you pass will be validated against the props in your API spec.</p>
 </div>
 
 
@@ -2160,9 +2160,9 @@
 </span><span id="valueLists-518"><a href="#valueLists-518"><span class="linenos">518</span></a>    <span class="nd">@staticmethod</span>
 </span><span id="valueLists-519"><a href="#valueLists-519"><span class="linenos">519</span></a>    <span class="k">def</span> <span class="nf">spec</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 </span><span id="valueLists-520"><a href="#valueLists-520"><span class="linenos">520</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="valueLists-521"><a href="#valueLists-521"><span class="linenos">521</span></a><span class="sd">        Accepts all arbitrary values depending on what you have in your props as part of the api spec.</span>
+</span><span id="valueLists-521"><a href="#valueLists-521"><span class="linenos">521</span></a><span class="sd">        Accepts all arbitrary values depending on what you have in your props as part of the API spec.</span>
 </span><span id="valueLists-522"><a href="#valueLists-522"><span class="linenos">522</span></a>
-</span><span id="valueLists-523"><a href="#valueLists-523"><span class="linenos">523</span></a><span class="sd">        The valueLists you pass will be validated against the props in your api spec.</span>
+</span><span id="valueLists-523"><a href="#valueLists-523"><span class="linenos">523</span></a><span class="sd">        The valueLists you pass will be validated against the props in your API spec.</span>
 </span><span id="valueLists-524"><a href="#valueLists-524"><span class="linenos">524</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="valueLists-525"><a href="#valueLists-525"><span class="linenos">525</span></a>        <span class="k">return</span> <span class="p">{</span>
 </span><span id="valueLists-526"><a href="#valueLists-526"><span class="linenos">526</span></a>            <span class="s2">&quot;kwargs&quot;</span><span class="p">:</span> <span class="p">{},</span>
@@ -2206,7 +2206,7 @@
 </span><span id="valueLists-564"><a href="#valueLists-564"><span class="linenos">564</span></a>                    <span class="n">prop_value_list_min</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">prop_value_list</span><span class="p">)</span>
 </span><span id="valueLists-565"><a href="#valueLists-565"><span class="linenos">565</span></a>                    <span class="k">if</span> <span class="n">prop_value_list_min</span> <span class="o">&lt;</span> <span class="n">min_value</span><span class="p">:</span>
 </span><span id="valueLists-566"><a href="#valueLists-566"><span class="linenos">566</span></a>                        <span class="bp">self</span><span class="o">.</span><span class="n">__error__</span><span class="p">(</span>
-</span><span id="valueLists-567"><a href="#valueLists-567"><span class="linenos">567</span></a>                            <span class="n">msg</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;`</span><span class="si">{</span><span class="n">prop_key</span><span class="si">}</span><span class="s2">` has a value that is less than </span><span class="si">{</span><span class="n">min_value</span><span class="si">}</span><span class="s2"> as defined by the api spec.&quot;</span>
+</span><span id="valueLists-567"><a href="#valueLists-567"><span class="linenos">567</span></a>                            <span class="n">msg</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;`</span><span class="si">{</span><span class="n">prop_key</span><span class="si">}</span><span class="s2">` has a value that is less than </span><span class="si">{</span><span class="n">min_value</span><span class="si">}</span><span class="s2"> as defined by the API spec.&quot;</span>
 </span><span id="valueLists-568"><a href="#valueLists-568"><span class="linenos">568</span></a>                        <span class="p">)</span>
 </span><span id="valueLists-569"><a href="#valueLists-569"><span class="linenos">569</span></a>                <span class="c1"># Validate maximum is met</span>
 </span><span id="valueLists-570"><a href="#valueLists-570"><span class="linenos">570</span></a>                <span class="n">max_value</span> <span class="o">=</span> <span class="n">prop_spec</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;maxValue&quot;</span><span class="p">)</span>
@@ -2214,7 +2214,7 @@
 </span><span id="valueLists-572"><a href="#valueLists-572"><span class="linenos">572</span></a>                    <span class="n">prop_value_list_max</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">prop_value_list</span><span class="p">)</span>
 </span><span id="valueLists-573"><a href="#valueLists-573"><span class="linenos">573</span></a>                    <span class="k">if</span> <span class="n">prop_value_list_max</span> <span class="o">&gt;</span> <span class="n">max_value</span><span class="p">:</span>
 </span><span id="valueLists-574"><a href="#valueLists-574"><span class="linenos">574</span></a>                        <span class="bp">self</span><span class="o">.</span><span class="n">__error__</span><span class="p">(</span>
-</span><span id="valueLists-575"><a href="#valueLists-575"><span class="linenos">575</span></a>                            <span class="n">msg</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;`</span><span class="si">{</span><span class="n">prop_key</span><span class="si">}</span><span class="s2">` has a value that is greater than </span><span class="si">{</span><span class="n">max_value</span><span class="si">}</span><span class="s2"> as defined by the api spec.&quot;</span>
+</span><span id="valueLists-575"><a href="#valueLists-575"><span class="linenos">575</span></a>                            <span class="n">msg</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;`</span><span class="si">{</span><span class="n">prop_key</span><span class="si">}</span><span class="s2">` has a value that is greater than </span><span class="si">{</span><span class="n">max_value</span><span class="si">}</span><span class="s2"> as defined by the API spec.&quot;</span>
 </span><span id="valueLists-576"><a href="#valueLists-576"><span class="linenos">576</span></a>                        <span class="p">)</span>
 </span><span id="valueLists-577"><a href="#valueLists-577"><span class="linenos">577</span></a>            <span class="k">elif</span> <span class="n">prop_type</span> <span class="o">==</span> <span class="s2">&quot;selector&quot;</span><span class="p">:</span>
 </span><span id="valueLists-578"><a href="#valueLists-578"><span class="linenos">578</span></a>                <span class="n">options</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">prop_spec</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;options&quot;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
@@ -2250,9 +2250,9 @@
             <div class="pdoc-code codehilite"><pre><span></span><span id="valueLists.spec-518"><a href="#valueLists.spec-518"><span class="linenos">518</span></a>    <span class="nd">@staticmethod</span>
 </span><span id="valueLists.spec-519"><a href="#valueLists.spec-519"><span class="linenos">519</span></a>    <span class="k">def</span> <span class="nf">spec</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 </span><span id="valueLists.spec-520"><a href="#valueLists.spec-520"><span class="linenos">520</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="valueLists.spec-521"><a href="#valueLists.spec-521"><span class="linenos">521</span></a><span class="sd">        Accepts all arbitrary values depending on what you have in your props as part of the api spec.</span>
+</span><span id="valueLists.spec-521"><a href="#valueLists.spec-521"><span class="linenos">521</span></a><span class="sd">        Accepts all arbitrary values depending on what you have in your props as part of the API spec.</span>
 </span><span id="valueLists.spec-522"><a href="#valueLists.spec-522"><span class="linenos">522</span></a>
-</span><span id="valueLists.spec-523"><a href="#valueLists.spec-523"><span class="linenos">523</span></a><span class="sd">        The valueLists you pass will be validated against the props in your api spec.</span>
+</span><span id="valueLists.spec-523"><a href="#valueLists.spec-523"><span class="linenos">523</span></a><span class="sd">        The valueLists you pass will be validated against the props in your API spec.</span>
 </span><span id="valueLists.spec-524"><a href="#valueLists.spec-524"><span class="linenos">524</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="valueLists.spec-525"><a href="#valueLists.spec-525"><span class="linenos">525</span></a>        <span class="k">return</span> <span class="p">{</span>
 </span><span id="valueLists.spec-526"><a href="#valueLists.spec-526"><span class="linenos">526</span></a>            <span class="s2">&quot;kwargs&quot;</span><span class="p">:</span> <span class="p">{},</span>
@@ -2261,9 +2261,9 @@
 </span></pre></div>
 
 
-            <div class="docstring"><p>Accepts all arbitrary values depending on what you have in your props as part of the api spec.</p>
+            <div class="docstring"><p>Accepts all arbitrary values depending on what you have in your props as part of the API spec.</p>
 
-<p>The valueLists you pass will be validated against the props in your api spec.</p>
+<p>The valueLists you pass will be validated against the props in your API spec.</p>
 </div>
 
 

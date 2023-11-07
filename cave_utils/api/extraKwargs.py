@@ -1,5 +1,6 @@
 """
-(Optional) Pass special arguments to the server that are not part of the API spec.
+Optionally, pass special arguments to adjust some options related to
+how the CAVE API server handles data.
 """
 from cave_utils.api_utils.validator_utils import ApiValidator
 import type_enforced
@@ -8,20 +9,23 @@ import type_enforced
 @type_enforced.Enforcer
 class extraKwargs(ApiValidator):
     """
-    ## Api Path: extraKwargs
+    The special arguments are located under the path **`extraKwargs`**.
     """
 
     @staticmethod
     def spec(wipeExisting: bool = False, **kwargs):
         """
-        Optional arguments:
+        Arguments:
 
-        - `wipeExisting`:
-            - Type: bool
-            - What: If `True`, the server will delete all existing data before importing the new data. If `False`, the server will merge the new data with the existing data.
-                - Note: All data is merged at the top level.
-                    - EG: If you update an item in `settings` you should pass the entire `settings` object when you return `session_data`.
-            - Default: `False`
+        * **`wipeExisting`**: `[bool]` = `False` &rarr;
+            * If set to `True`, all existing data will be deleted just
+            before session data updates are merged. By default (set to
+            `False`), the CAVE API will merge new data with existing
+            data.
+            * **Note**: The data is merged at the root level. In this
+            case, if you update an item in `settings`, the entire
+            `settings` object must be present when you return
+            `session_data`.
         """
         return {
             "kwargs": kwargs,

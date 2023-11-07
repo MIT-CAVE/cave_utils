@@ -45,56 +45,31 @@ class Root(ApiValidator):
         **kwargs,
     ):
         """
-        Required Arguments:
+        Arguments:
 
-        - `settings:
-            - Type: dict
-            - What: General settings for your application.
-            - Note: 'settings.iconUrl' is the only required field in `settings`
-            - See: `cave_utils.api.settings`
-        - `appBar`:
-            - Type: dict
-            - What: Settings for the app bar.
-            - Note: 'appBar.data' is required, and should have at least one item in it.
-            - See: `cave_utils.api.appBar`
-
-        Optional Arguments:
-
-        - `panes`:
-            - Type: dict
-            - What: Configure panes for your application.
-            - Default: `{}`
-            - See: `cave_utils.api.panes`
-        - `pages`:
-            - Type: dict
-            - What: Configure pages for your application.
-            - Default: `{}`
-            - See: `cave_utils.api.pages`
-        - `maps`:
-            - Type: dict
-            - What: Configure map views and settings for your application.
-            - Default: `{}`
-            - See: `cave_utils.api.maps`
-        - `mapFeatures`:
-            - Type: dict
-            - What: Configure map features (interactive items on the map) for your application.
-            - Default: `{}`
-            - See: `cave_utils.api.mapFeatures`
-        - `groupedOutputs`:
-            - Type: dict
-            - What: Configure data that can be sliced and diced for charts and tables based on arbitrary groups.
-            - Default: `{}`
-            - See: `cave_utils.api.groupedOutputs`
-        - `globalOutputs`:
-            - Type: dict
-            - What: Configure data that is general to the entire application and can be compared across sessions.
-            - Default: `{}`
-            - See: `cave_utils.api.globalOutputs`
-        - `extraKwargs`:
-            - Type: dict
-            - What: Special arguments to be passed to the server.
-            - Default: `{}`
-            - See: `cave_utils.api.extraKwargs`
+        * **`settings`**: `[dict]` &rarr; General settings for your application.
+            * **Note**: `settings.iconUrl` is the only required field in `settings`
+            * **See**: `cave_utils.api.settings`
+        * **`appBar`**: `[dict]` &rarr; Configure actions for your app bar(s).
+            * **Note**: `appBar.data` is required and should have at least one item in it.
+            * **See**: `cave_utils.api.appBar`
+        * **`panes`**: `[dict]` = `{}` &rarr; Configure panes for your application.
+            * **See**: `cave_utils.api.panes`
+        * **`pages`**: `[dict]` = `{}` &rarr; Configure pages for your application.
+            * **See**: `cave_utils.api.pages`
+        * **`maps`**: `[dict]` = `{}` &rarr; Configure map views and settings for your application.
+            * **See**: `cave_utils.api.maps`
+        * **`mapFeatures`**: `[dict]` = `{}` &rarr;
+            * Configure map features (interactive items on the map) for your application.
+            * **See**: `cave_utils.api.mapFeatures`
+        * **`groupedOutputs`**: `[dict]` = `{}` &rarr;
+            * Configure data that can be sliced and diced for charts and tables based on arbitrary groups.
+            * **See**: `cave_utils.api.groupedOutputs`
+        * **`globalOutputs`**: `[dict]` = `{}` &rarr;
+            * Configure data that is general to the entire application and can be compared across sessions.
+            * **See**: `cave_utils.api.globalOutputs`
+        * **`extraKwargs`**: `[dict]` = `{}` &rarr; Special arguments to be passed to the server.
+            * **See**: `cave_utils.api.extraKwargs`
         """
         kwargs = {k:v for k,v in kwargs.items() if k != 'associated'}
         return {
@@ -184,8 +159,8 @@ class Root(ApiValidator):
         page_validPageIds = []
         if pages_data != {}:
             pages(
-                data=pages_data, 
-                log=self.log, 
+                data=pages_data,
+                log=self.log,
                 prepend_path=["pages"],
                 # Special Kwargs to validate globalOutputs, groupedOutputs and maps are valid:
                 globalOuputs_validPropIds=globalOuputs_validPropIds,
@@ -200,9 +175,9 @@ class Root(ApiValidator):
         appBar_data = self.data.get("appBar", dict())
         if appBar_data != {}:
             appBar(
-                data=appBar_data, 
-                log=self.log, 
-                prepend_path=["appBar"], 
+                data=appBar_data,
+                log=self.log,
+                prepend_path=["appBar"],
                 # Special kwargs to validate panes and pages are valid:
                 page_validPageIds=page_validPageIds,
                 pane_validPaneIds=pane_validPaneIds,

@@ -40,7 +40,7 @@ class props(ApiValidator):
         **kwargs,
     ):
         """
-        Required Arguments:
+        Arguments:
 
         - `name`:
             - Type: str
@@ -104,14 +104,14 @@ class props(ApiValidator):
             - Note: If `None`, the prop will be enabled.
         - `apiCommand`:
             - Type: str | None
-            - What: The name of the api command to trigger.
+            - What: The name of the API command to trigger.
             - Default: `None`
             - Note: if `None`, no `apiCommand` is triggered
         - `apiCommandKeys`:
             - Type: list | None
-            - What: The top level api keys to pass to your `execute_command` if an apiCommand is provded.
+            - What: The top level API keys to pass to your `execute_command` if an `apiCommand` is provided.
             - Default: `None`
-            - Note: If `None` all api keys are passed to your `execute_command`.
+            - Note: If `None` all API keys are passed to your `execute_command`.
         - `options`:
             - Type: dict | None
             - What: The options for the prop. This only applies to `selector` props.
@@ -396,7 +396,7 @@ class layout(ApiValidator):
             - Default: `None`
             - Note: If `None`, no data is provided.
             - Accepted Values:
-                - The prop keys from your api spec at the same level as `layout`.
+                - The prop keys from your API spec at the same level as `layout`.
         - `itemId`:
             - Type: str | None
             - What: The id of the item for the layout. This only applies to `item` layouts.
@@ -461,9 +461,9 @@ class values(ApiValidator):
     @staticmethod
     def spec(**kwargs):
         """
-        Accepts all arbitrary values depending on what you have in your props as part of the api spec.
+        Accepts all arbitrary values depending on what you have in your props as part of the API spec.
 
-        The values you pass will be validated against the props in your api spec.
+        The values you pass will be validated against the props in your API spec.
         """
         return {
             "kwargs": {},
@@ -497,7 +497,7 @@ class values(ApiValidator):
                 max_value = prop_spec.get("maxValue", float("inf"))
                 if prop_value < min_value or prop_value > max_value:
                     self.__error__(
-                        msg=f"`{prop_key}` with the prop type of `{prop_type}` must be between {min_value} and {max_value} as defined by the api spec."
+                        msg=f"`{prop_key}` with the prop type of `{prop_type}` must be between {min_value} and {max_value} as defined by the API spec."
                     )
             elif prop_type == "selector":
                 options = list(prop_spec.get("options", {}).keys())
@@ -517,9 +517,9 @@ class valueLists(ApiValidator):
     @staticmethod
     def spec(**kwargs):
         """
-        Accepts all arbitrary values depending on what you have in your props as part of the api spec.
+        Accepts all arbitrary values depending on what you have in your props as part of the API spec.
 
-        The valueLists you pass will be validated against the props in your api spec.
+        The valueLists you pass will be validated against the props in your API spec.
         """
         return {
             "kwargs": {},
@@ -563,7 +563,7 @@ class valueLists(ApiValidator):
                     prop_value_list_min = min(prop_value_list)
                     if prop_value_list_min < min_value:
                         self.__error__(
-                            msg=f"`{prop_key}` has a value that is less than {min_value} as defined by the api spec."
+                            msg=f"`{prop_key}` has a value that is less than {min_value} as defined by the API spec."
                         )
                 # Validate maximum is met
                 max_value = prop_spec.get("maxValue")
@@ -571,7 +571,7 @@ class valueLists(ApiValidator):
                     prop_value_list_max = max(prop_value_list)
                     if prop_value_list_max > max_value:
                         self.__error__(
-                            msg=f"`{prop_key}` has a value that is greater than {max_value} as defined by the api spec."
+                            msg=f"`{prop_key}` has a value that is greater than {max_value} as defined by the API spec."
                         )
             elif prop_type == "selector":
                 options = list(prop_spec.get("options", {}).keys())
