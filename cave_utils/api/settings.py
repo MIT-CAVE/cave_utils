@@ -146,10 +146,20 @@ class settings_defaults(ApiValidator):
 
     @staticmethod
     def spec(
+        showToolbar: bool = True,
+        locale: str = "en-US",
         precision: int = 2,
         trailingZeros: bool = False,
-        unitPlacement: str = "right",
-        showToolbar: bool = True,
+        notation: [str, None] = "standard",
+        notationDisplay: [str, None] = None,
+        fallbackValue: [str, None] = "N/A",
+        unit: [str, None] = None,
+        unitPlacement: str = "afterWithSpace",
+        legendPrecision: [str, None] = None,
+        legendNotation: [str, None] = "standard",
+        legendNotationDisplay: [str, None] = None,
+        legendMinLabel: [str, None] = None,
+        legendMaxLabel: [str, None] = None,
         **kwargs,
     ):
         """
@@ -169,7 +179,7 @@ class settings_defaults(ApiValidator):
                 * This ensures that all precision digits are shown. For example: `1.5` &rarr; `1.500` when precision is `3`.
                 * This attribute only applies to `"num"` props.
         * **`notation`**: `[int]` = `"standard"` &rarr; The formatting style of a numeric value.
-        * **`notationDisplay`**: `[str]` = `"e+"` | `"short"` &rarr; Further customize the formatting within the selected `notation`.
+        * **`notationDisplay`**: `[str]` = `"e+"` | `"short"` | `None` &rarr; Further customize the formatting within the selected `notation`.
             * **Notes**:
                 * No `notationDisplay` option is provided for a `"standard"` notation
                 * The options `"short"` and `"long"` are only provided for the `"compact"` notation
@@ -178,7 +188,7 @@ class settings_defaults(ApiValidator):
                 * This attribute only applies to `"num"` props.
         * **`fallbackValue`**: [str] = `"N/A"` &rarr; A value to show when a numeric value is missing or invalid.
             * **Note**: This attribute only applies to `"num"` props.
-        * **`unit`**: `[str]` = `None` &rarr; The unit to use for a prop.
+        * **`unit`**: `[str]` = `None` &rarr; The unit to use for a prop or stat.
             * **Note**: This attribute only applies to `"num"` props.
         * **`unitPlacement`**: `[str]` = `"afterWithSpace"` &rarr; The position of the `unit` symbol relative to a value.
             * **Accepted Values**:
@@ -202,7 +212,7 @@ class settings_defaults(ApiValidator):
             * **Notes**:
                 * If left unspecified (i.e. `None`), the prop's `notation` will be used or in case the latter is undefined, `settings.notation` will be used.
                 * This attribute only applies to `"num"` props.
-        * **`legendNotationDisplay`**: `[str]` = `"e+"` | `"short"` &rarr; Further customize the formatting within the selected `legendNotation`.
+        * **`legendNotationDisplay`**: `[str]` = `"e+"` | `"short"` | `None` &rarr; Further customize the formatting within the selected `legendNotation`.
             * **Accepted Values**:
                 * `"short"`: Add symbols `K`, `M`, `B`, and `T` (in `"en-US"`) to denote thousands, millions, billions, and trillions, respectively.
                 * `"long"`: Present numeric values with the informal suffix words `thousand`, `million`, `billion`, and `trillion` (in `"en-US"`).
@@ -235,5 +245,13 @@ class settings_defaults(ApiValidator):
             "kwargs": kwargs,
             "accepted_values": {
                 "unitPlacement": ["after", "afterWithSpace", "before", "beforeWithSpace"],
+                # TODO: Validate
+                # compact: allowed notation displays -> "short", "long"
+                # scientific|engineering: allowed notation displays -> "e", "e+", "E", "E+", "x10^", "x10^+"
+                # standard: allowed notation displays -> None
+                "notation": ["compact", "precision", "scientific"],
+                "notationDisplay": ["short", "long", "e", "e+", "E", "E+", "x10^", "x10^+"],
+                "legendNotation": ["compact", "precision", "scientific"],
+                "legendNotationDisplay": ["short", "long", "e", "e+", "E", "E+", "x10^", "x10^+"],
             },
         }

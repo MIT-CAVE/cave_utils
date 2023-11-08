@@ -38,6 +38,8 @@ class props(ApiValidator):
         icon: [str, None] = None,
         trailingZeros: [bool, None] = None,
         unitPlacement: [str, None] = None,
+        locale: [str, None] = None,
+        fallbackValue: [str, None] = None,
         **kwargs,
     ):
         """

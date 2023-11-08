@@ -105,37 +105,29 @@ class groupedOutputs_groupings_star(ApiValidator):
         **kwargs,
     ):
         """
-        Required Arguments:
+        Arguments:
 
-        - `levels`:
-            - Type: dict
-            - What: A dictionary of levels that are available for the grouping.
-            - See: `cave_utils.api.groupedOutputs.groupedOutputs_groupings_star_levels_star`
-        - `data`:
-            - Type: dict
-            - What: The data to be grouped.
-            - See: `cave_utils.api.groupedOutputs.groupedOutputs_groupings_star_data`
-        - `name`:
-            - Type: str
-            - What: The name of the grouping.
-
-        Optional Arguments:
-
-        - `layoutDirection`:
-            - Type: str
-            - What: The direction of the grouping levels in the layout.
-            - Default: `None`
-            - Accepted Values: ['horizontal', 'vertical']
-        - `grouping`:
-            - Type: str
-            - What: A group that is created to put similar groupings together in the UI dropdowns when selecting groupings.
-            - Default: `None`
-            - Note: If `grouping` is not provided, the grouping will be placed in the root of the UI dropdowns.
-
+        * **`levels`**: `[dict]` &rarr;
+            * A dictionary of levels that are available for the grouping.
+            * **See**: `groupedOutputs_groupings_star_levels_star`
+        * **`data`**: `[dict]` &rarr; The data to be grouped.
+            * **See**: `groupedOutputs_groupings_star_data`
+        * **`name`**: `[str]` &rarr; The name of the grouping.
+        * **`layoutDirection`**: `[str]` = `"vertical"` &rarr; The direction of the grouping levels in the layout.
+            * **Accepted Values**:
+                * `"horizontal"`: Plain number formatting
+                * `"vertical"`: Resembles the [metric prefix][] system
+                * `"scientific"`: [Scientific notation][]
+                * `"engineering"`: [Engineering notation][]
+        * **`grouping`**: `[str]` = `None` &rarr;
+            * A group that is created to put similar groupings together in the UI dropdowns when selecting groupings.
+            * **Note**: If `None`, the grouping will be placed in the root of the UI dropdowns.
         """
         return {
             "kwargs": kwargs,
-            "accepted_values": {"layoutDirection": ["horizontal", "vertical"]},
+            "accepted_values": {
+                "layoutDirection": ["horizontal", "vertical"],
+            },
         }
 
     def __extend_spec__(self, **kwargs):
@@ -177,44 +169,38 @@ class groupedOutputs_data_star_stats(ApiValidator):
         **kwargs,
     ):
         """
-        Required Arguments:
+        Arguments:
 
-        - `name`:
-            - Type: str
-            - What: The name of the stat.
-        - `calculation`:
-            - Type: str
-            - What: The calculation to generate the stat for each group.
-            - Note: This can use operators [`+`, `-`, `*`, `/`, and `groupSum`].
-            - Note: This can call in keys from `groupedOutputs.data.*.valueLists.*` as variables.
-            - EG: Create a variable that can be used to aggregate on your stat demand on arbitrary groupings
-                - `'demand'`
-            - EG: Create a variable that can be used to aggregate your percent of demand met on arbitrary groupings
-                - `'sales / groupSum("demand")'`
-                - Note: This only shows the percent of demand met for each group if they are summed in the chart.
-        - `unit`:
-            - Type: str
-            - What: The unit of the stat.
-            - Default: `None`
-        - `unitPlacement`:
-            - Type: str
-            - What: Where the unit should be placed.
-            - Default: `'after'`
-            - Accepted Values: ['before', 'after']
-        - `precision`:
-            - Type: int
-            - What: The number of decimal places to show.
-            - Default: `None` (the amount calculated by the calculation)
-        - `trailingZeros`:
-            - Type: bool
-            - What: Whether or not to show trailing zeros.
-            - Default: `False`
+        * **`name`**: `[str]` &rarr; The name of the stat.
+        * **`calculation`**: `[str]` &rarr; The calculation to generate the stat for each group.
+            * **Notes**:
+                * This can use operators [`+`, `-`, `*`, `/`, and `groupSum`]
+                * This can call in keys from `groupedOutputs.data.*.valueLists.*` as variables
+            * **Examples**:
+                * Create a variable that can be used to aggregate on your stat demand on arbitrary groupings: `'demand'`.
+                * Create a variable that can be used to aggregate your percent of demand met on arbitrary groupings. (This only shows the percent of demand met for each group if they are summed in the chart): `'sales / groupSum("demand")'`
+        * **`unit`**: `[str]` &rarr; The unit to use for the stat.
+            * **Note**: If left unspecified (i.e., `None`), it will default to `settings.defaults.unit`.
+        * **`unitPlacement`**: `[str]` = `None` &rarr; The position of the `unit` symbol relative to the value.
+            * **Accepted Values**:
+                * `"after"`: The `unit` appears after the value.
+                * `"afterWithSpace"`: The `unit` appears after the value, separated by a space.
+                * `"before"`: The `unit` appears before the value.
+                * `"beforeWithSpace"`: The unit is placed before the value, with a space in between.
+            * **Note**: If left unspecified (i.e., `None`), it will default to `settings.defaults.unitPlacement`.
+        * **`precision`**: `[int]` = `None` &rarr; The number of decimal places to display.
+            * **Notes**:
+                * Set the precision to `0` to attach an integer constraint.
+                * If left unspecified (i.e., `None`), it will default to `settings.defaults.precision`.
+        * **`trailingZeros`**: `[bool]` = `None` &rarr; If `True`, trailing zeros will be displayed.
+            * **Notes**:
+                * This ensures that all precision digits are shown. For example: `1.5` &rarr; `1.500` when precision is `3`.
+                * If left unspecified (i.e., `None`), it will default to `settings.defaults.trailingZeros`.
         """
         return {
             "kwargs": kwargs,
             "accepted_values": {
-                # TODO: Validate unitPlacement options
-                "unitPlacement": ["before", "after"]
+                "unitPlacement": ["after", "afterWithSpace", "before", "beforeWithSpace"],
             },
         }
 
