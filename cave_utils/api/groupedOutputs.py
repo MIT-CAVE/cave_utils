@@ -14,9 +14,7 @@ class groupedOutputs(ApiValidator):
     """
 
     @staticmethod
-    def spec(
-        groupings:dict, data:dict, **kwargs
-    ):
+    def spec(groupings: dict, data: dict, **kwargs):
         """
         Arguments:
 
@@ -42,20 +40,21 @@ class groupedOutputs(ApiValidator):
             log=self.log,
             prepend_path=["data"],
             validator=groupedOutputs_data_star,
-            available_groups={k:v.get('data',{}).get('id',[]) for k,v in groupedOutputs_groupings.items()},
+            available_groups={
+                k: v.get("data", {}).get("id", []) for k, v in groupedOutputs_groupings.items()
+            },
             **kwargs,
         )
+
 
 @type_enforced.Enforcer
 class groupedOutputs_groupings_star_data(ApiValidator):
     """
-    The grouped outputs data is located under the path **`groupedOutputs.groupings.*.data`**.
+    The groupings data is located under the path **`groupedOutputs.groupings.*.data`**.
     """
+
     @staticmethod
-    def spec(
-        id: list,
-        **kwargs
-    ):
+    def spec(id: list, **kwargs):
         """
         Arguments:
 
@@ -68,7 +67,7 @@ class groupedOutputs_groupings_star_data(ApiValidator):
 
     def __extend_spec__(self, **kwargs):
         keys = list(self.data.keys())
-        expected_keys = kwargs.get("acceptable_data_keys", [])+['id']
+        expected_keys = kwargs.get("acceptable_data_keys", []) + ["id"]
         missing_keys = pamda.difference(expected_keys, keys)
         # Ensure that all keys are present
         if len(missing_keys) > 0:
@@ -76,9 +75,7 @@ class groupedOutputs_groupings_star_data(ApiValidator):
                 msg=f"The following keys: {str(missing_keys)} are required in groupedOutputs.groupings.*.data",
             )
         # Ensure that all keys are valid
-        self.__check_subset_valid__(
-            subset=keys, valid_values=expected_keys, prepend_path=[]
-        )
+        self.__check_subset_valid__(subset=keys, valid_values=expected_keys, prepend_path=[])
         # Ensure that all values are lists
         self.__check_type_dict__(data=self.data, types=(list,), prepend_path=[])
         # Ensure that all values are lists of strings
@@ -92,65 +89,20 @@ class groupedOutputs_groupings_star_data(ApiValidator):
             )
 
 
-
-@type_enforced.Enforcer
-class groupedOutputs_groupings_star_levels_star(ApiValidator):
-    """
-    ## Api Path: groupedOutputs.groupings.*.levels.*
-    """
-    @staticmethod
-    def spec(
-        name:str, parent:[str, None]=None, ordering:[list, None]=None, **kwargs
-    ):
-        """
-        Required Arguments:
-
-        - `name`:
-            - Type: str
-            - What: The name of the level.
-
-        Optional Arguments:
-
-        - `parent`:
-            - Type: str
-            - What: The key of the parent level. This is used to create a hierarchy of levels.
-            - Note: The parent level key must be defined in `groupedOutputs.groupings.*.levels.*`
-            - Note: If none, this will be considered to be the root of the hierarchy.
-        """
-        # TODO: Figure out new way for ordering
-        # - `ordering`:
-        #     - Type: list
-        #     - What: The ordering of individual values for this level in charts and tables.
-        #     - Note: If none, the ordering will be alphabetical.
-        #     - Note: If a partial ordering is provided, the provided values will be placed first in order.
-        #     - Note: If a partial ordering is provided, the remaining values will be placed in alphabetical order.
-        #     - Note: All items in this list must be defined in `groupedOutputs.groupings.*.levels.*.values.*`
-        # """
-        return {"kwargs": kwargs, "accepted_values": {}}
-
-    def __extend_spec__(self, **kwargs):
-        parent = self.data.get("parent")
-        if parent is not None:
-            self.__check_subset_valid__(
-                subset=[parent], valid_values=kwargs.get("acceptable_parents", []), prepend_path=["parent"]
-            )
-        # ordering = self.data.get("ordering")
-        # if ordering is not None:
-        #     print(ordering, kwargs.get("acceptable_data_keys", []))
-        #     self.__check_subset_valid__(
-        #         subset=ordering, valid_values=kwargs.get("acceptable_data_keys", []), prepend_path=["ordering"]
-        #     )
-
-
 @type_enforced.Enforcer
 class groupedOutputs_groupings_star(ApiValidator):
     """
-    ## Api Path: groupedOutputs.groupings.*
+    The groupings are located under the path **`groupedOutputs.groupings.*`**.
     """
 
     @staticmethod
     def spec(
-        levels:dict, data:dict, name:str, layoutDirection:str='vertical', grouping:[str,None] = None, **kwargs
+        levels: dict,
+        data: dict,
+        name: str,
+        layoutDirection: str = "vertical",
+        grouping: [str, None] = None,
+        **kwargs,
     ):
         """
         Required Arguments:
@@ -181,9 +133,10 @@ class groupedOutputs_groupings_star(ApiValidator):
             - Note: If `grouping` is not provided, the grouping will be placed in the root of the UI dropdowns.
 
         """
-        return {"kwargs": kwargs, "accepted_values": {
-            "layoutDirection": ['horizontal', 'vertical']
-        }}
+        return {
+            "kwargs": kwargs,
+            "accepted_values": {"layoutDirection": ["horizontal", "vertical"]},
+        }
 
     def __extend_spec__(self, **kwargs):
         levels_data = self.data.get("levels", {})
@@ -210,17 +163,18 @@ class groupedOutputs_groupings_star(ApiValidator):
 @type_enforced.Enforcer
 class groupedOutputs_data_star_stats(ApiValidator):
     """
-    ## Api Path: groupedOutputs.data.*.stats
+    The grouped output stats are located under the path **`groupedOutputs.data.*.stats`**.
     """
+
     @staticmethod
     def spec(
-        name:str,
+        name: str,
         calculation: str,
         unit: [str, None] = None,
-        unitPlacement: str = 'after',
+        unitPlacement: str = "afterWithSpace",
         precision: [int, None] = None,
         trailingZeros: bool = False,
-        **kwargs
+        **kwargs,
     ):
         """
         Required Arguments:
@@ -256,21 +210,68 @@ class groupedOutputs_data_star_stats(ApiValidator):
             - What: Whether or not to show trailing zeros.
             - Default: `False`
         """
-        return {"kwargs": kwargs, "accepted_values": {
-            # TODO: Validate unitPlacement options
-            "unitPlacement": ['before', 'after']
-        }}
+        return {
+            "kwargs": kwargs,
+            "accepted_values": {
+                # TODO: Validate unitPlacement options
+                "unitPlacement": ["before", "after"]
+            },
+        }
+
+
+@type_enforced.Enforcer
+class groupedOutputs_groupings_star_levels_star(ApiValidator):
+    """
+    The level data is located under the path **`groupedOutputs.groupings.*.levels.*`**.
+    """
+
+    @staticmethod
+    def spec(name: str, parent: [str, None] = None, ordering: [list, None] = None, **kwargs):
+        """
+        Arguments:
+
+        * **`name`**: `[str]` &rarr; The name of the level.
+        * **`parent`**: `[str]` &rarr;
+            * The key of the parent level. This is used to create a hierarchy of levels.
+            * **Notes**:
+                * The parent level key must be defined in `groupedOutputs.groupings.*.levels.*`
+                * If `None`, this will be considered to be the root of the hierarchy.
+        """
+        # TODO: Figure out new way for ordering
+        # - `ordering`:
+        #     - Type: list
+        #     - What: The ordering of individual values for this level in charts and tables.
+        #     - Note: If none, the ordering will be alphabetical.
+        #     - Note: If a partial ordering is provided, the provided values will be placed first in order.
+        #     - Note: If a partial ordering is provided, the remaining values will be placed in alphabetical order.
+        #     - Note: All items in this list must be defined in `groupedOutputs.groupings.*.levels.*.values.*`
+        # """
+        return {"kwargs": kwargs, "accepted_values": {}}
+
+    def __extend_spec__(self, **kwargs):
+        parent = self.data.get("parent")
+        if parent is not None:
+            self.__check_subset_valid__(
+                subset=[parent],
+                valid_values=kwargs.get("acceptable_parents", []),
+                prepend_path=["parent"],
+            )
+        # ordering = self.data.get("ordering")
+        # if ordering is not None:
+        #     print(ordering, kwargs.get("acceptable_data_keys", []))
+        #     self.__check_subset_valid__(
+        #         subset=ordering, valid_values=kwargs.get("acceptable_data_keys", []), prepend_path=["ordering"]
+        #     )
 
 
 @type_enforced.Enforcer
 class groupedOutputs_data_star_valueLists(ApiValidator):
     """
-    ## Api Path: groupedOutputs.data.*.valueLists
+    The value lists are located under the path **`groupedOutputs.data.*.valueLists`**.
     """
+
     @staticmethod
-    def spec(
-        **kwargs
-    ):
+    def spec(**kwargs):
         """
         Accepts any key value pairs as a dictionary structure for the data.
         Each value must be a list of integers or floats.
@@ -289,9 +290,7 @@ class groupedOutputs_data_star(ApiValidator):
     """
 
     @staticmethod
-    def spec(
-        stats:dict, valueLists:dict, groupLists:dict, **kwargs
-    ):
+    def spec(stats: dict, valueLists: dict, groupLists: dict, **kwargs):
         """
         Arguments:
 
@@ -318,33 +317,40 @@ class groupedOutputs_data_star(ApiValidator):
         # Ensure Valid Value Lists
         valueLists_data = self.data.get("valueLists", {})
         for key, value in valueLists_data.items():
-            if not self.__check_type__(value=value, check_type=(list,), prepend_path=["valueLists", key]):
+            if not self.__check_type__(
+                value=value, check_type=(list,), prepend_path=["valueLists", key]
+            ):
                 pass_list_lengths = False
                 continue
             list_lengths.append(len(value))
-            self.__check_type_list__(data=value, types=(int, float), prepend_path=["valueLists", key])
+            self.__check_type_list__(
+                data=value, types=(int, float), prepend_path=["valueLists", key]
+            )
         # Ensure Valid Group Lists
         available_groups = kwargs.get("available_groups", {})
         groupLists_data = self.data.get("groupLists", {})
         self.__check_subset_valid__(
-            subset=list(groupLists_data.keys()), valid_values=list(available_groups.keys()) , prepend_path=["groupLists"]
+            subset=list(groupLists_data.keys()),
+            valid_values=list(available_groups.keys()),
+            prepend_path=["groupLists"],
         )
         for key, value in groupLists_data.items():
-            if not self.__check_type__(value=value, check_type=(list,), prepend_path=["groupLists", key]):
+            if not self.__check_type__(
+                value=value, check_type=(list,), prepend_path=["groupLists", key]
+            ):
                 pass_list_lengths = False
                 continue
             list_lengths.append(len(value))
             valid_values = available_groups.get(key, [])
-            if not self.__check_type_list__(data=valid_values, types=(str,), prepend_path=["groupLists", key]):
+            if not self.__check_type_list__(
+                data=valid_values, types=(str,), prepend_path=["groupLists", key]
+            ):
                 continue
             self.__check_subset_valid__(
                 subset=value, valid_values=valid_values, prepend_path=["groupLists", key]
             )
         # Ensure all lists are the same length
         if not pass_list_lengths or len(set(list_lengths)) != 1:
-
             self.__error__(
                 msg="All values in groupedOutputs.data.*.groupLists and groupedOutputs.data.*.valueLists must be lists of the same length.",
             )
-
-

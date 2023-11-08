@@ -41,7 +41,7 @@ class appBar_data_star(ApiValidator):
             * **Note**: It must be a valid icon name from the [react-icons][] bundle, preceded by the abbreviated name of the icon library source.
             * **Example**: `"md/MdRocket"`.
         * **`type`**: `[str]` &rarr; The type of object displayed when the action is triggered.
-            * **Accepted values**:
+            * **Accepted Values**:
                 * `"session"`: The Session Pane
                 * `"settings"`: The Application Settings Pane
                 * `"button"`: A button that allows you to send a command to the CAVE API
@@ -54,7 +54,7 @@ class appBar_data_star(ApiValidator):
                 * `"upperRight"`: Upper section of the right-side bar
                 * `"lowerRight"`: Lower section of the right-side bar
         * **`variant`**: `[str]` = `None` &rarr; The variant of the button.
-            * **Accepted values**:
+            * **Accepted Values**:
                 * When **`type`** == `"pane"` | `"page"`:
                     * `"modal"`: A [modal pane][]
                     * `"wall"`: A [wall pane][]

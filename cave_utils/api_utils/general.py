@@ -5,6 +5,7 @@ from pamda import pamda
 import type_enforced
 from cave_utils.api_utils.validator_utils import ApiValidator, CustomKeyValidator
 
+
 @type_enforced.Enforcer
 class props(ApiValidator):
     @staticmethod
@@ -42,198 +43,194 @@ class props(ApiValidator):
         """
         Arguments:
 
-        - `name`:
-            - Type: str
-            - What: The name of the prop.
-        - `type`:
-            - Type: str
-            - What: The type of the prop.
-            - Accepted Values:
-                - `"head"`
-                - `"num"`
-                - `"toggle"`
-                - `"button"`
-                - `"text"`
-                - `"selector"`
-                - `"date"`
-                - `"media"`
+        * **`name`**: `[str]` &rarr; The name of the prop.
+        * **`type`**: `[str]` &rarr; The type of the prop.
+            * **Accepted Values**:
+                * `"head"`: A header for an individual section, containing a `title` and a `help` message
+                * `"num"`: A numeric input field
+                * `"toggle"`: A switch button to enable or disable a single setting
+                * `"button"`: A regular button
+                * `"text"`: A text input field
+                * `"selector"`: Select options from a set
+                * `"date"`: Select a date and/or time
+                * `"media"`: View various media formats
+        * **`help`**: `[str]` = `None` &rarr; The help text to display.
+        * **`variant`**: `[str]` = `None` &rarr; The variant of the prop.
+            * **Accepted Values**:
+                * When **`type`** == `"head"`:
+                    * `"column"`: A header for a column of related prop items
+                    * `"row"`: A header for a row of related prop items
+                    * `"icon"`: TODO
+                    * `"iconRow"`: TODO
+                * When **`type`** == `"text"`:
+                    * `"single"`: A single-line text input field
+                    * `"textarea"`: A multi-line text input field
+                * When **`type`** == `"num"`:
+                    * `"field"`: A numeric input field
+                    * `"slider"`: A range of values along a bar, from which users may select a single value
+                    * `"icon"`: TODO
+                * When **`type`** == `"selector"`:
+                    * `"checkbox"`: Select one or more items from a set of checkboxes
+                    * `"combobox"`: A dropdown with a search bar that allows users to filter options when typing
+                    * `"dropdown"`: Show multiple options that appear when the element is clicked
+                    * `"nested"`: Select one or more options from a set of nested checkboxes
+                    * `"radio"`: Select one option from a set of mutually exclusive options
+                    * `"hradio"`: A set of `"radio"`s placed horizontally
+                    * `"hstepper"`: Select a unique option along a horizontal slider
+                    * `"vstepper"`: Select a unique option along a vertical slider
+                * When **`type`** == `"date"`:
+                    * `"date"`: Select a date via a calendar pop-up that appears when the element is clicked
+                    * `"time"`: Select a time via a clock pop-up that appears when the element is clicked
+                    * `"datetime"`: Select date and time via a pop-up with calendar and clock tabs that appear when the element is clicked
+                * When **`type`** == `"media"`:
+                    * `"picture"`: Show a PNG or JPG image
+                    * `"video"`: Display a YouTube, Vimeo, or Dailymotion video clip
+        * **`enabled`**: `[bool]` = `True` &rarr; Whether or not the prop will be enabled.
+        * **`apiCommand`**: `[str]` = `None` &rarr; The name of the API command to trigger.
+            * **Note**: If `None`, no `apiCommand` is triggered.
+        * **`apiCommandKeys`**: `[list]` = `None` &rarr;
+            * The top level API keys to pass to your `execute_command` if an `apiCommand` is provided.
+            * **Note**: If `None`, all API keys are passed to your `execute_command`.
+        * **`icon`**: `[str]` = `None` &rarr; The icon to use for the prop.
+            * **Notes**:
+                * It must be a valid icon name from the [react-icons][] bundle, preceded by the abbreviated name of the icon library source.
+                * This attribute is applicable exclusively to `"head"` props.
+        * **`options`**: `[dict]` = `None` &rarr;
+            * **Notes**:
+                * Only options provided here are valid for the prop value
+                * This attribute is applicable exclusively to `"selector"` props
+        * **`placeholder`**: `[str]` = `None` &rarr; The placeholder text to display.
+            * **Note**: This attribute is applicable exclusively to `"text"` props.
+        * **`maxValue`**: `[float | int]` = `None` &rarr; The maximum value for the prop.
+            * **Note**: This attribute is applicable exclusively to `"num"` props.
+        * **`minValue`**: `[float | int]` = `None` &rarr; The minimum value for the prop.
+            * **Note**: This attribute is applicable exclusively to `"num"` props.
+        * **`maxRows`**: `[int]` = `None` &rarr;
+            * The maximum number of rows to show for a `"textarea"` variant.
+            * **Note**: This attribute is applicable exclusively to `"text"` props.
+        * **`minRows`**: `[int]` = `None` &rarr;
+            * The minimum number of rows to show for a `"textarea"` variant.
+            * **Note**: This attribute is applicable exclusively to `"text"` props.
+        * **`rows`**: `[int]` = `None` &rarr;
+            * The fixed number of rows to show for a `"textarea"` variant.
+            * **Note**: This attribute is applicable exclusively to `"text"` props.
+        * **`views`**: `[list]` = `["year", "day", "hours", "minutes"]` &rarr;
+            * The available time units for the represented date and/or time.
+            * **Accepted Values**:
+                * `"year"`: The year view
+                * `"month"`: The month view
+                * `"day"`: The day view
+                * `"hours"`: The hours view
+                * `"minutes"`: The minutes view
+                * `"seconds"`: The seconds view
+            * **Notes**:
+                * The views will be presented in the order specified in the `views` array.
+                * This attribute is applicable exclusively to `"date"` props.
+        * **`locale`**: `[str]` = `None` &rarr;
+            * Format numeric values based on language and regional conventions.
+            * **Notes**:
+                * If left unspecified (i.e., `None`), it will default to `settings.defaults.locale`.
+                * This attribute is applicable exclusively to `"num"` props.
+            * **See**: [Locale identifier][].
+        * **`precision`**: `[int]` = `None` &rarr; The number of decimal places to display.
+            * **Notes**:
+                * Set the precision to `0` to attach an integer constraint.
+                * If left unspecified (i.e., `None`), it will default to `settings.defaults.precision`.
+                * This attribute is applicable exclusively to `"num"` props.
+        * **`trailingZeros`**: `[bool]` = `None` &rarr; If `True`, trailing zeros will be displayed.
+            * **Notes**:
+                * This ensures that all precision digits are shown. For example: `1.5` &rarr; `1.500` when precision is `3`.
+                * If left unspecified (i.e., `None`), it will default to `settings.defaults.trailingZeros`.
+                * This attribute is applicable exclusively to `"num"` props.
+        * **`fallbackValue`**: [str] = `None` &rarr; A value to show when the value is missing or invalid.
+            * **Notes**:
+                * If left unspecified (i.e., `None`), it will default to `settings.defaults.fallbackValue`.
+                * This attribute only applies to `"num"` props.
+        * **`unit`**: `[str]` = `None` &rarr; The unit to use for the prop.
+            * **Notes**:
+                * If left unspecified (i.e., `None`), it will default to `settings.defaults.unit`.
+                * This attribute is applicable exclusively to `"num"` props.
+        * **`unitPlacement`**: `[str]` = `None` &rarr; The position of the `unit` symbol relative to the value.
+            * **Accepted Values**:
+                * `"after"`: The `unit` appears after the value.
+                * `"afterWithSpace"`: The `unit` appears after the value, separated by a space.
+                * `"before"`: The `unit` appears before the value.
+                * `"beforeWithSpace"`: The unit is placed before the value, with a space in between.
+            * **Notes**:
+                * If left unspecified (i.e., `None`), it will default to `settings.defaults.unitPlacement`.
+                * This attribute is applicable exclusively to `"num"` props.
+        * **`notation`**: `[int]` = `"standard"` &rarr; The formatting style of a numeric value.
+            * **Accepted Values**:
+                * `"standard"`: Plain number formatting
+                * `"compact"`: Resembles the [metric prefix][] system
+                * `"scientific"`: [Scientific notation][]
+                * `"engineering"`: [Engineering notation][]
+            * **Notes**:
+                * If left unspecified (i.e., `None`), it will default to `settings.defaults.notation`.
+                * This attribute is applicable exclusively to `"num"` props.
+        * **`notationDisplay`**: `[str]` = `"e+"` | `"short"` &rarr; Further customize the formatting within the selected `notation`.
+            * **Accepted Values**:
+                * `"short"`: Add symbols `K`, `M`, `B`, and `T` (in `"en-US"`) to denote thousands, millions, billions, and trillions, respectively.
+                * `"long"`: Present numeric values with the informal suffix words `thousand`, `million`, `billion`, and `trillion` (in `"en-US"`).
+                * `"e"`: Exponent symbol in lowercase as per the chosen `locale` identifier
+                * `"e+"`: Similar to `"e"`, but with a plus sign for positive exponents.
+                * `"E"`: Exponent symbol in uppercase as per the chosen `locale` identifier
+                * `"E+"`: Similar to `"E"`, but with a plus sign for positive exponents.
+                * `"x10^"`: Formal scientific notation representation
+                * `"x10^+"`: Similar to `"x10^"`, with a plus sign for positive exponents.
+            * **Notes**:
+                * No `notationDisplay` option is provided for a `"standard"` notation
+                * The options `"short"` and `"long"` are only provided for the `"compact"` notation
+                * The options `"e"`, `"e+"`, `"E"`, `"E+"`, `"x10^"`, and `"x10^+"` are provided for the `"scientific"` and `"engineering"` notations
+                * If left unspecified (i.e., `None`), it will default to `settings.defaults.notationDisplay`.
+                * This attribute is applicable exclusively to `"num"` props.
+        * **`legendPrecision`**: `[int]` = `None` &rarr;
+            * The number of decimal places to display in the Map Legend.
+            * **Notes**:
+                * Set the precision to `0` to attach an integer constraint.
+                * If left unspecified (i.e., `None`), it will default to `settings.defaults.legendPrecision`.
+                * This attribute is applicable exclusively to `"num"` props.
+        * **`legendNotation`**: `[int]` = `"standard"` &rarr; The formatting style of a numeric value.
+            * **Accepted Values**:
+                * `"standard"`: Plain number formatting
+                * `"compact"`: Resembles the [metric prefix][] system
+                * `"scientific"`: [Scientific notation][]
+                * `"engineering"`: [Engineering notation][]
+            * **Notes**:
+                * If left unspecified (i.e., `None`), it will default to `settings.defaults.legendNotation`.
+                * This attribute is applicable exclusively to `"num"` props.
+        * **`legendNotationDisplay`**: `[str]` = `"e+"` | `"short"` &rarr; Further customize the formatting within the selected `legendNotation`.
+            * **Accepted Values**:
+                * `"short"`: Add symbols `K`, `M`, `B`, and `T` (in `"en-US"`) to denote thousands, millions, billions, and trillions, respectively.
+                * `"long"`: Present numeric values with the informal suffix words `thousand`, `million`, `billion`, and `trillion` (in `"en-US"`).
+                * `"e"`: Exponent symbol in lowercase as per the chosen `locale` identifier
+                * `"e+"`: Similar to `"e"`, but with a plus sign for positive exponents.
+                * `"E"`: Exponent symbol in uppercase as per the chosen `locale` identifier
+                * `"E+"`: Similar to `"E"`, but with a plus sign for positive exponents.
+                * `"x10^"`: Formal scientific notation representation
+                * `"x10^+"`: Similar to `"x10^"`, with a plus sign for positive exponents.
+            * **Notes**:
+                * No `legendNotationDisplay` option is provided for a `"standard"` legend notation
+                * The options `"short"` and `"long"` are only provided for the `"compact"` legend notation
+                * The options `"e"`, `"e+"`, `"E"`, `"E+"`, `"x10^"`, and `"x10^+"` are provided for the `"scientific"` and `"engineering"` legend notations
+                * If left unspecified (i.e., `None`), it will default to `settings.defaults.legendNotationDisplay`.
+                * This attribute is applicable exclusively to `"num"` props.
+        * **`legendMinLabel`**: `[str]` = `None` &rarr;
+            * A custom and descriptive label in the Map Legend used to identify the lowest data point.
+            * **Notes**:
+                * Takes precedence over other formatting, except when used in a node cluster and the `cave_utils.api.maps.group` attribute is `True`. In this case, the min value within the node cluster is displayed.
+                * If left unspecified (i.e., `None`), it will default to `settings.defaults.legendMinLabel`.
+                * This attribute is applicable exclusively to `"num"` props.
+        * **`legendMaxLabel`**: `[str]` = `None` &rarr;
+            * A custom and descriptive label in the Map Legend used to identify the highest data point.
+            * **Notes**:
+                * Takes precedence over other formatting, except when used in a node cluster and the `cave_utils.api.maps.group` attribute is `True`. In this case, the max value within the node cluster is displayed.
+                * If left unspecified (i.e., `None`), it will default to `settings.defaults.legendMaxLabel`.
+                * This attribute is applicable exclusively to `"num"` props.
 
-        Optional Arguments:
-
-        - `help`:
-            - Type: str | None
-            - What: The help text to display.
-            - Default: `None`
-        - `variant`:
-            - Type: str | None
-            - What: The variant of the prop.
-            - TODO: Validate accepted values
-            - Accepted Values:
-                - Type: `"head"`
-                    - `"column"`
-                    - `"row"`
-                    - `"icon"`
-                - Type: `"text"`
-                    - `"textarea"`
-                - Type: `"num"`
-                    - TODO: add the default icon variant here
-                    - `"slider"`
-                    - `"icon"`
-                - Type: `"selector"`
-                    - `"dropdown"`
-                    - `"checkbox"`
-                    - `"radio"`
-                    - `"combobox"`
-                    - `"hstepper"`
-                    - `"vstepper"`
-                    - `"hradio"`
-                    - `"nested"`
-                - Type: `"date"`
-                    - `"date"`
-                    - `"time"`
-                    - `"datetime"`
-                - Type: `"media"`
-                    - `"picture"`
-                    - `"video"`
-            - Default: `None`
-            - TODO: Check this
-        - `enabled`:
-            - Type: bool | None
-            - What: If `True`, the prop will be enabled.
-            - Default: `None`
-            - Note: If `None`, the prop will be enabled.
-        - `apiCommand`:
-            - Type: str | None
-            - What: The name of the API command to trigger.
-            - Default: `None`
-            - Note: if `None`, no `apiCommand` is triggered
-        - `apiCommandKeys`:
-            - Type: list | None
-            - What: The top level API keys to pass to your `execute_command` if an `apiCommand` is provided.
-            - Default: `None`
-            - Note: If `None` all API keys are passed to your `execute_command`.
-        - `options`:
-            - Type: dict | None
-            - What: The options for the prop. This only applies to `selector` props.
-            - Default: `None`
-            - Note: If `None`, no options are provided.
-            - Note: Only options provided here are valid for the prop value.
-        - `placeholder`:
-            - Type: str | None
-            - What: The placeholder text to display. This only applies to `text` props.
-            - Default: `None`
-            - Note: If `None`, no placeholder text is provided.
-        - `maxValue`:
-            - Type: float | int | None
-            - What: The maximum value for the prop. This only applies to `num` props.
-            - Default: `None`
-            - Note: If `None`, no maximum value is provided.
-        - `minValue`:
-            - Type: float | int | None
-            - What: The minimum value for the prop. This only applies to `num` props.
-            - Default: `None`
-            - Note: If `None`, no minimum value is provided.
-        - `numberFormat`:
-            - Type: dict | None
-            - What: The number format for the prop. This only applies to `num` props.
-            - Default: `None`
-            - Note: If `None`, no number format is provided.
-            - TODO: Check / Extend this.
-        - `maxRows`:
-            - Type: int | None
-            - What: The maximum number of rows to show for a `textarea` variant. This only applies to `text` props.
-            - Default: `None`
-            - Note: If `None`, no maximum number of rows is provided.
-        - `minRows`:
-            - Type: int | None
-            - What: The minimum number of rows to show for a `textarea` variant. This only applies to `text` props.
-            - Default: `None`
-            - Note: If `None`, no minimum number of rows is provided.
-        - `rows`:
-            - Type: int | None
-            - What: The number of rows to show for a `textarea` variant. This only applies to `text` props.
-            - Default: `None`
-            - Note: If `None`, no number of rows is provided.
-        - `notation`:
-            - Type: str | None
-            - What: The notation to use for the prop. This only applies to `num` props.
-            - Default: `None`
-            - Note: If `None`, no notation is provided.
-            - TODO: Check / Extend This.
-        - `precision`:
-            - Type: int | None
-            - What: The precision to use for the prop. This only applies to `num` props.
-            - Default: `None`
-            - Note: If `None`, no precision is provided.
-            - TODO: Check / Extend This.
-        - `notationDisplay`:
-            - Type: str | None
-            - What: The notation display to use for the prop. This only applies to `num` props.
-            - Default: `None`
-            - Note: If `None`, no notation display is provided.
-            - TODO: Check / Extend This.
-        - `unit`:
-            - Type: str | None
-            - What: The unit to use for the prop. This only applies to `num` props.
-            - Default: `None`
-            - Note: If `None`, no unit is provided.
-            - TODO: Check / Extend This.
-        - `views`:
-            - Type: list | None
-            - What: A list of the views to use for the prop. This only applies to `date` props.
-            - Default: `None`
-            - Note: If `None`, no views are provided.
-            - Valid Values: `["day", "hours", "minutes"]`
-            - TODO: Check / Extend This.
-        - `legendNotation`:
-            - Type: str | None
-            - What: The legend notation to use for the prop. This only applies to `num` props.
-            - Default: `None`
-            - Note: If `None`, no legend notation is provided.
-            - TODO: Check / Extend This.
-        - `legendPrecision`:
-            - Type: int | None
-            - What: The legend precision to use for the prop. This only applies to `num` props.
-            - Default: `None`
-            - Note: If `None`, no legend precision is provided.
-            - TODO: Check / Extend This.
-        - `legendNotationDisplay`:
-            - Type: str | None
-            - What: The legend notation display to use for the prop. This only applies to `num` props.
-            - Default: `None`
-            - Note: If `None`, no legend notation display is provided.
-            - TODO: Check / Extend This.
-        - `legendMinLabel`:
-            - Type: str | None
-            - What: The legend minimum label to use for the prop. This only applies to `num` props.
-            - Default: `None`
-            - Note: If `None`, no legend minimum label is provided.
-            - TODO: Check / Extend This.
-        - `legendMaxLabel`:
-            - Type: str | None
-            - What: The legend maximum label to use for the prop. This only applies to `num` props.
-            - Default: `None`
-            - Note: If `None`, no legend maximum label is provided.
-            - TODO: Check / Extend This.
-        - `icon`:
-            - Type: str | None
-            - What: The icon to use for the prop.
-            - Default: `None`
-            - TODO: Validate this this is correct and validate that the icon exists.
-            - Note: Icon is only used for `head` props.
-        - `trailingZeros`:
-            - TODO: Validate this is correct
-            - Type: bool | None
-            - What: Whether or not to show trailing zeros when precision is specified
-            - Note: This ensures that all prcision digits are shown. EG: 1.5 -> 1.500 when precision is 3
-            - Default: `None`
-            - Note: This only applies to `num` props.
-        - `unitPlacement`:
-            - TODO: Validate this is correct
-            - Type: str | None
-            - What: Where to place the unit.
-            - Default: `None`
-            - Accepted Values:[`before`, `after`]
+        [metric prefix]: https://en.wikipedia.org/wiki/Metric_prefix
+        [Scientific notation]: https://en.wikipedia.org/wiki/Scientific_notation
+        [Engineering notation]: https://en.wikipedia.org/wiki/Engineering_notation
         """
         passed_values = {k: v for k, v in locals().items() if (v is not None) and k != "kwargs"}
         required_fields = ["name", "type"]
@@ -241,7 +238,7 @@ class props(ApiValidator):
         if type != "head":
             optional_fields += ["apiCommand", "apiCommandKeys"]
         if type == "head":
-            if variant == 'icon':
+            if variant == "icon":
                 required_fields += ["icon"]
         if type == "text":
             optional_fields += ["minRows", "maxRows", "rows"]
@@ -282,9 +279,16 @@ class props(ApiValidator):
             "accepted_values": {
                 "type": ["head", "num", "toggle", "button", "text", "selector", "date", "media"],
                 "views": ["year", "month", "day", "hours", "minutes", "seconds"],
+                "unitPlacement": ["after", "afterWithSpace", "before", "beforeWithSpace"],
+                # TODO: Validate
+                # compact: allowed notation displays -> "short", "long"
+                # scientific|engineering: allowed notation displays -> "e", "e+", "E", "E+", "x10^", "x10^+"
+                # standard: allowed notation displays -> None
+                "notation": ["compact", "precision", "scientific"],
+                "notationDisplay": ["short", "long", "e", "e+", "E", "E+", "x10^", "x10^+"],
                 "legendNotation": ["compact", "precision", "scientific"],
-                "unitPlacement": ["before", "after"],
-                # TODO: Valiate These
+                "legendNotationDisplay": ["short", "long", "e", "e+", "E", "E+", "x10^", "x10^+"],
+                # TODO: Validate These
                 # TODO: Add Other value checks here
                 "variant": {
                     "head": ["column", "row", "icon"],
@@ -322,19 +326,16 @@ class props_options(ApiValidator):
     @staticmethod
     def spec(name: str, path: [list, None] = None, **kwargs):
         """
-        Required Arguments:
+        Arguments:
 
-        - `name`:
-            - Type: str
-            - What: The name of the option.
-        - `path`:
-            - Type: list | None
-            - What: The path to the option. This is only required for nested options.
-            - Default: `None`
-            - Note: If `None`, the option will not be selectable.
+        * **`name`**: `[str]` &rarr; The name of the option.
+        * **`path`**: `[list]` = `None` &rarr; The path to an option.
+            * **Notes**:
+                * If `None`, the option will not be selectable
+                * This attribute is applicable exclusively to `"nested"` props
         """
         variant = kwargs.get("variant")
-        kwargs = {k:v for k,v in kwargs.items() if k != "variant"}
+        kwargs = {k: v for k, v in kwargs.items() if k != "variant"}
         if variant == "nested":
             if path is None:
                 raise Exception("Must provide a path for nested options")
@@ -369,49 +370,26 @@ class layout(ApiValidator):
         **kwargs,
     ):
         """
-        Required Arguments:
+        Arguments:
 
-        - `type`:
-            - Type: str
-            - What: The type of the layout.
-            - Accepted Values:
-                - `"grid"`
-                - `"item"`
-
-        Optional Arguments:
-
-        - `numColumns`:
-            - Type: str | int
-            - What: The number of columns for the grid layout. This only applies to `grid` layouts.
-            - Default: `"auto"`
-            - Note: If `"auto"`, the number of columns will be calculated based on the number of items.
-        - `numRows`:
-            - Type: str | int
-            - What: The number of rows for the grid layout. This only applies to `grid` layouts.
-            - Default: `"auto"`
-            - Note: If `"auto"`, the number of rows will be calculated based on the number of items.
-        - `data`:
-            - Type: dict | None
-            - What: The data for the layout. This only applies to `grid` layouts.
-            - Default: `None`
-            - Note: If `None`, no data is provided.
-            - Accepted Values:
-                - The prop keys from your API spec at the same level as `layout`.
-        - `itemId`:
-            - Type: str | None
-            - What: The id of the item for the layout. This only applies to `item` layouts.
-            - Default: `None`
-            - Note: If `None`, no item id is provided.
-        - `column`:
-            - Type: int | None
-            - What: The column in which to place this object in the current grid.
-            - Default: `None`
-            - Note: If `None`, no column is provided.
-        - `row`:
-            - Type: int | None
-            - What: The row in which to place this object in the current grid.
-            - Default: `None`
-            - Note: If `None`, no row is provided.
+        * **`type`**: `[str]` = `None` &rarr; The type of the layout.
+            * **Accepted Values**:
+                * `"grid"`: A layout element that can contain other layout elements.
+                * `"item"`: A layout element where a prop is located.
+        * **`numColumns`**: `[str | int]` = `"auto"` &rarr; The number of columns for the grid layout.
+            * **Notes**:
+                * If `"auto"`, the number of columns will be calculated based on the number of items.
+                * This attribute is applicable exclusively to `"grid"` layouts.
+        * **`numRows`**: `[str | int]` = `"auto"` &rarr; The number of rows for the grid layout.
+            * **Notes**:
+                * If `"auto"`, the number of rows will be calculated based on the number of items.
+                * This attribute is applicable exclusively to `"grid"` layouts.
+        * **`data`**: `[dict]` = `None` &rarr; The data for the layout.
+            * **Note**: This attribute is applicable exclusively to `"grid"` layouts.
+        * **`itemId`**: `[str]` = `None` &rarr; The id of the prop placed in the layout
+            * **Note**: This attribute is applicable exclusively to `"item"` layouts.
+        * **`column`**: `[int]` = `None` &rarr; The column in which to place the prop in the current grid.
+        * **`row`**: `[int]` = `None` &rarr; The row in which to place the prop in the current grid.
         """
         passed_values = {k: v for k, v in locals().items() if (v is not None) and k != "kwargs"}
         if type == "grid":
@@ -444,9 +422,7 @@ class layout(ApiValidator):
         layout_type = self.data.get("type", None)
         if layout_type == "grid":
             for field, value in self.data.get("data", {}).items():
-                layout(
-                    data=value, log=self.log, prepend_path=["data", field], **kwargs
-                )
+                layout(data=value, log=self.log, prepend_path=["data", field], **kwargs)
         if layout_type == "item":
             item_id = self.data.get("itemId", None)
             prop_id_list = kwargs.get("prop_id_list", [])
@@ -512,6 +488,7 @@ class values(ApiValidator):
             elif prop_type == "media":
                 self.__check_url_valid__(prop_value)
 
+
 @type_enforced.Enforcer
 class valueLists(ApiValidator):
     @staticmethod
@@ -531,8 +508,7 @@ class valueLists(ApiValidator):
         for prop_key, prop_value_list in self.data.items():
             if not isinstance(prop_value_list, list):
                 self.__error__(
-                    msg=f"`{prop_key}` must be a list of values for valueLists",
-                    path = [prop_key]
+                    msg=f"`{prop_key}` must be a list of values for valueLists", path=[prop_key]
                 )
                 continue
             prop_spec = props_data.get(prop_key, {})

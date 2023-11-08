@@ -88,7 +88,7 @@ class pages_data_star_pageLayout(ApiValidator):
         Arguments:
 
         * **`type`**: `[str]` = `"groupedOutputs"` &rarr; The type of the page layout.
-            * **Accepted values**:
+            * **Accepted Values**:
                 * `"groupedOutput"`: The `unit` appears after the value.
                 * `"globalOutput"`: The `unit` appears after the value, separated by a space.
                 * `"map"`: The `unit` appears before the value.
@@ -123,7 +123,7 @@ class pages_data_star_pageLayout(ApiValidator):
         * **`groupingLevel`**: `[list]` = `None` &rarr; The ids of the grouping levels to use.
         * **`lockedLayout`**: `[bool]` = `False` &rarr; Whether or not the layout should be locked.
         * **`statAggregation`**: `[str]` = `"sum"` &rarr; A stat aggregation function to apply to the chart data.
-            * **Accepted values**:
+            * **Accepted Values**:
                 * `"sum"`: Add up aggregated data
                 * `"mean"`: Calculate the mean of the aggregated data
                 * `"min"`: Find the minimum values within the aggregated data
@@ -131,7 +131,7 @@ class pages_data_star_pageLayout(ApiValidator):
         * **`groupedOutputDataId`**: `[str]` = `None` &rarr; The id of the grouped output data to use.
         * **`groupedOutputDataId`**: `[str]` = `None` &rarr; The id of the stat to use.
         * **`showToolbar`**: `[bool]` = `None` &rarr; Whether or not the chart toolbar should be shown.
-            * **Note**: If unspecified (i.e., `None`), its value will be determined by `settings.showToolbar`.
+            * **Note**: If left unspecified (i.e., `None`), it will default to `settings.showToolbar`.
         * **`maximized`**: `[bool]` = `False` &rarr; Whether or not the layout should be maximized.
             * **Note**: If more than one chart belonging to the same page layout is set to `True`, the first one found in the list will take precedence.
 

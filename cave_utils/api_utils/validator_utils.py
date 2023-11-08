@@ -163,7 +163,7 @@ class ApiValidator:
             )
             self.__error__(
                 path=prepend_path,
-                msg=f"Invalid value(s) selected: {str(invalid_values)}. Accepted values are {valid_values}",
+                msg=f"Invalid value(s) selected: {str(invalid_values)}. Accepted Values are {valid_values}",
             )
             return False
         return True

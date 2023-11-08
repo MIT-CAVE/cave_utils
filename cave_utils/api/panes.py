@@ -21,7 +21,7 @@ class panes(ApiValidator):
         * **`data`**: `[str]` &rarr; The data to pass to `panes.data.*`.
         * **`paneState`**: `[dict]` &rarr;
             * A dictionary of pane states per their location in the `appBar` object.
-            * **Accepted values**:
+            * **Accepted Values**:
                 * `"left"`: The state of a pane triggered from the left-side app bar.
                 * `"center"`: The pane state of a centered modal.
                 * `"right"`: The state of a pane triggered from the right-side app bar.
@@ -140,7 +140,7 @@ class panes_paneState_star_star(ApiValidator):
         * **`pin`**: `[bool]` = `False` &rarr; Whether or not the pane is pinned.
             * **Note**: Only used for panes located on `"left"` or `"right"` side app bars.
         * **`type`**: `[str]` = `"pane"` &rarr; The context that activated the current visible pane.
-            * **Accepted values**:
+            * **Accepted Values**:
                 * `"pane"`: A pane triggered from the `"left"` or `"right"` side app bars.
                 * `"feature"`: Map feature data is displayed in the `"center"` of the screen.
             * **Note**: In the vast majority of use cases, the `type` attribute is not relevant to the design of the CAVE App, as its primary purpose is to store temporary UI state during user interactions. Nevertheless, a CAVE App designer has the option to prepopulate it if required.

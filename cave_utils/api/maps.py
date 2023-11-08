@@ -68,20 +68,25 @@ class maps_data_star(ApiValidator):
         * **`name`**: `[str]` &rarr; The name of the map.
         * **`currentStyle`**: `[str]` = `None` &rarr; The map's style id applied when the map is first loaded.
         * **`currentProjection`**: `[str]` = `None` &rarr; The map's projection id applied when the map is first loaded.
-            * **Accepted values**:
+            * **Accepted Values**:
                 * `"mercator"`: The [Mercator projection][]
                 * `"globe"`: The map is displayed as a 3D globe
         * **`defaultViewport`**: `[dict]` = `None` &rarr; The default viewport to use.
             * **Note**: The value of this attribute should match the structure of a viewport object.
             * **See**: `cave_utils.api.maps.viewport`
-        * **`defaultViewport`**: `[dict]` = `None` &rarr; The optional viewports that can be selected by the end user.
+        * **`optionalViewports`**: `[dict]` = `None` &rarr; The optional viewports that can be selected by the end user.
             * **Note**: The value of this attribute should match the structure of a dictionary of viewport objects.
             * **See**: `cave_utils.api.maps.viewport`
         * **`legendGroups`**: `[dict]` = `None` &rarr; The legend groups to show in the map selection menu.
 
         [Mercator projection]: https://en.wikipedia.org/wiki/Mercator_projection
         """
-        return {"kwargs": kwargs, "accepted_values": {"currentProjection": ["mercator", "globe"]}}
+        return {
+            "kwargs": kwargs,
+            "accepted_values": {
+                "currentProjection": ["mercator", "globe"],
+            },
+        }
 
     def __extend_spec__(self, **kwargs):
         # Validate current style
@@ -123,16 +128,22 @@ class maps_additionalMapStyles_star(ApiValidator):
     """
 
     @staticmethod
-    def spec(name: str, icon: str, spec: [dict, str], fog: [dict, None] = None, **kwargs):
+    def spec(
+        name: str,
+        spec: [dict, str],
+        fog: [dict, None],
+        icon: str = "md/MdMap",
+        **kwargs,
+    ):
         """
         Required Arguments:
 
         * **`name`**: `[str]` &rarr; The name of the map style.
         * **`icon`**: `[str]` = `"md/MdMap"` &rarr; The icon to show in the map selection menu.
-        * **`spec`**: `[dict | str]` &rarr; The spec to generate the map
+        * **`spec\u200b`**: `[dict | str]` &rarr; The spec to generate the map
             * **Notes**:
-                * If `spec` is a string, it will be treated as a URL to a JSON spec file.
-                * `spec` is only validated for its type, which can be either a `dict` or a `str`.
+                * If `spec\u200b` is a string, it will be treated as a URL to a JSON spec file.
+                * `spec\u200b` is only validated for its type, which can be either a `dict` or a `str`.
             * **See**:
                 * Mapbox: https://docs.mapbox.com/api/maps/styles/
                 * Carto: https://github.com/CartoDB/basemap-styles/blob/master/docs/basemap_styles.json
@@ -225,219 +236,40 @@ class viewport(ApiValidator):
 
 
 @type_enforced.Enforcer
-class colorByOptions(ApiValidator):
+class maps_data_star_legendGroups_star(ApiValidator):
     """
-    The `colorByOptions` group is located at the path `maps.data.*.legendGroups.*.data.*.colorByOptions`.
+    The legend groups are located under the path `maps.data.*.legendGroups.*`.
     """
 
     @staticmethod
     def spec(
-        startGradientColor: [str, None] = None,
-        endGradientColor: [str, None] = None,
-        min: [float, int, None] = None,
-        max: [float, int, None] = None,
-        nullColor: [str, None] = None,
+        name: str,
+        data: dict,
         **kwargs,
     ):
         """
         Arguments:
 
-        - `startGradientColor`:
-            - Type: str
-            - What: The starting color for the gradient.
-            - Accepted Values:
-                - Any valid rgba string.
-            - Eg: `"rgba(255, 255, 255, 1)"`
-            - Note: This is only required for numeric props.
-        - `endGradientColor`:
-            - Type: str
-            - What: The ending color for the gradient.
-            - Accepted Values:
-                - Any valid rgba string.
-            - Eg: `"rgba(255, 255, 255, 1)"`
-            - Note: This is only required for numeric props.
-        - `customKey`:
-            - Type: str
-            - What: A color (RGBA String) assigned to a categorical value.
-                - Note: You should provide one `customKey` per option key in the associated prop.
-            - Note: This is only required for non numeric props.
-            - TODO: Flesh this out better
-
-        Optional Arguments:
-
-        - `min`:
-            - Type: float | int | None
-            - What: The minimum value for calculating the gradient.
-            - Default: `None`
-            - Note: If None, the min of the relevant data will be used.
-        - `max`:
-            - Type: float | int | None
-            - What: The maximum value for calculating the gradient.
-            - Default: `None`
-            - Note: If None, the max of the relevant data will be used.
-        - `nullColor`:
-            - Type: str | None
-            - What: The color to use for null values.
-            - Default: `None`
-            - Note: If None, null values will not be shown
+        * **`name`**: `[str]` &rarr; The name of the legend group as displayed in the Map Legend.
+        * **`data`**: `[dict]` &rarr; The relevant `data` dictionary for this legend group.
+            * **See**: `cave_utils.api.maps.maps_data_star_legendGroups_star_data_star`
         """
-
-        if startGradientColor is not None or endGradientColor is not None:
-            if startGradientColor is None:
-                raise Exception(
-                    "Must provide a `startGradientColor` if `endGradientColor` is provided"
-                )
-            if endGradientColor is None:
-                raise Exception(
-                    "Must provide a `endGradientColor` if `startGradientColor` is provided"
-                )
-            return {
-                "kwargs": kwargs,
-                "accepted_values": {},
-            }
-        else:
-            return {
-                "kwargs": {},
-                "accepted_values": {},
-            }
+        return {"kwargs": kwargs, "accepted_values": {}}
 
     def __extend_spec__(self, **kwargs):
-        prop_data = kwargs.get("colorBy_availableProps").get(
-            kwargs.get("CustomKeyValidatorFieldId")
+        CustomKeyValidator(
+            data=self.data.get("data", {}),
+            log=self.log,
+            prepend_path=["data"],
+            validator=maps_data_star_legendGroups_star_data_star,
+            **kwargs,
         )
-        if prop_data is None:
-            return
-        prop_type = prop_data.get("type")
-        if prop_type == "num":
-            for obj_key in ["startGradientColor", "endGradientColor", "nullColor"]:
-                obj_val = self.data.get(obj_key)
-                if obj_val is not None:
-                    self.__check_rgba_string_valid__(rgba_string=obj_val, prepend_path=[obj_key])
-                if obj_key in ["startGradientColor", "endGradientColor"] and obj_val == None:
-                    self.__error__(msg=f"Missing key `{obj_key}`")
-            for obj_key in ["min", "max"]:
-                obj_val = self.data.get(obj_key)
-                if obj_val is not None:
-                    if not isinstance(obj_val, (int, float)):
-                        self.__error__(msg=f"Invalid `{obj_key}` ({obj_val}) must be a number")
-                        continue
-        elif prop_type == "toggle":
-            for key, value in self.data.items():
-                if not self.__check_subset_valid__(
-                    subset=[key],
-                    valid_values=["true", "false", "nullColor"],
-                    prepend_path=[],
-                ):
-                    return
-                self.__check_rgba_string_valid__(rgba_string=value, prepend_path=[key])
-        elif prop_type == "selector":
-            for key, value in self.data.items():
-                if not self.__check_subset_valid__(
-                    subset=[key],
-                    valid_values=list(prop_data.get("options").keys()) + ["nullColor"],
-                    prepend_path=[],
-                ):
-                    return
-                self.__check_rgba_string_valid__(rgba_string=value, prepend_path=[key])
-        else:
-            self.__error__(msg=f"Invalid prop type ({prop_type}) for colorByOptions")
-
-
-@type_enforced.Enforcer
-class sizeByOptions(ApiValidator):
-    @staticmethod
-    def spec(
-        startSize: [str, None] = None,
-        endSize: [str, None] = None,
-        min: [float, int, None] = None,
-        max: [float, int, None] = None,
-        nullSize: [str, None] = None,
-        **kwargs,
-    ):
-        """
-        Required Arguments:
-
-        - `startSize`:
-            - Type: str
-            - What: The starting size for the gradient.
-            - Accepted Values:
-                - Any valid pixel string.
-            - Eg: `"10px"`
-            - Note: This is only required for numeric props.
-        - `endSize`:
-            - Type: str
-            - What: The ending size for the gradient.
-            - Accepted Values:
-                - Any valid pixel string.
-            - Eg: `"10px"`
-            - Note: This is only required for numeric props.
-        - `customKey`:
-            - Type: str
-            - What: A pixel size (pixel String) assigned to a categorical value.
-                - Note: You should provide one `customKey` per option key in the associated prop.
-            - Note: This is only required for non numeric props.
-            - TODO: Flesh this out better
-
-        Optional Arguments:
-
-        - `min`:
-            - Type: float | int | None
-            - What: The minimum value for calculating the size.
-            - Default: `None`
-            - Note: If None, the min of the relevant data will be used.
-        - `max`:
-            - Type: float | int | None
-            - What: The maximum value for calculating the size.
-            - Default: `None`
-            - Note: If None, the max of the relevant data will be used.
-        - `nullSize`:
-            - Type: str | None
-            - What: The size to use for null values.
-            - Default: `None`
-            - Note: If None, null values will not be shown
-
-        """
-        if startSize is not None or endSize is not None:
-            if startSize is None:
-                raise Exception("Must provide a `startSize` if `endSize` is provided")
-            if endSize is None:
-                raise Exception("Must provide a `endSize` if `startSize` is provided")
-            return {
-                "kwargs": kwargs,
-                "accepted_values": {},
-            }
-        else:
-            return {
-                "kwargs": {},
-                "accepted_values": {},
-            }
-
-    def __extend_spec__(self, **kwargs):
-        prop_data = kwargs.get("sizeBy_availableProps").get(kwargs.get("CustomKeyValidatorFieldId"))
-        if prop_data is None:
-            return
-        prop_type = prop_data.get("type")
-        if prop_type == "num":
-            for obj_key in ["startSize", "endSize", "nullSize"]:
-                obj_val = self.data.get(obj_key)
-                if obj_val is not None:
-                    self.__check_pixel_string_valid__(pixel_string=obj_val, prepend_path=[obj_key])
-                if obj_key in ["startSize", "endSize"] and obj_val == None:
-                    self.__error__(msg=f"Missing key `{obj_key}`")
-            for obj_key in ["min", "max"]:
-                obj_val = self.data.get(obj_key)
-                if obj_val is not None:
-                    if not isinstance(obj_val, (int, float)):
-                        self.__error__(msg=f"Invalid `{obj_key}` ({obj_val}) must be a number")
-                        continue
-        else:
-            self.__error__(msg=f"Invalid prop type ({prop_type}) for sizeByOptions")
 
 
 @type_enforced.Enforcer
 class maps_data_star_legendGroups_star_data_star(ApiValidator):
     """
-    ## Api Path: maps.data.*.legendGroups.*.data.*
+    The legend group data is located under the path `maps.data.*.legendGroups.*.data.*`.
     """
 
     @staticmethod
@@ -447,7 +279,7 @@ class maps_data_star_legendGroups_star_data_star(ApiValidator):
         colorBy: [str, None] = None,
         lineBy: [str, None] = None,
         allowGrouping: bool = False,
-        group: [bool, None] = None,
+        group: [bool, None] = False,
         groupCalcBySize: [str, None] = None,
         groupCalcByColor: [str, None] = None,
         groupScaleWithZoom: bool = False,
@@ -460,90 +292,92 @@ class maps_data_star_legendGroups_star_data_star(ApiValidator):
         """
         Required Arguments:
 
-        - `value`:
-            - Type: bool
-            - What: Whether or not to show this data layer on the map.
-
-        Optional Arguments:
-
-        - `sizeBy`:
-            - Type: str | None
-            - What: The prop to use for sizing the data layer.
-            - Default: `None`
-            - Note: If `None`, the data layer will not be sized.
-            - Note: Does not apply to shape layers.
-        - `colorBy`:
-            - Type: str | None
-            - What: The prop to use for coloring the data layer.
-            - Default: `None`
-            - Note: If `None`, the data layer will not be colored.
-        - `lineBy`:
-            - Type: str | None
-            - What: The type of line to use for the data layer.
-            - Accepted Values: `solid`, `dashed`, `dotted`
-            - Default: `solid`
-            - Note: Only applies to arc layers
-        - `allowGrouping`:
-            - Type: bool
-            - What: Whether or not to allow grouping of the data layer.
-            - Default: `False`
-            - Note: Only applies to node layers.
-        - `group`:
-            - Type: bool | None
-            - What: Whether or not to group the data layer.
-            - TODO: Validate default value
-            - Default: `False`
-            - Note: If `None`, the data layer will not be grouped.
-            - Note: Only applies to node layers.
-        - `groupCalcBySize`:
-            - Type: str | None
-            - What: The prop to use for calculating the size of the group.
-            - Default: `sum`
-            - Accepted Values: [`sum`, `mean`, `median`, `mode`, `min`, `max`, `count`, `and`, `or`]
-            - Note: If `None`, the data layer will not be grouped.
-            - Note: Only applies to node layers.
-        - `groupCalcByColor`:
-            - Type: str | None
-            - What: The prop to use for calculating the color of the group.
-            - TODO: Validate default value
-            - Default: `sum`
-            - Accepted Values: [`sum`, `mean`, `median`, `mode`, `min`, `max`, `count`, `and`, `or`]
-            - Note: If `None`, the data layer will not be grouped.
-            - Note: Only applies to node layers.
-        - `groupScaleWithZoom`:
-            - Type: bool
-            - What: Whether or not to scale the group size with zoom.
-            - Default: `False`
-            - Note: Only applies to node layers.
-            - Note: If `False`, the group size will be constant as set by `groupScale`.
-        - `groupScale`:
-            - Type: float | int | None
-            - What: The zoom level at which to conduct grouping of the nodes.
-            - Default: `None`
-            - Note: Only applies to node layers.
-            - Note: If `None`, the group scale willl be determined by the map zoom.
-        - `colorByOptions`:
-            - Type: dict | None
-            - What: The options for coloring the data layer.
-            - Default: `None`
-            - Note: If `None`, the data layer will not be colored.
-            - Note: Does not apply to shape layers.
-            - TODO: Add numeric and categorical example here.
-            - See: `cave_utils.api.maps.colorByOptions`
-        - `sizeByOptions`:
-            - Type: dict | None
-            - What: The options for sizing the data layer.
-            - Default: `None`
-            - Note: If `None`, the data layer will not be sized.
-            - Note: Does not apply to shape layers.
-            - TODO: Add numeric and categorical example here.
-            - See: `cave_utils.api.maps.sizeByOptions`
-        - `icon`:
-            - Type: str | None
-            - What: The icon to use for the data layer.
-            - Note: Only applies to node layers.
-            - Note: Arc layer icons are determined by `lineBy`.
-            - Note: Shape layer icons are always the default icon.
+        * **`value`**: `[bool]` &rarr; Whether or not to show this data layer on the map.
+        * **`sizeBy`**: `[str]` = `None` &rarr; The prop id to use for sizing the data layer.
+            * **Notes**:
+                * If `None`, the data layer will not be sized
+                * Does not apply to shape layers
+        * **`colorBy`**: `[str]` = `None` &rarr; The prop id to use for coloring the data layer.
+            * **Note**: If `None`, the data layer will not be colored
+        * **`lineBy`**: `[str]` = `"solid"` &rarr; The type of line to use for the data layer.
+            * **Accepted Values**:
+                * `"solid"`: Represents a single continuous line.
+                * `"dashed"`: A series of dashes or line segments
+                * `"dotted"`: A dotted line
+            * **Note**: This attribute is applicable exclusively to `arc` layers.
+        * **`allowGrouping`**: `[bool]` = `False` &rarr; Whether or not to allow grouping of the data layer.
+            * **Note**: This attribute is applicable exclusively to `node` layers.
+        * **`group`**: `[bool]` = `False` &rarr; Whether or not to group the data layer.
+            * **Notes**:
+                * If `False`, the data layer will not be grouped
+                * This attribute is applicable exclusively to `node` layers
+        * **`groupCalcBySize`**: `[str]` = `"count"` | `"mode"` &rarr; The aggregation function to use on the prop specified in `sizeBy`.
+            * **Accepted Values**:
+                * When **`sizeBy`** prop's **`type`** == `"num"`:
+                    * `"count"`: Total number of nodes in the cluster
+                    * `"sum"`: Total sum of values within the cluster
+                    * `"mean"`: Average value within the cluster
+                    * `"median"`: Median value within the cluster
+                    * `"mode"`: Most frequently occurring value within the cluster
+                    * `"max"`: Maximum value within the cluster
+                    * `"min"`: Minimum value within the cluster
+                * When **`sizeBy`** prop's **`type`** == `"toggle"`:
+                    * `"mode"`: Most frequently occurring value within the cluster
+                    * `"and"`: Determine if all values in the cluster are `True`
+                    * `"or"`: Determine if at least one value in the cluster is `True`
+                * When **`sizeBy`** prop's **`type`** == `"selector"`:
+                    * `"mode"`: Most frequently occurring value within the cluster
+            * **Notes**:
+                * If `None`, the data layer will not be grouped
+                * The calculation is based on the values of the prop specified in `sizeBy`
+                * The default value for a `sizeBy` prop of type `"num"` is `"count"`. For other types, the default value is `"mode"`.
+                * This attribute is applicable exclusively to `node` layers
+        * **`groupCalcByColor`**: `[str]` = `"count"` | `"mode"` &rarr; The aggregation function to use on the prop specified in `colorBy`.
+            * **Accepted Values**:
+                * When **`colorBy`** prop's **`type`** == `"num"`:
+                    * `"count"`: Total number of nodes in the cluster
+                    * `"sum"`: Total sum of values within the cluster
+                    * `"mean"`: Average value within the cluster
+                    * `"median"`: Median value within the cluster
+                    * `"mode"`: Most frequently occurring value within the cluster
+                    * `"max"`: Maximum value within the cluster
+                    * `"min"`: Minimum value within the cluster
+                * When **`colorBy`** prop's **`type`** == `"toggle"`:
+                    * `"mode"`: Total number of nodes in the cluster
+                    * `"and"`: Determine if all values in the cluster are `True`
+                    * `"or"`: Determine if at least one value in the cluster is `True`
+                * When **`colorBy`** prop's **`type`** == `"selector"`:
+                    * `"mode"`: Most frequently occurring value within the cluster
+            * **Notes**:
+                * If `None`, the data layer will not be grouped
+                * The calculation is based on the prop specified in `colorBy`
+                * The default value for a `colorBy` prop of type `"num"` is `"count"`. For other types, the default value is `"mode"`.
+                * This attribute is applicable exclusively to `node` layers
+        * **`groupScaleWithZoom`**: `[bool]` = `False` &rarr; Whether or not to scale the group size with zoom.
+            * **Notes**:
+                * If `False`, the group size will be constant as set by `groupScale`
+                * This attribute is applicable exclusively to `node` layers
+        * **`groupScale`**: `[float | int]` = `None` &rarr; The zoom level at which to conduct grouping of the nodes.
+            * **Notes**:
+                * If `None`, the group scale will be determined by the map zoom.
+                * This attribute is applicable exclusively to `node` layers
+        * **`colorByOptions`**: `[dict]` = `None` &rarr; The options for coloring the data layer.
+            * **Notes**:
+                * If `None`, the data layer will not be colored.
+                * Does not apply to shape layers
+            * TODO: Add numeric and categorical example here.
+            * **See**: `cave_utils.api.maps.colorByOptions`
+        * **`sizeByOptions`**: `[dict]` = `None` &rarr; The options for sizing the data layer.
+            * **Notes**:
+                * If `None`, the data layer will not be sized.
+                * Does not apply to shape layers
+            * TODO: Add numeric and categorical example here.
+            * **See**: `cave_utils.api.maps.sizeByOptions`
+        * **`icon`**: `[str]` = `None` &rarr; The icon to use for the data layer.
+            * **Notes**:
+                * Arc layer icons are determined by `lineBy`.
+                * Shape layer icons are always the default icon.
+                * This attribute is applicable exclusively to `node` layers
         """
         return {
             "kwargs": kwargs,
@@ -641,35 +475,178 @@ class maps_data_star_legendGroups_star_data_star(ApiValidator):
 
 
 @type_enforced.Enforcer
-class maps_data_star_legendGroups_star(ApiValidator):
+class colorByOptions(ApiValidator):
     """
-    ## Api Path: maps.data.*.legendGroups.*
+    The `colorByOptions` group is located at the path `maps.data.*.legendGroups.*.data.*.colorByOptions`.
     """
 
     @staticmethod
     def spec(
-        name: str,
-        data: dict,
+        startGradientColor: [str, None] = None,
+        endGradientColor: [str, None] = None,
+        min: [float, int, None] = None,
+        max: [float, int, None] = None,
+        nullColor: [str, None] = None,
         **kwargs,
     ):
         """
-        Required Arguments:
+        Arguments:
 
-        - `name`:
-            - Type: str
-            - What: The name of the legend group. This is displayed in the legend menu.
-        - `data`:
-            - Type: dict
-            - What: The relevant data dict for this legend group.
-            - See: `cave_utils.api.maps.maps_data_star_legendGroups_star_data_star`
+        * **`startGradientColor`**: `[str]` &rarr; The starting color for the gradient.
+            * **Notes**:
+                * It must be a valid RGBA string
+                * This attribute is only required for numeric props
+            * **Example**: `"rgba(255, 255, 255, 1)"`.
+        * **`endGradientColor`**: `[str]` &rarr; The ending color for the gradient.
+            * **Notes**:
+                * It must be a valid RGBA string
+                * This attribute is only required for numeric props
+            * **Example**: `"rgba(255, 255, 255, 1)"`.
+        * **`customKey`**: `[str]` &rarr; A color (RGBA string) assigned to a categorical value.
+            * **Notes**:
+                * You should provide one `customKey` per option key in the associated prop.
+                * This attribute is only required for numeric props
+            * TODO: Flesh this out better
+        * **`min`**: `[float | int]` = `None` &rarr; The minimum value for calculating the gradient.
+            * **Note**: If `None`, the minimum of the relevant data will be used.
+        * **`min`**: `[float | int]` = `None` &rarr; The maximum value for calculating the gradient.
+            * **Note**: If `None`, the maximum of the relevant data will be used.
+        * **`nullColor`**: `[str]` = `None` &rarr; The color to use for null values.
+            * **Note**: If `None`, null values will not be shown.
         """
-        return {"kwargs": kwargs, "accepted_values": {}}
+
+        if startGradientColor is not None or endGradientColor is not None:
+            if startGradientColor is None:
+                raise Exception(
+                    "Must provide a `startGradientColor` if `endGradientColor` is provided"
+                )
+            if endGradientColor is None:
+                raise Exception(
+                    "Must provide a `endGradientColor` if `startGradientColor` is provided"
+                )
+            return {"kwargs": kwargs, "accepted_values": {}}
+        else:
+            return {"kwargs": {}, "accepted_values": {}}
 
     def __extend_spec__(self, **kwargs):
-        CustomKeyValidator(
-            data=self.data.get("data", {}),
-            log=self.log,
-            prepend_path=["data"],
-            validator=maps_data_star_legendGroups_star_data_star,
-            **kwargs,
+        prop_data = kwargs.get("colorBy_availableProps").get(
+            kwargs.get("CustomKeyValidatorFieldId")
         )
+        if prop_data is None:
+            return
+        prop_type = prop_data.get("type")
+        if prop_type == "num":
+            for obj_key in ["startGradientColor", "endGradientColor", "nullColor"]:
+                obj_val = self.data.get(obj_key)
+                if obj_val is not None:
+                    self.__check_rgba_string_valid__(rgba_string=obj_val, prepend_path=[obj_key])
+                if obj_key in ["startGradientColor", "endGradientColor"] and obj_val == None:
+                    self.__error__(msg=f"Missing key `{obj_key}`")
+            for obj_key in ["min", "max"]:
+                obj_val = self.data.get(obj_key)
+                if obj_val is not None:
+                    if not isinstance(obj_val, (int, float)):
+                        self.__error__(msg=f"Invalid `{obj_key}` ({obj_val}) must be a number")
+                        continue
+        elif prop_type == "toggle":
+            for key, value in self.data.items():
+                if not self.__check_subset_valid__(
+                    subset=[key],
+                    valid_values=["true", "false", "nullColor"],
+                    prepend_path=[],
+                ):
+                    return
+                self.__check_rgba_string_valid__(rgba_string=value, prepend_path=[key])
+        elif prop_type == "selector":
+            for key, value in self.data.items():
+                if not self.__check_subset_valid__(
+                    subset=[key],
+                    valid_values=list(prop_data.get("options").keys()) + ["nullColor"],
+                    prepend_path=[],
+                ):
+                    return
+                self.__check_rgba_string_valid__(rgba_string=value, prepend_path=[key])
+        else:
+            self.__error__(msg=f"Invalid prop type ({prop_type}) for colorByOptions")
+
+
+@type_enforced.Enforcer
+class sizeByOptions(ApiValidator):
+    """
+    The `sizeByOptions` group is located at the path `maps.data.*.legendGroups.*.data.*.sizeByOptions`.
+    """
+
+    @staticmethod
+    def spec(
+        startSize: [str, None] = None,
+        endSize: [str, None] = None,
+        min: [float, int, None] = None,
+        max: [float, int, None] = None,
+        nullSize: [str, None] = None,
+        **kwargs,
+    ):
+        """
+        Arguments:
+
+        * **`startSize`**: `[str]` &rarr; The starting size for the gradient.
+            * **Notes**:
+                * It must be a valid pixel string.
+                * This attribute is only required for numeric props
+            * **Example**: `"10px"`.
+        * **`endSize`**: `[str]` &rarr; The ending size for the gradient.
+            * **Notes**:
+                * It must be a valid pixel string.
+                * This attribute is only required for numeric props
+            * **Example**: `"10px"`.
+        * **`endSize`**: `[str]` &rarr; The ending size for the gradient.
+            * **Notes**:
+                * It must be a valid pixel string.
+                * This attribute is only required for numeric props
+            * **Example**: `"10px"`.
+        * **`customKey`**: `[str]` &rarr; A pixel size assigned to a categorical value.
+            * **Notes**:
+                * You should provide one `customKey` per option key in the associated prop.
+                * This attribute is only required for numeric props
+            * TODO: Flesh this out better
+        * **`min`**: `[float | int]` = `None` &rarr; The minimum value for calculating the size.
+            * **Note**: If `None`, the minimum of the relevant data will be used.
+        * **`min`**: `[float | int]` = `None` &rarr; The maximum value for calculating the size.
+            * **Note**: If `None`, the maximum of the relevant data will be used.
+        * **`nullSize`**: `[str]` = `None` &rarr; The size to use for null values.
+            * **Note**: If `None`, null values will not be shown.
+        """
+        if startSize is not None or endSize is not None:
+            if startSize is None:
+                raise Exception("Must provide a `startSize` if `endSize` is provided")
+            if endSize is None:
+                raise Exception("Must provide a `endSize` if `startSize` is provided")
+            return {
+                "kwargs": kwargs,
+                "accepted_values": {},
+            }
+        else:
+            return {
+                "kwargs": {},
+                "accepted_values": {},
+            }
+
+    def __extend_spec__(self, **kwargs):
+        prop_data = kwargs.get("sizeBy_availableProps").get(kwargs.get("CustomKeyValidatorFieldId"))
+        if prop_data is None:
+            return
+        prop_type = prop_data.get("type")
+        if prop_type == "num":
+            for obj_key in ["startSize", "endSize", "nullSize"]:
+                obj_val = self.data.get(obj_key)
+                if obj_val is not None:
+                    self.__check_pixel_string_valid__(pixel_string=obj_val, prepend_path=[obj_key])
+                if obj_key in ["startSize", "endSize"] and obj_val == None:
+                    self.__error__(msg=f"Missing key `{obj_key}`")
+            for obj_key in ["min", "max"]:
+                obj_val = self.data.get(obj_key)
+                if obj_val is not None:
+                    if not isinstance(obj_val, (int, float)):
+                        self.__error__(msg=f"Invalid `{obj_key}` ({obj_val}) must be a number")
+                        continue
+        else:
+            self.__error__(msg=f"Invalid prop type ({prop_type}) for sizeByOptions")

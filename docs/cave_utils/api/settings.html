@@ -256,22 +256,88 @@
 </span><span id="L-155"><a href="#L-155"><span class="linenos">155</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="L-156"><a href="#L-156"><span class="linenos">156</span></a><span class="sd">        Arguments:</span>
 </span><span id="L-157"><a href="#L-157"><span class="linenos">157</span></a>
-</span><span id="L-158"><a href="#L-158"><span class="linenos">158</span></a><span class="sd">        * **`precision`**: `[int]` = `2` &amp;rarr; The number of decimal places to display.</span>
-</span><span id="L-159"><a href="#L-159"><span class="linenos">159</span></a><span class="sd">        * **`trailingZeros`**: `[bool]` = `False` &amp;rarr; If `True`, trailing zeros will be displayed.</span>
-</span><span id="L-160"><a href="#L-160"><span class="linenos">160</span></a><span class="sd">        * **`unitPlacement`**: `[str]` = `&quot;afterWithSpace&quot;` &amp;rarr; The position of the `unit` symbol relative to the value.</span>
-</span><span id="L-161"><a href="#L-161"><span class="linenos">161</span></a><span class="sd">            * **Accepted values**:</span>
-</span><span id="L-162"><a href="#L-162"><span class="linenos">162</span></a><span class="sd">                    * `&quot;after&quot;`: The `unit` appears after the value.</span>
-</span><span id="L-163"><a href="#L-163"><span class="linenos">163</span></a><span class="sd">                    * `&quot;afterWithSpace&quot;`: The `unit` appears after the value, separated by a space.</span>
-</span><span id="L-164"><a href="#L-164"><span class="linenos">164</span></a><span class="sd">                    * `&quot;before&quot;`: The `unit` appears before the value.</span>
-</span><span id="L-165"><a href="#L-165"><span class="linenos">165</span></a><span class="sd">                    * `&quot;beforeWithSpace&quot;`: The unit is placed before the value, with a space in between.</span>
-</span><span id="L-166"><a href="#L-166"><span class="linenos">166</span></a><span class="sd">        * **`showToolbar`**: `[bool]` = `True` &amp;rarr; If `True`, chart toolbars will be displayed by default.</span>
-</span><span id="L-167"><a href="#L-167"><span class="linenos">167</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="L-168"><a href="#L-168"><span class="linenos">168</span></a>        <span class="k">return</span> <span class="p">{</span>
-</span><span id="L-169"><a href="#L-169"><span class="linenos">169</span></a>            <span class="s2">&quot;kwargs&quot;</span><span class="p">:</span> <span class="n">kwargs</span><span class="p">,</span>
-</span><span id="L-170"><a href="#L-170"><span class="linenos">170</span></a>            <span class="s2">&quot;accepted_values&quot;</span><span class="p">:</span> <span class="p">{</span>
-</span><span id="L-171"><a href="#L-171"><span class="linenos">171</span></a>                <span class="s2">&quot;unitPlacement&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;after&quot;</span><span class="p">,</span> <span class="s2">&quot;afterWithSpace&quot;</span><span class="p">,</span> <span class="s2">&quot;before&quot;</span><span class="p">,</span> <span class="s2">&quot;beforeWithSpace&quot;</span><span class="p">],</span>
-</span><span id="L-172"><a href="#L-172"><span class="linenos">172</span></a>            <span class="p">},</span>
-</span><span id="L-173"><a href="#L-173"><span class="linenos">173</span></a>        <span class="p">}</span>
+</span><span id="L-158"><a href="#L-158"><span class="linenos">158</span></a><span class="sd">        * **`showToolbar`**: `[bool]` = `True` &amp;rarr; If `True`, chart toolbars will be displayed by default.</span>
+</span><span id="L-159"><a href="#L-159"><span class="linenos">159</span></a><span class="sd">        * **`locale`**: `[str]` = `&quot;en-US&quot;` &amp;rarr;</span>
+</span><span id="L-160"><a href="#L-160"><span class="linenos">160</span></a><span class="sd">            * Format numeric values based on language and regional conventions.</span>
+</span><span id="L-161"><a href="#L-161"><span class="linenos">161</span></a><span class="sd">            * **Note**: This attribute only applies to `&quot;num&quot;` props.</span>
+</span><span id="L-162"><a href="#L-162"><span class="linenos">162</span></a><span class="sd">            * **See**: [Locale identifier][].</span>
+</span><span id="L-163"><a href="#L-163"><span class="linenos">163</span></a><span class="sd">        * **`precision`**: `[int]` = `2` &amp;rarr; The number of decimal places to display.</span>
+</span><span id="L-164"><a href="#L-164"><span class="linenos">164</span></a><span class="sd">            * **Notes**:</span>
+</span><span id="L-165"><a href="#L-165"><span class="linenos">165</span></a><span class="sd">                * Set the precision to `0` to attach an integer constraint.</span>
+</span><span id="L-166"><a href="#L-166"><span class="linenos">166</span></a><span class="sd">                * This attribute only applies to `&quot;num&quot;` props.</span>
+</span><span id="L-167"><a href="#L-167"><span class="linenos">167</span></a><span class="sd">        * **`trailingZeros`**: `[bool]` = `False` &amp;rarr; If `True`, trailing zeros will be displayed.</span>
+</span><span id="L-168"><a href="#L-168"><span class="linenos">168</span></a><span class="sd">            * **Notes**:</span>
+</span><span id="L-169"><a href="#L-169"><span class="linenos">169</span></a><span class="sd">                * This ensures that all precision digits are shown. For example: `1.5` &amp;rarr; `1.500` when precision is `3`.</span>
+</span><span id="L-170"><a href="#L-170"><span class="linenos">170</span></a><span class="sd">                * This attribute only applies to `&quot;num&quot;` props.</span>
+</span><span id="L-171"><a href="#L-171"><span class="linenos">171</span></a><span class="sd">        * **`notation`**: `[int]` = `&quot;standard&quot;` &amp;rarr; The formatting style of a numeric value.</span>
+</span><span id="L-172"><a href="#L-172"><span class="linenos">172</span></a><span class="sd">        * **`notationDisplay`**: `[str]` = `&quot;e+&quot;` | `&quot;short&quot;` &amp;rarr; Further customize the formatting within the selected `notation`.</span>
+</span><span id="L-173"><a href="#L-173"><span class="linenos">173</span></a><span class="sd">            * **Notes**:</span>
+</span><span id="L-174"><a href="#L-174"><span class="linenos">174</span></a><span class="sd">                * No `notationDisplay` option is provided for a `&quot;standard&quot;` notation</span>
+</span><span id="L-175"><a href="#L-175"><span class="linenos">175</span></a><span class="sd">                * The options `&quot;short&quot;` and `&quot;long&quot;` are only provided for the `&quot;compact&quot;` notation</span>
+</span><span id="L-176"><a href="#L-176"><span class="linenos">176</span></a><span class="sd">                * The options `&quot;e&quot;`, `&quot;e+&quot;`, `&quot;E&quot;`, `&quot;E+&quot;`, `&quot;x10^&quot;`, and `&quot;x10^+&quot;` are provided for the `&quot;scientific&quot;` and `&quot;engineering&quot;` notations</span>
+</span><span id="L-177"><a href="#L-177"><span class="linenos">177</span></a><span class="sd">                * If `None`, it defaults to `&quot;short&quot;` for `&quot;compact&quot;` notation, and to `&quot;e+&quot;` for `&quot;scientific&quot;` or `&quot;engineering&quot;` notations; if the option is set to `&quot;standard&quot;`, its value remains `None`.</span>
+</span><span id="L-178"><a href="#L-178"><span class="linenos">178</span></a><span class="sd">                * This attribute only applies to `&quot;num&quot;` props.</span>
+</span><span id="L-179"><a href="#L-179"><span class="linenos">179</span></a><span class="sd">        * **`fallbackValue`**: [str] = `&quot;N/A&quot;` &amp;rarr; A value to show when a numeric value is missing or invalid.</span>
+</span><span id="L-180"><a href="#L-180"><span class="linenos">180</span></a><span class="sd">            * **Note**: This attribute only applies to `&quot;num&quot;` props.</span>
+</span><span id="L-181"><a href="#L-181"><span class="linenos">181</span></a><span class="sd">        * **`unit`**: `[str]` = `None` &amp;rarr; The unit to use for a prop.</span>
+</span><span id="L-182"><a href="#L-182"><span class="linenos">182</span></a><span class="sd">            * **Note**: This attribute only applies to `&quot;num&quot;` props.</span>
+</span><span id="L-183"><a href="#L-183"><span class="linenos">183</span></a><span class="sd">        * **`unitPlacement`**: `[str]` = `&quot;afterWithSpace&quot;` &amp;rarr; The position of the `unit` symbol relative to a value.</span>
+</span><span id="L-184"><a href="#L-184"><span class="linenos">184</span></a><span class="sd">            * **Accepted Values**:</span>
+</span><span id="L-185"><a href="#L-185"><span class="linenos">185</span></a><span class="sd">                * `&quot;after&quot;`: The `unit` appears after the value.</span>
+</span><span id="L-186"><a href="#L-186"><span class="linenos">186</span></a><span class="sd">                * `&quot;afterWithSpace&quot;`: The `unit` appears after the value, separated by a space.</span>
+</span><span id="L-187"><a href="#L-187"><span class="linenos">187</span></a><span class="sd">                * `&quot;before&quot;`: The `unit` appears before the value.</span>
+</span><span id="L-188"><a href="#L-188"><span class="linenos">188</span></a><span class="sd">                * `&quot;beforeWithSpace&quot;`: The unit is placed before the value, with a space in between.</span>
+</span><span id="L-189"><a href="#L-189"><span class="linenos">189</span></a><span class="sd">            * **Note**: This attribute only applies to `&quot;num&quot;` props.</span>
+</span><span id="L-190"><a href="#L-190"><span class="linenos">190</span></a><span class="sd">        * **`legendPrecision`**: `[int]` = `None` &amp;rarr;</span>
+</span><span id="L-191"><a href="#L-191"><span class="linenos">191</span></a><span class="sd">            * The number of decimal places to display in the Map Legend.</span>
+</span><span id="L-192"><a href="#L-192"><span class="linenos">192</span></a><span class="sd">            * **Notes**:</span>
+</span><span id="L-193"><a href="#L-193"><span class="linenos">193</span></a><span class="sd">                * Set the precision to `0` to attach an integer constraint.</span>
+</span><span id="L-194"><a href="#L-194"><span class="linenos">194</span></a><span class="sd">                * If left unspecified (i.e. `None`), the prop&#39;s `precision` will be used or in case the latter is undefined, `settings.precision` will be used.</span>
+</span><span id="L-195"><a href="#L-195"><span class="linenos">195</span></a><span class="sd">                * This attribute only applies to `&quot;num&quot;` props.</span>
+</span><span id="L-196"><a href="#L-196"><span class="linenos">196</span></a><span class="sd">        * **`legendNotation`**: `[int]` = `&quot;standard&quot;` &amp;rarr; The formatting style of a numeric value.</span>
+</span><span id="L-197"><a href="#L-197"><span class="linenos">197</span></a><span class="sd">            * **Accepted Values**:</span>
+</span><span id="L-198"><a href="#L-198"><span class="linenos">198</span></a><span class="sd">                * `&quot;standard&quot;`: Plain number formatting</span>
+</span><span id="L-199"><a href="#L-199"><span class="linenos">199</span></a><span class="sd">                * `&quot;compact&quot;`: Resembles the [metric prefix][] system</span>
+</span><span id="L-200"><a href="#L-200"><span class="linenos">200</span></a><span class="sd">                * `&quot;scientific&quot;`: [Scientific notation][]</span>
+</span><span id="L-201"><a href="#L-201"><span class="linenos">201</span></a><span class="sd">                * `&quot;engineering&quot;`: [Engineering notation][]</span>
+</span><span id="L-202"><a href="#L-202"><span class="linenos">202</span></a><span class="sd">            * **Notes**:</span>
+</span><span id="L-203"><a href="#L-203"><span class="linenos">203</span></a><span class="sd">                * If left unspecified (i.e. `None`), the prop&#39;s `notation` will be used or in case the latter is undefined, `settings.notation` will be used.</span>
+</span><span id="L-204"><a href="#L-204"><span class="linenos">204</span></a><span class="sd">                * This attribute only applies to `&quot;num&quot;` props.</span>
+</span><span id="L-205"><a href="#L-205"><span class="linenos">205</span></a><span class="sd">        * **`legendNotationDisplay`**: `[str]` = `&quot;e+&quot;` | `&quot;short&quot;` &amp;rarr; Further customize the formatting within the selected `legendNotation`.</span>
+</span><span id="L-206"><a href="#L-206"><span class="linenos">206</span></a><span class="sd">            * **Accepted Values**:</span>
+</span><span id="L-207"><a href="#L-207"><span class="linenos">207</span></a><span class="sd">                * `&quot;short&quot;`: Add symbols `K`, `M`, `B`, and `T` (in `&quot;en-US&quot;`) to denote thousands, millions, billions, and trillions, respectively.</span>
+</span><span id="L-208"><a href="#L-208"><span class="linenos">208</span></a><span class="sd">                * `&quot;long&quot;`: Present numeric values with the informal suffix words `thousand`, `million`, `billion`, and `trillion` (in `&quot;en-US&quot;`).</span>
+</span><span id="L-209"><a href="#L-209"><span class="linenos">209</span></a><span class="sd">                * `&quot;e&quot;`: Exponent symbol in lowercase as per the chosen `locale` identifier</span>
+</span><span id="L-210"><a href="#L-210"><span class="linenos">210</span></a><span class="sd">                * `&quot;e+&quot;`: Similar to `&quot;e&quot;`, but with a plus sign for positive exponents.</span>
+</span><span id="L-211"><a href="#L-211"><span class="linenos">211</span></a><span class="sd">                * `&quot;E&quot;`: Exponent symbol in uppercase as per the chosen `locale` identifier</span>
+</span><span id="L-212"><a href="#L-212"><span class="linenos">212</span></a><span class="sd">                * `&quot;E+&quot;`: Similar to `&quot;E&quot;`, but with a plus sign for positive exponents.</span>
+</span><span id="L-213"><a href="#L-213"><span class="linenos">213</span></a><span class="sd">                * `&quot;x10^&quot;`: Formal scientific notation representation</span>
+</span><span id="L-214"><a href="#L-214"><span class="linenos">214</span></a><span class="sd">                * `&quot;x10^+&quot;`: Similar to `&quot;x10^&quot;`, with a plus sign for positive exponents.</span>
+</span><span id="L-215"><a href="#L-215"><span class="linenos">215</span></a><span class="sd">            * **Notes**:</span>
+</span><span id="L-216"><a href="#L-216"><span class="linenos">216</span></a><span class="sd">                * No `legendNotationDisplay` option is provided for a `&quot;standard&quot;` legend notation</span>
+</span><span id="L-217"><a href="#L-217"><span class="linenos">217</span></a><span class="sd">                * The options `&quot;short&quot;` and `&quot;long&quot;` are only provided for the `&quot;compact&quot;` legend notation</span>
+</span><span id="L-218"><a href="#L-218"><span class="linenos">218</span></a><span class="sd">                * The options `&quot;e&quot;`, `&quot;e+&quot;`, `&quot;E&quot;`, `&quot;E+&quot;`, `&quot;x10^&quot;`, and `&quot;x10^+&quot;` are provided for the `&quot;scientific&quot;` and `&quot;engineering&quot;` legend notations</span>
+</span><span id="L-219"><a href="#L-219"><span class="linenos">219</span></a><span class="sd">                * If left unspecified (i.e. `None`), the prop&#39;s `notationDisplay` will be used or in case the latter is undefined, `settings.notationDisplay` will be used.</span>
+</span><span id="L-220"><a href="#L-220"><span class="linenos">220</span></a><span class="sd">                * This attribute only applies to `&quot;num&quot;` props.</span>
+</span><span id="L-221"><a href="#L-221"><span class="linenos">221</span></a><span class="sd">        * **`legendMinLabel`**: `[str]` = `None` &amp;rarr;</span>
+</span><span id="L-222"><a href="#L-222"><span class="linenos">222</span></a><span class="sd">            * A custom and descriptive label in the Map Legend used to identify the lowest data point.</span>
+</span><span id="L-223"><a href="#L-223"><span class="linenos">223</span></a><span class="sd">            * **Notes**:</span>
+</span><span id="L-224"><a href="#L-224"><span class="linenos">224</span></a><span class="sd">                * Takes precedence over other formatting, except when used in a node cluster and the `cave_utils.api.maps.group` attribute is `True`. In this case, the min value within the node cluster is displayed.</span>
+</span><span id="L-225"><a href="#L-225"><span class="linenos">225</span></a><span class="sd">                * This attribute only applies to `&quot;num&quot;` props.</span>
+</span><span id="L-226"><a href="#L-226"><span class="linenos">226</span></a><span class="sd">        * **`legendMaxLabel`**: `[str]` = `None` &amp;rarr;</span>
+</span><span id="L-227"><a href="#L-227"><span class="linenos">227</span></a><span class="sd">            * A custom and descriptive label in the Map Legend used to identify the highest data point.</span>
+</span><span id="L-228"><a href="#L-228"><span class="linenos">228</span></a><span class="sd">            * **Notes**:</span>
+</span><span id="L-229"><a href="#L-229"><span class="linenos">229</span></a><span class="sd">                * Takes precedence over other formatting, except when used in a node cluster and the `cave_utils.api.maps.group` attribute is `True`. In this case, the max value within the node cluster is displayed.</span>
+</span><span id="L-230"><a href="#L-230"><span class="linenos">230</span></a><span class="sd">                * This attribute only applies to `&quot;num&quot;` props.</span>
+</span><span id="L-231"><a href="#L-231"><span class="linenos">231</span></a>
+</span><span id="L-232"><a href="#L-232"><span class="linenos">232</span></a><span class="sd">        [locale identifier]: https://en.wikipedia.org/wiki/IETF_language_tag</span>
+</span><span id="L-233"><a href="#L-233"><span class="linenos">233</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-234"><a href="#L-234"><span class="linenos">234</span></a>        <span class="k">return</span> <span class="p">{</span>
+</span><span id="L-235"><a href="#L-235"><span class="linenos">235</span></a>            <span class="s2">&quot;kwargs&quot;</span><span class="p">:</span> <span class="n">kwargs</span><span class="p">,</span>
+</span><span id="L-236"><a href="#L-236"><span class="linenos">236</span></a>            <span class="s2">&quot;accepted_values&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span id="L-237"><a href="#L-237"><span class="linenos">237</span></a>                <span class="s2">&quot;unitPlacement&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;after&quot;</span><span class="p">,</span> <span class="s2">&quot;afterWithSpace&quot;</span><span class="p">,</span> <span class="s2">&quot;before&quot;</span><span class="p">,</span> <span class="s2">&quot;beforeWithSpace&quot;</span><span class="p">],</span>
+</span><span id="L-238"><a href="#L-238"><span class="linenos">238</span></a>            <span class="p">},</span>
+</span><span id="L-239"><a href="#L-239"><span class="linenos">239</span></a>        <span class="p">}</span>
 </span></pre></div>
 
 
@@ -737,22 +803,88 @@ A float value representing degrees of rotation per frame (degrees per 13 millise
 </span><span id="settings_defaults-156"><a href="#settings_defaults-156"><span class="linenos">156</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="settings_defaults-157"><a href="#settings_defaults-157"><span class="linenos">157</span></a><span class="sd">        Arguments:</span>
 </span><span id="settings_defaults-158"><a href="#settings_defaults-158"><span class="linenos">158</span></a>
-</span><span id="settings_defaults-159"><a href="#settings_defaults-159"><span class="linenos">159</span></a><span class="sd">        * **`precision`**: `[int]` = `2` &amp;rarr; The number of decimal places to display.</span>
-</span><span id="settings_defaults-160"><a href="#settings_defaults-160"><span class="linenos">160</span></a><span class="sd">        * **`trailingZeros`**: `[bool]` = `False` &amp;rarr; If `True`, trailing zeros will be displayed.</span>
-</span><span id="settings_defaults-161"><a href="#settings_defaults-161"><span class="linenos">161</span></a><span class="sd">        * **`unitPlacement`**: `[str]` = `&quot;afterWithSpace&quot;` &amp;rarr; The position of the `unit` symbol relative to the value.</span>
-</span><span id="settings_defaults-162"><a href="#settings_defaults-162"><span class="linenos">162</span></a><span class="sd">            * **Accepted values**:</span>
-</span><span id="settings_defaults-163"><a href="#settings_defaults-163"><span class="linenos">163</span></a><span class="sd">                    * `&quot;after&quot;`: The `unit` appears after the value.</span>
-</span><span id="settings_defaults-164"><a href="#settings_defaults-164"><span class="linenos">164</span></a><span class="sd">                    * `&quot;afterWithSpace&quot;`: The `unit` appears after the value, separated by a space.</span>
-</span><span id="settings_defaults-165"><a href="#settings_defaults-165"><span class="linenos">165</span></a><span class="sd">                    * `&quot;before&quot;`: The `unit` appears before the value.</span>
-</span><span id="settings_defaults-166"><a href="#settings_defaults-166"><span class="linenos">166</span></a><span class="sd">                    * `&quot;beforeWithSpace&quot;`: The unit is placed before the value, with a space in between.</span>
-</span><span id="settings_defaults-167"><a href="#settings_defaults-167"><span class="linenos">167</span></a><span class="sd">        * **`showToolbar`**: `[bool]` = `True` &amp;rarr; If `True`, chart toolbars will be displayed by default.</span>
-</span><span id="settings_defaults-168"><a href="#settings_defaults-168"><span class="linenos">168</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="settings_defaults-169"><a href="#settings_defaults-169"><span class="linenos">169</span></a>        <span class="k">return</span> <span class="p">{</span>
-</span><span id="settings_defaults-170"><a href="#settings_defaults-170"><span class="linenos">170</span></a>            <span class="s2">&quot;kwargs&quot;</span><span class="p">:</span> <span class="n">kwargs</span><span class="p">,</span>
-</span><span id="settings_defaults-171"><a href="#settings_defaults-171"><span class="linenos">171</span></a>            <span class="s2">&quot;accepted_values&quot;</span><span class="p">:</span> <span class="p">{</span>
-</span><span id="settings_defaults-172"><a href="#settings_defaults-172"><span class="linenos">172</span></a>                <span class="s2">&quot;unitPlacement&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;after&quot;</span><span class="p">,</span> <span class="s2">&quot;afterWithSpace&quot;</span><span class="p">,</span> <span class="s2">&quot;before&quot;</span><span class="p">,</span> <span class="s2">&quot;beforeWithSpace&quot;</span><span class="p">],</span>
-</span><span id="settings_defaults-173"><a href="#settings_defaults-173"><span class="linenos">173</span></a>            <span class="p">},</span>
-</span><span id="settings_defaults-174"><a href="#settings_defaults-174"><span class="linenos">174</span></a>        <span class="p">}</span>
+</span><span id="settings_defaults-159"><a href="#settings_defaults-159"><span class="linenos">159</span></a><span class="sd">        * **`showToolbar`**: `[bool]` = `True` &amp;rarr; If `True`, chart toolbars will be displayed by default.</span>
+</span><span id="settings_defaults-160"><a href="#settings_defaults-160"><span class="linenos">160</span></a><span class="sd">        * **`locale`**: `[str]` = `&quot;en-US&quot;` &amp;rarr;</span>
+</span><span id="settings_defaults-161"><a href="#settings_defaults-161"><span class="linenos">161</span></a><span class="sd">            * Format numeric values based on language and regional conventions.</span>
+</span><span id="settings_defaults-162"><a href="#settings_defaults-162"><span class="linenos">162</span></a><span class="sd">            * **Note**: This attribute only applies to `&quot;num&quot;` props.</span>
+</span><span id="settings_defaults-163"><a href="#settings_defaults-163"><span class="linenos">163</span></a><span class="sd">            * **See**: [Locale identifier][].</span>
+</span><span id="settings_defaults-164"><a href="#settings_defaults-164"><span class="linenos">164</span></a><span class="sd">        * **`precision`**: `[int]` = `2` &amp;rarr; The number of decimal places to display.</span>
+</span><span id="settings_defaults-165"><a href="#settings_defaults-165"><span class="linenos">165</span></a><span class="sd">            * **Notes**:</span>
+</span><span id="settings_defaults-166"><a href="#settings_defaults-166"><span class="linenos">166</span></a><span class="sd">                * Set the precision to `0` to attach an integer constraint.</span>
+</span><span id="settings_defaults-167"><a href="#settings_defaults-167"><span class="linenos">167</span></a><span class="sd">                * This attribute only applies to `&quot;num&quot;` props.</span>
+</span><span id="settings_defaults-168"><a href="#settings_defaults-168"><span class="linenos">168</span></a><span class="sd">        * **`trailingZeros`**: `[bool]` = `False` &amp;rarr; If `True`, trailing zeros will be displayed.</span>
+</span><span id="settings_defaults-169"><a href="#settings_defaults-169"><span class="linenos">169</span></a><span class="sd">            * **Notes**:</span>
+</span><span id="settings_defaults-170"><a href="#settings_defaults-170"><span class="linenos">170</span></a><span class="sd">                * This ensures that all precision digits are shown. For example: `1.5` &amp;rarr; `1.500` when precision is `3`.</span>
+</span><span id="settings_defaults-171"><a href="#settings_defaults-171"><span class="linenos">171</span></a><span class="sd">                * This attribute only applies to `&quot;num&quot;` props.</span>
+</span><span id="settings_defaults-172"><a href="#settings_defaults-172"><span class="linenos">172</span></a><span class="sd">        * **`notation`**: `[int]` = `&quot;standard&quot;` &amp;rarr; The formatting style of a numeric value.</span>
+</span><span id="settings_defaults-173"><a href="#settings_defaults-173"><span class="linenos">173</span></a><span class="sd">        * **`notationDisplay`**: `[str]` = `&quot;e+&quot;` | `&quot;short&quot;` &amp;rarr; Further customize the formatting within the selected `notation`.</span>
+</span><span id="settings_defaults-174"><a href="#settings_defaults-174"><span class="linenos">174</span></a><span class="sd">            * **Notes**:</span>
+</span><span id="settings_defaults-175"><a href="#settings_defaults-175"><span class="linenos">175</span></a><span class="sd">                * No `notationDisplay` option is provided for a `&quot;standard&quot;` notation</span>
+</span><span id="settings_defaults-176"><a href="#settings_defaults-176"><span class="linenos">176</span></a><span class="sd">                * The options `&quot;short&quot;` and `&quot;long&quot;` are only provided for the `&quot;compact&quot;` notation</span>
+</span><span id="settings_defaults-177"><a href="#settings_defaults-177"><span class="linenos">177</span></a><span class="sd">                * The options `&quot;e&quot;`, `&quot;e+&quot;`, `&quot;E&quot;`, `&quot;E+&quot;`, `&quot;x10^&quot;`, and `&quot;x10^+&quot;` are provided for the `&quot;scientific&quot;` and `&quot;engineering&quot;` notations</span>
+</span><span id="settings_defaults-178"><a href="#settings_defaults-178"><span class="linenos">178</span></a><span class="sd">                * If `None`, it defaults to `&quot;short&quot;` for `&quot;compact&quot;` notation, and to `&quot;e+&quot;` for `&quot;scientific&quot;` or `&quot;engineering&quot;` notations; if the option is set to `&quot;standard&quot;`, its value remains `None`.</span>
+</span><span id="settings_defaults-179"><a href="#settings_defaults-179"><span class="linenos">179</span></a><span class="sd">                * This attribute only applies to `&quot;num&quot;` props.</span>
+</span><span id="settings_defaults-180"><a href="#settings_defaults-180"><span class="linenos">180</span></a><span class="sd">        * **`fallbackValue`**: [str] = `&quot;N/A&quot;` &amp;rarr; A value to show when a numeric value is missing or invalid.</span>
+</span><span id="settings_defaults-181"><a href="#settings_defaults-181"><span class="linenos">181</span></a><span class="sd">            * **Note**: This attribute only applies to `&quot;num&quot;` props.</span>
+</span><span id="settings_defaults-182"><a href="#settings_defaults-182"><span class="linenos">182</span></a><span class="sd">        * **`unit`**: `[str]` = `None` &amp;rarr; The unit to use for a prop.</span>
+</span><span id="settings_defaults-183"><a href="#settings_defaults-183"><span class="linenos">183</span></a><span class="sd">            * **Note**: This attribute only applies to `&quot;num&quot;` props.</span>
+</span><span id="settings_defaults-184"><a href="#settings_defaults-184"><span class="linenos">184</span></a><span class="sd">        * **`unitPlacement`**: `[str]` = `&quot;afterWithSpace&quot;` &amp;rarr; The position of the `unit` symbol relative to a value.</span>
+</span><span id="settings_defaults-185"><a href="#settings_defaults-185"><span class="linenos">185</span></a><span class="sd">            * **Accepted Values**:</span>
+</span><span id="settings_defaults-186"><a href="#settings_defaults-186"><span class="linenos">186</span></a><span class="sd">                * `&quot;after&quot;`: The `unit` appears after the value.</span>
+</span><span id="settings_defaults-187"><a href="#settings_defaults-187"><span class="linenos">187</span></a><span class="sd">                * `&quot;afterWithSpace&quot;`: The `unit` appears after the value, separated by a space.</span>
+</span><span id="settings_defaults-188"><a href="#settings_defaults-188"><span class="linenos">188</span></a><span class="sd">                * `&quot;before&quot;`: The `unit` appears before the value.</span>
+</span><span id="settings_defaults-189"><a href="#settings_defaults-189"><span class="linenos">189</span></a><span class="sd">                * `&quot;beforeWithSpace&quot;`: The unit is placed before the value, with a space in between.</span>
+</span><span id="settings_defaults-190"><a href="#settings_defaults-190"><span class="linenos">190</span></a><span class="sd">            * **Note**: This attribute only applies to `&quot;num&quot;` props.</span>
+</span><span id="settings_defaults-191"><a href="#settings_defaults-191"><span class="linenos">191</span></a><span class="sd">        * **`legendPrecision`**: `[int]` = `None` &amp;rarr;</span>
+</span><span id="settings_defaults-192"><a href="#settings_defaults-192"><span class="linenos">192</span></a><span class="sd">            * The number of decimal places to display in the Map Legend.</span>
+</span><span id="settings_defaults-193"><a href="#settings_defaults-193"><span class="linenos">193</span></a><span class="sd">            * **Notes**:</span>
+</span><span id="settings_defaults-194"><a href="#settings_defaults-194"><span class="linenos">194</span></a><span class="sd">                * Set the precision to `0` to attach an integer constraint.</span>
+</span><span id="settings_defaults-195"><a href="#settings_defaults-195"><span class="linenos">195</span></a><span class="sd">                * If left unspecified (i.e. `None`), the prop&#39;s `precision` will be used or in case the latter is undefined, `settings.precision` will be used.</span>
+</span><span id="settings_defaults-196"><a href="#settings_defaults-196"><span class="linenos">196</span></a><span class="sd">                * This attribute only applies to `&quot;num&quot;` props.</span>
+</span><span id="settings_defaults-197"><a href="#settings_defaults-197"><span class="linenos">197</span></a><span class="sd">        * **`legendNotation`**: `[int]` = `&quot;standard&quot;` &amp;rarr; The formatting style of a numeric value.</span>
+</span><span id="settings_defaults-198"><a href="#settings_defaults-198"><span class="linenos">198</span></a><span class="sd">            * **Accepted Values**:</span>
+</span><span id="settings_defaults-199"><a href="#settings_defaults-199"><span class="linenos">199</span></a><span class="sd">                * `&quot;standard&quot;`: Plain number formatting</span>
+</span><span id="settings_defaults-200"><a href="#settings_defaults-200"><span class="linenos">200</span></a><span class="sd">                * `&quot;compact&quot;`: Resembles the [metric prefix][] system</span>
+</span><span id="settings_defaults-201"><a href="#settings_defaults-201"><span class="linenos">201</span></a><span class="sd">                * `&quot;scientific&quot;`: [Scientific notation][]</span>
+</span><span id="settings_defaults-202"><a href="#settings_defaults-202"><span class="linenos">202</span></a><span class="sd">                * `&quot;engineering&quot;`: [Engineering notation][]</span>
+</span><span id="settings_defaults-203"><a href="#settings_defaults-203"><span class="linenos">203</span></a><span class="sd">            * **Notes**:</span>
+</span><span id="settings_defaults-204"><a href="#settings_defaults-204"><span class="linenos">204</span></a><span class="sd">                * If left unspecified (i.e. `None`), the prop&#39;s `notation` will be used or in case the latter is undefined, `settings.notation` will be used.</span>
+</span><span id="settings_defaults-205"><a href="#settings_defaults-205"><span class="linenos">205</span></a><span class="sd">                * This attribute only applies to `&quot;num&quot;` props.</span>
+</span><span id="settings_defaults-206"><a href="#settings_defaults-206"><span class="linenos">206</span></a><span class="sd">        * **`legendNotationDisplay`**: `[str]` = `&quot;e+&quot;` | `&quot;short&quot;` &amp;rarr; Further customize the formatting within the selected `legendNotation`.</span>
+</span><span id="settings_defaults-207"><a href="#settings_defaults-207"><span class="linenos">207</span></a><span class="sd">            * **Accepted Values**:</span>
+</span><span id="settings_defaults-208"><a href="#settings_defaults-208"><span class="linenos">208</span></a><span class="sd">                * `&quot;short&quot;`: Add symbols `K`, `M`, `B`, and `T` (in `&quot;en-US&quot;`) to denote thousands, millions, billions, and trillions, respectively.</span>
+</span><span id="settings_defaults-209"><a href="#settings_defaults-209"><span class="linenos">209</span></a><span class="sd">                * `&quot;long&quot;`: Present numeric values with the informal suffix words `thousand`, `million`, `billion`, and `trillion` (in `&quot;en-US&quot;`).</span>
+</span><span id="settings_defaults-210"><a href="#settings_defaults-210"><span class="linenos">210</span></a><span class="sd">                * `&quot;e&quot;`: Exponent symbol in lowercase as per the chosen `locale` identifier</span>
+</span><span id="settings_defaults-211"><a href="#settings_defaults-211"><span class="linenos">211</span></a><span class="sd">                * `&quot;e+&quot;`: Similar to `&quot;e&quot;`, but with a plus sign for positive exponents.</span>
+</span><span id="settings_defaults-212"><a href="#settings_defaults-212"><span class="linenos">212</span></a><span class="sd">                * `&quot;E&quot;`: Exponent symbol in uppercase as per the chosen `locale` identifier</span>
+</span><span id="settings_defaults-213"><a href="#settings_defaults-213"><span class="linenos">213</span></a><span class="sd">                * `&quot;E+&quot;`: Similar to `&quot;E&quot;`, but with a plus sign for positive exponents.</span>
+</span><span id="settings_defaults-214"><a href="#settings_defaults-214"><span class="linenos">214</span></a><span class="sd">                * `&quot;x10^&quot;`: Formal scientific notation representation</span>
+</span><span id="settings_defaults-215"><a href="#settings_defaults-215"><span class="linenos">215</span></a><span class="sd">                * `&quot;x10^+&quot;`: Similar to `&quot;x10^&quot;`, with a plus sign for positive exponents.</span>
+</span><span id="settings_defaults-216"><a href="#settings_defaults-216"><span class="linenos">216</span></a><span class="sd">            * **Notes**:</span>
+</span><span id="settings_defaults-217"><a href="#settings_defaults-217"><span class="linenos">217</span></a><span class="sd">                * No `legendNotationDisplay` option is provided for a `&quot;standard&quot;` legend notation</span>
+</span><span id="settings_defaults-218"><a href="#settings_defaults-218"><span class="linenos">218</span></a><span class="sd">                * The options `&quot;short&quot;` and `&quot;long&quot;` are only provided for the `&quot;compact&quot;` legend notation</span>
+</span><span id="settings_defaults-219"><a href="#settings_defaults-219"><span class="linenos">219</span></a><span class="sd">                * The options `&quot;e&quot;`, `&quot;e+&quot;`, `&quot;E&quot;`, `&quot;E+&quot;`, `&quot;x10^&quot;`, and `&quot;x10^+&quot;` are provided for the `&quot;scientific&quot;` and `&quot;engineering&quot;` legend notations</span>
+</span><span id="settings_defaults-220"><a href="#settings_defaults-220"><span class="linenos">220</span></a><span class="sd">                * If left unspecified (i.e. `None`), the prop&#39;s `notationDisplay` will be used or in case the latter is undefined, `settings.notationDisplay` will be used.</span>
+</span><span id="settings_defaults-221"><a href="#settings_defaults-221"><span class="linenos">221</span></a><span class="sd">                * This attribute only applies to `&quot;num&quot;` props.</span>
+</span><span id="settings_defaults-222"><a href="#settings_defaults-222"><span class="linenos">222</span></a><span class="sd">        * **`legendMinLabel`**: `[str]` = `None` &amp;rarr;</span>
+</span><span id="settings_defaults-223"><a href="#settings_defaults-223"><span class="linenos">223</span></a><span class="sd">            * A custom and descriptive label in the Map Legend used to identify the lowest data point.</span>
+</span><span id="settings_defaults-224"><a href="#settings_defaults-224"><span class="linenos">224</span></a><span class="sd">            * **Notes**:</span>
+</span><span id="settings_defaults-225"><a href="#settings_defaults-225"><span class="linenos">225</span></a><span class="sd">                * Takes precedence over other formatting, except when used in a node cluster and the `cave_utils.api.maps.group` attribute is `True`. In this case, the min value within the node cluster is displayed.</span>
+</span><span id="settings_defaults-226"><a href="#settings_defaults-226"><span class="linenos">226</span></a><span class="sd">                * This attribute only applies to `&quot;num&quot;` props.</span>
+</span><span id="settings_defaults-227"><a href="#settings_defaults-227"><span class="linenos">227</span></a><span class="sd">        * **`legendMaxLabel`**: `[str]` = `None` &amp;rarr;</span>
+</span><span id="settings_defaults-228"><a href="#settings_defaults-228"><span class="linenos">228</span></a><span class="sd">            * A custom and descriptive label in the Map Legend used to identify the highest data point.</span>
+</span><span id="settings_defaults-229"><a href="#settings_defaults-229"><span class="linenos">229</span></a><span class="sd">            * **Notes**:</span>
+</span><span id="settings_defaults-230"><a href="#settings_defaults-230"><span class="linenos">230</span></a><span class="sd">                * Takes precedence over other formatting, except when used in a node cluster and the `cave_utils.api.maps.group` attribute is `True`. In this case, the max value within the node cluster is displayed.</span>
+</span><span id="settings_defaults-231"><a href="#settings_defaults-231"><span class="linenos">231</span></a><span class="sd">                * This attribute only applies to `&quot;num&quot;` props.</span>
+</span><span id="settings_defaults-232"><a href="#settings_defaults-232"><span class="linenos">232</span></a>
+</span><span id="settings_defaults-233"><a href="#settings_defaults-233"><span class="linenos">233</span></a><span class="sd">        [locale identifier]: https://en.wikipedia.org/wiki/IETF_language_tag</span>
+</span><span id="settings_defaults-234"><a href="#settings_defaults-234"><span class="linenos">234</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="settings_defaults-235"><a href="#settings_defaults-235"><span class="linenos">235</span></a>        <span class="k">return</span> <span class="p">{</span>
+</span><span id="settings_defaults-236"><a href="#settings_defaults-236"><span class="linenos">236</span></a>            <span class="s2">&quot;kwargs&quot;</span><span class="p">:</span> <span class="n">kwargs</span><span class="p">,</span>
+</span><span id="settings_defaults-237"><a href="#settings_defaults-237"><span class="linenos">237</span></a>            <span class="s2">&quot;accepted_values&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span id="settings_defaults-238"><a href="#settings_defaults-238"><span class="linenos">238</span></a>                <span class="s2">&quot;unitPlacement&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;after&quot;</span><span class="p">,</span> <span class="s2">&quot;afterWithSpace&quot;</span><span class="p">,</span> <span class="s2">&quot;before&quot;</span><span class="p">,</span> <span class="s2">&quot;beforeWithSpace&quot;</span><span class="p">],</span>
+</span><span id="settings_defaults-239"><a href="#settings_defaults-239"><span class="linenos">239</span></a>            <span class="p">},</span>
+</span><span id="settings_defaults-240"><a href="#settings_defaults-240"><span class="linenos">240</span></a>        <span class="p">}</span>
 </span></pre></div>
 
 
@@ -783,41 +915,213 @@ A float value representing degrees of rotation per frame (degrees per 13 millise
 </span><span id="settings_defaults.spec-156"><a href="#settings_defaults.spec-156"><span class="linenos">156</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="settings_defaults.spec-157"><a href="#settings_defaults.spec-157"><span class="linenos">157</span></a><span class="sd">        Arguments:</span>
 </span><span id="settings_defaults.spec-158"><a href="#settings_defaults.spec-158"><span class="linenos">158</span></a>
-</span><span id="settings_defaults.spec-159"><a href="#settings_defaults.spec-159"><span class="linenos">159</span></a><span class="sd">        * **`precision`**: `[int]` = `2` &amp;rarr; The number of decimal places to display.</span>
-</span><span id="settings_defaults.spec-160"><a href="#settings_defaults.spec-160"><span class="linenos">160</span></a><span class="sd">        * **`trailingZeros`**: `[bool]` = `False` &amp;rarr; If `True`, trailing zeros will be displayed.</span>
-</span><span id="settings_defaults.spec-161"><a href="#settings_defaults.spec-161"><span class="linenos">161</span></a><span class="sd">        * **`unitPlacement`**: `[str]` = `&quot;afterWithSpace&quot;` &amp;rarr; The position of the `unit` symbol relative to the value.</span>
-</span><span id="settings_defaults.spec-162"><a href="#settings_defaults.spec-162"><span class="linenos">162</span></a><span class="sd">            * **Accepted values**:</span>
-</span><span id="settings_defaults.spec-163"><a href="#settings_defaults.spec-163"><span class="linenos">163</span></a><span class="sd">                    * `&quot;after&quot;`: The `unit` appears after the value.</span>
-</span><span id="settings_defaults.spec-164"><a href="#settings_defaults.spec-164"><span class="linenos">164</span></a><span class="sd">                    * `&quot;afterWithSpace&quot;`: The `unit` appears after the value, separated by a space.</span>
-</span><span id="settings_defaults.spec-165"><a href="#settings_defaults.spec-165"><span class="linenos">165</span></a><span class="sd">                    * `&quot;before&quot;`: The `unit` appears before the value.</span>
-</span><span id="settings_defaults.spec-166"><a href="#settings_defaults.spec-166"><span class="linenos">166</span></a><span class="sd">                    * `&quot;beforeWithSpace&quot;`: The unit is placed before the value, with a space in between.</span>
-</span><span id="settings_defaults.spec-167"><a href="#settings_defaults.spec-167"><span class="linenos">167</span></a><span class="sd">        * **`showToolbar`**: `[bool]` = `True` &amp;rarr; If `True`, chart toolbars will be displayed by default.</span>
-</span><span id="settings_defaults.spec-168"><a href="#settings_defaults.spec-168"><span class="linenos">168</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="settings_defaults.spec-169"><a href="#settings_defaults.spec-169"><span class="linenos">169</span></a>        <span class="k">return</span> <span class="p">{</span>
-</span><span id="settings_defaults.spec-170"><a href="#settings_defaults.spec-170"><span class="linenos">170</span></a>            <span class="s2">&quot;kwargs&quot;</span><span class="p">:</span> <span class="n">kwargs</span><span class="p">,</span>
-</span><span id="settings_defaults.spec-171"><a href="#settings_defaults.spec-171"><span class="linenos">171</span></a>            <span class="s2">&quot;accepted_values&quot;</span><span class="p">:</span> <span class="p">{</span>
-</span><span id="settings_defaults.spec-172"><a href="#settings_defaults.spec-172"><span class="linenos">172</span></a>                <span class="s2">&quot;unitPlacement&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;after&quot;</span><span class="p">,</span> <span class="s2">&quot;afterWithSpace&quot;</span><span class="p">,</span> <span class="s2">&quot;before&quot;</span><span class="p">,</span> <span class="s2">&quot;beforeWithSpace&quot;</span><span class="p">],</span>
-</span><span id="settings_defaults.spec-173"><a href="#settings_defaults.spec-173"><span class="linenos">173</span></a>            <span class="p">},</span>
-</span><span id="settings_defaults.spec-174"><a href="#settings_defaults.spec-174"><span class="linenos">174</span></a>        <span class="p">}</span>
+</span><span id="settings_defaults.spec-159"><a href="#settings_defaults.spec-159"><span class="linenos">159</span></a><span class="sd">        * **`showToolbar`**: `[bool]` = `True` &amp;rarr; If `True`, chart toolbars will be displayed by default.</span>
+</span><span id="settings_defaults.spec-160"><a href="#settings_defaults.spec-160"><span class="linenos">160</span></a><span class="sd">        * **`locale`**: `[str]` = `&quot;en-US&quot;` &amp;rarr;</span>
+</span><span id="settings_defaults.spec-161"><a href="#settings_defaults.spec-161"><span class="linenos">161</span></a><span class="sd">            * Format numeric values based on language and regional conventions.</span>
+</span><span id="settings_defaults.spec-162"><a href="#settings_defaults.spec-162"><span class="linenos">162</span></a><span class="sd">            * **Note**: This attribute only applies to `&quot;num&quot;` props.</span>
+</span><span id="settings_defaults.spec-163"><a href="#settings_defaults.spec-163"><span class="linenos">163</span></a><span class="sd">            * **See**: [Locale identifier][].</span>
+</span><span id="settings_defaults.spec-164"><a href="#settings_defaults.spec-164"><span class="linenos">164</span></a><span class="sd">        * **`precision`**: `[int]` = `2` &amp;rarr; The number of decimal places to display.</span>
+</span><span id="settings_defaults.spec-165"><a href="#settings_defaults.spec-165"><span class="linenos">165</span></a><span class="sd">            * **Notes**:</span>
+</span><span id="settings_defaults.spec-166"><a href="#settings_defaults.spec-166"><span class="linenos">166</span></a><span class="sd">                * Set the precision to `0` to attach an integer constraint.</span>
+</span><span id="settings_defaults.spec-167"><a href="#settings_defaults.spec-167"><span class="linenos">167</span></a><span class="sd">                * This attribute only applies to `&quot;num&quot;` props.</span>
+</span><span id="settings_defaults.spec-168"><a href="#settings_defaults.spec-168"><span class="linenos">168</span></a><span class="sd">        * **`trailingZeros`**: `[bool]` = `False` &amp;rarr; If `True`, trailing zeros will be displayed.</span>
+</span><span id="settings_defaults.spec-169"><a href="#settings_defaults.spec-169"><span class="linenos">169</span></a><span class="sd">            * **Notes**:</span>
+</span><span id="settings_defaults.spec-170"><a href="#settings_defaults.spec-170"><span class="linenos">170</span></a><span class="sd">                * This ensures that all precision digits are shown. For example: `1.5` &amp;rarr; `1.500` when precision is `3`.</span>
+</span><span id="settings_defaults.spec-171"><a href="#settings_defaults.spec-171"><span class="linenos">171</span></a><span class="sd">                * This attribute only applies to `&quot;num&quot;` props.</span>
+</span><span id="settings_defaults.spec-172"><a href="#settings_defaults.spec-172"><span class="linenos">172</span></a><span class="sd">        * **`notation`**: `[int]` = `&quot;standard&quot;` &amp;rarr; The formatting style of a numeric value.</span>
+</span><span id="settings_defaults.spec-173"><a href="#settings_defaults.spec-173"><span class="linenos">173</span></a><span class="sd">        * **`notationDisplay`**: `[str]` = `&quot;e+&quot;` | `&quot;short&quot;` &amp;rarr; Further customize the formatting within the selected `notation`.</span>
+</span><span id="settings_defaults.spec-174"><a href="#settings_defaults.spec-174"><span class="linenos">174</span></a><span class="sd">            * **Notes**:</span>
+</span><span id="settings_defaults.spec-175"><a href="#settings_defaults.spec-175"><span class="linenos">175</span></a><span class="sd">                * No `notationDisplay` option is provided for a `&quot;standard&quot;` notation</span>
+</span><span id="settings_defaults.spec-176"><a href="#settings_defaults.spec-176"><span class="linenos">176</span></a><span class="sd">                * The options `&quot;short&quot;` and `&quot;long&quot;` are only provided for the `&quot;compact&quot;` notation</span>
+</span><span id="settings_defaults.spec-177"><a href="#settings_defaults.spec-177"><span class="linenos">177</span></a><span class="sd">                * The options `&quot;e&quot;`, `&quot;e+&quot;`, `&quot;E&quot;`, `&quot;E+&quot;`, `&quot;x10^&quot;`, and `&quot;x10^+&quot;` are provided for the `&quot;scientific&quot;` and `&quot;engineering&quot;` notations</span>
+</span><span id="settings_defaults.spec-178"><a href="#settings_defaults.spec-178"><span class="linenos">178</span></a><span class="sd">                * If `None`, it defaults to `&quot;short&quot;` for `&quot;compact&quot;` notation, and to `&quot;e+&quot;` for `&quot;scientific&quot;` or `&quot;engineering&quot;` notations; if the option is set to `&quot;standard&quot;`, its value remains `None`.</span>
+</span><span id="settings_defaults.spec-179"><a href="#settings_defaults.spec-179"><span class="linenos">179</span></a><span class="sd">                * This attribute only applies to `&quot;num&quot;` props.</span>
+</span><span id="settings_defaults.spec-180"><a href="#settings_defaults.spec-180"><span class="linenos">180</span></a><span class="sd">        * **`fallbackValue`**: [str] = `&quot;N/A&quot;` &amp;rarr; A value to show when a numeric value is missing or invalid.</span>
+</span><span id="settings_defaults.spec-181"><a href="#settings_defaults.spec-181"><span class="linenos">181</span></a><span class="sd">            * **Note**: This attribute only applies to `&quot;num&quot;` props.</span>
+</span><span id="settings_defaults.spec-182"><a href="#settings_defaults.spec-182"><span class="linenos">182</span></a><span class="sd">        * **`unit`**: `[str]` = `None` &amp;rarr; The unit to use for a prop.</span>
+</span><span id="settings_defaults.spec-183"><a href="#settings_defaults.spec-183"><span class="linenos">183</span></a><span class="sd">            * **Note**: This attribute only applies to `&quot;num&quot;` props.</span>
+</span><span id="settings_defaults.spec-184"><a href="#settings_defaults.spec-184"><span class="linenos">184</span></a><span class="sd">        * **`unitPlacement`**: `[str]` = `&quot;afterWithSpace&quot;` &amp;rarr; The position of the `unit` symbol relative to a value.</span>
+</span><span id="settings_defaults.spec-185"><a href="#settings_defaults.spec-185"><span class="linenos">185</span></a><span class="sd">            * **Accepted Values**:</span>
+</span><span id="settings_defaults.spec-186"><a href="#settings_defaults.spec-186"><span class="linenos">186</span></a><span class="sd">                * `&quot;after&quot;`: The `unit` appears after the value.</span>
+</span><span id="settings_defaults.spec-187"><a href="#settings_defaults.spec-187"><span class="linenos">187</span></a><span class="sd">                * `&quot;afterWithSpace&quot;`: The `unit` appears after the value, separated by a space.</span>
+</span><span id="settings_defaults.spec-188"><a href="#settings_defaults.spec-188"><span class="linenos">188</span></a><span class="sd">                * `&quot;before&quot;`: The `unit` appears before the value.</span>
+</span><span id="settings_defaults.spec-189"><a href="#settings_defaults.spec-189"><span class="linenos">189</span></a><span class="sd">                * `&quot;beforeWithSpace&quot;`: The unit is placed before the value, with a space in between.</span>
+</span><span id="settings_defaults.spec-190"><a href="#settings_defaults.spec-190"><span class="linenos">190</span></a><span class="sd">            * **Note**: This attribute only applies to `&quot;num&quot;` props.</span>
+</span><span id="settings_defaults.spec-191"><a href="#settings_defaults.spec-191"><span class="linenos">191</span></a><span class="sd">        * **`legendPrecision`**: `[int]` = `None` &amp;rarr;</span>
+</span><span id="settings_defaults.spec-192"><a href="#settings_defaults.spec-192"><span class="linenos">192</span></a><span class="sd">            * The number of decimal places to display in the Map Legend.</span>
+</span><span id="settings_defaults.spec-193"><a href="#settings_defaults.spec-193"><span class="linenos">193</span></a><span class="sd">            * **Notes**:</span>
+</span><span id="settings_defaults.spec-194"><a href="#settings_defaults.spec-194"><span class="linenos">194</span></a><span class="sd">                * Set the precision to `0` to attach an integer constraint.</span>
+</span><span id="settings_defaults.spec-195"><a href="#settings_defaults.spec-195"><span class="linenos">195</span></a><span class="sd">                * If left unspecified (i.e. `None`), the prop&#39;s `precision` will be used or in case the latter is undefined, `settings.precision` will be used.</span>
+</span><span id="settings_defaults.spec-196"><a href="#settings_defaults.spec-196"><span class="linenos">196</span></a><span class="sd">                * This attribute only applies to `&quot;num&quot;` props.</span>
+</span><span id="settings_defaults.spec-197"><a href="#settings_defaults.spec-197"><span class="linenos">197</span></a><span class="sd">        * **`legendNotation`**: `[int]` = `&quot;standard&quot;` &amp;rarr; The formatting style of a numeric value.</span>
+</span><span id="settings_defaults.spec-198"><a href="#settings_defaults.spec-198"><span class="linenos">198</span></a><span class="sd">            * **Accepted Values**:</span>
+</span><span id="settings_defaults.spec-199"><a href="#settings_defaults.spec-199"><span class="linenos">199</span></a><span class="sd">                * `&quot;standard&quot;`: Plain number formatting</span>
+</span><span id="settings_defaults.spec-200"><a href="#settings_defaults.spec-200"><span class="linenos">200</span></a><span class="sd">                * `&quot;compact&quot;`: Resembles the [metric prefix][] system</span>
+</span><span id="settings_defaults.spec-201"><a href="#settings_defaults.spec-201"><span class="linenos">201</span></a><span class="sd">                * `&quot;scientific&quot;`: [Scientific notation][]</span>
+</span><span id="settings_defaults.spec-202"><a href="#settings_defaults.spec-202"><span class="linenos">202</span></a><span class="sd">                * `&quot;engineering&quot;`: [Engineering notation][]</span>
+</span><span id="settings_defaults.spec-203"><a href="#settings_defaults.spec-203"><span class="linenos">203</span></a><span class="sd">            * **Notes**:</span>
+</span><span id="settings_defaults.spec-204"><a href="#settings_defaults.spec-204"><span class="linenos">204</span></a><span class="sd">                * If left unspecified (i.e. `None`), the prop&#39;s `notation` will be used or in case the latter is undefined, `settings.notation` will be used.</span>
+</span><span id="settings_defaults.spec-205"><a href="#settings_defaults.spec-205"><span class="linenos">205</span></a><span class="sd">                * This attribute only applies to `&quot;num&quot;` props.</span>
+</span><span id="settings_defaults.spec-206"><a href="#settings_defaults.spec-206"><span class="linenos">206</span></a><span class="sd">        * **`legendNotationDisplay`**: `[str]` = `&quot;e+&quot;` | `&quot;short&quot;` &amp;rarr; Further customize the formatting within the selected `legendNotation`.</span>
+</span><span id="settings_defaults.spec-207"><a href="#settings_defaults.spec-207"><span class="linenos">207</span></a><span class="sd">            * **Accepted Values**:</span>
+</span><span id="settings_defaults.spec-208"><a href="#settings_defaults.spec-208"><span class="linenos">208</span></a><span class="sd">                * `&quot;short&quot;`: Add symbols `K`, `M`, `B`, and `T` (in `&quot;en-US&quot;`) to denote thousands, millions, billions, and trillions, respectively.</span>
+</span><span id="settings_defaults.spec-209"><a href="#settings_defaults.spec-209"><span class="linenos">209</span></a><span class="sd">                * `&quot;long&quot;`: Present numeric values with the informal suffix words `thousand`, `million`, `billion`, and `trillion` (in `&quot;en-US&quot;`).</span>
+</span><span id="settings_defaults.spec-210"><a href="#settings_defaults.spec-210"><span class="linenos">210</span></a><span class="sd">                * `&quot;e&quot;`: Exponent symbol in lowercase as per the chosen `locale` identifier</span>
+</span><span id="settings_defaults.spec-211"><a href="#settings_defaults.spec-211"><span class="linenos">211</span></a><span class="sd">                * `&quot;e+&quot;`: Similar to `&quot;e&quot;`, but with a plus sign for positive exponents.</span>
+</span><span id="settings_defaults.spec-212"><a href="#settings_defaults.spec-212"><span class="linenos">212</span></a><span class="sd">                * `&quot;E&quot;`: Exponent symbol in uppercase as per the chosen `locale` identifier</span>
+</span><span id="settings_defaults.spec-213"><a href="#settings_defaults.spec-213"><span class="linenos">213</span></a><span class="sd">                * `&quot;E+&quot;`: Similar to `&quot;E&quot;`, but with a plus sign for positive exponents.</span>
+</span><span id="settings_defaults.spec-214"><a href="#settings_defaults.spec-214"><span class="linenos">214</span></a><span class="sd">                * `&quot;x10^&quot;`: Formal scientific notation representation</span>
+</span><span id="settings_defaults.spec-215"><a href="#settings_defaults.spec-215"><span class="linenos">215</span></a><span class="sd">                * `&quot;x10^+&quot;`: Similar to `&quot;x10^&quot;`, with a plus sign for positive exponents.</span>
+</span><span id="settings_defaults.spec-216"><a href="#settings_defaults.spec-216"><span class="linenos">216</span></a><span class="sd">            * **Notes**:</span>
+</span><span id="settings_defaults.spec-217"><a href="#settings_defaults.spec-217"><span class="linenos">217</span></a><span class="sd">                * No `legendNotationDisplay` option is provided for a `&quot;standard&quot;` legend notation</span>
+</span><span id="settings_defaults.spec-218"><a href="#settings_defaults.spec-218"><span class="linenos">218</span></a><span class="sd">                * The options `&quot;short&quot;` and `&quot;long&quot;` are only provided for the `&quot;compact&quot;` legend notation</span>
+</span><span id="settings_defaults.spec-219"><a href="#settings_defaults.spec-219"><span class="linenos">219</span></a><span class="sd">                * The options `&quot;e&quot;`, `&quot;e+&quot;`, `&quot;E&quot;`, `&quot;E+&quot;`, `&quot;x10^&quot;`, and `&quot;x10^+&quot;` are provided for the `&quot;scientific&quot;` and `&quot;engineering&quot;` legend notations</span>
+</span><span id="settings_defaults.spec-220"><a href="#settings_defaults.spec-220"><span class="linenos">220</span></a><span class="sd">                * If left unspecified (i.e. `None`), the prop&#39;s `notationDisplay` will be used or in case the latter is undefined, `settings.notationDisplay` will be used.</span>
+</span><span id="settings_defaults.spec-221"><a href="#settings_defaults.spec-221"><span class="linenos">221</span></a><span class="sd">                * This attribute only applies to `&quot;num&quot;` props.</span>
+</span><span id="settings_defaults.spec-222"><a href="#settings_defaults.spec-222"><span class="linenos">222</span></a><span class="sd">        * **`legendMinLabel`**: `[str]` = `None` &amp;rarr;</span>
+</span><span id="settings_defaults.spec-223"><a href="#settings_defaults.spec-223"><span class="linenos">223</span></a><span class="sd">            * A custom and descriptive label in the Map Legend used to identify the lowest data point.</span>
+</span><span id="settings_defaults.spec-224"><a href="#settings_defaults.spec-224"><span class="linenos">224</span></a><span class="sd">            * **Notes**:</span>
+</span><span id="settings_defaults.spec-225"><a href="#settings_defaults.spec-225"><span class="linenos">225</span></a><span class="sd">                * Takes precedence over other formatting, except when used in a node cluster and the `cave_utils.api.maps.group` attribute is `True`. In this case, the min value within the node cluster is displayed.</span>
+</span><span id="settings_defaults.spec-226"><a href="#settings_defaults.spec-226"><span class="linenos">226</span></a><span class="sd">                * This attribute only applies to `&quot;num&quot;` props.</span>
+</span><span id="settings_defaults.spec-227"><a href="#settings_defaults.spec-227"><span class="linenos">227</span></a><span class="sd">        * **`legendMaxLabel`**: `[str]` = `None` &amp;rarr;</span>
+</span><span id="settings_defaults.spec-228"><a href="#settings_defaults.spec-228"><span class="linenos">228</span></a><span class="sd">            * A custom and descriptive label in the Map Legend used to identify the highest data point.</span>
+</span><span id="settings_defaults.spec-229"><a href="#settings_defaults.spec-229"><span class="linenos">229</span></a><span class="sd">            * **Notes**:</span>
+</span><span id="settings_defaults.spec-230"><a href="#settings_defaults.spec-230"><span class="linenos">230</span></a><span class="sd">                * Takes precedence over other formatting, except when used in a node cluster and the `cave_utils.api.maps.group` attribute is `True`. In this case, the max value within the node cluster is displayed.</span>
+</span><span id="settings_defaults.spec-231"><a href="#settings_defaults.spec-231"><span class="linenos">231</span></a><span class="sd">                * This attribute only applies to `&quot;num&quot;` props.</span>
+</span><span id="settings_defaults.spec-232"><a href="#settings_defaults.spec-232"><span class="linenos">232</span></a>
+</span><span id="settings_defaults.spec-233"><a href="#settings_defaults.spec-233"><span class="linenos">233</span></a><span class="sd">        [locale identifier]: https://en.wikipedia.org/wiki/IETF_language_tag</span>
+</span><span id="settings_defaults.spec-234"><a href="#settings_defaults.spec-234"><span class="linenos">234</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="settings_defaults.spec-235"><a href="#settings_defaults.spec-235"><span class="linenos">235</span></a>        <span class="k">return</span> <span class="p">{</span>
+</span><span id="settings_defaults.spec-236"><a href="#settings_defaults.spec-236"><span class="linenos">236</span></a>            <span class="s2">&quot;kwargs&quot;</span><span class="p">:</span> <span class="n">kwargs</span><span class="p">,</span>
+</span><span id="settings_defaults.spec-237"><a href="#settings_defaults.spec-237"><span class="linenos">237</span></a>            <span class="s2">&quot;accepted_values&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span id="settings_defaults.spec-238"><a href="#settings_defaults.spec-238"><span class="linenos">238</span></a>                <span class="s2">&quot;unitPlacement&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;after&quot;</span><span class="p">,</span> <span class="s2">&quot;afterWithSpace&quot;</span><span class="p">,</span> <span class="s2">&quot;before&quot;</span><span class="p">,</span> <span class="s2">&quot;beforeWithSpace&quot;</span><span class="p">],</span>
+</span><span id="settings_defaults.spec-239"><a href="#settings_defaults.spec-239"><span class="linenos">239</span></a>            <span class="p">},</span>
+</span><span id="settings_defaults.spec-240"><a href="#settings_defaults.spec-240"><span class="linenos">240</span></a>        <span class="p">}</span>
 </span></pre></div>
 
 
             <div class="docstring"><p>Arguments:</p>
 
 <ul>
-<li><strong><code>precision</code></strong>: <code>[int]</code> = <code>2</code> &rarr; The number of decimal places to display.</li>
-<li><strong><code>trailingZeros</code></strong>: <code>[bool]</code> = <code>False</code> &rarr; If <code>True</code>, trailing zeros will be displayed.</li>
-<li><strong><code>unitPlacement</code></strong>: <code>[str]</code> = <code>"afterWithSpace"</code> &rarr; The position of the <code>unit</code> symbol relative to the value.
+<li><strong><code>showToolbar</code></strong>: <code>[bool]</code> = <code>True</code> &rarr; If <code>True</code>, chart toolbars will be displayed by default.</li>
+<li><strong><code>locale</code></strong>: <code>[str]</code> = <code>"en-US"</code> &rarr;
 <ul>
-<li><strong>Accepted values</strong>:
+<li>Format numeric values based on language and regional conventions.</li>
+<li><strong>Note</strong>: This attribute only applies to <code>"num"</code> props.</li>
+<li><strong>See</strong>: <a href="https://en.wikipedia.org/wiki/IETF_language_tag">Locale identifier</a>.</li>
+</ul></li>
+<li><strong><code>precision</code></strong>: <code>[int]</code> = <code>2</code> &rarr; The number of decimal places to display.
+<ul>
+<li><strong>Notes</strong>:
+<ul>
+<li>Set the precision to <code>0</code> to attach an integer constraint.</li>
+<li>This attribute only applies to <code>"num"</code> props.</li>
+</ul></li>
+</ul></li>
+<li><strong><code>trailingZeros</code></strong>: <code>[bool]</code> = <code>False</code> &rarr; If <code>True</code>, trailing zeros will be displayed.
+<ul>
+<li><strong>Notes</strong>:
+<ul>
+<li>This ensures that all precision digits are shown. For example: <code>1.5</code> &rarr; <code>1.500</code> when precision is <code>3</code>.</li>
+<li>This attribute only applies to <code>"num"</code> props.</li>
+</ul></li>
+</ul></li>
+<li><strong><code>notation</code></strong>: <code>[int]</code> = <code>"standard"</code> &rarr; The formatting style of a numeric value.</li>
+<li><strong><code>notationDisplay</code></strong>: <code>[str]</code> = <code>"e+"</code> | <code>"short"</code> &rarr; Further customize the formatting within the selected <code>notation</code>.
+<ul>
+<li><strong>Notes</strong>:
+<ul>
+<li>No <code>notationDisplay</code> option is provided for a <code>"standard"</code> notation</li>
+<li>The options <code>"short"</code> and <code>"long"</code> are only provided for the <code>"compact"</code> notation</li>
+<li>The options <code>"e"</code>, <code>"e+"</code>, <code>"E"</code>, <code>"E+"</code>, <code>"x10^"</code>, and <code>"x10^+"</code> are provided for the <code>"scientific"</code> and <code>"engineering"</code> notations</li>
+<li>If <code>None</code>, it defaults to <code>"short"</code> for <code>"compact"</code> notation, and to <code>"e+"</code> for <code>"scientific"</code> or <code>"engineering"</code> notations; if the option is set to <code>"standard"</code>, its value remains <code>None</code>.</li>
+<li>This attribute only applies to <code>"num"</code> props.</li>
+</ul></li>
+</ul></li>
+<li><strong><code>fallbackValue</code></strong>: [str] = <code>"N/A"</code> &rarr; A value to show when a numeric value is missing or invalid.
+<ul>
+<li><strong>Note</strong>: This attribute only applies to <code>"num"</code> props.</li>
+</ul></li>
+<li><strong><code>unit</code></strong>: <code>[str]</code> = <code>None</code> &rarr; The unit to use for a prop.
+<ul>
+<li><strong>Note</strong>: This attribute only applies to <code>"num"</code> props.</li>
+</ul></li>
+<li><strong><code>unitPlacement</code></strong>: <code>[str]</code> = <code>"afterWithSpace"</code> &rarr; The position of the <code>unit</code> symbol relative to a value.
+<ul>
+<li><strong>Accepted Values</strong>:
 <ul>
 <li><code>"after"</code>: The <code>unit</code> appears after the value.</li>
 <li><code>"afterWithSpace"</code>: The <code>unit</code> appears after the value, separated by a space.</li>
 <li><code>"before"</code>: The <code>unit</code> appears before the value.</li>
 <li><code>"beforeWithSpace"</code>: The unit is placed before the value, with a space in between.</li>
 </ul></li>
+<li><strong>Note</strong>: This attribute only applies to <code>"num"</code> props.</li>
 </ul></li>
-<li><strong><code>showToolbar</code></strong>: <code>[bool]</code> = <code>True</code> &rarr; If <code>True</code>, chart toolbars will be displayed by default.</li>
+<li><strong><code>legendPrecision</code></strong>: <code>[int]</code> = <code>None</code> &rarr;
+<ul>
+<li>The number of decimal places to display in the Map Legend.</li>
+<li><strong>Notes</strong>:
+<ul>
+<li>Set the precision to <code>0</code> to attach an integer constraint.</li>
+<li>If left unspecified (i.e. <code>None</code>), the prop's <code>precision</code> will be used or in case the latter is undefined, <code>settings.precision</code> will be used.</li>
+<li>This attribute only applies to <code>"num"</code> props.</li>
+</ul></li>
+</ul></li>
+<li><strong><code>legendNotation</code></strong>: <code>[int]</code> = <code>"standard"</code> &rarr; The formatting style of a numeric value.
+<ul>
+<li><strong>Accepted Values</strong>:
+<ul>
+<li><code>"standard"</code>: Plain number formatting</li>
+<li><code>"compact"</code>: Resembles the [metric prefix][] system</li>
+<li><code>"scientific"</code>: [Scientific notation][]</li>
+<li><code>"engineering"</code>: [Engineering notation][]</li>
+</ul></li>
+<li><strong>Notes</strong>:
+<ul>
+<li>If left unspecified (i.e. <code>None</code>), the prop's <code>notation</code> will be used or in case the latter is undefined, <code>settings.notation</code> will be used.</li>
+<li>This attribute only applies to <code>"num"</code> props.</li>
+</ul></li>
+</ul></li>
+<li><strong><code>legendNotationDisplay</code></strong>: <code>[str]</code> = <code>"e+"</code> | <code>"short"</code> &rarr; Further customize the formatting within the selected <code>legendNotation</code>.
+<ul>
+<li><strong>Accepted Values</strong>:
+<ul>
+<li><code>"short"</code>: Add symbols <code>K</code>, <code>M</code>, <code>B</code>, and <code>T</code> (in <code>"en-US"</code>) to denote thousands, millions, billions, and trillions, respectively.</li>
+<li><code>"long"</code>: Present numeric values with the informal suffix words <code>thousand</code>, <code>million</code>, <code>billion</code>, and <code>trillion</code> (in <code>"en-US"</code>).</li>
+<li><code>"e"</code>: Exponent symbol in lowercase as per the chosen <code>locale</code> identifier</li>
+<li><code>"e+"</code>: Similar to <code>"e"</code>, but with a plus sign for positive exponents.</li>
+<li><code>"E"</code>: Exponent symbol in uppercase as per the chosen <code>locale</code> identifier</li>
+<li><code>"E+"</code>: Similar to <code>"E"</code>, but with a plus sign for positive exponents.</li>
+<li><code>"x10^"</code>: Formal scientific notation representation</li>
+<li><code>"x10^+"</code>: Similar to <code>"x10^"</code>, with a plus sign for positive exponents.</li>
+</ul></li>
+<li><strong>Notes</strong>:
+<ul>
+<li>No <code>legendNotationDisplay</code> option is provided for a <code>"standard"</code> legend notation</li>
+<li>The options <code>"short"</code> and <code>"long"</code> are only provided for the <code>"compact"</code> legend notation</li>
+<li>The options <code>"e"</code>, <code>"e+"</code>, <code>"E"</code>, <code>"E+"</code>, <code>"x10^"</code>, and <code>"x10^+"</code> are provided for the <code>"scientific"</code> and <code>"engineering"</code> legend notations</li>
+<li>If left unspecified (i.e. <code>None</code>), the prop's <code>notationDisplay</code> will be used or in case the latter is undefined, <code>settings.notationDisplay</code> will be used.</li>
+<li>This attribute only applies to <code>"num"</code> props.</li>
+</ul></li>
+</ul></li>
+<li><strong><code>legendMinLabel</code></strong>: <code>[str]</code> = <code>None</code> &rarr;
+<ul>
+<li>A custom and descriptive label in the Map Legend used to identify the lowest data point.</li>
+<li><strong>Notes</strong>:
+<ul>
+<li>Takes precedence over other formatting, except when used in a node cluster and the <code>cave_utils.api.maps.group</code> attribute is <code>True</code>. In this case, the min value within the node cluster is displayed.</li>
+<li>This attribute only applies to <code>"num"</code> props.</li>
+</ul></li>
+</ul></li>
+<li><strong><code>legendMaxLabel</code></strong>: <code>[str]</code> = <code>None</code> &rarr;
+<ul>
+<li>A custom and descriptive label in the Map Legend used to identify the highest data point.</li>
+<li><strong>Notes</strong>:
+<ul>
+<li>Takes precedence over other formatting, except when used in a node cluster and the <code>cave_utils.api.maps.group</code> attribute is <code>True</code>. In this case, the max value within the node cluster is displayed.</li>
+<li>This attribute only applies to <code>"num"</code> props.</li>
+</ul></li>
+</ul></li>
 </ul>
 </div>
 

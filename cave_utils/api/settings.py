@@ -155,15 +155,81 @@ class settings_defaults(ApiValidator):
         """
         Arguments:
 
-        * **`precision`**: `[int]` = `2` &rarr; The number of decimal places to display.
-        * **`trailingZeros`**: `[bool]` = `False` &rarr; If `True`, trailing zeros will be displayed.
-        * **`unitPlacement`**: `[str]` = `"afterWithSpace"` &rarr; The position of the `unit` symbol relative to the value.
-            * **Accepted values**:
-                    * `"after"`: The `unit` appears after the value.
-                    * `"afterWithSpace"`: The `unit` appears after the value, separated by a space.
-                    * `"before"`: The `unit` appears before the value.
-                    * `"beforeWithSpace"`: The unit is placed before the value, with a space in between.
         * **`showToolbar`**: `[bool]` = `True` &rarr; If `True`, chart toolbars will be displayed by default.
+        * **`locale`**: `[str]` = `"en-US"` &rarr;
+            * Format numeric values based on language and regional conventions.
+            * **Note**: This attribute only applies to `"num"` props.
+            * **See**: [Locale identifier][].
+        * **`precision`**: `[int]` = `2` &rarr; The number of decimal places to display.
+            * **Notes**:
+                * Set the precision to `0` to attach an integer constraint.
+                * This attribute only applies to `"num"` props.
+        * **`trailingZeros`**: `[bool]` = `False` &rarr; If `True`, trailing zeros will be displayed.
+            * **Notes**:
+                * This ensures that all precision digits are shown. For example: `1.5` &rarr; `1.500` when precision is `3`.
+                * This attribute only applies to `"num"` props.
+        * **`notation`**: `[int]` = `"standard"` &rarr; The formatting style of a numeric value.
+        * **`notationDisplay`**: `[str]` = `"e+"` | `"short"` &rarr; Further customize the formatting within the selected `notation`.
+            * **Notes**:
+                * No `notationDisplay` option is provided for a `"standard"` notation
+                * The options `"short"` and `"long"` are only provided for the `"compact"` notation
+                * The options `"e"`, `"e+"`, `"E"`, `"E+"`, `"x10^"`, and `"x10^+"` are provided for the `"scientific"` and `"engineering"` notations
+                * If `None`, it defaults to `"short"` for `"compact"` notation, and to `"e+"` for `"scientific"` or `"engineering"` notations; if the option is set to `"standard"`, its value remains `None`.
+                * This attribute only applies to `"num"` props.
+        * **`fallbackValue`**: [str] = `"N/A"` &rarr; A value to show when a numeric value is missing or invalid.
+            * **Note**: This attribute only applies to `"num"` props.
+        * **`unit`**: `[str]` = `None` &rarr; The unit to use for a prop.
+            * **Note**: This attribute only applies to `"num"` props.
+        * **`unitPlacement`**: `[str]` = `"afterWithSpace"` &rarr; The position of the `unit` symbol relative to a value.
+            * **Accepted Values**:
+                * `"after"`: The `unit` appears after the value.
+                * `"afterWithSpace"`: The `unit` appears after the value, separated by a space.
+                * `"before"`: The `unit` appears before the value.
+                * `"beforeWithSpace"`: The unit is placed before the value, with a space in between.
+            * **Note**: This attribute only applies to `"num"` props.
+        * **`legendPrecision`**: `[int]` = `None` &rarr;
+            * The number of decimal places to display in the Map Legend.
+            * **Notes**:
+                * Set the precision to `0` to attach an integer constraint.
+                * If left unspecified (i.e. `None`), the prop's `precision` will be used or in case the latter is undefined, `settings.precision` will be used.
+                * This attribute only applies to `"num"` props.
+        * **`legendNotation`**: `[int]` = `"standard"` &rarr; The formatting style of a numeric value.
+            * **Accepted Values**:
+                * `"standard"`: Plain number formatting
+                * `"compact"`: Resembles the [metric prefix][] system
+                * `"scientific"`: [Scientific notation][]
+                * `"engineering"`: [Engineering notation][]
+            * **Notes**:
+                * If left unspecified (i.e. `None`), the prop's `notation` will be used or in case the latter is undefined, `settings.notation` will be used.
+                * This attribute only applies to `"num"` props.
+        * **`legendNotationDisplay`**: `[str]` = `"e+"` | `"short"` &rarr; Further customize the formatting within the selected `legendNotation`.
+            * **Accepted Values**:
+                * `"short"`: Add symbols `K`, `M`, `B`, and `T` (in `"en-US"`) to denote thousands, millions, billions, and trillions, respectively.
+                * `"long"`: Present numeric values with the informal suffix words `thousand`, `million`, `billion`, and `trillion` (in `"en-US"`).
+                * `"e"`: Exponent symbol in lowercase as per the chosen `locale` identifier
+                * `"e+"`: Similar to `"e"`, but with a plus sign for positive exponents.
+                * `"E"`: Exponent symbol in uppercase as per the chosen `locale` identifier
+                * `"E+"`: Similar to `"E"`, but with a plus sign for positive exponents.
+                * `"x10^"`: Formal scientific notation representation
+                * `"x10^+"`: Similar to `"x10^"`, with a plus sign for positive exponents.
+            * **Notes**:
+                * No `legendNotationDisplay` option is provided for a `"standard"` legend notation
+                * The options `"short"` and `"long"` are only provided for the `"compact"` legend notation
+                * The options `"e"`, `"e+"`, `"E"`, `"E+"`, `"x10^"`, and `"x10^+"` are provided for the `"scientific"` and `"engineering"` legend notations
+                * If left unspecified (i.e. `None`), the prop's `notationDisplay` will be used or in case the latter is undefined, `settings.notationDisplay` will be used.
+                * This attribute only applies to `"num"` props.
+        * **`legendMinLabel`**: `[str]` = `None` &rarr;
+            * A custom and descriptive label in the Map Legend used to identify the lowest data point.
+            * **Notes**:
+                * Takes precedence over other formatting, except when used in a node cluster and the `cave_utils.api.maps.group` attribute is `True`. In this case, the min value within the node cluster is displayed.
+                * This attribute only applies to `"num"` props.
+        * **`legendMaxLabel`**: `[str]` = `None` &rarr;
+            * A custom and descriptive label in the Map Legend used to identify the highest data point.
+            * **Notes**:
+                * Takes precedence over other formatting, except when used in a node cluster and the `cave_utils.api.maps.group` attribute is `True`. In this case, the max value within the node cluster is displayed.
+                * This attribute only applies to `"num"` props.
+
+        [locale identifier]: https://en.wikipedia.org/wiki/IETF_language_tag
         """
         return {
             "kwargs": kwargs,
