@@ -1132,7 +1132,7 @@ example = {
                 "type": "arc",
                 "name": "Flow Type 1",
                 "geoJson": {
-                    "geoJsonLayer": "https://raw.githubusercontent.com/MIT-CAVE/cave_app/ced363/cave_api/cave_api/example_data/example.geojson",
+                    "geoJsonLayer": "https://raw.githubusercontent.com/MIT-CAVE/cave_app_extras/main/example_data/example.geojson",
                     "geoJsonProp": "arc_id",
                 },
                 "props": {
@@ -1425,32 +1425,11 @@ example = {
                     "levels": ["region", "country", "state"],
                 },
                 "data": {
-                    "locUsMi": {
-                        "region": "North America",
-                        "country": "USA",
-                        "state": "Michigan",
+                    "id": ["locUsMi", "locUsMa", "locUsFl", "locUsIn", "locCaOn"],
+                    "region": ["North America", "North America", "North America", "North America", "North America"],
+                    "country": ["USA", "USA", "USA", "USA", "Canada"],  
+                    "state": ["Michigan", "Massachusetts", "Florida", "Indiana", "Ontario"],
                     },
-                    "locUsMa": {
-                        "region": "North America",
-                        "country": "USA",
-                        "state": "Massachusetts",
-                    },
-                    "locUsFl": {
-                        "region": "North America",
-                        "country": "USA",
-                        "state": "Florida",
-                    },
-                    "locUsIn": {
-                        "region": "North America",
-                        "country": "USA",
-                        "state": "Indiana",
-                    },
-                    "locCaOn": {
-                        "region": "North America",
-                        "country": "Canada",
-                        "state": "Ontario",
-                    },
-                },
                 "name": "Locations",
                 "levels": {
                     "region": {
@@ -1458,7 +1437,7 @@ example = {
                     },
                     "country": {
                         "name": "Countries",
-                        "ordering": ["USA", "Canada","somali"],
+                        "ordering": ["USA", "Canada"],
                         "parent": "region",
                     },
                     "state": {
@@ -1474,16 +1453,10 @@ example = {
                     "levels": ["type", "size", "sku"],
                 },
                 "data": {
-                    "SKU1": {
-                        "type": "Type A",
-                        "size": "Size A",
-                        "sku": "SKU1",
-                    },
-                    "SKU2": {
-                        "type": "Type A",
-                        "size": "Size B",
-                        "sku": "SKU2",
-                    },
+                    "id": ["SKU1", "SKU2"],
+                    "type": ["Type A", "Type A"],
+                    "size": ["Size A", "Size B"],
+                    "sku": ["SKU1", "SKU2"],
                 },
                 "name": "SKUs",
                 "levels": {

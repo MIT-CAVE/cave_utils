@@ -23,6 +23,7 @@ from cave_utils.api.mapFeatures import mapFeatures
 from cave_utils.api.groupedOutputs import groupedOutputs
 import type_enforced
 
+
 @type_enforced.Enforcer
 class Root(ApiValidator):
     """
@@ -71,7 +72,7 @@ class Root(ApiValidator):
         * **`extraKwargs`**: `[dict]` = `{}` &rarr; Special arguments to be passed to the server.
             * **See**: `cave_utils.api.extraKwargs`
         """
-        kwargs = {k:v for k,v in kwargs.items() if k != 'associated'}
+        kwargs = {k: v for k, v in kwargs.items() if k != "associated"}
         return {
             "kwargs": kwargs,
             "accepted_values": {},
@@ -116,7 +117,13 @@ class Root(ApiValidator):
         maps_data = self.data.get("maps", dict())
         maps_validMapIds = []
         if maps_data != {}:
-            maps(data=maps_data, log=self.log, prepend_path=["maps"], mapFeatures_feature_props=mapFeatures_feature_props, **kwargs)
+            maps(
+                data=maps_data,
+                log=self.log,
+                prepend_path=["maps"],
+                mapFeatures_feature_props=mapFeatures_feature_props,
+                **kwargs,
+            )
             maps_validMapIds = list(maps_data.get("data", {}).keys())
         # Validate globalOutputs
         globalOutputs_data = self.data.get("globalOutputs", dict())
@@ -130,7 +137,7 @@ class Root(ApiValidator):
             )
             globalOuputs_validPropIds = list(globalOutputs_data.get("values", {}).keys())
         # Validate groupedOutputs
-        groupedOutputs_data = self.data.get("groupedOutputs",dict())
+        groupedOutputs_data = self.data.get("groupedOutputs", dict())
         groupedOutputs_validLevelIds = {}
         groupedOutputs_validStatIds = {}
         groupedOutputs_validGroupIds = {}
@@ -143,15 +150,24 @@ class Root(ApiValidator):
             )
             # Populate valid ids for each relevant groupedOutput to be used in pages.
             try:
-                groupedOutputs_validLevelIds = {k:list(v.get('levels').keys()) for k,v in groupedOutputs_data.get("groupings", {}).items()}
+                groupedOutputs_validLevelIds = {
+                    k: list(v.get("levels").keys())
+                    for k, v in groupedOutputs_data.get("groupings", {}).items()
+                }
             except:
                 pass
             try:
-                groupedOutputs_validStatIds = {k:list(v.get('stats').keys()) for k,v in groupedOutputs_data.get("data", {}).items()}
+                groupedOutputs_validStatIds = {
+                    k: list(v.get("stats").keys())
+                    for k, v in groupedOutputs_data.get("data", {}).items()
+                }
             except:
                 pass
             try:
-                groupedOutputs_validGroupIds = {k:list(v.get('groupLists').keys()) for k,v in groupedOutputs_data.get("data", {}).items()}
+                groupedOutputs_validGroupIds = {
+                    k: list(v.get("groupLists").keys())
+                    for k, v in groupedOutputs_data.get("data", {}).items()
+                }
             except:
                 pass
         # Validate pages
@@ -168,7 +184,7 @@ class Root(ApiValidator):
                 groupedOutputs_validLevelIds=groupedOutputs_validLevelIds,
                 groupedOutputs_validStatIds=groupedOutputs_validStatIds,
                 groupedOutputs_validGroupIds=groupedOutputs_validGroupIds,
-                **kwargs
+                **kwargs,
             )
             page_validPageIds = list(pages_data.get("data", {}).keys())
         # Validate appBar
@@ -181,5 +197,5 @@ class Root(ApiValidator):
                 # Special kwargs to validate panes and pages are valid:
                 page_validPageIds=page_validPageIds,
                 pane_validPaneIds=pane_validPaneIds,
-                **kwargs
+                **kwargs,
             )

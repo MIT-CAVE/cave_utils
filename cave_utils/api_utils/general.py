@@ -286,9 +286,9 @@ class props(ApiValidator):
                 # compact: allowed notation displays -> "short", "long"
                 # scientific|engineering: allowed notation displays -> "e", "e+", "E", "E+", "x10^", "x10^+"
                 # standard: allowed notation displays -> None
-                "notation": ["compact", "precision", "scientific"],
+                "notation": ["compact", "precision", "scientific", "engineering"],
                 "notationDisplay": ["short", "long", "e", "e+", "E", "E+", "x10^", "x10^+"],
-                "legendNotation": ["compact", "precision", "scientific"],
+                "legendNotation": ["compact", "precision", "scientific", "engineering"],
                 "legendNotationDisplay": ["short", "long", "e", "e+", "E", "E+", "x10^", "x10^+"],
                 # TODO: Validate These
                 # TODO: Add Other value checks here

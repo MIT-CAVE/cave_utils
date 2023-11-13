@@ -5,6 +5,7 @@ from cave_utils.api_utils.validator_utils import LogObject
 from cave_utils.api import Root
 import type_enforced
 
+
 @type_enforced.Enforcer
 class Validator:
     def __init__(self, session_data, ignore_keys: list = list(), **kwargs):

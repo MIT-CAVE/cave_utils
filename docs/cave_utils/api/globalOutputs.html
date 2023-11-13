@@ -81,15 +81,15 @@
 </span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a><span class="sd">    &quot;&quot;&quot;</span>
 </span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a>
 </span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a>    <span class="k">def</span> <span class="nf">spec</span><span class="p">(</span>
-</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a>        <span class="n">props</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">values</span><span class="p">:</span> <span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">layout</span><span class="p">:</span> <span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
-</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a>    <span class="p">):</span>
-</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a><span class="sd">        Arguments:</span>
-</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>
-</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a><span class="sd">        * **`props`**: `[dict]` &amp;rarr; The props that will be rendered as global outputs.</span>
-</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a><span class="sd">        * **`values`**: `[dict]` = `None` &amp;rarr;</span>
-</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a><span class="sd">            * The values to be assigned to the respective props. Each value is associated with its corresponding prop based on the key name used in `props`.</span>
+</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a>    <span class="k">def</span> <span class="nf">spec</span><span class="p">(</span><span class="n">props</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">values</span><span class="p">:</span> <span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">layout</span><span class="p">:</span> <span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a><span class="sd">        Arguments:</span>
+</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a>
+</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a><span class="sd">        * **`props`**: `[dict]` &amp;rarr; The props that will be rendered as global outputs.</span>
+</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a><span class="sd">            * **See**: `cave_utils.api_utils.general.props`</span>
+</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a><span class="sd">        * **`values`**: `[dict]` = `None` &amp;rarr;</span>
+</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a><span class="sd">            * The values to be assigned to the respective props. Each value is associated with its corresponding prop based on the key name used in `props`.</span>
+</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a><span class="sd">            * **See**: `cave_utils.api_utils.general.values`</span>
 </span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a><span class="sd">        * **`layout`**: `[dict]` =`{&quot;type&quot;: &quot;grid&quot;, &quot;numColumns&quot;: &quot;auto&quot;, &quot;numRows&quot;: &quot;auto&quot;}` &amp;rarr;</span>
 </span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a><span class="sd">            * The layout of the global outputs when the &quot;Overview&quot; chart is selected.</span>
 </span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a><span class="sd">            * **See**: `cave_utils.api_utils.general.layout`</span>
@@ -146,15 +146,15 @@
 </span><span id="globalOutputs-15"><a href="#globalOutputs-15"><span class="linenos">15</span></a><span class="sd">    &quot;&quot;&quot;</span>
 </span><span id="globalOutputs-16"><a href="#globalOutputs-16"><span class="linenos">16</span></a>
 </span><span id="globalOutputs-17"><a href="#globalOutputs-17"><span class="linenos">17</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="globalOutputs-18"><a href="#globalOutputs-18"><span class="linenos">18</span></a>    <span class="k">def</span> <span class="nf">spec</span><span class="p">(</span>
-</span><span id="globalOutputs-19"><a href="#globalOutputs-19"><span class="linenos">19</span></a>        <span class="n">props</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">values</span><span class="p">:</span> <span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">layout</span><span class="p">:</span> <span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
-</span><span id="globalOutputs-20"><a href="#globalOutputs-20"><span class="linenos">20</span></a>    <span class="p">):</span>
-</span><span id="globalOutputs-21"><a href="#globalOutputs-21"><span class="linenos">21</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="globalOutputs-22"><a href="#globalOutputs-22"><span class="linenos">22</span></a><span class="sd">        Arguments:</span>
-</span><span id="globalOutputs-23"><a href="#globalOutputs-23"><span class="linenos">23</span></a>
-</span><span id="globalOutputs-24"><a href="#globalOutputs-24"><span class="linenos">24</span></a><span class="sd">        * **`props`**: `[dict]` &amp;rarr; The props that will be rendered as global outputs.</span>
-</span><span id="globalOutputs-25"><a href="#globalOutputs-25"><span class="linenos">25</span></a><span class="sd">        * **`values`**: `[dict]` = `None` &amp;rarr;</span>
-</span><span id="globalOutputs-26"><a href="#globalOutputs-26"><span class="linenos">26</span></a><span class="sd">            * The values to be assigned to the respective props. Each value is associated with its corresponding prop based on the key name used in `props`.</span>
+</span><span id="globalOutputs-18"><a href="#globalOutputs-18"><span class="linenos">18</span></a>    <span class="k">def</span> <span class="nf">spec</span><span class="p">(</span><span class="n">props</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">values</span><span class="p">:</span> <span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">layout</span><span class="p">:</span> <span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+</span><span id="globalOutputs-19"><a href="#globalOutputs-19"><span class="linenos">19</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="globalOutputs-20"><a href="#globalOutputs-20"><span class="linenos">20</span></a><span class="sd">        Arguments:</span>
+</span><span id="globalOutputs-21"><a href="#globalOutputs-21"><span class="linenos">21</span></a>
+</span><span id="globalOutputs-22"><a href="#globalOutputs-22"><span class="linenos">22</span></a><span class="sd">        * **`props`**: `[dict]` &amp;rarr; The props that will be rendered as global outputs.</span>
+</span><span id="globalOutputs-23"><a href="#globalOutputs-23"><span class="linenos">23</span></a><span class="sd">            * **See**: `cave_utils.api_utils.general.props`</span>
+</span><span id="globalOutputs-24"><a href="#globalOutputs-24"><span class="linenos">24</span></a><span class="sd">        * **`values`**: `[dict]` = `None` &amp;rarr;</span>
+</span><span id="globalOutputs-25"><a href="#globalOutputs-25"><span class="linenos">25</span></a><span class="sd">            * The values to be assigned to the respective props. Each value is associated with its corresponding prop based on the key name used in `props`.</span>
+</span><span id="globalOutputs-26"><a href="#globalOutputs-26"><span class="linenos">26</span></a><span class="sd">            * **See**: `cave_utils.api_utils.general.values`</span>
 </span><span id="globalOutputs-27"><a href="#globalOutputs-27"><span class="linenos">27</span></a><span class="sd">        * **`layout`**: `[dict]` =`{&quot;type&quot;: &quot;grid&quot;, &quot;numColumns&quot;: &quot;auto&quot;, &quot;numRows&quot;: &quot;auto&quot;}` &amp;rarr;</span>
 </span><span id="globalOutputs-28"><a href="#globalOutputs-28"><span class="linenos">28</span></a><span class="sd">            * The layout of the global outputs when the &quot;Overview&quot; chart is selected.</span>
 </span><span id="globalOutputs-29"><a href="#globalOutputs-29"><span class="linenos">29</span></a><span class="sd">            * **See**: `cave_utils.api_utils.general.layout`</span>
@@ -208,15 +208,15 @@
     </div>
     <a class="headerlink" href="#globalOutputs.spec"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="globalOutputs.spec-17"><a href="#globalOutputs.spec-17"><span class="linenos">17</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="globalOutputs.spec-18"><a href="#globalOutputs.spec-18"><span class="linenos">18</span></a>    <span class="k">def</span> <span class="nf">spec</span><span class="p">(</span>
-</span><span id="globalOutputs.spec-19"><a href="#globalOutputs.spec-19"><span class="linenos">19</span></a>        <span class="n">props</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">values</span><span class="p">:</span> <span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">layout</span><span class="p">:</span> <span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
-</span><span id="globalOutputs.spec-20"><a href="#globalOutputs.spec-20"><span class="linenos">20</span></a>    <span class="p">):</span>
-</span><span id="globalOutputs.spec-21"><a href="#globalOutputs.spec-21"><span class="linenos">21</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="globalOutputs.spec-22"><a href="#globalOutputs.spec-22"><span class="linenos">22</span></a><span class="sd">        Arguments:</span>
-</span><span id="globalOutputs.spec-23"><a href="#globalOutputs.spec-23"><span class="linenos">23</span></a>
-</span><span id="globalOutputs.spec-24"><a href="#globalOutputs.spec-24"><span class="linenos">24</span></a><span class="sd">        * **`props`**: `[dict]` &amp;rarr; The props that will be rendered as global outputs.</span>
-</span><span id="globalOutputs.spec-25"><a href="#globalOutputs.spec-25"><span class="linenos">25</span></a><span class="sd">        * **`values`**: `[dict]` = `None` &amp;rarr;</span>
-</span><span id="globalOutputs.spec-26"><a href="#globalOutputs.spec-26"><span class="linenos">26</span></a><span class="sd">            * The values to be assigned to the respective props. Each value is associated with its corresponding prop based on the key name used in `props`.</span>
+</span><span id="globalOutputs.spec-18"><a href="#globalOutputs.spec-18"><span class="linenos">18</span></a>    <span class="k">def</span> <span class="nf">spec</span><span class="p">(</span><span class="n">props</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">values</span><span class="p">:</span> <span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">layout</span><span class="p">:</span> <span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+</span><span id="globalOutputs.spec-19"><a href="#globalOutputs.spec-19"><span class="linenos">19</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="globalOutputs.spec-20"><a href="#globalOutputs.spec-20"><span class="linenos">20</span></a><span class="sd">        Arguments:</span>
+</span><span id="globalOutputs.spec-21"><a href="#globalOutputs.spec-21"><span class="linenos">21</span></a>
+</span><span id="globalOutputs.spec-22"><a href="#globalOutputs.spec-22"><span class="linenos">22</span></a><span class="sd">        * **`props`**: `[dict]` &amp;rarr; The props that will be rendered as global outputs.</span>
+</span><span id="globalOutputs.spec-23"><a href="#globalOutputs.spec-23"><span class="linenos">23</span></a><span class="sd">            * **See**: `cave_utils.api_utils.general.props`</span>
+</span><span id="globalOutputs.spec-24"><a href="#globalOutputs.spec-24"><span class="linenos">24</span></a><span class="sd">        * **`values`**: `[dict]` = `None` &amp;rarr;</span>
+</span><span id="globalOutputs.spec-25"><a href="#globalOutputs.spec-25"><span class="linenos">25</span></a><span class="sd">            * The values to be assigned to the respective props. Each value is associated with its corresponding prop based on the key name used in `props`.</span>
+</span><span id="globalOutputs.spec-26"><a href="#globalOutputs.spec-26"><span class="linenos">26</span></a><span class="sd">            * **See**: `cave_utils.api_utils.general.values`</span>
 </span><span id="globalOutputs.spec-27"><a href="#globalOutputs.spec-27"><span class="linenos">27</span></a><span class="sd">        * **`layout`**: `[dict]` =`{&quot;type&quot;: &quot;grid&quot;, &quot;numColumns&quot;: &quot;auto&quot;, &quot;numRows&quot;: &quot;auto&quot;}` &amp;rarr;</span>
 </span><span id="globalOutputs.spec-28"><a href="#globalOutputs.spec-28"><span class="linenos">28</span></a><span class="sd">            * The layout of the global outputs when the &quot;Overview&quot; chart is selected.</span>
 </span><span id="globalOutputs.spec-29"><a href="#globalOutputs.spec-29"><span class="linenos">29</span></a><span class="sd">            * **See**: `cave_utils.api_utils.general.layout`</span>
@@ -229,10 +229,14 @@
             <div class="docstring"><p>Arguments:</p>
 
 <ul>
-<li><strong><code>props</code></strong>: <code>[dict]</code> &rarr; The props that will be rendered as global outputs.</li>
+<li><strong><code>props</code></strong>: <code>[dict]</code> &rarr; The props that will be rendered as global outputs.
+<ul>
+<li><strong>See</strong>: <code><a href="../api_utils/general.html#props">cave_utils.api_utils.general.props</a></code></li>
+</ul></li>
 <li><strong><code>values</code></strong>: <code>[dict]</code> = <code>None</code> &rarr;
 <ul>
 <li>The values to be assigned to the respective props. Each value is associated with its corresponding prop based on the key name used in <code>props</code>.</li>
+<li><strong>See</strong>: <code><a href="../api_utils/general.html#values">cave_utils.api_utils.general.values</a></code></li>
 </ul></li>
 <li><strong><code>layout</code></strong>: <code>[dict]</code> =<code>{"type": "grid", "numColumns": "auto", "numRows": "auto"}</code> &rarr;
 <ul>
