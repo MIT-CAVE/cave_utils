@@ -1,0 +1,4 @@
+error: ['test']
+	Some test error
+warning: ['test']
+	Some test warning

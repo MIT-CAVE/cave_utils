@@ -1,4 +1,4 @@
-from pathlib import Path
+import type_enforced, os
 
 
 class LogObject:
@@ -8,27 +8,27 @@ class LogObject:
     def add(self, path, msg, level="error"):
         self.log.append({"path": path, "msg": msg, "level": level})
 
-    def get_logs(self, level=None):
+    def get_logs(self, level=None, max_count=None):
         if level is None:
             return self.log
         assert level in ["error", "warning"], "Invalid level, must be 'error' or 'warning'"
-        return [i for i in self.log if i["level"] == level]
+        logs = [i for i in self.log if i["level"] == level]
+        return logs[:max_count] if max_count is not None and len(logs) > max_count else logs
 
-    def print_logs(self, level=None):
-        for i in self.get_logs(level=level):
-            print("=" * 50)
-            print(f"Path: {i['path']}")
-            print(f"Message: {i['msg']}")
-            print(f"Level: {i['level']}")
+    @type_enforced.Enforcer
+    def print_logs(self, level: [str, None] = None, max_count: [int, None] = None):
+        for i in self.get_logs(level=level, max_count=max_count):
+            print(f"{i['level']}: {i['path']}\n\t{i['msg']}")
 
-    def write_logs(self, path, level=None):
-        Path(path).parent.mkdir(parents=True, exist_ok=True)
+    @type_enforced.Enforcer
+    def write_logs(self, path: str, level: [str, None] = None, max_count: [int, None] = None):
+        if path[:1] != "/":
+            path = os.getcwd() + "/" + path
+        path = path.replace("/./", "/")
+        os.makedirs(os.path.dirname(path), exist_ok=True)
         with open(path, "w") as f:
-            for i in self.get_logs(level=level):
-                f.write("=" * 50 + "\n")
-                f.write(f"Path: {i['path']}\n")
-                f.write(f"Message: {i['msg']}\n")
-                f.write(f"Level: {i['level']}\n")
+            for i in self.get_logs(level=level, max_count=max_count):
+                f.write(f"{i['level']}: {i['path']}\n\t{i['msg']}\n")
 
 
 class LogHelper:
