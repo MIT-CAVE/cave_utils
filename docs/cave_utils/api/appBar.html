@@ -32,17 +32,17 @@
             <h2>API Documentation</h2>
                 <ul class="memberlist">
             <li>
+                    <a class="class" href="#appBar">appBar</a>
+                            <ul class="memberlist">
+                </ul>
+
+            </li>
+            <li>
                     <a class="class" href="#appBar_data_star">appBar_data_star</a>
                             <ul class="memberlist">
                         <li>
                                 <a class="function" href="#appBar_data_star.spec">spec</a>
                         </li>
-                </ul>
-
-            </li>
-            <li>
-                    <a class="class" href="#appBar">appBar</a>
-                            <ul class="memberlist">
                 </ul>
 
             </li>
@@ -64,8 +64,8 @@
 
                         <div class="docstring"><p>The app bar is a key element of the CAVE App, positioned on the left or
 right side of the screen. It provides actions that allow users to
-navigate between <a href="#todo-pages-subsection">pages</a>, launch <a href="#todo-panes-subsection">panes</a>, and interact with the
-CAVE API through <a href="#todo-api-command-subsection">predefined</a> or <a href="#todo-api-command-subsection">custom</a> commands.</p>
+navigate between <a href="pages.html">pages</a>, launch <a href="panes.html">panes</a>, and interact with the
+CAVE API through <a href="#appBar_data_star.spec">predefined</a> or <a href="#appBar_data_star.spec">custom</a> commands.</p>
 
 <p>If specified, both left and right side app bars can be displayed
 simultaneously.</p>
@@ -84,131 +84,180 @@ simultaneously.</p>
 </span><span id="L-7"><a href="#L-7"><span class="linenos">  7</span></a><span class="sd">If specified, both left and right side app bars can be displayed</span>
 </span><span id="L-8"><a href="#L-8"><span class="linenos">  8</span></a><span class="sd">simultaneously.</span>
 </span><span id="L-9"><a href="#L-9"><span class="linenos">  9</span></a>
-</span><span id="L-10"><a href="#L-10"><span class="linenos"> 10</span></a><span class="sd">[pages]: #todo-pages-subsection</span>
-</span><span id="L-11"><a href="#L-11"><span class="linenos"> 11</span></a><span class="sd">[panes]: #todo-panes-subsection</span>
-</span><span id="L-12"><a href="#L-12"><span class="linenos"> 12</span></a><span class="sd">[predefined]: #todo-api-command-subsection</span>
-</span><span id="L-13"><a href="#L-13"><span class="linenos"> 13</span></a><span class="sd">[custom]: #todo-api-command-subsection</span>
+</span><span id="L-10"><a href="#L-10"><span class="linenos"> 10</span></a><span class="sd">[pages]: pages.html</span>
+</span><span id="L-11"><a href="#L-11"><span class="linenos"> 11</span></a><span class="sd">[panes]: panes.html</span>
+</span><span id="L-12"><a href="#L-12"><span class="linenos"> 12</span></a><span class="sd">[predefined]: #appBar_data_star.spec</span>
+</span><span id="L-13"><a href="#L-13"><span class="linenos"> 13</span></a><span class="sd">[custom]: #appBar_data_star.spec</span>
 </span><span id="L-14"><a href="#L-14"><span class="linenos"> 14</span></a><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="L-15"><a href="#L-15"><span class="linenos"> 15</span></a><span class="kn">from</span> <span class="nn">cave_utils.api_utils.validator_utils</span> <span class="kn">import</span> <span class="n">ApiValidator</span><span class="p">,</span> <span class="n">CustomKeyValidator</span>
 </span><span id="L-16"><a href="#L-16"><span class="linenos"> 16</span></a><span class="kn">import</span> <span class="nn">type_enforced</span>
 </span><span id="L-17"><a href="#L-17"><span class="linenos"> 17</span></a>
 </span><span id="L-18"><a href="#L-18"><span class="linenos"> 18</span></a>
 </span><span id="L-19"><a href="#L-19"><span class="linenos"> 19</span></a><span class="nd">@type_enforced</span><span class="o">.</span><span class="n">Enforcer</span>
-</span><span id="L-20"><a href="#L-20"><span class="linenos"> 20</span></a><span class="k">class</span> <span class="nc">appBar_data_star</span><span class="p">(</span><span class="n">ApiValidator</span><span class="p">):</span>
+</span><span id="L-20"><a href="#L-20"><span class="linenos"> 20</span></a><span class="k">class</span> <span class="nc">appBar</span><span class="p">(</span><span class="n">ApiValidator</span><span class="p">):</span>
 </span><span id="L-21"><a href="#L-21"><span class="linenos"> 21</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-22"><a href="#L-22"><span class="linenos"> 22</span></a><span class="sd">    The app bar data is located under the path **`appBar.data`**.</span>
+</span><span id="L-22"><a href="#L-22"><span class="linenos"> 22</span></a><span class="sd">    The app bar is located under the path **`appBar`**.</span>
 </span><span id="L-23"><a href="#L-23"><span class="linenos"> 23</span></a><span class="sd">    &quot;&quot;&quot;</span>
 </span><span id="L-24"><a href="#L-24"><span class="linenos"> 24</span></a>
 </span><span id="L-25"><a href="#L-25"><span class="linenos"> 25</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="L-26"><a href="#L-26"><span class="linenos"> 26</span></a>    <span class="k">def</span> <span class="nf">spec</span><span class="p">(</span>
-</span><span id="L-27"><a href="#L-27"><span class="linenos"> 27</span></a>        <span class="n">icon</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-</span><span id="L-28"><a href="#L-28"><span class="linenos"> 28</span></a>        <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-</span><span id="L-29"><a href="#L-29"><span class="linenos"> 29</span></a>        <span class="n">bar</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-</span><span id="L-30"><a href="#L-30"><span class="linenos"> 30</span></a>        <span class="n">variant</span><span class="p">:</span> <span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="L-31"><a href="#L-31"><span class="linenos"> 31</span></a>        <span class="n">color</span><span class="p">:</span> <span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="L-32"><a href="#L-32"><span class="linenos"> 32</span></a>        <span class="n">order</span><span class="p">:</span> <span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="L-33"><a href="#L-33"><span class="linenos"> 33</span></a>        <span class="n">apiCommand</span><span class="p">:</span> <span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="L-34"><a href="#L-34"><span class="linenos"> 34</span></a>        <span class="n">apiCommandKeys</span><span class="p">:</span> <span class="p">[</span><span class="nb">list</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="L-35"><a href="#L-35"><span class="linenos"> 35</span></a>        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-</span><span id="L-36"><a href="#L-36"><span class="linenos"> 36</span></a>    <span class="p">):</span>
-</span><span id="L-37"><a href="#L-37"><span class="linenos"> 37</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-38"><a href="#L-38"><span class="linenos"> 38</span></a><span class="sd">        Arguments:</span>
-</span><span id="L-39"><a href="#L-39"><span class="linenos"> 39</span></a>
-</span><span id="L-40"><a href="#L-40"><span class="linenos"> 40</span></a><span class="sd">        * **`icon`**: `[str]` &amp;rarr; An icon to display in the center of the action element.</span>
-</span><span id="L-41"><a href="#L-41"><span class="linenos"> 41</span></a><span class="sd">            * **Note**: It must be a valid icon name from the [react-icons][] bundle, preceded by the abbreviated name of the icon library source.</span>
-</span><span id="L-42"><a href="#L-42"><span class="linenos"> 42</span></a><span class="sd">            * **Example**: `&quot;md/MdRocket&quot;`.</span>
-</span><span id="L-43"><a href="#L-43"><span class="linenos"> 43</span></a><span class="sd">        * **`type`**: `[str]` &amp;rarr; The type of object displayed when the action is triggered.</span>
-</span><span id="L-44"><a href="#L-44"><span class="linenos"> 44</span></a><span class="sd">            * **Accepted Values**:</span>
-</span><span id="L-45"><a href="#L-45"><span class="linenos"> 45</span></a><span class="sd">                * `&quot;session&quot;`: The Session Pane</span>
-</span><span id="L-46"><a href="#L-46"><span class="linenos"> 46</span></a><span class="sd">                * `&quot;settings&quot;`: The Application Settings Pane</span>
-</span><span id="L-47"><a href="#L-47"><span class="linenos"> 47</span></a><span class="sd">                * `&quot;button&quot;`: A button that allows you to send a command to the CAVE API</span>
-</span><span id="L-48"><a href="#L-48"><span class="linenos"> 48</span></a><span class="sd">                * `&quot;pane&quot;`: A [custom pane][]</span>
-</span><span id="L-49"><a href="#L-49"><span class="linenos"> 49</span></a><span class="sd">                * `&quot;page&quot;`: A [page][]</span>
-</span><span id="L-50"><a href="#L-50"><span class="linenos"> 50</span></a><span class="sd">        * **`bar`**: `[str]` &amp;rarr; The location of the action element.</span>
-</span><span id="L-51"><a href="#L-51"><span class="linenos"> 51</span></a><span class="sd">            * **Accepted Values**:</span>
-</span><span id="L-52"><a href="#L-52"><span class="linenos"> 52</span></a><span class="sd">                * `&quot;upperLeft&quot;`: Upper section of the left-side bar</span>
-</span><span id="L-53"><a href="#L-53"><span class="linenos"> 53</span></a><span class="sd">                * `&quot;lowerLeft&quot;`: Lower section of the left-side bar</span>
-</span><span id="L-54"><a href="#L-54"><span class="linenos"> 54</span></a><span class="sd">                * `&quot;upperRight&quot;`: Upper section of the right-side bar</span>
-</span><span id="L-55"><a href="#L-55"><span class="linenos"> 55</span></a><span class="sd">                * `&quot;lowerRight&quot;`: Lower section of the right-side bar</span>
-</span><span id="L-56"><a href="#L-56"><span class="linenos"> 56</span></a><span class="sd">        * **`variant`**: `[str]` = `None` &amp;rarr; The variant of the button.</span>
-</span><span id="L-57"><a href="#L-57"><span class="linenos"> 57</span></a><span class="sd">            * **Accepted Values**:</span>
-</span><span id="L-58"><a href="#L-58"><span class="linenos"> 58</span></a><span class="sd">                * When **`type`** == `&quot;pane&quot;` | `&quot;page&quot;`:</span>
-</span><span id="L-59"><a href="#L-59"><span class="linenos"> 59</span></a><span class="sd">                    * `&quot;modal&quot;`: A [modal pane][]</span>
-</span><span id="L-60"><a href="#L-60"><span class="linenos"> 60</span></a><span class="sd">                    * `&quot;wall&quot;`: A [wall pane][]</span>
-</span><span id="L-61"><a href="#L-61"><span class="linenos"> 61</span></a><span class="sd">                * Otherwise:</span>
-</span><span id="L-62"><a href="#L-62"><span class="linenos"> 62</span></a><span class="sd">                    * `None`</span>
-</span><span id="L-63"><a href="#L-63"><span class="linenos"> 63</span></a><span class="sd">        * **`color`**: `[str]` = `&lt;system-default-value&gt;` &amp;rarr;</span>
-</span><span id="L-64"><a href="#L-64"><span class="linenos"> 64</span></a><span class="sd">            * The color of the button. If omitted, the default value is set by the system.</span>
-</span><span id="L-65"><a href="#L-65"><span class="linenos"> 65</span></a><span class="sd">            * **Note**: It must be a valid RGBA string.</span>
-</span><span id="L-66"><a href="#L-66"><span class="linenos"> 66</span></a><span class="sd">            * **Example**: `&quot;rgba(255, 255, 255, 1)&quot;`.</span>
-</span><span id="L-67"><a href="#L-67"><span class="linenos"> 67</span></a><span class="sd">        * **`apiCommand`**: `[str]` = `None` &amp;rarr; The name of the [API command][] to trigger.</span>
-</span><span id="L-68"><a href="#L-68"><span class="linenos"> 68</span></a><span class="sd">        * **`apiCommandKeys`**: `[list]` = `None` &amp;rarr;</span>
-</span><span id="L-69"><a href="#L-69"><span class="linenos"> 69</span></a><span class="sd">            * The root API keys to pass to your `execute_command` function if an</span>
-</span><span id="L-70"><a href="#L-70"><span class="linenos"> 70</span></a><span class="sd">            `apiCommand` is provided. If omitted, all API keys are</span>
-</span><span id="L-71"><a href="#L-71"><span class="linenos"> 71</span></a><span class="sd">            passed to `execute_command`.</span>
-</span><span id="L-72"><a href="#L-72"><span class="linenos"> 72</span></a>
-</span><span id="L-73"><a href="#L-73"><span class="linenos"> 73</span></a><span class="sd">        [page]: #todo-pages-subsection</span>
-</span><span id="L-74"><a href="#L-74"><span class="linenos"> 74</span></a><span class="sd">        [pane]: #todo-panes-subsection</span>
-</span><span id="L-75"><a href="#L-75"><span class="linenos"> 75</span></a><span class="sd">        [modal pane]: #modal-pages-subsection</span>
-</span><span id="L-76"><a href="#L-76"><span class="linenos"> 76</span></a><span class="sd">        [wall pane]: #wall-panes-subsection</span>
-</span><span id="L-77"><a href="#L-77"><span class="linenos"> 77</span></a><span class="sd">        [API command]: #todo-api-command-subsection</span>
-</span><span id="L-78"><a href="#L-78"><span class="linenos"> 78</span></a><span class="sd">        [react-icons]: https://react-icons.github.io/react-icons/search</span>
-</span><span id="L-79"><a href="#L-79"><span class="linenos"> 79</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="L-80"><a href="#L-80"><span class="linenos"> 80</span></a>        <span class="k">return</span> <span class="p">{</span>
-</span><span id="L-81"><a href="#L-81"><span class="linenos"> 81</span></a>            <span class="s2">&quot;kwargs&quot;</span><span class="p">:</span> <span class="n">kwargs</span><span class="p">,</span>
-</span><span id="L-82"><a href="#L-82"><span class="linenos"> 82</span></a>            <span class="s2">&quot;accepted_values&quot;</span><span class="p">:</span> <span class="p">{</span>
-</span><span id="L-83"><a href="#L-83"><span class="linenos"> 83</span></a>                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;session&quot;</span><span class="p">,</span> <span class="s2">&quot;settings&quot;</span><span class="p">,</span> <span class="s2">&quot;button&quot;</span><span class="p">,</span> <span class="s2">&quot;pane&quot;</span><span class="p">,</span> <span class="s2">&quot;page&quot;</span><span class="p">],</span>
-</span><span id="L-84"><a href="#L-84"><span class="linenos"> 84</span></a>                <span class="s2">&quot;variant&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;modal&quot;</span><span class="p">,</span> <span class="s2">&quot;wall&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="nb">type</span> <span class="o">==</span> <span class="s2">&quot;pane&quot;</span> <span class="k">else</span> <span class="p">[],</span>
-</span><span id="L-85"><a href="#L-85"><span class="linenos"> 85</span></a>                <span class="s2">&quot;bar&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;upperLeft&quot;</span><span class="p">,</span> <span class="s2">&quot;lowerLeft&quot;</span><span class="p">,</span> <span class="s2">&quot;upperRight&quot;</span><span class="p">,</span> <span class="s2">&quot;lowerRight&quot;</span><span class="p">],</span>
-</span><span id="L-86"><a href="#L-86"><span class="linenos"> 86</span></a>            <span class="p">},</span>
-</span><span id="L-87"><a href="#L-87"><span class="linenos"> 87</span></a>        <span class="p">}</span>
-</span><span id="L-88"><a href="#L-88"><span class="linenos"> 88</span></a>
-</span><span id="L-89"><a href="#L-89"><span class="linenos"> 89</span></a>    <span class="k">def</span> <span class="nf">__extend_spec__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-</span><span id="L-90"><a href="#L-90"><span class="linenos"> 90</span></a>        <span class="n">color</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;color&quot;</span><span class="p">)</span>
-</span><span id="L-91"><a href="#L-91"><span class="linenos"> 91</span></a>        <span class="k">if</span> <span class="n">color</span><span class="p">:</span>
-</span><span id="L-92"><a href="#L-92"><span class="linenos"> 92</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">__check_rgba_string_valid__</span><span class="p">(</span><span class="n">rgba_string</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">prepend_path</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;color&quot;</span><span class="p">])</span>
-</span><span id="L-93"><a href="#L-93"><span class="linenos"> 93</span></a>        <span class="c1"># Validate pageIds</span>
-</span><span id="L-94"><a href="#L-94"><span class="linenos"> 94</span></a>        <span class="n">bar_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">)</span>
-</span><span id="L-95"><a href="#L-95"><span class="linenos"> 95</span></a>        <span class="k">if</span> <span class="n">bar_type</span> <span class="o">==</span> <span class="s1">&#39;page&#39;</span><span class="p">:</span>
-</span><span id="L-96"><a href="#L-96"><span class="linenos"> 96</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">__check_subset_valid__</span><span class="p">(</span>
-</span><span id="L-97"><a href="#L-97"><span class="linenos"> 97</span></a>                <span class="n">subset</span><span class="o">=</span><span class="p">[</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;CustomKeyValidatorFieldId&#39;</span><span class="p">)],</span>
-</span><span id="L-98"><a href="#L-98"><span class="linenos"> 98</span></a>                <span class="n">valid_values</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;page_validPageIds&quot;</span><span class="p">,</span> <span class="p">[]),</span>
-</span><span id="L-99"><a href="#L-99"><span class="linenos"> 99</span></a>                <span class="n">prepend_path</span><span class="o">=</span><span class="p">[],</span>
-</span><span id="L-100"><a href="#L-100"><span class="linenos">100</span></a>            <span class="p">)</span>
-</span><span id="L-101"><a href="#L-101"><span class="linenos">101</span></a>        <span class="k">if</span> <span class="n">bar_type</span> <span class="o">==</span> <span class="s1">&#39;pane&#39;</span><span class="p">:</span>
-</span><span id="L-102"><a href="#L-102"><span class="linenos">102</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">__check_subset_valid__</span><span class="p">(</span>
-</span><span id="L-103"><a href="#L-103"><span class="linenos">103</span></a>                <span class="n">subset</span><span class="o">=</span><span class="p">[</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;CustomKeyValidatorFieldId&#39;</span><span class="p">)],</span>
-</span><span id="L-104"><a href="#L-104"><span class="linenos">104</span></a>                <span class="n">valid_values</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;pane_validPaneIds&quot;</span><span class="p">,</span> <span class="p">[]),</span>
-</span><span id="L-105"><a href="#L-105"><span class="linenos">105</span></a>                <span class="n">prepend_path</span><span class="o">=</span><span class="p">[],</span>
-</span><span id="L-106"><a href="#L-106"><span class="linenos">106</span></a>            <span class="p">)</span>
-</span><span id="L-107"><a href="#L-107"><span class="linenos">107</span></a>
-</span><span id="L-108"><a href="#L-108"><span class="linenos">108</span></a>
-</span><span id="L-109"><a href="#L-109"><span class="linenos">109</span></a>
-</span><span id="L-110"><a href="#L-110"><span class="linenos">110</span></a><span class="nd">@type_enforced</span><span class="o">.</span><span class="n">Enforcer</span>
-</span><span id="L-111"><a href="#L-111"><span class="linenos">111</span></a><span class="k">class</span> <span class="nc">appBar</span><span class="p">(</span><span class="n">ApiValidator</span><span class="p">):</span>
-</span><span id="L-112"><a href="#L-112"><span class="linenos">112</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-113"><a href="#L-113"><span class="linenos">113</span></a><span class="sd">    The app bar is located under the path **`appBar`**.</span>
-</span><span id="L-114"><a href="#L-114"><span class="linenos">114</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="L-115"><a href="#L-115"><span class="linenos">115</span></a>
-</span><span id="L-116"><a href="#L-116"><span class="linenos">116</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="L-117"><a href="#L-117"><span class="linenos">117</span></a>    <span class="k">def</span> <span class="nf">spec</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-</span><span id="L-118"><a href="#L-118"><span class="linenos">118</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-119"><a href="#L-119"><span class="linenos">119</span></a><span class="sd">        @private</span>
-</span><span id="L-120"><a href="#L-120"><span class="linenos">120</span></a><span class="sd">        Arguments:</span>
-</span><span id="L-121"><a href="#L-121"><span class="linenos">121</span></a>
-</span><span id="L-122"><a href="#L-122"><span class="linenos">122</span></a><span class="sd">        * **`data`**: `[dict]` = `{}` &amp;rarr; The data to pass to `appBar.data.*`.</span>
-</span><span id="L-123"><a href="#L-123"><span class="linenos">123</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="L-124"><a href="#L-124"><span class="linenos">124</span></a>        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;kwargs&quot;</span><span class="p">:</span> <span class="n">kwargs</span><span class="p">,</span> <span class="s2">&quot;accepted_values&quot;</span><span class="p">:</span> <span class="p">{}}</span>
-</span><span id="L-125"><a href="#L-125"><span class="linenos">125</span></a>
-</span><span id="L-126"><a href="#L-126"><span class="linenos">126</span></a>    <span class="k">def</span> <span class="nf">__extend_spec__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-</span><span id="L-127"><a href="#L-127"><span class="linenos">127</span></a>        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;data&quot;</span><span class="p">,</span> <span class="p">{})</span>
-</span><span id="L-128"><a href="#L-128"><span class="linenos">128</span></a>        <span class="n">CustomKeyValidator</span><span class="p">(</span>
-</span><span id="L-129"><a href="#L-129"><span class="linenos">129</span></a>            <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">,</span> <span class="n">prepend_path</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">],</span> <span class="n">validator</span><span class="o">=</span><span class="n">appBar_data_star</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
-</span><span id="L-130"><a href="#L-130"><span class="linenos">130</span></a>        <span class="p">)</span>
+</span><span id="L-26"><a href="#L-26"><span class="linenos"> 26</span></a>    <span class="k">def</span> <span class="nf">spec</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+</span><span id="L-27"><a href="#L-27"><span class="linenos"> 27</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-28"><a href="#L-28"><span class="linenos"> 28</span></a><span class="sd">        @private</span>
+</span><span id="L-29"><a href="#L-29"><span class="linenos"> 29</span></a><span class="sd">        Arguments:</span>
+</span><span id="L-30"><a href="#L-30"><span class="linenos"> 30</span></a>
+</span><span id="L-31"><a href="#L-31"><span class="linenos"> 31</span></a><span class="sd">        * **`data`**: `[dict]` = `{}` &amp;rarr; The data to pass to `appBar.data.*`.</span>
+</span><span id="L-32"><a href="#L-32"><span class="linenos"> 32</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-33"><a href="#L-33"><span class="linenos"> 33</span></a>        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;kwargs&quot;</span><span class="p">:</span> <span class="n">kwargs</span><span class="p">,</span> <span class="s2">&quot;accepted_values&quot;</span><span class="p">:</span> <span class="p">{}}</span>
+</span><span id="L-34"><a href="#L-34"><span class="linenos"> 34</span></a>
+</span><span id="L-35"><a href="#L-35"><span class="linenos"> 35</span></a>    <span class="k">def</span> <span class="nf">__extend_spec__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+</span><span id="L-36"><a href="#L-36"><span class="linenos"> 36</span></a>        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;data&quot;</span><span class="p">,</span> <span class="p">{})</span>
+</span><span id="L-37"><a href="#L-37"><span class="linenos"> 37</span></a>        <span class="n">CustomKeyValidator</span><span class="p">(</span>
+</span><span id="L-38"><a href="#L-38"><span class="linenos"> 38</span></a>            <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">,</span> <span class="n">prepend_path</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">],</span> <span class="n">validator</span><span class="o">=</span><span class="n">appBar_data_star</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+</span><span id="L-39"><a href="#L-39"><span class="linenos"> 39</span></a>        <span class="p">)</span>
+</span><span id="L-40"><a href="#L-40"><span class="linenos"> 40</span></a>
+</span><span id="L-41"><a href="#L-41"><span class="linenos"> 41</span></a>
+</span><span id="L-42"><a href="#L-42"><span class="linenos"> 42</span></a><span class="nd">@type_enforced</span><span class="o">.</span><span class="n">Enforcer</span>
+</span><span id="L-43"><a href="#L-43"><span class="linenos"> 43</span></a><span class="k">class</span> <span class="nc">appBar_data_star</span><span class="p">(</span><span class="n">ApiValidator</span><span class="p">):</span>
+</span><span id="L-44"><a href="#L-44"><span class="linenos"> 44</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-45"><a href="#L-45"><span class="linenos"> 45</span></a><span class="sd">    The app bar data is located under the path **`appBar.data`**.</span>
+</span><span id="L-46"><a href="#L-46"><span class="linenos"> 46</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-47"><a href="#L-47"><span class="linenos"> 47</span></a>
+</span><span id="L-48"><a href="#L-48"><span class="linenos"> 48</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="L-49"><a href="#L-49"><span class="linenos"> 49</span></a>    <span class="k">def</span> <span class="nf">spec</span><span class="p">(</span>
+</span><span id="L-50"><a href="#L-50"><span class="linenos"> 50</span></a>        <span class="n">icon</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span id="L-51"><a href="#L-51"><span class="linenos"> 51</span></a>        <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span id="L-52"><a href="#L-52"><span class="linenos"> 52</span></a>        <span class="n">bar</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span id="L-53"><a href="#L-53"><span class="linenos"> 53</span></a>        <span class="n">variant</span><span class="p">:</span> <span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="L-54"><a href="#L-54"><span class="linenos"> 54</span></a>        <span class="n">color</span><span class="p">:</span> <span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="L-55"><a href="#L-55"><span class="linenos"> 55</span></a>        <span class="n">order</span><span class="p">:</span> <span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="L-56"><a href="#L-56"><span class="linenos"> 56</span></a>        <span class="n">apiCommand</span><span class="p">:</span> <span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="L-57"><a href="#L-57"><span class="linenos"> 57</span></a>        <span class="n">apiCommandKeys</span><span class="p">:</span> <span class="p">[</span><span class="nb">list</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="L-58"><a href="#L-58"><span class="linenos"> 58</span></a>        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+</span><span id="L-59"><a href="#L-59"><span class="linenos"> 59</span></a>    <span class="p">):</span>
+</span><span id="L-60"><a href="#L-60"><span class="linenos"> 60</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-61"><a href="#L-61"><span class="linenos"> 61</span></a><span class="sd">        Arguments:</span>
+</span><span id="L-62"><a href="#L-62"><span class="linenos"> 62</span></a>
+</span><span id="L-63"><a href="#L-63"><span class="linenos"> 63</span></a><span class="sd">        * **`icon`**: `[str]` &amp;rarr; An icon to display in the center of the action element.</span>
+</span><span id="L-64"><a href="#L-64"><span class="linenos"> 64</span></a><span class="sd">            * **Note**: It must be a valid icon name from the [react-icons][] bundle, preceded by the abbreviated name of the icon library source.</span>
+</span><span id="L-65"><a href="#L-65"><span class="linenos"> 65</span></a><span class="sd">            * **Example**: `&quot;md/MdRocket&quot;`.</span>
+</span><span id="L-66"><a href="#L-66"><span class="linenos"> 66</span></a><span class="sd">        * **`type`**: `[str]` &amp;rarr; The type of object displayed when the action is triggered.</span>
+</span><span id="L-67"><a href="#L-67"><span class="linenos"> 67</span></a><span class="sd">            * **Accepted Values**:</span>
+</span><span id="L-68"><a href="#L-68"><span class="linenos"> 68</span></a><span class="sd">                * `&quot;session&quot;`: The Session Pane</span>
+</span><span id="L-69"><a href="#L-69"><span class="linenos"> 69</span></a><span class="sd">                * `&quot;settings&quot;`: The Application Settings Pane</span>
+</span><span id="L-70"><a href="#L-70"><span class="linenos"> 70</span></a><span class="sd">                * `&quot;button&quot;`: A button that allows you to send a command to the CAVE API</span>
+</span><span id="L-71"><a href="#L-71"><span class="linenos"> 71</span></a><span class="sd">                * `&quot;pane&quot;`: A [custom pane][]</span>
+</span><span id="L-72"><a href="#L-72"><span class="linenos"> 72</span></a><span class="sd">                * `&quot;page&quot;`: A [page][]</span>
+</span><span id="L-73"><a href="#L-73"><span class="linenos"> 73</span></a><span class="sd">        * **`bar`**: `[str]` &amp;rarr; The location of the action element.</span>
+</span><span id="L-74"><a href="#L-74"><span class="linenos"> 74</span></a><span class="sd">            * **Accepted Values**:</span>
+</span><span id="L-75"><a href="#L-75"><span class="linenos"> 75</span></a><span class="sd">                * `&quot;upperLeft&quot;`: Upper section of the left-side bar</span>
+</span><span id="L-76"><a href="#L-76"><span class="linenos"> 76</span></a><span class="sd">                * `&quot;lowerLeft&quot;`: Lower section of the left-side bar</span>
+</span><span id="L-77"><a href="#L-77"><span class="linenos"> 77</span></a><span class="sd">                * `&quot;upperRight&quot;`: Upper section of the right-side bar</span>
+</span><span id="L-78"><a href="#L-78"><span class="linenos"> 78</span></a><span class="sd">                * `&quot;lowerRight&quot;`: Lower section of the right-side bar</span>
+</span><span id="L-79"><a href="#L-79"><span class="linenos"> 79</span></a><span class="sd">        * **`variant`**: `[str]` = `None` &amp;rarr; The variant of the button.</span>
+</span><span id="L-80"><a href="#L-80"><span class="linenos"> 80</span></a><span class="sd">            * **Accepted Values**:</span>
+</span><span id="L-81"><a href="#L-81"><span class="linenos"> 81</span></a><span class="sd">                * When **`type`** == `&quot;pane&quot;` | `&quot;page&quot;`:</span>
+</span><span id="L-82"><a href="#L-82"><span class="linenos"> 82</span></a><span class="sd">                    * `&quot;modal&quot;`: A [modal pane][]</span>
+</span><span id="L-83"><a href="#L-83"><span class="linenos"> 83</span></a><span class="sd">                    * `&quot;wall&quot;`: A [wall pane][]</span>
+</span><span id="L-84"><a href="#L-84"><span class="linenos"> 84</span></a><span class="sd">                * Otherwise:</span>
+</span><span id="L-85"><a href="#L-85"><span class="linenos"> 85</span></a><span class="sd">                    * `None`</span>
+</span><span id="L-86"><a href="#L-86"><span class="linenos"> 86</span></a><span class="sd">        * **`color`**: `[str]` = `&lt;system-default-value&gt;` &amp;rarr;</span>
+</span><span id="L-87"><a href="#L-87"><span class="linenos"> 87</span></a><span class="sd">            * The color of the button. If omitted, the default value is set by the system.</span>
+</span><span id="L-88"><a href="#L-88"><span class="linenos"> 88</span></a><span class="sd">            * **Note**: It must be a valid RGBA string.</span>
+</span><span id="L-89"><a href="#L-89"><span class="linenos"> 89</span></a><span class="sd">            * **Example**: `&quot;rgba(255, 255, 255, 1)&quot;`.</span>
+</span><span id="L-90"><a href="#L-90"><span class="linenos"> 90</span></a><span class="sd">        * **`apiCommand`**: `[str]` = `None` &amp;rarr; The name of the [API command][] to trigger.</span>
+</span><span id="L-91"><a href="#L-91"><span class="linenos"> 91</span></a><span class="sd">        * **`apiCommandKeys`**: `[list]` = `None` &amp;rarr;</span>
+</span><span id="L-92"><a href="#L-92"><span class="linenos"> 92</span></a><span class="sd">            * The root API keys to pass to your `execute_command` function if an</span>
+</span><span id="L-93"><a href="#L-93"><span class="linenos"> 93</span></a><span class="sd">            `apiCommand` is provided. If omitted, all API keys are</span>
+</span><span id="L-94"><a href="#L-94"><span class="linenos"> 94</span></a><span class="sd">            passed to `execute_command`.</span>
+</span><span id="L-95"><a href="#L-95"><span class="linenos"> 95</span></a>
+</span><span id="L-96"><a href="#L-96"><span class="linenos"> 96</span></a><span class="sd">        [page]: pages.html</span>
+</span><span id="L-97"><a href="#L-97"><span class="linenos"> 97</span></a><span class="sd">        [pane]: panes.html</span>
+</span><span id="L-98"><a href="#L-98"><span class="linenos"> 98</span></a><span class="sd">        [modal pane]: panes.html</span>
+</span><span id="L-99"><a href="#L-99"><span class="linenos"> 99</span></a><span class="sd">        [wall pane]: panes.html</span>
+</span><span id="L-100"><a href="#L-100"><span class="linenos">100</span></a><span class="sd">        [API command]: #appBar_data_star.spec</span>
+</span><span id="L-101"><a href="#L-101"><span class="linenos">101</span></a><span class="sd">        [react-icons]: https://react-icons.github.io/react-icons/search</span>
+</span><span id="L-102"><a href="#L-102"><span class="linenos">102</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-103"><a href="#L-103"><span class="linenos">103</span></a>        <span class="k">return</span> <span class="p">{</span>
+</span><span id="L-104"><a href="#L-104"><span class="linenos">104</span></a>            <span class="s2">&quot;kwargs&quot;</span><span class="p">:</span> <span class="n">kwargs</span><span class="p">,</span>
+</span><span id="L-105"><a href="#L-105"><span class="linenos">105</span></a>            <span class="s2">&quot;accepted_values&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span id="L-106"><a href="#L-106"><span class="linenos">106</span></a>                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;session&quot;</span><span class="p">,</span> <span class="s2">&quot;settings&quot;</span><span class="p">,</span> <span class="s2">&quot;button&quot;</span><span class="p">,</span> <span class="s2">&quot;pane&quot;</span><span class="p">,</span> <span class="s2">&quot;page&quot;</span><span class="p">],</span>
+</span><span id="L-107"><a href="#L-107"><span class="linenos">107</span></a>                <span class="s2">&quot;variant&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;modal&quot;</span><span class="p">,</span> <span class="s2">&quot;wall&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="nb">type</span> <span class="o">==</span> <span class="s2">&quot;pane&quot;</span> <span class="k">else</span> <span class="p">[],</span>
+</span><span id="L-108"><a href="#L-108"><span class="linenos">108</span></a>                <span class="s2">&quot;bar&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;upperLeft&quot;</span><span class="p">,</span> <span class="s2">&quot;lowerLeft&quot;</span><span class="p">,</span> <span class="s2">&quot;upperRight&quot;</span><span class="p">,</span> <span class="s2">&quot;lowerRight&quot;</span><span class="p">],</span>
+</span><span id="L-109"><a href="#L-109"><span class="linenos">109</span></a>            <span class="p">},</span>
+</span><span id="L-110"><a href="#L-110"><span class="linenos">110</span></a>        <span class="p">}</span>
+</span><span id="L-111"><a href="#L-111"><span class="linenos">111</span></a>
+</span><span id="L-112"><a href="#L-112"><span class="linenos">112</span></a>    <span class="k">def</span> <span class="nf">__extend_spec__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+</span><span id="L-113"><a href="#L-113"><span class="linenos">113</span></a>        <span class="n">color</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;color&quot;</span><span class="p">)</span>
+</span><span id="L-114"><a href="#L-114"><span class="linenos">114</span></a>        <span class="k">if</span> <span class="n">color</span><span class="p">:</span>
+</span><span id="L-115"><a href="#L-115"><span class="linenos">115</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">__check_rgba_string_valid__</span><span class="p">(</span><span class="n">rgba_string</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">prepend_path</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;color&quot;</span><span class="p">])</span>
+</span><span id="L-116"><a href="#L-116"><span class="linenos">116</span></a>        <span class="c1"># Validate pageIds</span>
+</span><span id="L-117"><a href="#L-117"><span class="linenos">117</span></a>        <span class="n">bar_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">)</span>
+</span><span id="L-118"><a href="#L-118"><span class="linenos">118</span></a>        <span class="k">if</span> <span class="n">bar_type</span> <span class="o">==</span> <span class="s2">&quot;page&quot;</span><span class="p">:</span>
+</span><span id="L-119"><a href="#L-119"><span class="linenos">119</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">__check_subset_valid__</span><span class="p">(</span>
+</span><span id="L-120"><a href="#L-120"><span class="linenos">120</span></a>                <span class="n">subset</span><span class="o">=</span><span class="p">[</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;CustomKeyValidatorFieldId&quot;</span><span class="p">)],</span>
+</span><span id="L-121"><a href="#L-121"><span class="linenos">121</span></a>                <span class="n">valid_values</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;page_validPageIds&quot;</span><span class="p">,</span> <span class="p">[]),</span>
+</span><span id="L-122"><a href="#L-122"><span class="linenos">122</span></a>                <span class="n">prepend_path</span><span class="o">=</span><span class="p">[],</span>
+</span><span id="L-123"><a href="#L-123"><span class="linenos">123</span></a>            <span class="p">)</span>
+</span><span id="L-124"><a href="#L-124"><span class="linenos">124</span></a>        <span class="k">if</span> <span class="n">bar_type</span> <span class="o">==</span> <span class="s2">&quot;pane&quot;</span><span class="p">:</span>
+</span><span id="L-125"><a href="#L-125"><span class="linenos">125</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">__check_subset_valid__</span><span class="p">(</span>
+</span><span id="L-126"><a href="#L-126"><span class="linenos">126</span></a>                <span class="n">subset</span><span class="o">=</span><span class="p">[</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;CustomKeyValidatorFieldId&quot;</span><span class="p">)],</span>
+</span><span id="L-127"><a href="#L-127"><span class="linenos">127</span></a>                <span class="n">valid_values</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;pane_validPaneIds&quot;</span><span class="p">,</span> <span class="p">[]),</span>
+</span><span id="L-128"><a href="#L-128"><span class="linenos">128</span></a>                <span class="n">prepend_path</span><span class="o">=</span><span class="p">[],</span>
+</span><span id="L-129"><a href="#L-129"><span class="linenos">129</span></a>            <span class="p">)</span>
 </span></pre></div>
 
 
             </section>
+                <section id="appBar">
+                            <input id="appBar-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr class">
+                    <div class="decorator">@type_enforced.Enforcer</div>
+
+    <span class="def">class</span>
+    <span class="name">appBar</span><wbr>(<span class="base"><a href="../api_utils/validator_utils.html#ApiValidator">cave_utils.api_utils.validator_utils.ApiValidator</a></span>):
+
+                <label class="view-source-button" for="appBar-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#appBar"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="appBar-20"><a href="#appBar-20"><span class="linenos">20</span></a><span class="nd">@type_enforced</span><span class="o">.</span><span class="n">Enforcer</span>
+</span><span id="appBar-21"><a href="#appBar-21"><span class="linenos">21</span></a><span class="k">class</span> <span class="nc">appBar</span><span class="p">(</span><span class="n">ApiValidator</span><span class="p">):</span>
+</span><span id="appBar-22"><a href="#appBar-22"><span class="linenos">22</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="appBar-23"><a href="#appBar-23"><span class="linenos">23</span></a><span class="sd">    The app bar is located under the path **`appBar`**.</span>
+</span><span id="appBar-24"><a href="#appBar-24"><span class="linenos">24</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="appBar-25"><a href="#appBar-25"><span class="linenos">25</span></a>
+</span><span id="appBar-26"><a href="#appBar-26"><span class="linenos">26</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="appBar-27"><a href="#appBar-27"><span class="linenos">27</span></a>    <span class="k">def</span> <span class="nf">spec</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+</span><span id="appBar-28"><a href="#appBar-28"><span class="linenos">28</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="appBar-29"><a href="#appBar-29"><span class="linenos">29</span></a><span class="sd">        @private</span>
+</span><span id="appBar-30"><a href="#appBar-30"><span class="linenos">30</span></a><span class="sd">        Arguments:</span>
+</span><span id="appBar-31"><a href="#appBar-31"><span class="linenos">31</span></a>
+</span><span id="appBar-32"><a href="#appBar-32"><span class="linenos">32</span></a><span class="sd">        * **`data`**: `[dict]` = `{}` &amp;rarr; The data to pass to `appBar.data.*`.</span>
+</span><span id="appBar-33"><a href="#appBar-33"><span class="linenos">33</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="appBar-34"><a href="#appBar-34"><span class="linenos">34</span></a>        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;kwargs&quot;</span><span class="p">:</span> <span class="n">kwargs</span><span class="p">,</span> <span class="s2">&quot;accepted_values&quot;</span><span class="p">:</span> <span class="p">{}}</span>
+</span><span id="appBar-35"><a href="#appBar-35"><span class="linenos">35</span></a>
+</span><span id="appBar-36"><a href="#appBar-36"><span class="linenos">36</span></a>    <span class="k">def</span> <span class="nf">__extend_spec__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+</span><span id="appBar-37"><a href="#appBar-37"><span class="linenos">37</span></a>        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;data&quot;</span><span class="p">,</span> <span class="p">{})</span>
+</span><span id="appBar-38"><a href="#appBar-38"><span class="linenos">38</span></a>        <span class="n">CustomKeyValidator</span><span class="p">(</span>
+</span><span id="appBar-39"><a href="#appBar-39"><span class="linenos">39</span></a>            <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">,</span> <span class="n">prepend_path</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">],</span> <span class="n">validator</span><span class="o">=</span><span class="n">appBar_data_star</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+</span><span id="appBar-40"><a href="#appBar-40"><span class="linenos">40</span></a>        <span class="p">)</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>The app bar is located under the path <strong><code><a href="#appBar">appBar</a></code></strong>.</p>
+</div>
+
+
+                            <div class="inherited">
+                                <h5>Inherited Members</h5>
+                                <dl>
+                                    <div><dt><a href="../api_utils/validator_utils.html#ApiValidator">cave_utils.api_utils.validator_utils.ApiValidator</a></dt>
+                                <dd id="appBar.__init__" class="function"><a href="../api_utils/validator_utils.html#ApiValidator.__init__">ApiValidator</a></dd>
+
+            </div>
+                                </dl>
+                            </div>
+                </section>
                 <section id="appBar_data_star">
                             <input id="appBar_data_star-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr class">
@@ -221,94 +270,94 @@ simultaneously.</p>
 
     </div>
     <a class="headerlink" href="#appBar_data_star"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="appBar_data_star-20"><a href="#appBar_data_star-20"><span class="linenos"> 20</span></a><span class="nd">@type_enforced</span><span class="o">.</span><span class="n">Enforcer</span>
-</span><span id="appBar_data_star-21"><a href="#appBar_data_star-21"><span class="linenos"> 21</span></a><span class="k">class</span> <span class="nc">appBar_data_star</span><span class="p">(</span><span class="n">ApiValidator</span><span class="p">):</span>
-</span><span id="appBar_data_star-22"><a href="#appBar_data_star-22"><span class="linenos"> 22</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="appBar_data_star-23"><a href="#appBar_data_star-23"><span class="linenos"> 23</span></a><span class="sd">    The app bar data is located under the path **`appBar.data`**.</span>
-</span><span id="appBar_data_star-24"><a href="#appBar_data_star-24"><span class="linenos"> 24</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="appBar_data_star-25"><a href="#appBar_data_star-25"><span class="linenos"> 25</span></a>
-</span><span id="appBar_data_star-26"><a href="#appBar_data_star-26"><span class="linenos"> 26</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="appBar_data_star-27"><a href="#appBar_data_star-27"><span class="linenos"> 27</span></a>    <span class="k">def</span> <span class="nf">spec</span><span class="p">(</span>
-</span><span id="appBar_data_star-28"><a href="#appBar_data_star-28"><span class="linenos"> 28</span></a>        <span class="n">icon</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-</span><span id="appBar_data_star-29"><a href="#appBar_data_star-29"><span class="linenos"> 29</span></a>        <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-</span><span id="appBar_data_star-30"><a href="#appBar_data_star-30"><span class="linenos"> 30</span></a>        <span class="n">bar</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-</span><span id="appBar_data_star-31"><a href="#appBar_data_star-31"><span class="linenos"> 31</span></a>        <span class="n">variant</span><span class="p">:</span> <span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="appBar_data_star-32"><a href="#appBar_data_star-32"><span class="linenos"> 32</span></a>        <span class="n">color</span><span class="p">:</span> <span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="appBar_data_star-33"><a href="#appBar_data_star-33"><span class="linenos"> 33</span></a>        <span class="n">order</span><span class="p">:</span> <span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="appBar_data_star-34"><a href="#appBar_data_star-34"><span class="linenos"> 34</span></a>        <span class="n">apiCommand</span><span class="p">:</span> <span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="appBar_data_star-35"><a href="#appBar_data_star-35"><span class="linenos"> 35</span></a>        <span class="n">apiCommandKeys</span><span class="p">:</span> <span class="p">[</span><span class="nb">list</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="appBar_data_star-36"><a href="#appBar_data_star-36"><span class="linenos"> 36</span></a>        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-</span><span id="appBar_data_star-37"><a href="#appBar_data_star-37"><span class="linenos"> 37</span></a>    <span class="p">):</span>
-</span><span id="appBar_data_star-38"><a href="#appBar_data_star-38"><span class="linenos"> 38</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="appBar_data_star-39"><a href="#appBar_data_star-39"><span class="linenos"> 39</span></a><span class="sd">        Arguments:</span>
-</span><span id="appBar_data_star-40"><a href="#appBar_data_star-40"><span class="linenos"> 40</span></a>
-</span><span id="appBar_data_star-41"><a href="#appBar_data_star-41"><span class="linenos"> 41</span></a><span class="sd">        * **`icon`**: `[str]` &amp;rarr; An icon to display in the center of the action element.</span>
-</span><span id="appBar_data_star-42"><a href="#appBar_data_star-42"><span class="linenos"> 42</span></a><span class="sd">            * **Note**: It must be a valid icon name from the [react-icons][] bundle, preceded by the abbreviated name of the icon library source.</span>
-</span><span id="appBar_data_star-43"><a href="#appBar_data_star-43"><span class="linenos"> 43</span></a><span class="sd">            * **Example**: `&quot;md/MdRocket&quot;`.</span>
-</span><span id="appBar_data_star-44"><a href="#appBar_data_star-44"><span class="linenos"> 44</span></a><span class="sd">        * **`type`**: `[str]` &amp;rarr; The type of object displayed when the action is triggered.</span>
-</span><span id="appBar_data_star-45"><a href="#appBar_data_star-45"><span class="linenos"> 45</span></a><span class="sd">            * **Accepted Values**:</span>
-</span><span id="appBar_data_star-46"><a href="#appBar_data_star-46"><span class="linenos"> 46</span></a><span class="sd">                * `&quot;session&quot;`: The Session Pane</span>
-</span><span id="appBar_data_star-47"><a href="#appBar_data_star-47"><span class="linenos"> 47</span></a><span class="sd">                * `&quot;settings&quot;`: The Application Settings Pane</span>
-</span><span id="appBar_data_star-48"><a href="#appBar_data_star-48"><span class="linenos"> 48</span></a><span class="sd">                * `&quot;button&quot;`: A button that allows you to send a command to the CAVE API</span>
-</span><span id="appBar_data_star-49"><a href="#appBar_data_star-49"><span class="linenos"> 49</span></a><span class="sd">                * `&quot;pane&quot;`: A [custom pane][]</span>
-</span><span id="appBar_data_star-50"><a href="#appBar_data_star-50"><span class="linenos"> 50</span></a><span class="sd">                * `&quot;page&quot;`: A [page][]</span>
-</span><span id="appBar_data_star-51"><a href="#appBar_data_star-51"><span class="linenos"> 51</span></a><span class="sd">        * **`bar`**: `[str]` &amp;rarr; The location of the action element.</span>
-</span><span id="appBar_data_star-52"><a href="#appBar_data_star-52"><span class="linenos"> 52</span></a><span class="sd">            * **Accepted Values**:</span>
-</span><span id="appBar_data_star-53"><a href="#appBar_data_star-53"><span class="linenos"> 53</span></a><span class="sd">                * `&quot;upperLeft&quot;`: Upper section of the left-side bar</span>
-</span><span id="appBar_data_star-54"><a href="#appBar_data_star-54"><span class="linenos"> 54</span></a><span class="sd">                * `&quot;lowerLeft&quot;`: Lower section of the left-side bar</span>
-</span><span id="appBar_data_star-55"><a href="#appBar_data_star-55"><span class="linenos"> 55</span></a><span class="sd">                * `&quot;upperRight&quot;`: Upper section of the right-side bar</span>
-</span><span id="appBar_data_star-56"><a href="#appBar_data_star-56"><span class="linenos"> 56</span></a><span class="sd">                * `&quot;lowerRight&quot;`: Lower section of the right-side bar</span>
-</span><span id="appBar_data_star-57"><a href="#appBar_data_star-57"><span class="linenos"> 57</span></a><span class="sd">        * **`variant`**: `[str]` = `None` &amp;rarr; The variant of the button.</span>
-</span><span id="appBar_data_star-58"><a href="#appBar_data_star-58"><span class="linenos"> 58</span></a><span class="sd">            * **Accepted Values**:</span>
-</span><span id="appBar_data_star-59"><a href="#appBar_data_star-59"><span class="linenos"> 59</span></a><span class="sd">                * When **`type`** == `&quot;pane&quot;` | `&quot;page&quot;`:</span>
-</span><span id="appBar_data_star-60"><a href="#appBar_data_star-60"><span class="linenos"> 60</span></a><span class="sd">                    * `&quot;modal&quot;`: A [modal pane][]</span>
-</span><span id="appBar_data_star-61"><a href="#appBar_data_star-61"><span class="linenos"> 61</span></a><span class="sd">                    * `&quot;wall&quot;`: A [wall pane][]</span>
-</span><span id="appBar_data_star-62"><a href="#appBar_data_star-62"><span class="linenos"> 62</span></a><span class="sd">                * Otherwise:</span>
-</span><span id="appBar_data_star-63"><a href="#appBar_data_star-63"><span class="linenos"> 63</span></a><span class="sd">                    * `None`</span>
-</span><span id="appBar_data_star-64"><a href="#appBar_data_star-64"><span class="linenos"> 64</span></a><span class="sd">        * **`color`**: `[str]` = `&lt;system-default-value&gt;` &amp;rarr;</span>
-</span><span id="appBar_data_star-65"><a href="#appBar_data_star-65"><span class="linenos"> 65</span></a><span class="sd">            * The color of the button. If omitted, the default value is set by the system.</span>
-</span><span id="appBar_data_star-66"><a href="#appBar_data_star-66"><span class="linenos"> 66</span></a><span class="sd">            * **Note**: It must be a valid RGBA string.</span>
-</span><span id="appBar_data_star-67"><a href="#appBar_data_star-67"><span class="linenos"> 67</span></a><span class="sd">            * **Example**: `&quot;rgba(255, 255, 255, 1)&quot;`.</span>
-</span><span id="appBar_data_star-68"><a href="#appBar_data_star-68"><span class="linenos"> 68</span></a><span class="sd">        * **`apiCommand`**: `[str]` = `None` &amp;rarr; The name of the [API command][] to trigger.</span>
-</span><span id="appBar_data_star-69"><a href="#appBar_data_star-69"><span class="linenos"> 69</span></a><span class="sd">        * **`apiCommandKeys`**: `[list]` = `None` &amp;rarr;</span>
-</span><span id="appBar_data_star-70"><a href="#appBar_data_star-70"><span class="linenos"> 70</span></a><span class="sd">            * The root API keys to pass to your `execute_command` function if an</span>
-</span><span id="appBar_data_star-71"><a href="#appBar_data_star-71"><span class="linenos"> 71</span></a><span class="sd">            `apiCommand` is provided. If omitted, all API keys are</span>
-</span><span id="appBar_data_star-72"><a href="#appBar_data_star-72"><span class="linenos"> 72</span></a><span class="sd">            passed to `execute_command`.</span>
-</span><span id="appBar_data_star-73"><a href="#appBar_data_star-73"><span class="linenos"> 73</span></a>
-</span><span id="appBar_data_star-74"><a href="#appBar_data_star-74"><span class="linenos"> 74</span></a><span class="sd">        [page]: #todo-pages-subsection</span>
-</span><span id="appBar_data_star-75"><a href="#appBar_data_star-75"><span class="linenos"> 75</span></a><span class="sd">        [pane]: #todo-panes-subsection</span>
-</span><span id="appBar_data_star-76"><a href="#appBar_data_star-76"><span class="linenos"> 76</span></a><span class="sd">        [modal pane]: #modal-pages-subsection</span>
-</span><span id="appBar_data_star-77"><a href="#appBar_data_star-77"><span class="linenos"> 77</span></a><span class="sd">        [wall pane]: #wall-panes-subsection</span>
-</span><span id="appBar_data_star-78"><a href="#appBar_data_star-78"><span class="linenos"> 78</span></a><span class="sd">        [API command]: #todo-api-command-subsection</span>
-</span><span id="appBar_data_star-79"><a href="#appBar_data_star-79"><span class="linenos"> 79</span></a><span class="sd">        [react-icons]: https://react-icons.github.io/react-icons/search</span>
-</span><span id="appBar_data_star-80"><a href="#appBar_data_star-80"><span class="linenos"> 80</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="appBar_data_star-81"><a href="#appBar_data_star-81"><span class="linenos"> 81</span></a>        <span class="k">return</span> <span class="p">{</span>
-</span><span id="appBar_data_star-82"><a href="#appBar_data_star-82"><span class="linenos"> 82</span></a>            <span class="s2">&quot;kwargs&quot;</span><span class="p">:</span> <span class="n">kwargs</span><span class="p">,</span>
-</span><span id="appBar_data_star-83"><a href="#appBar_data_star-83"><span class="linenos"> 83</span></a>            <span class="s2">&quot;accepted_values&quot;</span><span class="p">:</span> <span class="p">{</span>
-</span><span id="appBar_data_star-84"><a href="#appBar_data_star-84"><span class="linenos"> 84</span></a>                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;session&quot;</span><span class="p">,</span> <span class="s2">&quot;settings&quot;</span><span class="p">,</span> <span class="s2">&quot;button&quot;</span><span class="p">,</span> <span class="s2">&quot;pane&quot;</span><span class="p">,</span> <span class="s2">&quot;page&quot;</span><span class="p">],</span>
-</span><span id="appBar_data_star-85"><a href="#appBar_data_star-85"><span class="linenos"> 85</span></a>                <span class="s2">&quot;variant&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;modal&quot;</span><span class="p">,</span> <span class="s2">&quot;wall&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="nb">type</span> <span class="o">==</span> <span class="s2">&quot;pane&quot;</span> <span class="k">else</span> <span class="p">[],</span>
-</span><span id="appBar_data_star-86"><a href="#appBar_data_star-86"><span class="linenos"> 86</span></a>                <span class="s2">&quot;bar&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;upperLeft&quot;</span><span class="p">,</span> <span class="s2">&quot;lowerLeft&quot;</span><span class="p">,</span> <span class="s2">&quot;upperRight&quot;</span><span class="p">,</span> <span class="s2">&quot;lowerRight&quot;</span><span class="p">],</span>
-</span><span id="appBar_data_star-87"><a href="#appBar_data_star-87"><span class="linenos"> 87</span></a>            <span class="p">},</span>
-</span><span id="appBar_data_star-88"><a href="#appBar_data_star-88"><span class="linenos"> 88</span></a>        <span class="p">}</span>
-</span><span id="appBar_data_star-89"><a href="#appBar_data_star-89"><span class="linenos"> 89</span></a>
-</span><span id="appBar_data_star-90"><a href="#appBar_data_star-90"><span class="linenos"> 90</span></a>    <span class="k">def</span> <span class="nf">__extend_spec__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-</span><span id="appBar_data_star-91"><a href="#appBar_data_star-91"><span class="linenos"> 91</span></a>        <span class="n">color</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;color&quot;</span><span class="p">)</span>
-</span><span id="appBar_data_star-92"><a href="#appBar_data_star-92"><span class="linenos"> 92</span></a>        <span class="k">if</span> <span class="n">color</span><span class="p">:</span>
-</span><span id="appBar_data_star-93"><a href="#appBar_data_star-93"><span class="linenos"> 93</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">__check_rgba_string_valid__</span><span class="p">(</span><span class="n">rgba_string</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">prepend_path</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;color&quot;</span><span class="p">])</span>
-</span><span id="appBar_data_star-94"><a href="#appBar_data_star-94"><span class="linenos"> 94</span></a>        <span class="c1"># Validate pageIds</span>
-</span><span id="appBar_data_star-95"><a href="#appBar_data_star-95"><span class="linenos"> 95</span></a>        <span class="n">bar_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">)</span>
-</span><span id="appBar_data_star-96"><a href="#appBar_data_star-96"><span class="linenos"> 96</span></a>        <span class="k">if</span> <span class="n">bar_type</span> <span class="o">==</span> <span class="s1">&#39;page&#39;</span><span class="p">:</span>
-</span><span id="appBar_data_star-97"><a href="#appBar_data_star-97"><span class="linenos"> 97</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">__check_subset_valid__</span><span class="p">(</span>
-</span><span id="appBar_data_star-98"><a href="#appBar_data_star-98"><span class="linenos"> 98</span></a>                <span class="n">subset</span><span class="o">=</span><span class="p">[</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;CustomKeyValidatorFieldId&#39;</span><span class="p">)],</span>
-</span><span id="appBar_data_star-99"><a href="#appBar_data_star-99"><span class="linenos"> 99</span></a>                <span class="n">valid_values</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;page_validPageIds&quot;</span><span class="p">,</span> <span class="p">[]),</span>
-</span><span id="appBar_data_star-100"><a href="#appBar_data_star-100"><span class="linenos">100</span></a>                <span class="n">prepend_path</span><span class="o">=</span><span class="p">[],</span>
-</span><span id="appBar_data_star-101"><a href="#appBar_data_star-101"><span class="linenos">101</span></a>            <span class="p">)</span>
-</span><span id="appBar_data_star-102"><a href="#appBar_data_star-102"><span class="linenos">102</span></a>        <span class="k">if</span> <span class="n">bar_type</span> <span class="o">==</span> <span class="s1">&#39;pane&#39;</span><span class="p">:</span>
-</span><span id="appBar_data_star-103"><a href="#appBar_data_star-103"><span class="linenos">103</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">__check_subset_valid__</span><span class="p">(</span>
-</span><span id="appBar_data_star-104"><a href="#appBar_data_star-104"><span class="linenos">104</span></a>                <span class="n">subset</span><span class="o">=</span><span class="p">[</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;CustomKeyValidatorFieldId&#39;</span><span class="p">)],</span>
-</span><span id="appBar_data_star-105"><a href="#appBar_data_star-105"><span class="linenos">105</span></a>                <span class="n">valid_values</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;pane_validPaneIds&quot;</span><span class="p">,</span> <span class="p">[]),</span>
-</span><span id="appBar_data_star-106"><a href="#appBar_data_star-106"><span class="linenos">106</span></a>                <span class="n">prepend_path</span><span class="o">=</span><span class="p">[],</span>
-</span><span id="appBar_data_star-107"><a href="#appBar_data_star-107"><span class="linenos">107</span></a>            <span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="appBar_data_star-43"><a href="#appBar_data_star-43"><span class="linenos"> 43</span></a><span class="nd">@type_enforced</span><span class="o">.</span><span class="n">Enforcer</span>
+</span><span id="appBar_data_star-44"><a href="#appBar_data_star-44"><span class="linenos"> 44</span></a><span class="k">class</span> <span class="nc">appBar_data_star</span><span class="p">(</span><span class="n">ApiValidator</span><span class="p">):</span>
+</span><span id="appBar_data_star-45"><a href="#appBar_data_star-45"><span class="linenos"> 45</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="appBar_data_star-46"><a href="#appBar_data_star-46"><span class="linenos"> 46</span></a><span class="sd">    The app bar data is located under the path **`appBar.data`**.</span>
+</span><span id="appBar_data_star-47"><a href="#appBar_data_star-47"><span class="linenos"> 47</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="appBar_data_star-48"><a href="#appBar_data_star-48"><span class="linenos"> 48</span></a>
+</span><span id="appBar_data_star-49"><a href="#appBar_data_star-49"><span class="linenos"> 49</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="appBar_data_star-50"><a href="#appBar_data_star-50"><span class="linenos"> 50</span></a>    <span class="k">def</span> <span class="nf">spec</span><span class="p">(</span>
+</span><span id="appBar_data_star-51"><a href="#appBar_data_star-51"><span class="linenos"> 51</span></a>        <span class="n">icon</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span id="appBar_data_star-52"><a href="#appBar_data_star-52"><span class="linenos"> 52</span></a>        <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span id="appBar_data_star-53"><a href="#appBar_data_star-53"><span class="linenos"> 53</span></a>        <span class="n">bar</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span id="appBar_data_star-54"><a href="#appBar_data_star-54"><span class="linenos"> 54</span></a>        <span class="n">variant</span><span class="p">:</span> <span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="appBar_data_star-55"><a href="#appBar_data_star-55"><span class="linenos"> 55</span></a>        <span class="n">color</span><span class="p">:</span> <span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="appBar_data_star-56"><a href="#appBar_data_star-56"><span class="linenos"> 56</span></a>        <span class="n">order</span><span class="p">:</span> <span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="appBar_data_star-57"><a href="#appBar_data_star-57"><span class="linenos"> 57</span></a>        <span class="n">apiCommand</span><span class="p">:</span> <span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="appBar_data_star-58"><a href="#appBar_data_star-58"><span class="linenos"> 58</span></a>        <span class="n">apiCommandKeys</span><span class="p">:</span> <span class="p">[</span><span class="nb">list</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="appBar_data_star-59"><a href="#appBar_data_star-59"><span class="linenos"> 59</span></a>        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+</span><span id="appBar_data_star-60"><a href="#appBar_data_star-60"><span class="linenos"> 60</span></a>    <span class="p">):</span>
+</span><span id="appBar_data_star-61"><a href="#appBar_data_star-61"><span class="linenos"> 61</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="appBar_data_star-62"><a href="#appBar_data_star-62"><span class="linenos"> 62</span></a><span class="sd">        Arguments:</span>
+</span><span id="appBar_data_star-63"><a href="#appBar_data_star-63"><span class="linenos"> 63</span></a>
+</span><span id="appBar_data_star-64"><a href="#appBar_data_star-64"><span class="linenos"> 64</span></a><span class="sd">        * **`icon`**: `[str]` &amp;rarr; An icon to display in the center of the action element.</span>
+</span><span id="appBar_data_star-65"><a href="#appBar_data_star-65"><span class="linenos"> 65</span></a><span class="sd">            * **Note**: It must be a valid icon name from the [react-icons][] bundle, preceded by the abbreviated name of the icon library source.</span>
+</span><span id="appBar_data_star-66"><a href="#appBar_data_star-66"><span class="linenos"> 66</span></a><span class="sd">            * **Example**: `&quot;md/MdRocket&quot;`.</span>
+</span><span id="appBar_data_star-67"><a href="#appBar_data_star-67"><span class="linenos"> 67</span></a><span class="sd">        * **`type`**: `[str]` &amp;rarr; The type of object displayed when the action is triggered.</span>
+</span><span id="appBar_data_star-68"><a href="#appBar_data_star-68"><span class="linenos"> 68</span></a><span class="sd">            * **Accepted Values**:</span>
+</span><span id="appBar_data_star-69"><a href="#appBar_data_star-69"><span class="linenos"> 69</span></a><span class="sd">                * `&quot;session&quot;`: The Session Pane</span>
+</span><span id="appBar_data_star-70"><a href="#appBar_data_star-70"><span class="linenos"> 70</span></a><span class="sd">                * `&quot;settings&quot;`: The Application Settings Pane</span>
+</span><span id="appBar_data_star-71"><a href="#appBar_data_star-71"><span class="linenos"> 71</span></a><span class="sd">                * `&quot;button&quot;`: A button that allows you to send a command to the CAVE API</span>
+</span><span id="appBar_data_star-72"><a href="#appBar_data_star-72"><span class="linenos"> 72</span></a><span class="sd">                * `&quot;pane&quot;`: A [custom pane][]</span>
+</span><span id="appBar_data_star-73"><a href="#appBar_data_star-73"><span class="linenos"> 73</span></a><span class="sd">                * `&quot;page&quot;`: A [page][]</span>
+</span><span id="appBar_data_star-74"><a href="#appBar_data_star-74"><span class="linenos"> 74</span></a><span class="sd">        * **`bar`**: `[str]` &amp;rarr; The location of the action element.</span>
+</span><span id="appBar_data_star-75"><a href="#appBar_data_star-75"><span class="linenos"> 75</span></a><span class="sd">            * **Accepted Values**:</span>
+</span><span id="appBar_data_star-76"><a href="#appBar_data_star-76"><span class="linenos"> 76</span></a><span class="sd">                * `&quot;upperLeft&quot;`: Upper section of the left-side bar</span>
+</span><span id="appBar_data_star-77"><a href="#appBar_data_star-77"><span class="linenos"> 77</span></a><span class="sd">                * `&quot;lowerLeft&quot;`: Lower section of the left-side bar</span>
+</span><span id="appBar_data_star-78"><a href="#appBar_data_star-78"><span class="linenos"> 78</span></a><span class="sd">                * `&quot;upperRight&quot;`: Upper section of the right-side bar</span>
+</span><span id="appBar_data_star-79"><a href="#appBar_data_star-79"><span class="linenos"> 79</span></a><span class="sd">                * `&quot;lowerRight&quot;`: Lower section of the right-side bar</span>
+</span><span id="appBar_data_star-80"><a href="#appBar_data_star-80"><span class="linenos"> 80</span></a><span class="sd">        * **`variant`**: `[str]` = `None` &amp;rarr; The variant of the button.</span>
+</span><span id="appBar_data_star-81"><a href="#appBar_data_star-81"><span class="linenos"> 81</span></a><span class="sd">            * **Accepted Values**:</span>
+</span><span id="appBar_data_star-82"><a href="#appBar_data_star-82"><span class="linenos"> 82</span></a><span class="sd">                * When **`type`** == `&quot;pane&quot;` | `&quot;page&quot;`:</span>
+</span><span id="appBar_data_star-83"><a href="#appBar_data_star-83"><span class="linenos"> 83</span></a><span class="sd">                    * `&quot;modal&quot;`: A [modal pane][]</span>
+</span><span id="appBar_data_star-84"><a href="#appBar_data_star-84"><span class="linenos"> 84</span></a><span class="sd">                    * `&quot;wall&quot;`: A [wall pane][]</span>
+</span><span id="appBar_data_star-85"><a href="#appBar_data_star-85"><span class="linenos"> 85</span></a><span class="sd">                * Otherwise:</span>
+</span><span id="appBar_data_star-86"><a href="#appBar_data_star-86"><span class="linenos"> 86</span></a><span class="sd">                    * `None`</span>
+</span><span id="appBar_data_star-87"><a href="#appBar_data_star-87"><span class="linenos"> 87</span></a><span class="sd">        * **`color`**: `[str]` = `&lt;system-default-value&gt;` &amp;rarr;</span>
+</span><span id="appBar_data_star-88"><a href="#appBar_data_star-88"><span class="linenos"> 88</span></a><span class="sd">            * The color of the button. If omitted, the default value is set by the system.</span>
+</span><span id="appBar_data_star-89"><a href="#appBar_data_star-89"><span class="linenos"> 89</span></a><span class="sd">            * **Note**: It must be a valid RGBA string.</span>
+</span><span id="appBar_data_star-90"><a href="#appBar_data_star-90"><span class="linenos"> 90</span></a><span class="sd">            * **Example**: `&quot;rgba(255, 255, 255, 1)&quot;`.</span>
+</span><span id="appBar_data_star-91"><a href="#appBar_data_star-91"><span class="linenos"> 91</span></a><span class="sd">        * **`apiCommand`**: `[str]` = `None` &amp;rarr; The name of the [API command][] to trigger.</span>
+</span><span id="appBar_data_star-92"><a href="#appBar_data_star-92"><span class="linenos"> 92</span></a><span class="sd">        * **`apiCommandKeys`**: `[list]` = `None` &amp;rarr;</span>
+</span><span id="appBar_data_star-93"><a href="#appBar_data_star-93"><span class="linenos"> 93</span></a><span class="sd">            * The root API keys to pass to your `execute_command` function if an</span>
+</span><span id="appBar_data_star-94"><a href="#appBar_data_star-94"><span class="linenos"> 94</span></a><span class="sd">            `apiCommand` is provided. If omitted, all API keys are</span>
+</span><span id="appBar_data_star-95"><a href="#appBar_data_star-95"><span class="linenos"> 95</span></a><span class="sd">            passed to `execute_command`.</span>
+</span><span id="appBar_data_star-96"><a href="#appBar_data_star-96"><span class="linenos"> 96</span></a>
+</span><span id="appBar_data_star-97"><a href="#appBar_data_star-97"><span class="linenos"> 97</span></a><span class="sd">        [page]: pages.html</span>
+</span><span id="appBar_data_star-98"><a href="#appBar_data_star-98"><span class="linenos"> 98</span></a><span class="sd">        [pane]: panes.html</span>
+</span><span id="appBar_data_star-99"><a href="#appBar_data_star-99"><span class="linenos"> 99</span></a><span class="sd">        [modal pane]: panes.html</span>
+</span><span id="appBar_data_star-100"><a href="#appBar_data_star-100"><span class="linenos">100</span></a><span class="sd">        [wall pane]: panes.html</span>
+</span><span id="appBar_data_star-101"><a href="#appBar_data_star-101"><span class="linenos">101</span></a><span class="sd">        [API command]: #appBar_data_star.spec</span>
+</span><span id="appBar_data_star-102"><a href="#appBar_data_star-102"><span class="linenos">102</span></a><span class="sd">        [react-icons]: https://react-icons.github.io/react-icons/search</span>
+</span><span id="appBar_data_star-103"><a href="#appBar_data_star-103"><span class="linenos">103</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="appBar_data_star-104"><a href="#appBar_data_star-104"><span class="linenos">104</span></a>        <span class="k">return</span> <span class="p">{</span>
+</span><span id="appBar_data_star-105"><a href="#appBar_data_star-105"><span class="linenos">105</span></a>            <span class="s2">&quot;kwargs&quot;</span><span class="p">:</span> <span class="n">kwargs</span><span class="p">,</span>
+</span><span id="appBar_data_star-106"><a href="#appBar_data_star-106"><span class="linenos">106</span></a>            <span class="s2">&quot;accepted_values&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span id="appBar_data_star-107"><a href="#appBar_data_star-107"><span class="linenos">107</span></a>                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;session&quot;</span><span class="p">,</span> <span class="s2">&quot;settings&quot;</span><span class="p">,</span> <span class="s2">&quot;button&quot;</span><span class="p">,</span> <span class="s2">&quot;pane&quot;</span><span class="p">,</span> <span class="s2">&quot;page&quot;</span><span class="p">],</span>
+</span><span id="appBar_data_star-108"><a href="#appBar_data_star-108"><span class="linenos">108</span></a>                <span class="s2">&quot;variant&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;modal&quot;</span><span class="p">,</span> <span class="s2">&quot;wall&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="nb">type</span> <span class="o">==</span> <span class="s2">&quot;pane&quot;</span> <span class="k">else</span> <span class="p">[],</span>
+</span><span id="appBar_data_star-109"><a href="#appBar_data_star-109"><span class="linenos">109</span></a>                <span class="s2">&quot;bar&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;upperLeft&quot;</span><span class="p">,</span> <span class="s2">&quot;lowerLeft&quot;</span><span class="p">,</span> <span class="s2">&quot;upperRight&quot;</span><span class="p">,</span> <span class="s2">&quot;lowerRight&quot;</span><span class="p">],</span>
+</span><span id="appBar_data_star-110"><a href="#appBar_data_star-110"><span class="linenos">110</span></a>            <span class="p">},</span>
+</span><span id="appBar_data_star-111"><a href="#appBar_data_star-111"><span class="linenos">111</span></a>        <span class="p">}</span>
+</span><span id="appBar_data_star-112"><a href="#appBar_data_star-112"><span class="linenos">112</span></a>
+</span><span id="appBar_data_star-113"><a href="#appBar_data_star-113"><span class="linenos">113</span></a>    <span class="k">def</span> <span class="nf">__extend_spec__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+</span><span id="appBar_data_star-114"><a href="#appBar_data_star-114"><span class="linenos">114</span></a>        <span class="n">color</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;color&quot;</span><span class="p">)</span>
+</span><span id="appBar_data_star-115"><a href="#appBar_data_star-115"><span class="linenos">115</span></a>        <span class="k">if</span> <span class="n">color</span><span class="p">:</span>
+</span><span id="appBar_data_star-116"><a href="#appBar_data_star-116"><span class="linenos">116</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">__check_rgba_string_valid__</span><span class="p">(</span><span class="n">rgba_string</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">prepend_path</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;color&quot;</span><span class="p">])</span>
+</span><span id="appBar_data_star-117"><a href="#appBar_data_star-117"><span class="linenos">117</span></a>        <span class="c1"># Validate pageIds</span>
+</span><span id="appBar_data_star-118"><a href="#appBar_data_star-118"><span class="linenos">118</span></a>        <span class="n">bar_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">)</span>
+</span><span id="appBar_data_star-119"><a href="#appBar_data_star-119"><span class="linenos">119</span></a>        <span class="k">if</span> <span class="n">bar_type</span> <span class="o">==</span> <span class="s2">&quot;page&quot;</span><span class="p">:</span>
+</span><span id="appBar_data_star-120"><a href="#appBar_data_star-120"><span class="linenos">120</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">__check_subset_valid__</span><span class="p">(</span>
+</span><span id="appBar_data_star-121"><a href="#appBar_data_star-121"><span class="linenos">121</span></a>                <span class="n">subset</span><span class="o">=</span><span class="p">[</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;CustomKeyValidatorFieldId&quot;</span><span class="p">)],</span>
+</span><span id="appBar_data_star-122"><a href="#appBar_data_star-122"><span class="linenos">122</span></a>                <span class="n">valid_values</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;page_validPageIds&quot;</span><span class="p">,</span> <span class="p">[]),</span>
+</span><span id="appBar_data_star-123"><a href="#appBar_data_star-123"><span class="linenos">123</span></a>                <span class="n">prepend_path</span><span class="o">=</span><span class="p">[],</span>
+</span><span id="appBar_data_star-124"><a href="#appBar_data_star-124"><span class="linenos">124</span></a>            <span class="p">)</span>
+</span><span id="appBar_data_star-125"><a href="#appBar_data_star-125"><span class="linenos">125</span></a>        <span class="k">if</span> <span class="n">bar_type</span> <span class="o">==</span> <span class="s2">&quot;pane&quot;</span><span class="p">:</span>
+</span><span id="appBar_data_star-126"><a href="#appBar_data_star-126"><span class="linenos">126</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">__check_subset_valid__</span><span class="p">(</span>
+</span><span id="appBar_data_star-127"><a href="#appBar_data_star-127"><span class="linenos">127</span></a>                <span class="n">subset</span><span class="o">=</span><span class="p">[</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;CustomKeyValidatorFieldId&quot;</span><span class="p">)],</span>
+</span><span id="appBar_data_star-128"><a href="#appBar_data_star-128"><span class="linenos">128</span></a>                <span class="n">valid_values</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;pane_validPaneIds&quot;</span><span class="p">,</span> <span class="p">[]),</span>
+</span><span id="appBar_data_star-129"><a href="#appBar_data_star-129"><span class="linenos">129</span></a>                <span class="n">prepend_path</span><span class="o">=</span><span class="p">[],</span>
+</span><span id="appBar_data_star-130"><a href="#appBar_data_star-130"><span class="linenos">130</span></a>            <span class="p">)</span>
 </span></pre></div>
 
 
@@ -328,69 +377,69 @@ simultaneously.</p>
 
     </div>
     <a class="headerlink" href="#appBar_data_star.spec"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="appBar_data_star.spec-26"><a href="#appBar_data_star.spec-26"><span class="linenos">26</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="appBar_data_star.spec-27"><a href="#appBar_data_star.spec-27"><span class="linenos">27</span></a>    <span class="k">def</span> <span class="nf">spec</span><span class="p">(</span>
-</span><span id="appBar_data_star.spec-28"><a href="#appBar_data_star.spec-28"><span class="linenos">28</span></a>        <span class="n">icon</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-</span><span id="appBar_data_star.spec-29"><a href="#appBar_data_star.spec-29"><span class="linenos">29</span></a>        <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-</span><span id="appBar_data_star.spec-30"><a href="#appBar_data_star.spec-30"><span class="linenos">30</span></a>        <span class="n">bar</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-</span><span id="appBar_data_star.spec-31"><a href="#appBar_data_star.spec-31"><span class="linenos">31</span></a>        <span class="n">variant</span><span class="p">:</span> <span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="appBar_data_star.spec-32"><a href="#appBar_data_star.spec-32"><span class="linenos">32</span></a>        <span class="n">color</span><span class="p">:</span> <span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="appBar_data_star.spec-33"><a href="#appBar_data_star.spec-33"><span class="linenos">33</span></a>        <span class="n">order</span><span class="p">:</span> <span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="appBar_data_star.spec-34"><a href="#appBar_data_star.spec-34"><span class="linenos">34</span></a>        <span class="n">apiCommand</span><span class="p">:</span> <span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="appBar_data_star.spec-35"><a href="#appBar_data_star.spec-35"><span class="linenos">35</span></a>        <span class="n">apiCommandKeys</span><span class="p">:</span> <span class="p">[</span><span class="nb">list</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="appBar_data_star.spec-36"><a href="#appBar_data_star.spec-36"><span class="linenos">36</span></a>        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-</span><span id="appBar_data_star.spec-37"><a href="#appBar_data_star.spec-37"><span class="linenos">37</span></a>    <span class="p">):</span>
-</span><span id="appBar_data_star.spec-38"><a href="#appBar_data_star.spec-38"><span class="linenos">38</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="appBar_data_star.spec-39"><a href="#appBar_data_star.spec-39"><span class="linenos">39</span></a><span class="sd">        Arguments:</span>
-</span><span id="appBar_data_star.spec-40"><a href="#appBar_data_star.spec-40"><span class="linenos">40</span></a>
-</span><span id="appBar_data_star.spec-41"><a href="#appBar_data_star.spec-41"><span class="linenos">41</span></a><span class="sd">        * **`icon`**: `[str]` &amp;rarr; An icon to display in the center of the action element.</span>
-</span><span id="appBar_data_star.spec-42"><a href="#appBar_data_star.spec-42"><span class="linenos">42</span></a><span class="sd">            * **Note**: It must be a valid icon name from the [react-icons][] bundle, preceded by the abbreviated name of the icon library source.</span>
-</span><span id="appBar_data_star.spec-43"><a href="#appBar_data_star.spec-43"><span class="linenos">43</span></a><span class="sd">            * **Example**: `&quot;md/MdRocket&quot;`.</span>
-</span><span id="appBar_data_star.spec-44"><a href="#appBar_data_star.spec-44"><span class="linenos">44</span></a><span class="sd">        * **`type`**: `[str]` &amp;rarr; The type of object displayed when the action is triggered.</span>
-</span><span id="appBar_data_star.spec-45"><a href="#appBar_data_star.spec-45"><span class="linenos">45</span></a><span class="sd">            * **Accepted Values**:</span>
-</span><span id="appBar_data_star.spec-46"><a href="#appBar_data_star.spec-46"><span class="linenos">46</span></a><span class="sd">                * `&quot;session&quot;`: The Session Pane</span>
-</span><span id="appBar_data_star.spec-47"><a href="#appBar_data_star.spec-47"><span class="linenos">47</span></a><span class="sd">                * `&quot;settings&quot;`: The Application Settings Pane</span>
-</span><span id="appBar_data_star.spec-48"><a href="#appBar_data_star.spec-48"><span class="linenos">48</span></a><span class="sd">                * `&quot;button&quot;`: A button that allows you to send a command to the CAVE API</span>
-</span><span id="appBar_data_star.spec-49"><a href="#appBar_data_star.spec-49"><span class="linenos">49</span></a><span class="sd">                * `&quot;pane&quot;`: A [custom pane][]</span>
-</span><span id="appBar_data_star.spec-50"><a href="#appBar_data_star.spec-50"><span class="linenos">50</span></a><span class="sd">                * `&quot;page&quot;`: A [page][]</span>
-</span><span id="appBar_data_star.spec-51"><a href="#appBar_data_star.spec-51"><span class="linenos">51</span></a><span class="sd">        * **`bar`**: `[str]` &amp;rarr; The location of the action element.</span>
-</span><span id="appBar_data_star.spec-52"><a href="#appBar_data_star.spec-52"><span class="linenos">52</span></a><span class="sd">            * **Accepted Values**:</span>
-</span><span id="appBar_data_star.spec-53"><a href="#appBar_data_star.spec-53"><span class="linenos">53</span></a><span class="sd">                * `&quot;upperLeft&quot;`: Upper section of the left-side bar</span>
-</span><span id="appBar_data_star.spec-54"><a href="#appBar_data_star.spec-54"><span class="linenos">54</span></a><span class="sd">                * `&quot;lowerLeft&quot;`: Lower section of the left-side bar</span>
-</span><span id="appBar_data_star.spec-55"><a href="#appBar_data_star.spec-55"><span class="linenos">55</span></a><span class="sd">                * `&quot;upperRight&quot;`: Upper section of the right-side bar</span>
-</span><span id="appBar_data_star.spec-56"><a href="#appBar_data_star.spec-56"><span class="linenos">56</span></a><span class="sd">                * `&quot;lowerRight&quot;`: Lower section of the right-side bar</span>
-</span><span id="appBar_data_star.spec-57"><a href="#appBar_data_star.spec-57"><span class="linenos">57</span></a><span class="sd">        * **`variant`**: `[str]` = `None` &amp;rarr; The variant of the button.</span>
-</span><span id="appBar_data_star.spec-58"><a href="#appBar_data_star.spec-58"><span class="linenos">58</span></a><span class="sd">            * **Accepted Values**:</span>
-</span><span id="appBar_data_star.spec-59"><a href="#appBar_data_star.spec-59"><span class="linenos">59</span></a><span class="sd">                * When **`type`** == `&quot;pane&quot;` | `&quot;page&quot;`:</span>
-</span><span id="appBar_data_star.spec-60"><a href="#appBar_data_star.spec-60"><span class="linenos">60</span></a><span class="sd">                    * `&quot;modal&quot;`: A [modal pane][]</span>
-</span><span id="appBar_data_star.spec-61"><a href="#appBar_data_star.spec-61"><span class="linenos">61</span></a><span class="sd">                    * `&quot;wall&quot;`: A [wall pane][]</span>
-</span><span id="appBar_data_star.spec-62"><a href="#appBar_data_star.spec-62"><span class="linenos">62</span></a><span class="sd">                * Otherwise:</span>
-</span><span id="appBar_data_star.spec-63"><a href="#appBar_data_star.spec-63"><span class="linenos">63</span></a><span class="sd">                    * `None`</span>
-</span><span id="appBar_data_star.spec-64"><a href="#appBar_data_star.spec-64"><span class="linenos">64</span></a><span class="sd">        * **`color`**: `[str]` = `&lt;system-default-value&gt;` &amp;rarr;</span>
-</span><span id="appBar_data_star.spec-65"><a href="#appBar_data_star.spec-65"><span class="linenos">65</span></a><span class="sd">            * The color of the button. If omitted, the default value is set by the system.</span>
-</span><span id="appBar_data_star.spec-66"><a href="#appBar_data_star.spec-66"><span class="linenos">66</span></a><span class="sd">            * **Note**: It must be a valid RGBA string.</span>
-</span><span id="appBar_data_star.spec-67"><a href="#appBar_data_star.spec-67"><span class="linenos">67</span></a><span class="sd">            * **Example**: `&quot;rgba(255, 255, 255, 1)&quot;`.</span>
-</span><span id="appBar_data_star.spec-68"><a href="#appBar_data_star.spec-68"><span class="linenos">68</span></a><span class="sd">        * **`apiCommand`**: `[str]` = `None` &amp;rarr; The name of the [API command][] to trigger.</span>
-</span><span id="appBar_data_star.spec-69"><a href="#appBar_data_star.spec-69"><span class="linenos">69</span></a><span class="sd">        * **`apiCommandKeys`**: `[list]` = `None` &amp;rarr;</span>
-</span><span id="appBar_data_star.spec-70"><a href="#appBar_data_star.spec-70"><span class="linenos">70</span></a><span class="sd">            * The root API keys to pass to your `execute_command` function if an</span>
-</span><span id="appBar_data_star.spec-71"><a href="#appBar_data_star.spec-71"><span class="linenos">71</span></a><span class="sd">            `apiCommand` is provided. If omitted, all API keys are</span>
-</span><span id="appBar_data_star.spec-72"><a href="#appBar_data_star.spec-72"><span class="linenos">72</span></a><span class="sd">            passed to `execute_command`.</span>
-</span><span id="appBar_data_star.spec-73"><a href="#appBar_data_star.spec-73"><span class="linenos">73</span></a>
-</span><span id="appBar_data_star.spec-74"><a href="#appBar_data_star.spec-74"><span class="linenos">74</span></a><span class="sd">        [page]: #todo-pages-subsection</span>
-</span><span id="appBar_data_star.spec-75"><a href="#appBar_data_star.spec-75"><span class="linenos">75</span></a><span class="sd">        [pane]: #todo-panes-subsection</span>
-</span><span id="appBar_data_star.spec-76"><a href="#appBar_data_star.spec-76"><span class="linenos">76</span></a><span class="sd">        [modal pane]: #modal-pages-subsection</span>
-</span><span id="appBar_data_star.spec-77"><a href="#appBar_data_star.spec-77"><span class="linenos">77</span></a><span class="sd">        [wall pane]: #wall-panes-subsection</span>
-</span><span id="appBar_data_star.spec-78"><a href="#appBar_data_star.spec-78"><span class="linenos">78</span></a><span class="sd">        [API command]: #todo-api-command-subsection</span>
-</span><span id="appBar_data_star.spec-79"><a href="#appBar_data_star.spec-79"><span class="linenos">79</span></a><span class="sd">        [react-icons]: https://react-icons.github.io/react-icons/search</span>
-</span><span id="appBar_data_star.spec-80"><a href="#appBar_data_star.spec-80"><span class="linenos">80</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="appBar_data_star.spec-81"><a href="#appBar_data_star.spec-81"><span class="linenos">81</span></a>        <span class="k">return</span> <span class="p">{</span>
-</span><span id="appBar_data_star.spec-82"><a href="#appBar_data_star.spec-82"><span class="linenos">82</span></a>            <span class="s2">&quot;kwargs&quot;</span><span class="p">:</span> <span class="n">kwargs</span><span class="p">,</span>
-</span><span id="appBar_data_star.spec-83"><a href="#appBar_data_star.spec-83"><span class="linenos">83</span></a>            <span class="s2">&quot;accepted_values&quot;</span><span class="p">:</span> <span class="p">{</span>
-</span><span id="appBar_data_star.spec-84"><a href="#appBar_data_star.spec-84"><span class="linenos">84</span></a>                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;session&quot;</span><span class="p">,</span> <span class="s2">&quot;settings&quot;</span><span class="p">,</span> <span class="s2">&quot;button&quot;</span><span class="p">,</span> <span class="s2">&quot;pane&quot;</span><span class="p">,</span> <span class="s2">&quot;page&quot;</span><span class="p">],</span>
-</span><span id="appBar_data_star.spec-85"><a href="#appBar_data_star.spec-85"><span class="linenos">85</span></a>                <span class="s2">&quot;variant&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;modal&quot;</span><span class="p">,</span> <span class="s2">&quot;wall&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="nb">type</span> <span class="o">==</span> <span class="s2">&quot;pane&quot;</span> <span class="k">else</span> <span class="p">[],</span>
-</span><span id="appBar_data_star.spec-86"><a href="#appBar_data_star.spec-86"><span class="linenos">86</span></a>                <span class="s2">&quot;bar&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;upperLeft&quot;</span><span class="p">,</span> <span class="s2">&quot;lowerLeft&quot;</span><span class="p">,</span> <span class="s2">&quot;upperRight&quot;</span><span class="p">,</span> <span class="s2">&quot;lowerRight&quot;</span><span class="p">],</span>
-</span><span id="appBar_data_star.spec-87"><a href="#appBar_data_star.spec-87"><span class="linenos">87</span></a>            <span class="p">},</span>
-</span><span id="appBar_data_star.spec-88"><a href="#appBar_data_star.spec-88"><span class="linenos">88</span></a>        <span class="p">}</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="appBar_data_star.spec-49"><a href="#appBar_data_star.spec-49"><span class="linenos"> 49</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="appBar_data_star.spec-50"><a href="#appBar_data_star.spec-50"><span class="linenos"> 50</span></a>    <span class="k">def</span> <span class="nf">spec</span><span class="p">(</span>
+</span><span id="appBar_data_star.spec-51"><a href="#appBar_data_star.spec-51"><span class="linenos"> 51</span></a>        <span class="n">icon</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span id="appBar_data_star.spec-52"><a href="#appBar_data_star.spec-52"><span class="linenos"> 52</span></a>        <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span id="appBar_data_star.spec-53"><a href="#appBar_data_star.spec-53"><span class="linenos"> 53</span></a>        <span class="n">bar</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span id="appBar_data_star.spec-54"><a href="#appBar_data_star.spec-54"><span class="linenos"> 54</span></a>        <span class="n">variant</span><span class="p">:</span> <span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="appBar_data_star.spec-55"><a href="#appBar_data_star.spec-55"><span class="linenos"> 55</span></a>        <span class="n">color</span><span class="p">:</span> <span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="appBar_data_star.spec-56"><a href="#appBar_data_star.spec-56"><span class="linenos"> 56</span></a>        <span class="n">order</span><span class="p">:</span> <span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="appBar_data_star.spec-57"><a href="#appBar_data_star.spec-57"><span class="linenos"> 57</span></a>        <span class="n">apiCommand</span><span class="p">:</span> <span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="appBar_data_star.spec-58"><a href="#appBar_data_star.spec-58"><span class="linenos"> 58</span></a>        <span class="n">apiCommandKeys</span><span class="p">:</span> <span class="p">[</span><span class="nb">list</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="appBar_data_star.spec-59"><a href="#appBar_data_star.spec-59"><span class="linenos"> 59</span></a>        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+</span><span id="appBar_data_star.spec-60"><a href="#appBar_data_star.spec-60"><span class="linenos"> 60</span></a>    <span class="p">):</span>
+</span><span id="appBar_data_star.spec-61"><a href="#appBar_data_star.spec-61"><span class="linenos"> 61</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="appBar_data_star.spec-62"><a href="#appBar_data_star.spec-62"><span class="linenos"> 62</span></a><span class="sd">        Arguments:</span>
+</span><span id="appBar_data_star.spec-63"><a href="#appBar_data_star.spec-63"><span class="linenos"> 63</span></a>
+</span><span id="appBar_data_star.spec-64"><a href="#appBar_data_star.spec-64"><span class="linenos"> 64</span></a><span class="sd">        * **`icon`**: `[str]` &amp;rarr; An icon to display in the center of the action element.</span>
+</span><span id="appBar_data_star.spec-65"><a href="#appBar_data_star.spec-65"><span class="linenos"> 65</span></a><span class="sd">            * **Note**: It must be a valid icon name from the [react-icons][] bundle, preceded by the abbreviated name of the icon library source.</span>
+</span><span id="appBar_data_star.spec-66"><a href="#appBar_data_star.spec-66"><span class="linenos"> 66</span></a><span class="sd">            * **Example**: `&quot;md/MdRocket&quot;`.</span>
+</span><span id="appBar_data_star.spec-67"><a href="#appBar_data_star.spec-67"><span class="linenos"> 67</span></a><span class="sd">        * **`type`**: `[str]` &amp;rarr; The type of object displayed when the action is triggered.</span>
+</span><span id="appBar_data_star.spec-68"><a href="#appBar_data_star.spec-68"><span class="linenos"> 68</span></a><span class="sd">            * **Accepted Values**:</span>
+</span><span id="appBar_data_star.spec-69"><a href="#appBar_data_star.spec-69"><span class="linenos"> 69</span></a><span class="sd">                * `&quot;session&quot;`: The Session Pane</span>
+</span><span id="appBar_data_star.spec-70"><a href="#appBar_data_star.spec-70"><span class="linenos"> 70</span></a><span class="sd">                * `&quot;settings&quot;`: The Application Settings Pane</span>
+</span><span id="appBar_data_star.spec-71"><a href="#appBar_data_star.spec-71"><span class="linenos"> 71</span></a><span class="sd">                * `&quot;button&quot;`: A button that allows you to send a command to the CAVE API</span>
+</span><span id="appBar_data_star.spec-72"><a href="#appBar_data_star.spec-72"><span class="linenos"> 72</span></a><span class="sd">                * `&quot;pane&quot;`: A [custom pane][]</span>
+</span><span id="appBar_data_star.spec-73"><a href="#appBar_data_star.spec-73"><span class="linenos"> 73</span></a><span class="sd">                * `&quot;page&quot;`: A [page][]</span>
+</span><span id="appBar_data_star.spec-74"><a href="#appBar_data_star.spec-74"><span class="linenos"> 74</span></a><span class="sd">        * **`bar`**: `[str]` &amp;rarr; The location of the action element.</span>
+</span><span id="appBar_data_star.spec-75"><a href="#appBar_data_star.spec-75"><span class="linenos"> 75</span></a><span class="sd">            * **Accepted Values**:</span>
+</span><span id="appBar_data_star.spec-76"><a href="#appBar_data_star.spec-76"><span class="linenos"> 76</span></a><span class="sd">                * `&quot;upperLeft&quot;`: Upper section of the left-side bar</span>
+</span><span id="appBar_data_star.spec-77"><a href="#appBar_data_star.spec-77"><span class="linenos"> 77</span></a><span class="sd">                * `&quot;lowerLeft&quot;`: Lower section of the left-side bar</span>
+</span><span id="appBar_data_star.spec-78"><a href="#appBar_data_star.spec-78"><span class="linenos"> 78</span></a><span class="sd">                * `&quot;upperRight&quot;`: Upper section of the right-side bar</span>
+</span><span id="appBar_data_star.spec-79"><a href="#appBar_data_star.spec-79"><span class="linenos"> 79</span></a><span class="sd">                * `&quot;lowerRight&quot;`: Lower section of the right-side bar</span>
+</span><span id="appBar_data_star.spec-80"><a href="#appBar_data_star.spec-80"><span class="linenos"> 80</span></a><span class="sd">        * **`variant`**: `[str]` = `None` &amp;rarr; The variant of the button.</span>
+</span><span id="appBar_data_star.spec-81"><a href="#appBar_data_star.spec-81"><span class="linenos"> 81</span></a><span class="sd">            * **Accepted Values**:</span>
+</span><span id="appBar_data_star.spec-82"><a href="#appBar_data_star.spec-82"><span class="linenos"> 82</span></a><span class="sd">                * When **`type`** == `&quot;pane&quot;` | `&quot;page&quot;`:</span>
+</span><span id="appBar_data_star.spec-83"><a href="#appBar_data_star.spec-83"><span class="linenos"> 83</span></a><span class="sd">                    * `&quot;modal&quot;`: A [modal pane][]</span>
+</span><span id="appBar_data_star.spec-84"><a href="#appBar_data_star.spec-84"><span class="linenos"> 84</span></a><span class="sd">                    * `&quot;wall&quot;`: A [wall pane][]</span>
+</span><span id="appBar_data_star.spec-85"><a href="#appBar_data_star.spec-85"><span class="linenos"> 85</span></a><span class="sd">                * Otherwise:</span>
+</span><span id="appBar_data_star.spec-86"><a href="#appBar_data_star.spec-86"><span class="linenos"> 86</span></a><span class="sd">                    * `None`</span>
+</span><span id="appBar_data_star.spec-87"><a href="#appBar_data_star.spec-87"><span class="linenos"> 87</span></a><span class="sd">        * **`color`**: `[str]` = `&lt;system-default-value&gt;` &amp;rarr;</span>
+</span><span id="appBar_data_star.spec-88"><a href="#appBar_data_star.spec-88"><span class="linenos"> 88</span></a><span class="sd">            * The color of the button. If omitted, the default value is set by the system.</span>
+</span><span id="appBar_data_star.spec-89"><a href="#appBar_data_star.spec-89"><span class="linenos"> 89</span></a><span class="sd">            * **Note**: It must be a valid RGBA string.</span>
+</span><span id="appBar_data_star.spec-90"><a href="#appBar_data_star.spec-90"><span class="linenos"> 90</span></a><span class="sd">            * **Example**: `&quot;rgba(255, 255, 255, 1)&quot;`.</span>
+</span><span id="appBar_data_star.spec-91"><a href="#appBar_data_star.spec-91"><span class="linenos"> 91</span></a><span class="sd">        * **`apiCommand`**: `[str]` = `None` &amp;rarr; The name of the [API command][] to trigger.</span>
+</span><span id="appBar_data_star.spec-92"><a href="#appBar_data_star.spec-92"><span class="linenos"> 92</span></a><span class="sd">        * **`apiCommandKeys`**: `[list]` = `None` &amp;rarr;</span>
+</span><span id="appBar_data_star.spec-93"><a href="#appBar_data_star.spec-93"><span class="linenos"> 93</span></a><span class="sd">            * The root API keys to pass to your `execute_command` function if an</span>
+</span><span id="appBar_data_star.spec-94"><a href="#appBar_data_star.spec-94"><span class="linenos"> 94</span></a><span class="sd">            `apiCommand` is provided. If omitted, all API keys are</span>
+</span><span id="appBar_data_star.spec-95"><a href="#appBar_data_star.spec-95"><span class="linenos"> 95</span></a><span class="sd">            passed to `execute_command`.</span>
+</span><span id="appBar_data_star.spec-96"><a href="#appBar_data_star.spec-96"><span class="linenos"> 96</span></a>
+</span><span id="appBar_data_star.spec-97"><a href="#appBar_data_star.spec-97"><span class="linenos"> 97</span></a><span class="sd">        [page]: pages.html</span>
+</span><span id="appBar_data_star.spec-98"><a href="#appBar_data_star.spec-98"><span class="linenos"> 98</span></a><span class="sd">        [pane]: panes.html</span>
+</span><span id="appBar_data_star.spec-99"><a href="#appBar_data_star.spec-99"><span class="linenos"> 99</span></a><span class="sd">        [modal pane]: panes.html</span>
+</span><span id="appBar_data_star.spec-100"><a href="#appBar_data_star.spec-100"><span class="linenos">100</span></a><span class="sd">        [wall pane]: panes.html</span>
+</span><span id="appBar_data_star.spec-101"><a href="#appBar_data_star.spec-101"><span class="linenos">101</span></a><span class="sd">        [API command]: #appBar_data_star.spec</span>
+</span><span id="appBar_data_star.spec-102"><a href="#appBar_data_star.spec-102"><span class="linenos">102</span></a><span class="sd">        [react-icons]: https://react-icons.github.io/react-icons/search</span>
+</span><span id="appBar_data_star.spec-103"><a href="#appBar_data_star.spec-103"><span class="linenos">103</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="appBar_data_star.spec-104"><a href="#appBar_data_star.spec-104"><span class="linenos">104</span></a>        <span class="k">return</span> <span class="p">{</span>
+</span><span id="appBar_data_star.spec-105"><a href="#appBar_data_star.spec-105"><span class="linenos">105</span></a>            <span class="s2">&quot;kwargs&quot;</span><span class="p">:</span> <span class="n">kwargs</span><span class="p">,</span>
+</span><span id="appBar_data_star.spec-106"><a href="#appBar_data_star.spec-106"><span class="linenos">106</span></a>            <span class="s2">&quot;accepted_values&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span id="appBar_data_star.spec-107"><a href="#appBar_data_star.spec-107"><span class="linenos">107</span></a>                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;session&quot;</span><span class="p">,</span> <span class="s2">&quot;settings&quot;</span><span class="p">,</span> <span class="s2">&quot;button&quot;</span><span class="p">,</span> <span class="s2">&quot;pane&quot;</span><span class="p">,</span> <span class="s2">&quot;page&quot;</span><span class="p">],</span>
+</span><span id="appBar_data_star.spec-108"><a href="#appBar_data_star.spec-108"><span class="linenos">108</span></a>                <span class="s2">&quot;variant&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;modal&quot;</span><span class="p">,</span> <span class="s2">&quot;wall&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="nb">type</span> <span class="o">==</span> <span class="s2">&quot;pane&quot;</span> <span class="k">else</span> <span class="p">[],</span>
+</span><span id="appBar_data_star.spec-109"><a href="#appBar_data_star.spec-109"><span class="linenos">109</span></a>                <span class="s2">&quot;bar&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;upperLeft&quot;</span><span class="p">,</span> <span class="s2">&quot;lowerLeft&quot;</span><span class="p">,</span> <span class="s2">&quot;upperRight&quot;</span><span class="p">,</span> <span class="s2">&quot;lowerRight&quot;</span><span class="p">],</span>
+</span><span id="appBar_data_star.spec-110"><a href="#appBar_data_star.spec-110"><span class="linenos">110</span></a>            <span class="p">},</span>
+</span><span id="appBar_data_star.spec-111"><a href="#appBar_data_star.spec-111"><span class="linenos">111</span></a>        <span class="p">}</span>
 </span></pre></div>
 
 
@@ -410,7 +459,7 @@ simultaneously.</p>
 <li><code>"settings"</code>: The Application Settings Pane</li>
 <li><code>"button"</code>: A button that allows you to send a command to the CAVE API</li>
 <li><code>"pane"</code>: A [custom pane][]</li>
-<li><code>"page"</code>: A <a href="#todo-pages-subsection">page</a></li>
+<li><code>"page"</code>: A <a href="pages.html">page</a></li>
 </ul></li>
 </ul></li>
 <li><strong><code>bar</code></strong>: <code>[str]</code> &rarr; The location of the action element.
@@ -429,8 +478,8 @@ simultaneously.</p>
 <ul>
 <li>When <strong><code>type</code></strong> == <code>"pane"</code> | <code>"page"</code>:
 <ul>
-<li><code>"modal"</code>: A <a href="#modal-pages-subsection">modal pane</a></li>
-<li><code>"wall"</code>: A <a href="#wall-panes-subsection">wall pane</a></li>
+<li><code>"modal"</code>: A <a href="panes.html">modal pane</a></li>
+<li><code>"wall"</code>: A <a href="panes.html">wall pane</a></li>
 </ul></li>
 <li>Otherwise:
 <ul>
@@ -444,7 +493,7 @@ simultaneously.</p>
 <li><strong>Note</strong>: It must be a valid RGBA string.</li>
 <li><strong>Example</strong>: <code>"rgba(255, 255, 255, 1)"</code>.</li>
 </ul></li>
-<li><strong><code>apiCommand</code></strong>: <code>[str]</code> = <code>None</code> &rarr; The name of the <a href="#todo-api-command-subsection">API command</a> to trigger.</li>
+<li><strong><code>apiCommand</code></strong>: <code>[str]</code> = <code>None</code> &rarr; The name of the <a href="#appBar_data_star.spec">API command</a> to trigger.</li>
 <li><strong><code>apiCommandKeys</code></strong>: <code>[list]</code> = <code>None</code> &rarr;
 <ul>
 <li>The root API keys to pass to your <code>execute_command</code> function if an
@@ -461,56 +510,6 @@ passed to <code>execute_command</code>.</li>
                                 <dl>
                                     <div><dt><a href="../api_utils/validator_utils.html#ApiValidator">cave_utils.api_utils.validator_utils.ApiValidator</a></dt>
                                 <dd id="appBar_data_star.__init__" class="function"><a href="../api_utils/validator_utils.html#ApiValidator.__init__">ApiValidator</a></dd>
-
-            </div>
-                                </dl>
-                            </div>
-                </section>
-                <section id="appBar">
-                            <input id="appBar-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
-<div class="attr class">
-                    <div class="decorator">@type_enforced.Enforcer</div>
-
-    <span class="def">class</span>
-    <span class="name">appBar</span><wbr>(<span class="base"><a href="../api_utils/validator_utils.html#ApiValidator">cave_utils.api_utils.validator_utils.ApiValidator</a></span>):
-
-                <label class="view-source-button" for="appBar-view-source"><span>View Source</span></label>
-
-    </div>
-    <a class="headerlink" href="#appBar"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="appBar-111"><a href="#appBar-111"><span class="linenos">111</span></a><span class="nd">@type_enforced</span><span class="o">.</span><span class="n">Enforcer</span>
-</span><span id="appBar-112"><a href="#appBar-112"><span class="linenos">112</span></a><span class="k">class</span> <span class="nc">appBar</span><span class="p">(</span><span class="n">ApiValidator</span><span class="p">):</span>
-</span><span id="appBar-113"><a href="#appBar-113"><span class="linenos">113</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="appBar-114"><a href="#appBar-114"><span class="linenos">114</span></a><span class="sd">    The app bar is located under the path **`appBar`**.</span>
-</span><span id="appBar-115"><a href="#appBar-115"><span class="linenos">115</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="appBar-116"><a href="#appBar-116"><span class="linenos">116</span></a>
-</span><span id="appBar-117"><a href="#appBar-117"><span class="linenos">117</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="appBar-118"><a href="#appBar-118"><span class="linenos">118</span></a>    <span class="k">def</span> <span class="nf">spec</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-</span><span id="appBar-119"><a href="#appBar-119"><span class="linenos">119</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="appBar-120"><a href="#appBar-120"><span class="linenos">120</span></a><span class="sd">        @private</span>
-</span><span id="appBar-121"><a href="#appBar-121"><span class="linenos">121</span></a><span class="sd">        Arguments:</span>
-</span><span id="appBar-122"><a href="#appBar-122"><span class="linenos">122</span></a>
-</span><span id="appBar-123"><a href="#appBar-123"><span class="linenos">123</span></a><span class="sd">        * **`data`**: `[dict]` = `{}` &amp;rarr; The data to pass to `appBar.data.*`.</span>
-</span><span id="appBar-124"><a href="#appBar-124"><span class="linenos">124</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="appBar-125"><a href="#appBar-125"><span class="linenos">125</span></a>        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;kwargs&quot;</span><span class="p">:</span> <span class="n">kwargs</span><span class="p">,</span> <span class="s2">&quot;accepted_values&quot;</span><span class="p">:</span> <span class="p">{}}</span>
-</span><span id="appBar-126"><a href="#appBar-126"><span class="linenos">126</span></a>
-</span><span id="appBar-127"><a href="#appBar-127"><span class="linenos">127</span></a>    <span class="k">def</span> <span class="nf">__extend_spec__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-</span><span id="appBar-128"><a href="#appBar-128"><span class="linenos">128</span></a>        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;data&quot;</span><span class="p">,</span> <span class="p">{})</span>
-</span><span id="appBar-129"><a href="#appBar-129"><span class="linenos">129</span></a>        <span class="n">CustomKeyValidator</span><span class="p">(</span>
-</span><span id="appBar-130"><a href="#appBar-130"><span class="linenos">130</span></a>            <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">,</span> <span class="n">prepend_path</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">],</span> <span class="n">validator</span><span class="o">=</span><span class="n">appBar_data_star</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
-</span><span id="appBar-131"><a href="#appBar-131"><span class="linenos">131</span></a>        <span class="p">)</span>
-</span></pre></div>
-
-
-            <div class="docstring"><p>The app bar is located under the path <strong><code><a href="#appBar">appBar</a></code></strong>.</p>
-</div>
-
-
-                            <div class="inherited">
-                                <h5>Inherited Members</h5>
-                                <dl>
-                                    <div><dt><a href="../api_utils/validator_utils.html#ApiValidator">cave_utils.api_utils.validator_utils.ApiValidator</a></dt>
-                                <dd id="appBar.__init__" class="function"><a href="../api_utils/validator_utils.html#ApiValidator.__init__">ApiValidator</a></dd>
 
             </div>
                                 </dl>

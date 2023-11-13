@@ -48,45 +48,147 @@ class groupedOutputs(ApiValidator):
 
 
 @type_enforced.Enforcer
-class groupedOutputs_groupings_star_data(ApiValidator):
+class groupedOutputs_data_star(ApiValidator):
     """
-    The groupings data is located under the path **`groupedOutputs.groupings.*.data`**.
+    The grouped outputs data is located under the path **`groupedOutputs.data.*`**.
     """
 
     @staticmethod
-    def spec(id: list, **kwargs):
+    def spec(stats: dict, valueLists: dict, groupLists: dict, **kwargs):
         """
         Arguments:
 
-        * **`id`**: `[list]` &rarr; The id of the data to be grouped.
-        * **`customKeyHere`**: `[list]` &rarr;
-            * The names of the data to be grouped for this feature/level.
-            * **Note**: Each key listed here must be in `groupedOutputs.groupings.*.levels.*`
+        * **`stats`**: `[dict]` &rarr; A dictionary of stats that are available for the data.
+            * **See**: `cave_utils.api.groupedOutputs.groupedOutputs_data_star_stats`
+        **`valueLists`**: `[dict]` &rarr; A dictionary of lists that make up the stats for the data.
+        **`groupLists`**: `[dict]` &rarr; A dictionary of lists that make up the groupings for the data.
+        """
+        # TODO: Flesh out valueLists and groupLists
+        return {"kwargs": kwargs, "accepted_values": {}}
+
+    def __extend_spec__(self, **kwargs):
+        stats_data = self.data.get("stats", {})
+        CustomKeyValidator(
+            data=stats_data,
+            log=self.log,
+            prepend_path=["stats"],
+            validator=groupedOutputs_data_star_stats,
+            **kwargs,
+        )
+        list_lengths = []
+        pass_list_lengths = True
+        # Ensure Valid Value Lists
+        valueLists_data = self.data.get("valueLists", {})
+        for key, value in valueLists_data.items():
+            if not self.__check_type__(
+                value=value, check_type=(list,), prepend_path=["valueLists", key]
+            ):
+                pass_list_lengths = False
+                continue
+            list_lengths.append(len(value))
+            self.__check_type_list__(
+                data=value, types=(int, float), prepend_path=["valueLists", key]
+            )
+        # Ensure Valid Group Lists
+        available_groups = kwargs.get("available_groups", {})
+        groupLists_data = self.data.get("groupLists", {})
+        self.__check_subset_valid__(
+            subset=list(groupLists_data.keys()),
+            valid_values=list(available_groups.keys()),
+            prepend_path=["groupLists"],
+        )
+        for key, value in groupLists_data.items():
+            if not self.__check_type__(
+                value=value, check_type=(list,), prepend_path=["groupLists", key]
+            ):
+                pass_list_lengths = False
+                continue
+            list_lengths.append(len(value))
+            valid_values = available_groups.get(key, [])
+            if not self.__check_type_list__(
+                data=valid_values, types=(str,), prepend_path=["groupLists", key]
+            ):
+                continue
+            self.__check_subset_valid__(
+                subset=value, valid_values=valid_values, prepend_path=["groupLists", key]
+            )
+        # Ensure all lists are the same length
+        if not pass_list_lengths or len(set(list_lengths)) != 1:
+            self.__error__(
+                msg="All values in groupedOutputs.data.*.groupLists and groupedOutputs.data.*.valueLists must be lists of the same length.",
+            )
+
+
+@type_enforced.Enforcer
+class groupedOutputs_data_star_stats(ApiValidator):
+    """
+    The grouped output stats are located under the path **`groupedOutputs.data.*.stats`**.
+    """
+
+    @staticmethod
+    def spec(
+        name: str,
+        calculation: str,
+        unit: [str, None] = None,
+        unitPlacement: str = "afterWithSpace",
+        precision: [int, None] = None,
+        trailingZeros: bool = False,
+        **kwargs,
+    ):
+        """
+        Arguments:
+
+        * **`name`**: `[str]` &rarr; The name of the stat.
+        * **`calculation`**: `[str]` &rarr; The calculation to generate the stat for each group.
+            * **Notes**:
+                * This can use operators [`+`, `-`, `*`, `/`, and `groupSum`]
+                * This can call in keys from `groupedOutputs.data.*.valueLists.*` as variables
+            * **Examples**:
+                * Create a variable that can be used to aggregate on your stat demand on arbitrary groupings: `'demand'`.
+                * Create a variable that can be used to aggregate your percent of demand met on arbitrary groupings. (This only shows the percent of demand met for each group if they are summed in the chart): `'sales / groupSum("demand")'`
+        * **`unit`**: `[str]` &rarr; The unit to use for the stat.
+            * **Note**: If left unspecified (i.e., `None`), it will default to `settings.defaults.unit`.
+        * **`unitPlacement`**: `[str]` = `None` &rarr; The position of the `unit` symbol relative to the value.
+            * **Accepted Values**:
+                * `"after"`: The `unit` appears after the value.
+                * `"afterWithSpace"`: The `unit` appears after the value, separated by a space.
+                * `"before"`: The `unit` appears before the value.
+                * `"beforeWithSpace"`: The unit is placed before the value, with a space in between.
+            * **Note**: If left unspecified (i.e., `None`), it will default to `settings.defaults.unitPlacement`.
+        * **`precision`**: `[int]` = `None` &rarr; The number of decimal places to display.
+            * **Notes**:
+                * Set the precision to `0` to attach an integer constraint.
+                * If left unspecified (i.e., `None`), it will default to `settings.defaults.precision`.
+        * **`trailingZeros`**: `[bool]` = `None` &rarr; If `True`, trailing zeros will be displayed.
+            * **Notes**:
+                * This ensures that all precision digits are shown. For example: `1.5` &rarr; `1.500` when precision is `3`.
+                * If left unspecified (i.e., `None`), it will default to `settings.defaults.trailingZeros`.
+        """
+        return {
+            "kwargs": kwargs,
+            "accepted_values": {
+                "unitPlacement": ["after", "afterWithSpace", "before", "beforeWithSpace"],
+            },
+        }
+
+
+@type_enforced.Enforcer
+class groupedOutputs_data_star_valueLists(ApiValidator):
+    """
+    The value lists are located under the path **`groupedOutputs.data.*.valueLists`**.
+    """
+
+    @staticmethod
+    def spec(**kwargs):
+        """
+        Accepts any key value pairs as a dictionary structure for the data.
+        Each value must be a list of integers or floats.
         """
         return {"kwargs": {}, "accepted_values": {}}
 
     def __extend_spec__(self, **kwargs):
-        keys = list(self.data.keys())
-        expected_keys = kwargs.get("acceptable_data_keys", []) + ["id"]
-        missing_keys = pamda.difference(expected_keys, keys)
-        # Ensure that all keys are present
-        if len(missing_keys) > 0:
-            self.__error__(
-                msg=f"The following keys: {str(missing_keys)} are required in groupedOutputs.groupings.*.data",
-            )
-        # Ensure that all keys are valid
-        self.__check_subset_valid__(subset=keys, valid_values=expected_keys, prepend_path=[])
-        # Ensure that all values are lists
-        self.__check_type_dict__(data=self.data, types=(list,), prepend_path=[])
-        # Ensure that all values are lists of strings
         for key, value in self.data.items():
-            if isinstance(value, list):
-                self.__check_type_list__(data=value, types=(str,), prepend_path=[key])
-        # Ensure that all lists are the same length
-        if len(set([len(v) for v in self.data.values()])) != 1:
-            self.__error__(
-                msg="All values must be lists of the same length.",
-            )
+            self.__check_type_list__(data=value, types=(int, float), prepend_path=[key])
 
 
 @type_enforced.Enforcer
@@ -153,56 +255,45 @@ class groupedOutputs_groupings_star(ApiValidator):
 
 
 @type_enforced.Enforcer
-class groupedOutputs_data_star_stats(ApiValidator):
+class groupedOutputs_groupings_star_data(ApiValidator):
     """
-    The grouped output stats are located under the path **`groupedOutputs.data.*.stats`**.
+    The groupings data is located under the path **`groupedOutputs.groupings.*.data`**.
     """
 
     @staticmethod
-    def spec(
-        name: str,
-        calculation: str,
-        unit: [str, None] = None,
-        unitPlacement: str = "afterWithSpace",
-        precision: [int, None] = None,
-        trailingZeros: bool = False,
-        **kwargs,
-    ):
+    def spec(id: list, **kwargs):
         """
         Arguments:
 
-        * **`name`**: `[str]` &rarr; The name of the stat.
-        * **`calculation`**: `[str]` &rarr; The calculation to generate the stat for each group.
-            * **Notes**:
-                * This can use operators [`+`, `-`, `*`, `/`, and `groupSum`]
-                * This can call in keys from `groupedOutputs.data.*.valueLists.*` as variables
-            * **Examples**:
-                * Create a variable that can be used to aggregate on your stat demand on arbitrary groupings: `'demand'`.
-                * Create a variable that can be used to aggregate your percent of demand met on arbitrary groupings. (This only shows the percent of demand met for each group if they are summed in the chart): `'sales / groupSum("demand")'`
-        * **`unit`**: `[str]` &rarr; The unit to use for the stat.
-            * **Note**: If left unspecified (i.e., `None`), it will default to `settings.defaults.unit`.
-        * **`unitPlacement`**: `[str]` = `None` &rarr; The position of the `unit` symbol relative to the value.
-            * **Accepted Values**:
-                * `"after"`: The `unit` appears after the value.
-                * `"afterWithSpace"`: The `unit` appears after the value, separated by a space.
-                * `"before"`: The `unit` appears before the value.
-                * `"beforeWithSpace"`: The unit is placed before the value, with a space in between.
-            * **Note**: If left unspecified (i.e., `None`), it will default to `settings.defaults.unitPlacement`.
-        * **`precision`**: `[int]` = `None` &rarr; The number of decimal places to display.
-            * **Notes**:
-                * Set the precision to `0` to attach an integer constraint.
-                * If left unspecified (i.e., `None`), it will default to `settings.defaults.precision`.
-        * **`trailingZeros`**: `[bool]` = `None` &rarr; If `True`, trailing zeros will be displayed.
-            * **Notes**:
-                * This ensures that all precision digits are shown. For example: `1.5` &rarr; `1.500` when precision is `3`.
-                * If left unspecified (i.e., `None`), it will default to `settings.defaults.trailingZeros`.
+        * **`id`**: `[list]` &rarr; The id of the data to be grouped.
+        * **`customKeyHere`**: `[list]` &rarr;
+            * The names of the data to be grouped for this feature/level.
+            * **Note**: Each key listed here must be in `groupedOutputs.groupings.*.levels.*`
         """
-        return {
-            "kwargs": kwargs,
-            "accepted_values": {
-                "unitPlacement": ["after", "afterWithSpace", "before", "beforeWithSpace"],
-            },
-        }
+        return {"kwargs": {}, "accepted_values": {}}
+
+    def __extend_spec__(self, **kwargs):
+        keys = list(self.data.keys())
+        expected_keys = kwargs.get("acceptable_data_keys", []) + ["id"]
+        missing_keys = pamda.difference(expected_keys, keys)
+        # Ensure that all keys are present
+        if len(missing_keys) > 0:
+            self.__error__(
+                msg=f"The following keys: {str(missing_keys)} are required in groupedOutputs.groupings.*.data",
+            )
+        # Ensure that all keys are valid
+        self.__check_subset_valid__(subset=keys, valid_values=expected_keys, prepend_path=[])
+        # Ensure that all values are lists
+        self.__check_type_dict__(data=self.data, types=(list,), prepend_path=[])
+        # Ensure that all values are lists of strings
+        for key, value in self.data.items():
+            if isinstance(value, list):
+                self.__check_type_list__(data=value, types=(str,), prepend_path=[key])
+        # Ensure that all lists are the same length
+        if len(set([len(v) for v in self.data.values()])) != 1:
+            self.__error__(
+                msg="All values must be lists of the same length.",
+            )
 
 
 @type_enforced.Enforcer
@@ -248,95 +339,3 @@ class groupedOutputs_groupings_star_levels_star(ApiValidator):
         #     self.__check_subset_valid__(
         #         subset=ordering, valid_values=kwargs.get("acceptable_data_keys", []), prepend_path=["ordering"]
         #     )
-
-
-@type_enforced.Enforcer
-class groupedOutputs_data_star_valueLists(ApiValidator):
-    """
-    The value lists are located under the path **`groupedOutputs.data.*.valueLists`**.
-    """
-
-    @staticmethod
-    def spec(**kwargs):
-        """
-        Accepts any key value pairs as a dictionary structure for the data.
-        Each value must be a list of integers or floats.
-        """
-        return {"kwargs": {}, "accepted_values": {}}
-
-    def __extend_spec__(self, **kwargs):
-        for key, value in self.data.items():
-            self.__check_type_list__(data=value, types=(int, float), prepend_path=[key])
-
-
-@type_enforced.Enforcer
-class groupedOutputs_data_star(ApiValidator):
-    """
-    The grouped outputs data is located under the path **`groupedOutputs.data.*`**.
-    """
-
-    @staticmethod
-    def spec(stats: dict, valueLists: dict, groupLists: dict, **kwargs):
-        """
-        Arguments:
-
-        * **`stats`**: `[dict]` &rarr; A dictionary of stats that are available for the data.
-            * **See**: `cave_utils.api.groupedOutputs.groupedOutputs_data_star_stats`
-        **`valueLists`**: `[dict]` &rarr; A dictionary of lists that make up the stats for the data.
-            * TODO: Flesh out this description
-        **`groupLists`**: `[dict]` &rarr; A dictionary of lists that make up the groupings for the data.
-            * TODO: Flesh out this description
-        """
-        return {"kwargs": kwargs, "accepted_values": {}}
-
-    def __extend_spec__(self, **kwargs):
-        stats_data = self.data.get("stats", {})
-        CustomKeyValidator(
-            data=stats_data,
-            log=self.log,
-            prepend_path=["stats"],
-            validator=groupedOutputs_data_star_stats,
-            **kwargs,
-        )
-        list_lengths = []
-        pass_list_lengths = True
-        # Ensure Valid Value Lists
-        valueLists_data = self.data.get("valueLists", {})
-        for key, value in valueLists_data.items():
-            if not self.__check_type__(
-                value=value, check_type=(list,), prepend_path=["valueLists", key]
-            ):
-                pass_list_lengths = False
-                continue
-            list_lengths.append(len(value))
-            self.__check_type_list__(
-                data=value, types=(int, float), prepend_path=["valueLists", key]
-            )
-        # Ensure Valid Group Lists
-        available_groups = kwargs.get("available_groups", {})
-        groupLists_data = self.data.get("groupLists", {})
-        self.__check_subset_valid__(
-            subset=list(groupLists_data.keys()),
-            valid_values=list(available_groups.keys()),
-            prepend_path=["groupLists"],
-        )
-        for key, value in groupLists_data.items():
-            if not self.__check_type__(
-                value=value, check_type=(list,), prepend_path=["groupLists", key]
-            ):
-                pass_list_lengths = False
-                continue
-            list_lengths.append(len(value))
-            valid_values = available_groups.get(key, [])
-            if not self.__check_type_list__(
-                data=valid_values, types=(str,), prepend_path=["groupLists", key]
-            ):
-                continue
-            self.__check_subset_valid__(
-                subset=value, valid_values=valid_values, prepend_path=["groupLists", key]
-            )
-        # Ensure all lists are the same length
-        if not pass_list_lengths or len(set(list_lengths)) != 1:
-            self.__error__(
-                msg="All values in groupedOutputs.data.*.groupLists and groupedOutputs.data.*.valueLists must be lists of the same length.",
-            )

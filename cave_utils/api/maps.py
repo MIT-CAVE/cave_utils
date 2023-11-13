@@ -47,6 +47,45 @@ class maps(ApiValidator):
 
 
 @type_enforced.Enforcer
+class maps_additionalMapStyles_star(ApiValidator):
+    """
+    The additional map styles are located under the path `maps.additionalMapStyles.*`.
+    """
+
+    @staticmethod
+    def spec(
+        name: str,
+        spec: [dict, str],
+        fog: [dict, None],
+        icon: str = "md/MdMap",
+        **kwargs,
+    ):
+        """
+        Arguments:
+
+        * **`name`**: `[str]` &rarr; The name of the map style.
+        * **`icon`**: `[str]` = `"md/MdMap"` &rarr; The icon to show in the map selection menu.
+        * **`spec\u200b`**: `[dict | str]` &rarr; The spec to generate the map
+            * **Notes**:
+                * If `spec\u200b` is a string, it will be treated as a URL to a JSON spec file.
+                * `spec\u200b` is only validated for its type, which can be either a `dict` or a `str`.
+            * **See**:
+                * Mapbox: https://docs.mapbox.com/api/maps/styles/
+                * Carto: https://github.com/CartoDB/basemap-styles/blob/master/docs/basemap_styles.json
+                * Raster: https://docs.mapbox.com/mapbox-gl-js/example/map-tiles/
+        * **`fog`**: `[dict]` = `"md/MdMap"` &rarr; The fog to show in the map selection menu.
+            * **Note**: `fog` is only validated for its type (`dict`).
+            * **See**: https://docs.mapbox.com/mapbox-gl-js/api/map/#map#setfog
+        """
+        return {"kwargs": kwargs, "accepted_values": {}}
+
+    def __extend_spec__(self, **kwargs):
+        pass
+        # TODO: Validate icon
+        # TODO: Possibly validate spec and fog
+
+
+@type_enforced.Enforcer
 class maps_data_star(ApiValidator):
     """
     The maps are located under the path `maps.data.*`.
@@ -119,45 +158,6 @@ class maps_data_star(ApiValidator):
             validator=maps_data_star_legendGroups_star,
             **kwargs,
         )
-
-
-@type_enforced.Enforcer
-class maps_additionalMapStyles_star(ApiValidator):
-    """
-    The additional map styles are located under the path `maps.additionalMapStyles.*`.
-    """
-
-    @staticmethod
-    def spec(
-        name: str,
-        spec: [dict, str],
-        fog: [dict, None],
-        icon: str = "md/MdMap",
-        **kwargs,
-    ):
-        """
-        Required Arguments:
-
-        * **`name`**: `[str]` &rarr; The name of the map style.
-        * **`icon`**: `[str]` = `"md/MdMap"` &rarr; The icon to show in the map selection menu.
-        * **`spec\u200b`**: `[dict | str]` &rarr; The spec to generate the map
-            * **Notes**:
-                * If `spec\u200b` is a string, it will be treated as a URL to a JSON spec file.
-                * `spec\u200b` is only validated for its type, which can be either a `dict` or a `str`.
-            * **See**:
-                * Mapbox: https://docs.mapbox.com/api/maps/styles/
-                * Carto: https://github.com/CartoDB/basemap-styles/blob/master/docs/basemap_styles.json
-                * Raster: https://docs.mapbox.com/mapbox-gl-js/example/map-tiles/
-        * **`fog`**: `[dict]` = `"md/MdMap"` &rarr; The fog to show in the map selection menu.
-            * **Note**: `fog` is only validated for its type (`dict`).
-            * **See**: https://docs.mapbox.com/mapbox-gl-js/api/map/#map#setfog
-        """
-        return {"kwargs": kwargs, "accepted_values": {}}
-
-    def __extend_spec__(self, **kwargs):
-        pass
-        # TODO: Validate icon
-        # TODO: Possibly validate spec and fog
 
 
 @type_enforced.Enforcer
@@ -290,7 +290,7 @@ class maps_data_star_legendGroups_star_data_star(ApiValidator):
         **kwargs,
     ):
         """
-        Required Arguments:
+        Arguments:
 
         * **`value`**: `[bool]` &rarr; Whether or not to show this data layer on the map.
         * **`sizeBy`**: `[str]` = `None` &rarr; The prop id to use for sizing the data layer.
@@ -365,13 +365,38 @@ class maps_data_star_legendGroups_star_data_star(ApiValidator):
             * **Notes**:
                 * If `None`, the data layer will not be colored.
                 * Does not apply to shape layers
-            * TODO: Add numeric and categorical example here.
+            * **Example**:
+                ```py
+                "colorByOptions": {
+                    "numericPropExample": {
+                        "min": 0,
+                        "max": 20,
+                        "startGradientColor": "rgba(233, 0, 0, 255)",
+                        "endGradientColor": "rgba(96, 2, 2, 255)",
+                    },
+                    "selectorPropExample": {
+                        "apple": "rgba(199,55,47,255)",
+                        "orange": "rgba(255,127,0, 255)",
+                        "pear": "rgba(209,226,49, 255)",
+                    }
+                }
+                ```
             * **See**: `cave_utils.api.maps.colorByOptions`
         * **`sizeByOptions`**: `[dict]` = `None` &rarr; The options for sizing the data layer.
             * **Notes**:
                 * If `None`, the data layer will not be sized.
                 * Does not apply to shape layers
-            * TODO: Add numeric and categorical example here.
+            * **Example**:
+                ```py
+                "sizeByOptions": {
+                    "numericPropExample": {
+                        "min": 0,
+                        "max": 20,
+                        "startSize": "8px",
+                        "endSize": "32px",
+                    }
+                }
+                ```
             * **See**: `cave_utils.api.maps.sizeByOptions`
         * **`icon`**: `[str]` = `None` &rarr; The icon to use for the data layer.
             * **Notes**:
@@ -506,7 +531,6 @@ class colorByOptions(ApiValidator):
             * **Notes**:
                 * You should provide one `customKey` per option key in the associated prop.
                 * This attribute is only required for numeric props
-            * TODO: Flesh this out better
         * **`min`**: `[float | int]` = `None` &rarr; The minimum value for calculating the gradient.
             * **Note**: If `None`, the minimum of the relevant data will be used.
         * **`min`**: `[float | int]` = `None` &rarr; The maximum value for calculating the gradient.
@@ -514,6 +538,7 @@ class colorByOptions(ApiValidator):
         * **`nullColor`**: `[str]` = `None` &rarr; The color to use for null values.
             * **Note**: If `None`, null values will not be shown.
         """
+        # TODO: Flesh customKey better
 
         if startGradientColor is not None or endGradientColor is not None:
             if startGradientColor is None:
@@ -607,7 +632,6 @@ class sizeByOptions(ApiValidator):
             * **Notes**:
                 * You should provide one `customKey` per option key in the associated prop.
                 * This attribute is only required for numeric props
-            * TODO: Flesh this out better
         * **`min`**: `[float | int]` = `None` &rarr; The minimum value for calculating the size.
             * **Note**: If `None`, the minimum of the relevant data will be used.
         * **`min`**: `[float | int]` = `None` &rarr; The maximum value for calculating the size.
@@ -615,6 +639,7 @@ class sizeByOptions(ApiValidator):
         * **`nullSize`**: `[str]` = `None` &rarr; The size to use for null values.
             * **Note**: If `None`, null values will not be shown.
         """
+        # TODO: Flesh customKey better
         if startSize is not None or endSize is not None:
             if startSize is None:
                 raise Exception("Must provide a `startSize` if `endSize` is provided")

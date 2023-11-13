@@ -32,6 +32,7 @@ class mapFeatures(ApiValidator):
             **kwargs,
         )
 
+
 @type_enforced.Enforcer
 class mapFeatures_data_star(ApiValidator):
     """
@@ -121,9 +122,49 @@ class mapFeatures_data_star(ApiValidator):
 
 
 @type_enforced.Enforcer
+class mapFeatures_data_star_data(ApiValidator):
+    """
+    The map features data is located under the path **`mapFeatures.data.*.data`**.
+    """
+
+    @staticmethod
+    def spec(location: dict, valueLists: dict, **kwargs):
+        """
+        Arguments:
+
+        * **`location`**: `[dict]` &rarr; The location lists of the map feature.
+            * **See**: `cave_utils.api.mapFeatures.mapFeatures_data_star_data_location`
+        * **`valueLists`**: `[dict]` &rarr; The value lists of the map feature.
+            * **See**: `cave_utils.api_utils.general.valueLists`
+        """
+        return {"kwargs": kwargs, "accepted_values": {}}
+
+    def __extend_spec__(self, **kwargs):
+        valueLists_data = self.data.get("valueLists", {})
+        valueLists(
+            data=valueLists_data,
+            log=self.log,
+            prepend_path=["valueLists"],
+            **kwargs,
+        )
+        location_data = self.data.get("location", {})
+        mapFeatures_data_star_data_location(
+            data=location_data,
+            log=self.log,
+            prepend_path=["location"],
+            **kwargs,
+        )
+        # Validate that all lengths are the same
+        lengths = [len(v) for k, v in location_data.items() if k not in ["order", "timeValues"]] + [
+            len(v) for k, v in valueLists_data.items() if k not in ["order", "timeValues"]
+        ]
+        if len(set(lengths)) > 1:
+            self.__error__(msg=f"location and valueLists keys must have the same length.", path=[])
+
+
+@type_enforced.Enforcer
 class mapFeatures_data_star_data_location(ApiValidator):
     """
-    TODO: Review the path
     The map features data is located under the path **`mapFeatures.data.*.data.location`**.
     """
 
@@ -133,9 +174,8 @@ class mapFeatures_data_star_data_location(ApiValidator):
         Accepts all arbitrary values.
 
         The location lists you pass will be validated based on other selections in your API spec.
-
-        # TODO: Add docs here given the extended spec below.
         """
+        # TODO: Add docs here given the extended spec below.
         return {
             "kwargs": {},
             "accepted_values": {},
@@ -228,47 +268,6 @@ class mapFeatures_data_star_data_location(ApiValidator):
                         msg=f"`{key}` has an altitude that is greater than 10000 or less than 0",
                         path=[key],
                     )
-
-
-@type_enforced.Enforcer
-class mapFeatures_data_star_data(ApiValidator):
-    """
-    The map features data is located under the path **`mapFeatures.data.*.data`**.
-    """
-
-    @staticmethod
-    def spec(location: dict, valueLists: dict, **kwargs):
-        """
-        Arguments:
-
-        * **`location`**: `[dict]` &rarr; The location lists of the map feature.
-            * **See**: `cave_utils.api.mapFeatures.mapFeatures_data_star_data_location`
-        * **`valueLists`**: `[dict]` &rarr; The value lists of the map feature.
-            * **See**: `cave_utils.api_utils.general.valueLists`
-        """
-        return {"kwargs": kwargs, "accepted_values": {}}
-
-    def __extend_spec__(self, **kwargs):
-        valueLists_data = self.data.get("valueLists", {})
-        valueLists(
-            data=valueLists_data,
-            log=self.log,
-            prepend_path=["valueLists"],
-            **kwargs,
-        )
-        location_data = self.data.get("location", {})
-        mapFeatures_data_star_data_location(
-            data=location_data,
-            log=self.log,
-            prepend_path=["location"],
-            **kwargs,
-        )
-        # Validate that all lengths are the same
-        lengths = [len(v) for k, v in location_data.items() if k not in ["order", "timeValues"]] + [
-            len(v) for k, v in valueLists_data.items() if k not in ["order", "timeValues"]
-        ]
-        if len(set(lengths)) > 1:
-            self.__error__(msg=f"location and valueLists keys must have the same length.", path=[])
 
 
 @type_enforced.Enforcer

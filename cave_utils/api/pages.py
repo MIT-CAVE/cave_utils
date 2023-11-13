@@ -138,7 +138,7 @@ class pages_data_star_pageLayout(ApiValidator):
         [area chart]: https://en.wikipedia.org/wiki/Area_chart
         [bar chart]: https://en.wikipedia.org/wiki/Bar_chart
         [box plot chart]: https://en.wikipedia.org/wiki/Box_plot
-        [cumulative line chart]: TODO: Find an example of this
+        [cumulative line chart]: #
         [gauge chart]: https://echarts.apache.org/examples/en/index.html#chart-type-gauge
         [heatmap chart]: https://en.wikipedia.org/wiki/Heat_map
         [line chart]: https://en.wikipedia.org/wiki/Line_chart

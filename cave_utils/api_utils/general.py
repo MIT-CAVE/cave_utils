@@ -62,15 +62,15 @@ class props(ApiValidator):
                 * When **`type`** == `"head"`:
                     * `"column"`: A header for a column of related prop items
                     * `"row"`: A header for a row of related prop items
-                    * `"icon"`: TODO
-                    * `"iconRow"`: TODO
+                    * `"icon"`: Same as `"column"`, accompanied by a related icon.
+                    * `"iconRow"`: Same as `"row"`, accompanied by a related icon.
                 * When **`type`** == `"text"`:
                     * `"single"`: A single-line text input field
                     * `"textarea"`: A multi-line text input field
                 * When **`type`** == `"num"`:
                     * `"field"`: A numeric input field
                     * `"slider"`: A range of values along a bar, from which users may select a single value
-                    * `"icon"`: TODO
+                    * `"icon"`: A fixed numerical value presented alongside a corresponding icon.
                 * When **`type`** == `"selector"`:
                     * `"checkbox"`: Select one or more items from a set of checkboxes
                     * `"combobox"`: A dropdown with a search bar that allows users to filter options when typing
@@ -91,7 +91,7 @@ class props(ApiValidator):
         * **`apiCommand`**: `[str]` = `None` &rarr; The name of the API command to trigger.
             * **Note**: If `None`, no `apiCommand` is triggered.
         * **`apiCommandKeys`**: `[list]` = `None` &rarr;
-            * The top level API keys to pass to your `execute_command` if an `apiCommand` is provided.
+            * The root API keys to pass to your `execute_command` function if an `apiCommand` is provided.
             * **Note**: If `None`, all API keys are passed to your `execute_command`.
         * **`icon`**: `[str]` = `None` &rarr; The icon to use for the prop.
             * **Notes**:

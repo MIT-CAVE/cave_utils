@@ -163,15 +163,15 @@
 </span><span id="L-62"><a href="#L-62"><span class="linenos"> 62</span></a><span class="sd">                * When **`type`** == `&quot;head&quot;`:</span>
 </span><span id="L-63"><a href="#L-63"><span class="linenos"> 63</span></a><span class="sd">                    * `&quot;column&quot;`: A header for a column of related prop items</span>
 </span><span id="L-64"><a href="#L-64"><span class="linenos"> 64</span></a><span class="sd">                    * `&quot;row&quot;`: A header for a row of related prop items</span>
-</span><span id="L-65"><a href="#L-65"><span class="linenos"> 65</span></a><span class="sd">                    * `&quot;icon&quot;`: TODO</span>
-</span><span id="L-66"><a href="#L-66"><span class="linenos"> 66</span></a><span class="sd">                    * `&quot;iconRow&quot;`: TODO</span>
+</span><span id="L-65"><a href="#L-65"><span class="linenos"> 65</span></a><span class="sd">                    * `&quot;icon&quot;`: Same as `&quot;column&quot;`, accompanied by a related icon.</span>
+</span><span id="L-66"><a href="#L-66"><span class="linenos"> 66</span></a><span class="sd">                    * `&quot;iconRow&quot;`: Same as `&quot;row&quot;`, accompanied by a related icon.</span>
 </span><span id="L-67"><a href="#L-67"><span class="linenos"> 67</span></a><span class="sd">                * When **`type`** == `&quot;text&quot;`:</span>
 </span><span id="L-68"><a href="#L-68"><span class="linenos"> 68</span></a><span class="sd">                    * `&quot;single&quot;`: A single-line text input field</span>
 </span><span id="L-69"><a href="#L-69"><span class="linenos"> 69</span></a><span class="sd">                    * `&quot;textarea&quot;`: A multi-line text input field</span>
 </span><span id="L-70"><a href="#L-70"><span class="linenos"> 70</span></a><span class="sd">                * When **`type`** == `&quot;num&quot;`:</span>
 </span><span id="L-71"><a href="#L-71"><span class="linenos"> 71</span></a><span class="sd">                    * `&quot;field&quot;`: A numeric input field</span>
 </span><span id="L-72"><a href="#L-72"><span class="linenos"> 72</span></a><span class="sd">                    * `&quot;slider&quot;`: A range of values along a bar, from which users may select a single value</span>
-</span><span id="L-73"><a href="#L-73"><span class="linenos"> 73</span></a><span class="sd">                    * `&quot;icon&quot;`: TODO</span>
+</span><span id="L-73"><a href="#L-73"><span class="linenos"> 73</span></a><span class="sd">                    * `&quot;icon&quot;`: A fixed numerical value presented alongside a corresponding icon.</span>
 </span><span id="L-74"><a href="#L-74"><span class="linenos"> 74</span></a><span class="sd">                * When **`type`** == `&quot;selector&quot;`:</span>
 </span><span id="L-75"><a href="#L-75"><span class="linenos"> 75</span></a><span class="sd">                    * `&quot;checkbox&quot;`: Select one or more items from a set of checkboxes</span>
 </span><span id="L-76"><a href="#L-76"><span class="linenos"> 76</span></a><span class="sd">                    * `&quot;combobox&quot;`: A dropdown with a search bar that allows users to filter options when typing</span>
@@ -192,7 +192,7 @@
 </span><span id="L-91"><a href="#L-91"><span class="linenos"> 91</span></a><span class="sd">        * **`apiCommand`**: `[str]` = `None` &amp;rarr; The name of the API command to trigger.</span>
 </span><span id="L-92"><a href="#L-92"><span class="linenos"> 92</span></a><span class="sd">            * **Note**: If `None`, no `apiCommand` is triggered.</span>
 </span><span id="L-93"><a href="#L-93"><span class="linenos"> 93</span></a><span class="sd">        * **`apiCommandKeys`**: `[list]` = `None` &amp;rarr;</span>
-</span><span id="L-94"><a href="#L-94"><span class="linenos"> 94</span></a><span class="sd">            * The top level API keys to pass to your `execute_command` if an `apiCommand` is provided.</span>
+</span><span id="L-94"><a href="#L-94"><span class="linenos"> 94</span></a><span class="sd">            * The root API keys to pass to your `execute_command` function if an `apiCommand` is provided.</span>
 </span><span id="L-95"><a href="#L-95"><span class="linenos"> 95</span></a><span class="sd">            * **Note**: If `None`, all API keys are passed to your `execute_command`.</span>
 </span><span id="L-96"><a href="#L-96"><span class="linenos"> 96</span></a><span class="sd">        * **`icon`**: `[str]` = `None` &amp;rarr; The icon to use for the prop.</span>
 </span><span id="L-97"><a href="#L-97"><span class="linenos"> 97</span></a><span class="sd">            * **Notes**:</span>
@@ -738,15 +738,15 @@
 </span><span id="props-63"><a href="#props-63"><span class="linenos"> 63</span></a><span class="sd">                * When **`type`** == `&quot;head&quot;`:</span>
 </span><span id="props-64"><a href="#props-64"><span class="linenos"> 64</span></a><span class="sd">                    * `&quot;column&quot;`: A header for a column of related prop items</span>
 </span><span id="props-65"><a href="#props-65"><span class="linenos"> 65</span></a><span class="sd">                    * `&quot;row&quot;`: A header for a row of related prop items</span>
-</span><span id="props-66"><a href="#props-66"><span class="linenos"> 66</span></a><span class="sd">                    * `&quot;icon&quot;`: TODO</span>
-</span><span id="props-67"><a href="#props-67"><span class="linenos"> 67</span></a><span class="sd">                    * `&quot;iconRow&quot;`: TODO</span>
+</span><span id="props-66"><a href="#props-66"><span class="linenos"> 66</span></a><span class="sd">                    * `&quot;icon&quot;`: Same as `&quot;column&quot;`, accompanied by a related icon.</span>
+</span><span id="props-67"><a href="#props-67"><span class="linenos"> 67</span></a><span class="sd">                    * `&quot;iconRow&quot;`: Same as `&quot;row&quot;`, accompanied by a related icon.</span>
 </span><span id="props-68"><a href="#props-68"><span class="linenos"> 68</span></a><span class="sd">                * When **`type`** == `&quot;text&quot;`:</span>
 </span><span id="props-69"><a href="#props-69"><span class="linenos"> 69</span></a><span class="sd">                    * `&quot;single&quot;`: A single-line text input field</span>
 </span><span id="props-70"><a href="#props-70"><span class="linenos"> 70</span></a><span class="sd">                    * `&quot;textarea&quot;`: A multi-line text input field</span>
 </span><span id="props-71"><a href="#props-71"><span class="linenos"> 71</span></a><span class="sd">                * When **`type`** == `&quot;num&quot;`:</span>
 </span><span id="props-72"><a href="#props-72"><span class="linenos"> 72</span></a><span class="sd">                    * `&quot;field&quot;`: A numeric input field</span>
 </span><span id="props-73"><a href="#props-73"><span class="linenos"> 73</span></a><span class="sd">                    * `&quot;slider&quot;`: A range of values along a bar, from which users may select a single value</span>
-</span><span id="props-74"><a href="#props-74"><span class="linenos"> 74</span></a><span class="sd">                    * `&quot;icon&quot;`: TODO</span>
+</span><span id="props-74"><a href="#props-74"><span class="linenos"> 74</span></a><span class="sd">                    * `&quot;icon&quot;`: A fixed numerical value presented alongside a corresponding icon.</span>
 </span><span id="props-75"><a href="#props-75"><span class="linenos"> 75</span></a><span class="sd">                * When **`type`** == `&quot;selector&quot;`:</span>
 </span><span id="props-76"><a href="#props-76"><span class="linenos"> 76</span></a><span class="sd">                    * `&quot;checkbox&quot;`: Select one or more items from a set of checkboxes</span>
 </span><span id="props-77"><a href="#props-77"><span class="linenos"> 77</span></a><span class="sd">                    * `&quot;combobox&quot;`: A dropdown with a search bar that allows users to filter options when typing</span>
@@ -767,7 +767,7 @@
 </span><span id="props-92"><a href="#props-92"><span class="linenos"> 92</span></a><span class="sd">        * **`apiCommand`**: `[str]` = `None` &amp;rarr; The name of the API command to trigger.</span>
 </span><span id="props-93"><a href="#props-93"><span class="linenos"> 93</span></a><span class="sd">            * **Note**: If `None`, no `apiCommand` is triggered.</span>
 </span><span id="props-94"><a href="#props-94"><span class="linenos"> 94</span></a><span class="sd">        * **`apiCommandKeys`**: `[list]` = `None` &amp;rarr;</span>
-</span><span id="props-95"><a href="#props-95"><span class="linenos"> 95</span></a><span class="sd">            * The top level API keys to pass to your `execute_command` if an `apiCommand` is provided.</span>
+</span><span id="props-95"><a href="#props-95"><span class="linenos"> 95</span></a><span class="sd">            * The root API keys to pass to your `execute_command` function if an `apiCommand` is provided.</span>
 </span><span id="props-96"><a href="#props-96"><span class="linenos"> 96</span></a><span class="sd">            * **Note**: If `None`, all API keys are passed to your `execute_command`.</span>
 </span><span id="props-97"><a href="#props-97"><span class="linenos"> 97</span></a><span class="sd">        * **`icon`**: `[str]` = `None` &amp;rarr; The icon to use for the prop.</span>
 </span><span id="props-98"><a href="#props-98"><span class="linenos"> 98</span></a><span class="sd">            * **Notes**:</span>
@@ -1069,15 +1069,15 @@
 </span><span id="props.spec-63"><a href="#props.spec-63"><span class="linenos"> 63</span></a><span class="sd">                * When **`type`** == `&quot;head&quot;`:</span>
 </span><span id="props.spec-64"><a href="#props.spec-64"><span class="linenos"> 64</span></a><span class="sd">                    * `&quot;column&quot;`: A header for a column of related prop items</span>
 </span><span id="props.spec-65"><a href="#props.spec-65"><span class="linenos"> 65</span></a><span class="sd">                    * `&quot;row&quot;`: A header for a row of related prop items</span>
-</span><span id="props.spec-66"><a href="#props.spec-66"><span class="linenos"> 66</span></a><span class="sd">                    * `&quot;icon&quot;`: TODO</span>
-</span><span id="props.spec-67"><a href="#props.spec-67"><span class="linenos"> 67</span></a><span class="sd">                    * `&quot;iconRow&quot;`: TODO</span>
+</span><span id="props.spec-66"><a href="#props.spec-66"><span class="linenos"> 66</span></a><span class="sd">                    * `&quot;icon&quot;`: Same as `&quot;column&quot;`, accompanied by a related icon.</span>
+</span><span id="props.spec-67"><a href="#props.spec-67"><span class="linenos"> 67</span></a><span class="sd">                    * `&quot;iconRow&quot;`: Same as `&quot;row&quot;`, accompanied by a related icon.</span>
 </span><span id="props.spec-68"><a href="#props.spec-68"><span class="linenos"> 68</span></a><span class="sd">                * When **`type`** == `&quot;text&quot;`:</span>
 </span><span id="props.spec-69"><a href="#props.spec-69"><span class="linenos"> 69</span></a><span class="sd">                    * `&quot;single&quot;`: A single-line text input field</span>
 </span><span id="props.spec-70"><a href="#props.spec-70"><span class="linenos"> 70</span></a><span class="sd">                    * `&quot;textarea&quot;`: A multi-line text input field</span>
 </span><span id="props.spec-71"><a href="#props.spec-71"><span class="linenos"> 71</span></a><span class="sd">                * When **`type`** == `&quot;num&quot;`:</span>
 </span><span id="props.spec-72"><a href="#props.spec-72"><span class="linenos"> 72</span></a><span class="sd">                    * `&quot;field&quot;`: A numeric input field</span>
 </span><span id="props.spec-73"><a href="#props.spec-73"><span class="linenos"> 73</span></a><span class="sd">                    * `&quot;slider&quot;`: A range of values along a bar, from which users may select a single value</span>
-</span><span id="props.spec-74"><a href="#props.spec-74"><span class="linenos"> 74</span></a><span class="sd">                    * `&quot;icon&quot;`: TODO</span>
+</span><span id="props.spec-74"><a href="#props.spec-74"><span class="linenos"> 74</span></a><span class="sd">                    * `&quot;icon&quot;`: A fixed numerical value presented alongside a corresponding icon.</span>
 </span><span id="props.spec-75"><a href="#props.spec-75"><span class="linenos"> 75</span></a><span class="sd">                * When **`type`** == `&quot;selector&quot;`:</span>
 </span><span id="props.spec-76"><a href="#props.spec-76"><span class="linenos"> 76</span></a><span class="sd">                    * `&quot;checkbox&quot;`: Select one or more items from a set of checkboxes</span>
 </span><span id="props.spec-77"><a href="#props.spec-77"><span class="linenos"> 77</span></a><span class="sd">                    * `&quot;combobox&quot;`: A dropdown with a search bar that allows users to filter options when typing</span>
@@ -1098,7 +1098,7 @@
 </span><span id="props.spec-92"><a href="#props.spec-92"><span class="linenos"> 92</span></a><span class="sd">        * **`apiCommand`**: `[str]` = `None` &amp;rarr; The name of the API command to trigger.</span>
 </span><span id="props.spec-93"><a href="#props.spec-93"><span class="linenos"> 93</span></a><span class="sd">            * **Note**: If `None`, no `apiCommand` is triggered.</span>
 </span><span id="props.spec-94"><a href="#props.spec-94"><span class="linenos"> 94</span></a><span class="sd">        * **`apiCommandKeys`**: `[list]` = `None` &amp;rarr;</span>
-</span><span id="props.spec-95"><a href="#props.spec-95"><span class="linenos"> 95</span></a><span class="sd">            * The top level API keys to pass to your `execute_command` if an `apiCommand` is provided.</span>
+</span><span id="props.spec-95"><a href="#props.spec-95"><span class="linenos"> 95</span></a><span class="sd">            * The root API keys to pass to your `execute_command` function if an `apiCommand` is provided.</span>
 </span><span id="props.spec-96"><a href="#props.spec-96"><span class="linenos"> 96</span></a><span class="sd">            * **Note**: If `None`, all API keys are passed to your `execute_command`.</span>
 </span><span id="props.spec-97"><a href="#props.spec-97"><span class="linenos"> 97</span></a><span class="sd">        * **`icon`**: `[str]` = `None` &amp;rarr; The icon to use for the prop.</span>
 </span><span id="props.spec-98"><a href="#props.spec-98"><span class="linenos"> 98</span></a><span class="sd">            * **Notes**:</span>
@@ -1348,8 +1348,8 @@
 <ul>
 <li><code>"column"</code>: A header for a column of related prop items</li>
 <li><code>"row"</code>: A header for a row of related prop items</li>
-<li><code>"icon"</code>: TODO</li>
-<li><code>"iconRow"</code>: TODO</li>
+<li><code>"icon"</code>: Same as <code>"column"</code>, accompanied by a related icon.</li>
+<li><code>"iconRow"</code>: Same as <code>"row"</code>, accompanied by a related icon.</li>
 </ul></li>
 <li>When <strong><code>type</code></strong> == <code>"text"</code>:
 <ul>
@@ -1360,7 +1360,7 @@
 <ul>
 <li><code>"field"</code>: A numeric input field</li>
 <li><code>"slider"</code>: A range of values along a bar, from which users may select a single value</li>
-<li><code>"icon"</code>: TODO</li>
+<li><code>"icon"</code>: A fixed numerical value presented alongside a corresponding icon.</li>
 </ul></li>
 <li>When <strong><code>type</code></strong> == <code>"selector"</code>:
 <ul>
@@ -1393,7 +1393,7 @@
 </ul></li>
 <li><strong><code>apiCommandKeys</code></strong>: <code>[list]</code> = <code>None</code> &rarr;
 <ul>
-<li>The top level API keys to pass to your <code>execute_command</code> if an <code>apiCommand</code> is provided.</li>
+<li>The root API keys to pass to your <code>execute_command</code> function if an <code>apiCommand</code> is provided.</li>
 <li><strong>Note</strong>: If <code>None</code>, all API keys are passed to your <code>execute_command</code>.</li>
 </ul></li>
 <li><strong><code>icon</code></strong>: <code>[str]</code> = <code>None</code> &rarr; The icon to use for the prop.

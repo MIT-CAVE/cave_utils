@@ -76,69 +76,6 @@ class settings(ApiValidator):
 
 
 @type_enforced.Enforcer
-class settings_demo(ApiValidator):
-    """
-    The demo settings are located under the path **`settings.demo`**.
-    """
-
-    @staticmethod
-    def spec(scrollSpeed: [int, float] = 1, displayTime: int = 5, **kwargs):
-        """
-        Arguments:
-
-        TODO: Review this definition. Before, we had:
-        A float value representing degrees of rotation per frame (degrees per 13 milliseconds). This key only applies to map views
-
-        * **`scrollSpeed`**: `[int, float]` = `1` &rarr; The speed at which the demo text will scroll.
-        * **`displayTime`**: `[int]` = `5` &rarr; The time duration in seconds to display the demo text.
-        """
-        return {"kwargs": kwargs, "accepted_values": {}}
-
-
-@type_enforced.Enforcer
-class settings_sync(ApiValidator):
-    """
-    The sync settings are located under the path **`settings.sync`**.
-    """
-
-    @staticmethod
-    def spec(name: str, showToggle: bool, value: bool, data: dict, **kwargs):
-        """
-        Arguments:
-
-        * **`name`**: `[str]` &rarr; The name of the sync setting.
-        * **`showToggle`**: `[bool]` &rarr; If `True`, the toggle will be displayed.
-        * **`value`**: `[bool]` &rarr; The initial value of the toggle.
-        * **`value`**: `[dict]` &rarr; The data to sync with the server.
-        """
-        return {"kwargs": kwargs, "accepted_values": {}}
-
-    # def __extend_spec__(self, **kwargs):
-    #     root_data = kwargs.get("root_data", {})
-    #     for key, path in self.data.get("data", {}).items():
-    #         if not pamda.hasPath(path, root_data):
-    #             self.__warn__(f"Path {path} does not exist.", prepend_path=["data", key])
-
-
-@type_enforced.Enforcer
-class settings_time(ApiValidator):
-    """
-    The time settings are located under the path **`settings.time`**.
-    """
-
-    @staticmethod
-    def spec(timeLength: int, timeUnits: str, **kwargs):
-        """
-        Arguments:
-
-        * **`timeLength`**: `[int]` &rarr; The amount of time values to display.
-        * **`timeUnits`**: `[str]` &rarr; The units of time to display.
-            * **Example**: `"Decade"`.
-        """
-        return {"kwargs": kwargs, "accepted_values": {}}
-
-
-@type_enforced.Enforcer
 class settings_defaults(ApiValidator):
     """
     The defaults settings are located under the path **`settings.defaults`**.
@@ -255,3 +192,65 @@ class settings_defaults(ApiValidator):
                 "legendNotationDisplay": ["short", "long", "e", "e+", "E", "E+", "x10^", "x10^+"],
             },
         }
+
+
+@type_enforced.Enforcer
+class settings_demo(ApiValidator):
+    """
+    The demo settings are located under the path **`settings.demo`**.
+    """
+
+    @staticmethod
+    def spec(scrollSpeed: [int, float] = 1, displayTime: int = 5, **kwargs):
+        """
+        Arguments:
+
+        * **`scrollSpeed`**: `[int, float]` = `1` &rarr;
+            * The speed at which the demo text will scroll, measured in degrees of rotation per frame (degrees per 13 milliseconds).
+            * **Note**: This key only applies to `"map"` charts.
+        * **`displayTime`**: `[int]` = `5` &rarr; The time duration in seconds to display the demo text.
+        """
+        return {"kwargs": kwargs, "accepted_values": {}}
+
+
+@type_enforced.Enforcer
+class settings_sync(ApiValidator):
+    """
+    The sync settings are located under the path **`settings.sync`**.
+    """
+
+    @staticmethod
+    def spec(name: str, showToggle: bool, value: bool, data: dict, **kwargs):
+        """
+        Arguments:
+
+        * **`name`**: `[str]` &rarr; The name of the sync setting.
+        * **`showToggle`**: `[bool]` &rarr; If `True`, the toggle will be displayed.
+        * **`value`**: `[bool]` &rarr; The initial value of the toggle.
+        * **`value`**: `[dict]` &rarr; The data to sync with the server.
+        """
+        return {"kwargs": kwargs, "accepted_values": {}}
+
+    # def __extend_spec__(self, **kwargs):
+    #     root_data = kwargs.get("root_data", {})
+    #     for key, path in self.data.get("data", {}).items():
+    #         if not pamda.hasPath(path, root_data):
+    #             self.__warn__(f"Path {path} does not exist.", prepend_path=["data", key])
+
+
+@type_enforced.Enforcer
+class settings_time(ApiValidator):
+    """
+    The time settings are located under the path **`settings.time`**.
+    """
+
+    @staticmethod
+    def spec(timeLength: int, timeUnits: str, **kwargs):
+        """
+        Arguments:
+
+        * **`timeLength`**: `[int]` &rarr; The amount of time values to display.
+        * **`timeUnits`**: `[str]` &rarr; The units of time to display.
+            * **Example**: `"Decade"`.
+        """
+        return {"kwargs": kwargs, "accepted_values": {}}

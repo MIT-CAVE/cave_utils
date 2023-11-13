@@ -82,23 +82,16 @@
 </span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a><span class="sd">        Util to validate your session_data against the API spec.</span>
 </span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>
-</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a><span class="sd">        Required Arguments:</span>
+</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a><span class="sd">        Arguments:</span>
 </span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a>
-</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a><span class="sd">        - `session_data`:</span>
-</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a><span class="sd">            - Type: dict</span>
-</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a><span class="sd">            - What: The data to validate.</span>
-</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a><span class="sd">            - Note: This should be the data you are sending to the server.</span>
-</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a>
-</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a><span class="sd">        Optional Arguments:</span>
-</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>
-</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a><span class="sd">        - `ignore_keys`:</span>
-</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a><span class="sd">            - Type: list</span>
-</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a><span class="sd">            - What: Keys to ignore when validating.</span>
-</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a><span class="sd">            - Note: Any keys specified here will be not be validated if encountered in the data at any level.</span>
-</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">session_data</span> <span class="o">=</span> <span class="n">session_data</span>
-</span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="n">LogObject</span><span class="p">()</span>
-</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a>        <span class="n">Root</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">session_data</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">,</span> <span class="n">prepend_path</span><span class="o">=</span><span class="p">[],</span> <span class="n">ignore_keys</span><span class="o">=</span><span class="nb">set</span><span class="p">(</span><span class="n">ignore_keys</span><span class="p">))</span>
+</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a><span class="sd">        * **`session_data`**: `[dict]` &amp;rarr; The data to validate.</span>
+</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a><span class="sd">            * **Note**: This should be the data you are sending to the server.</span>
+</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a><span class="sd">        * **`ignore_keys`**: `[list]` = `None` &amp;rarr; Keys to ignore when validating.</span>
+</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a><span class="sd">            * **Note**: Any keys specified here will be not be validated if encountered in the data at any level.</span>
+</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">session_data</span> <span class="o">=</span> <span class="n">session_data</span>
+</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="n">LogObject</span><span class="p">()</span>
+</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a>        <span class="n">Root</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">session_data</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">,</span> <span class="n">prepend_path</span><span class="o">=</span><span class="p">[],</span> <span class="n">ignore_keys</span><span class="o">=</span><span class="nb">set</span><span class="p">(</span><span class="n">ignore_keys</span><span class="p">))</span>
 </span></pre></div>
 
 
@@ -121,23 +114,16 @@
 </span><span id="Validator-12"><a href="#Validator-12"><span class="linenos">12</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="Validator-13"><a href="#Validator-13"><span class="linenos">13</span></a><span class="sd">        Util to validate your session_data against the API spec.</span>
 </span><span id="Validator-14"><a href="#Validator-14"><span class="linenos">14</span></a>
-</span><span id="Validator-15"><a href="#Validator-15"><span class="linenos">15</span></a><span class="sd">        Required Arguments:</span>
+</span><span id="Validator-15"><a href="#Validator-15"><span class="linenos">15</span></a><span class="sd">        Arguments:</span>
 </span><span id="Validator-16"><a href="#Validator-16"><span class="linenos">16</span></a>
-</span><span id="Validator-17"><a href="#Validator-17"><span class="linenos">17</span></a><span class="sd">        - `session_data`:</span>
-</span><span id="Validator-18"><a href="#Validator-18"><span class="linenos">18</span></a><span class="sd">            - Type: dict</span>
-</span><span id="Validator-19"><a href="#Validator-19"><span class="linenos">19</span></a><span class="sd">            - What: The data to validate.</span>
-</span><span id="Validator-20"><a href="#Validator-20"><span class="linenos">20</span></a><span class="sd">            - Note: This should be the data you are sending to the server.</span>
-</span><span id="Validator-21"><a href="#Validator-21"><span class="linenos">21</span></a>
-</span><span id="Validator-22"><a href="#Validator-22"><span class="linenos">22</span></a><span class="sd">        Optional Arguments:</span>
-</span><span id="Validator-23"><a href="#Validator-23"><span class="linenos">23</span></a>
-</span><span id="Validator-24"><a href="#Validator-24"><span class="linenos">24</span></a><span class="sd">        - `ignore_keys`:</span>
-</span><span id="Validator-25"><a href="#Validator-25"><span class="linenos">25</span></a><span class="sd">            - Type: list</span>
-</span><span id="Validator-26"><a href="#Validator-26"><span class="linenos">26</span></a><span class="sd">            - What: Keys to ignore when validating.</span>
-</span><span id="Validator-27"><a href="#Validator-27"><span class="linenos">27</span></a><span class="sd">            - Note: Any keys specified here will be not be validated if encountered in the data at any level.</span>
-</span><span id="Validator-28"><a href="#Validator-28"><span class="linenos">28</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Validator-29"><a href="#Validator-29"><span class="linenos">29</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">session_data</span> <span class="o">=</span> <span class="n">session_data</span>
-</span><span id="Validator-30"><a href="#Validator-30"><span class="linenos">30</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="n">LogObject</span><span class="p">()</span>
-</span><span id="Validator-31"><a href="#Validator-31"><span class="linenos">31</span></a>        <span class="n">Root</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">session_data</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">,</span> <span class="n">prepend_path</span><span class="o">=</span><span class="p">[],</span> <span class="n">ignore_keys</span><span class="o">=</span><span class="nb">set</span><span class="p">(</span><span class="n">ignore_keys</span><span class="p">))</span>
+</span><span id="Validator-17"><a href="#Validator-17"><span class="linenos">17</span></a><span class="sd">        * **`session_data`**: `[dict]` &amp;rarr; The data to validate.</span>
+</span><span id="Validator-18"><a href="#Validator-18"><span class="linenos">18</span></a><span class="sd">            * **Note**: This should be the data you are sending to the server.</span>
+</span><span id="Validator-19"><a href="#Validator-19"><span class="linenos">19</span></a><span class="sd">        * **`ignore_keys`**: `[list]` = `None` &amp;rarr; Keys to ignore when validating.</span>
+</span><span id="Validator-20"><a href="#Validator-20"><span class="linenos">20</span></a><span class="sd">            * **Note**: Any keys specified here will be not be validated if encountered in the data at any level.</span>
+</span><span id="Validator-21"><a href="#Validator-21"><span class="linenos">21</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Validator-22"><a href="#Validator-22"><span class="linenos">22</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">session_data</span> <span class="o">=</span> <span class="n">session_data</span>
+</span><span id="Validator-23"><a href="#Validator-23"><span class="linenos">23</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="n">LogObject</span><span class="p">()</span>
+</span><span id="Validator-24"><a href="#Validator-24"><span class="linenos">24</span></a>        <span class="n">Root</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">session_data</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">,</span> <span class="n">prepend_path</span><span class="o">=</span><span class="p">[],</span> <span class="n">ignore_keys</span><span class="o">=</span><span class="nb">set</span><span class="p">(</span><span class="n">ignore_keys</span><span class="p">))</span>
 </span></pre></div>
 
 
@@ -157,47 +143,31 @@
 </span><span id="Validator.__init__-12"><a href="#Validator.__init__-12"><span class="linenos">12</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="Validator.__init__-13"><a href="#Validator.__init__-13"><span class="linenos">13</span></a><span class="sd">        Util to validate your session_data against the API spec.</span>
 </span><span id="Validator.__init__-14"><a href="#Validator.__init__-14"><span class="linenos">14</span></a>
-</span><span id="Validator.__init__-15"><a href="#Validator.__init__-15"><span class="linenos">15</span></a><span class="sd">        Required Arguments:</span>
+</span><span id="Validator.__init__-15"><a href="#Validator.__init__-15"><span class="linenos">15</span></a><span class="sd">        Arguments:</span>
 </span><span id="Validator.__init__-16"><a href="#Validator.__init__-16"><span class="linenos">16</span></a>
-</span><span id="Validator.__init__-17"><a href="#Validator.__init__-17"><span class="linenos">17</span></a><span class="sd">        - `session_data`:</span>
-</span><span id="Validator.__init__-18"><a href="#Validator.__init__-18"><span class="linenos">18</span></a><span class="sd">            - Type: dict</span>
-</span><span id="Validator.__init__-19"><a href="#Validator.__init__-19"><span class="linenos">19</span></a><span class="sd">            - What: The data to validate.</span>
-</span><span id="Validator.__init__-20"><a href="#Validator.__init__-20"><span class="linenos">20</span></a><span class="sd">            - Note: This should be the data you are sending to the server.</span>
-</span><span id="Validator.__init__-21"><a href="#Validator.__init__-21"><span class="linenos">21</span></a>
-</span><span id="Validator.__init__-22"><a href="#Validator.__init__-22"><span class="linenos">22</span></a><span class="sd">        Optional Arguments:</span>
-</span><span id="Validator.__init__-23"><a href="#Validator.__init__-23"><span class="linenos">23</span></a>
-</span><span id="Validator.__init__-24"><a href="#Validator.__init__-24"><span class="linenos">24</span></a><span class="sd">        - `ignore_keys`:</span>
-</span><span id="Validator.__init__-25"><a href="#Validator.__init__-25"><span class="linenos">25</span></a><span class="sd">            - Type: list</span>
-</span><span id="Validator.__init__-26"><a href="#Validator.__init__-26"><span class="linenos">26</span></a><span class="sd">            - What: Keys to ignore when validating.</span>
-</span><span id="Validator.__init__-27"><a href="#Validator.__init__-27"><span class="linenos">27</span></a><span class="sd">            - Note: Any keys specified here will be not be validated if encountered in the data at any level.</span>
-</span><span id="Validator.__init__-28"><a href="#Validator.__init__-28"><span class="linenos">28</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Validator.__init__-29"><a href="#Validator.__init__-29"><span class="linenos">29</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">session_data</span> <span class="o">=</span> <span class="n">session_data</span>
-</span><span id="Validator.__init__-30"><a href="#Validator.__init__-30"><span class="linenos">30</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="n">LogObject</span><span class="p">()</span>
-</span><span id="Validator.__init__-31"><a href="#Validator.__init__-31"><span class="linenos">31</span></a>        <span class="n">Root</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">session_data</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">,</span> <span class="n">prepend_path</span><span class="o">=</span><span class="p">[],</span> <span class="n">ignore_keys</span><span class="o">=</span><span class="nb">set</span><span class="p">(</span><span class="n">ignore_keys</span><span class="p">))</span>
+</span><span id="Validator.__init__-17"><a href="#Validator.__init__-17"><span class="linenos">17</span></a><span class="sd">        * **`session_data`**: `[dict]` &amp;rarr; The data to validate.</span>
+</span><span id="Validator.__init__-18"><a href="#Validator.__init__-18"><span class="linenos">18</span></a><span class="sd">            * **Note**: This should be the data you are sending to the server.</span>
+</span><span id="Validator.__init__-19"><a href="#Validator.__init__-19"><span class="linenos">19</span></a><span class="sd">        * **`ignore_keys`**: `[list]` = `None` &amp;rarr; Keys to ignore when validating.</span>
+</span><span id="Validator.__init__-20"><a href="#Validator.__init__-20"><span class="linenos">20</span></a><span class="sd">            * **Note**: Any keys specified here will be not be validated if encountered in the data at any level.</span>
+</span><span id="Validator.__init__-21"><a href="#Validator.__init__-21"><span class="linenos">21</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Validator.__init__-22"><a href="#Validator.__init__-22"><span class="linenos">22</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">session_data</span> <span class="o">=</span> <span class="n">session_data</span>
+</span><span id="Validator.__init__-23"><a href="#Validator.__init__-23"><span class="linenos">23</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="n">LogObject</span><span class="p">()</span>
+</span><span id="Validator.__init__-24"><a href="#Validator.__init__-24"><span class="linenos">24</span></a>        <span class="n">Root</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">session_data</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">,</span> <span class="n">prepend_path</span><span class="o">=</span><span class="p">[],</span> <span class="n">ignore_keys</span><span class="o">=</span><span class="nb">set</span><span class="p">(</span><span class="n">ignore_keys</span><span class="p">))</span>
 </span></pre></div>
 
 
             <div class="docstring"><p>Util to validate your session_data against the API spec.</p>
 
-<p>Required Arguments:</p>
+<p>Arguments:</p>
 
 <ul>
-<li><code><a href="#Validator.session_data">session_data</a></code>:
+<li><strong><code><a href="#Validator.session_data">session_data</a></code></strong>: <code>[dict]</code> &rarr; The data to validate.
 <ul>
-<li>Type: dict</li>
-<li>What: The data to validate.</li>
-<li>Note: This should be the data you are sending to the server.</li>
+<li><strong>Note</strong>: This should be the data you are sending to the server.</li>
 </ul></li>
-</ul>
-
-<p>Optional Arguments:</p>
-
+<li><strong><code>ignore_keys</code></strong>: <code>[list]</code> = <code>None</code> &rarr; Keys to ignore when validating.
 <ul>
-<li><code>ignore_keys</code>:
-<ul>
-<li>Type: list</li>
-<li>What: Keys to ignore when validating.</li>
-<li>Note: Any keys specified here will be not be validated if encountered in the data at any level.</li>
+<li><strong>Note</strong>: Any keys specified here will be not be validated if encountered in the data at any level.</li>
 </ul></li>
 </ul>
 </div>
