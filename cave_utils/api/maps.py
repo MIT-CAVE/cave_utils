@@ -73,7 +73,7 @@ class maps_additionalMapStyles_star(ApiValidator):
                 * Mapbox: https://docs.mapbox.com/api/maps/styles/
                 * Carto: https://github.com/CartoDB/basemap-styles/blob/master/docs/basemap_styles.json
                 * Raster: https://docs.mapbox.com/mapbox-gl-js/example/map-tiles/
-        * **`fog`**: `[dict]` = `"md/MdMap"` &rarr; The fog to show in the map selection menu.
+        * **`fog`**: `[dict]` = `None` &rarr; The fog to show in the map selection menu.
             * **Note**: `fog` is only validated for its type (`dict`).
             * **See**: https://docs.mapbox.com/mapbox-gl-js/api/map/#map#setfog
         """
