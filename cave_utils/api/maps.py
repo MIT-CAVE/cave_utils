@@ -56,7 +56,7 @@ class maps_additionalMapStyles_star(ApiValidator):
     def spec(
         name: str,
         spec: [dict, str],
-        fog: [dict, None]=None,
+        fog: [dict, None] = None,
         icon: str = "md/MdMap",
         **kwargs,
     ):

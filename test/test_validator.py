@@ -563,7 +563,7 @@ example = {
                         "mapId": "map1",
                         "showToolbar": False,
                         "maximized": True,
-                        },
+                    },
                     {
                         "variant": "bar",
                         "groupingLevel": ["size"],
@@ -571,7 +571,7 @@ example = {
                         "lockedLayout": True,
                         "statAggregation": "sum",
                         "groupedOutputDataId": "locationGroup",
-                        "statId":"numericExampleCalculationStat",
+                        "statId": "numericExampleCalculationStat",
                     },
                 ],
                 "lockedLayout": False,
@@ -582,7 +582,7 @@ example = {
                         "variant": "bar",
                         "statAggregation": "mean",
                         "groupedOutputDataId": "locationGroup",
-                        "statId":"numericStatExampleB",
+                        "statId": "numericStatExampleB",
                     },
                     {
                         "type": "globalOutput",
@@ -599,13 +599,13 @@ example = {
                         "groupingId": ["sku"],
                         "statAggregation": "mean",
                         "groupedOutputDataId": "locationGroup",
-                        "statId":"numericExampleCalculationStat",
+                        "statId": "numericExampleCalculationStat",
                     },
                     {
                         "variant": "cumulative_line",
                         "statAggregation": "sum",
                         "groupedOutputDataId": "locationGroup",
-                        "statId":"numericStatExampleB",
+                        "statId": "numericStatExampleB",
                         "groupingId": ["location", "sku"],
                         "groupingLevel": ["state", "sku"],
                     },
@@ -626,9 +626,7 @@ example = {
                             "type": "raster",
                             # EG: See a list of raster sources based on OSM here:
                             # https://wiki.openstreetmap.org/wiki/Raster_tile_providers
-                            "tiles": [
-                                "https://tile.openstreetmap.org/{z}/{x}/{y}.png"
-                            ],
+                            "tiles": ["https://tile.openstreetmap.org/{z}/{x}/{y}.png"],
                             "tileSize": 256,
                             "attribution": "Map tiles by <a target='_top' rel='noopener' href='https://osmfoundation.org/'>OpenStreetMap</a>, under <a target='_top' rel='noopener' href='https://osmfoundation.org/copyright'>Open Database License</a>.",
                         },
@@ -777,8 +775,18 @@ example = {
                                     },
                                 },
                                 "sizeByOptions": {
-                                    "numericPropExampleA": {"min": 0, "max": 80, "startSize": "30px", "endSize": "45px"},
-                                    "numericPropExampleB": {"min": 0, "max": 50, "startSize": "15px", "endSize": "30px"},
+                                    "numericPropExampleA": {
+                                        "min": 0,
+                                        "max": 80,
+                                        "startSize": "30px",
+                                        "endSize": "45px",
+                                    },
+                                    "numericPropExampleB": {
+                                        "min": 0,
+                                        "max": 50,
+                                        "startSize": "15px",
+                                        "endSize": "30px",
+                                    },
                                 },
                                 "icon": "fa6/FaIgloo",
                             },
@@ -787,8 +795,18 @@ example = {
                                 "sizeBy": "numericPropExampleB",
                                 "value": True,
                                 "sizeByOptions": {
-                                    "numericPropExampleA": {"min": 0, "max": 50, "startSize": "15px", "endSize": "30px"},
-                                    "numericPropExampleB": {"min": 0, "max": 40, "startSize": "5px", "endSize": "15px"},
+                                    "numericPropExampleA": {
+                                        "min": 0,
+                                        "max": 50,
+                                        "startSize": "15px",
+                                        "endSize": "30px",
+                                    },
+                                    "numericPropExampleB": {
+                                        "min": 0,
+                                        "max": 40,
+                                        "startSize": "5px",
+                                        "endSize": "15px",
+                                    },
                                 },
                                 "colorByOptions": {
                                     "selectorPropForColor": {
@@ -848,8 +866,18 @@ example = {
                                     },
                                 },
                                 "sizeByOptions": {
-                                    "numericPropExampleA": {"min": 0, "max": 100, "startSize": "15px", "endSize": "30px"},
-                                    "numericPropExampleB": {"min": 0, "max": 250, "startSize": "5px", "endSize": "15px"},
+                                    "numericPropExampleA": {
+                                        "min": 0,
+                                        "max": 100,
+                                        "startSize": "15px",
+                                        "endSize": "30px",
+                                    },
+                                    "numericPropExampleB": {
+                                        "min": 0,
+                                        "max": 250,
+                                        "startSize": "5px",
+                                        "endSize": "15px",
+                                    },
                                 },
                                 "icon": "bs/BsBuilding",
                             },
@@ -881,8 +909,18 @@ example = {
                                 },
                                 "lineBy": "dotted",
                                 "sizeByOptions": {
-                                    "numericPropExampleA": {"min": 0, "max": 50, "startSize": "15px", "endSize": "30px"},
-                                    "numericPropExampleB": {"min": 0, "max": 40, "startSize": "5px", "endSize": "15px"},
+                                    "numericPropExampleA": {
+                                        "min": 0,
+                                        "max": 50,
+                                        "startSize": "15px",
+                                        "endSize": "30px",
+                                    },
+                                    "numericPropExampleB": {
+                                        "min": 0,
+                                        "max": 40,
+                                        "startSize": "5px",
+                                        "endSize": "15px",
+                                    },
                                 },
                             },
                             "state": {
@@ -989,8 +1027,18 @@ example = {
                                     },
                                 },
                                 "sizeByOptions": {
-                                    "numericPropExampleA": {"min": 0, "max": 80, "startSize": "30px", "endSize": "45px"},
-                                    "numericPropExampleB": {"min": 0, "max": 50, "startSize": "15px", "endSize": "30px"},
+                                    "numericPropExampleA": {
+                                        "min": 0,
+                                        "max": 80,
+                                        "startSize": "30px",
+                                        "endSize": "45px",
+                                    },
+                                    "numericPropExampleB": {
+                                        "min": 0,
+                                        "max": 50,
+                                        "startSize": "15px",
+                                        "endSize": "30px",
+                                    },
                                 },
                                 "icon": "fa6/FaIgloo",
                             },
@@ -999,8 +1047,18 @@ example = {
                                 "sizeBy": "numericPropExampleB",
                                 "value": True,
                                 "sizeByOptions": {
-                                    "numericPropExampleA": {"min": 0, "max": 50, "startSize": "15px", "endSize": "30px"},
-                                    "numericPropExampleB": {"min": 0, "max": 40, "startSize": "5px", "endSize": "15px"},
+                                    "numericPropExampleA": {
+                                        "min": 0,
+                                        "max": 50,
+                                        "startSize": "15px",
+                                        "endSize": "30px",
+                                    },
+                                    "numericPropExampleB": {
+                                        "min": 0,
+                                        "max": 40,
+                                        "startSize": "5px",
+                                        "endSize": "15px",
+                                    },
                                 },
                                 "colorByOptions": {
                                     "selectorPropForColor": {
@@ -1053,8 +1111,18 @@ example = {
                                     },
                                 },
                                 "sizeByOptions": {
-                                    "numericPropExampleA": {"min": 0, "max": 100, "startSize": "15px", "endSize": "30px"},
-                                    "numericPropExampleB": {"min": 0, "max": 250, "startSize": "5px", "endSize": "15px"},
+                                    "numericPropExampleA": {
+                                        "min": 0,
+                                        "max": 100,
+                                        "startSize": "15px",
+                                        "endSize": "30px",
+                                    },
+                                    "numericPropExampleB": {
+                                        "min": 0,
+                                        "max": 250,
+                                        "startSize": "5px",
+                                        "endSize": "15px",
+                                    },
                                 },
                                 "icon": "bs/BsBuilding",
                             },
@@ -1086,8 +1154,18 @@ example = {
                                 },
                                 "lineBy": "dotted",
                                 "sizeByOptions": {
-                                    "numericPropExampleA": {"min": 0, "max": 50, "startSize": "15px", "endSize": "30px"},
-                                    "numericPropExampleB": {"min": 0, "max": 40, "startSize": "5px", "endSize": "15px"},
+                                    "numericPropExampleA": {
+                                        "min": 0,
+                                        "max": 50,
+                                        "startSize": "15px",
+                                        "endSize": "30px",
+                                    },
+                                    "numericPropExampleB": {
+                                        "min": 0,
+                                        "max": 40,
+                                        "startSize": "5px",
+                                        "endSize": "15px",
+                                    },
                                 },
                             },
                             "state": {
@@ -1197,8 +1275,8 @@ example = {
                         "numericPropExampleA": [15],
                         "numericPropExampleB": [40],
                         "selectorPropForColor": [["b"]],
-                    }
-                }
+                    },
+                },
             },
             "T2": {
                 "type": "arc",
@@ -1267,7 +1345,7 @@ example = {
                         "numericPropExampleB": [20, 14, 6],
                         "selectorPropForColor": [["e"], ["d"], ["f"]],
                     },
-                }
+                },
             },
             "nodeTypeA": {
                 "type": "node",
@@ -1301,9 +1379,15 @@ example = {
                 "data": {
                     "location": {
                         "timeValues": {
-                            0: { "latitude": [43.78, 39.82], },
-                            1: { "latitude": [44.78, 39.82], },
-                            2: { "latitude": [45.78, 39.82], },
+                            0: {
+                                "latitude": [43.78, 39.82],
+                            },
+                            1: {
+                                "latitude": [44.78, 39.82],
+                            },
+                            2: {
+                                "latitude": [45.78, 39.82],
+                            },
                         },
                         "latitude": [43.78, 39.82],
                         "longitude": [-79.63, -86.18],
@@ -1313,7 +1397,7 @@ example = {
                         "numericPropExampleB": [50, 40],
                         "booleanPropExample": [True, True],
                     },
-                }
+                },
             },
             "nodeTypeB": {
                 "type": "node",
@@ -1355,7 +1439,7 @@ example = {
                         "numericPropExampleB": [150, 250, 250],
                         "booleanPropExample": [True, True, True],
                     },
-                }
+                },
             },
             "state": {
                 "type": "geo",
@@ -1385,8 +1469,8 @@ example = {
                     "valueLists": {
                         "numericPropExampleC": [0, 300, 250, 100, 200],
                         "booleanPropExample": [True, True, False, False, False],
-                    }
-                }
+                    },
+                },
             },
             "country": {
                 "type": "geo",
@@ -1410,8 +1494,8 @@ example = {
                     },
                     "valueLists": {
                         "numericPropExampleC": [50, 800],
-                    }
-                }
+                    },
+                },
             },
         }
     },
@@ -1426,10 +1510,16 @@ example = {
                 },
                 "data": {
                     "id": ["locUsMi", "locUsMa", "locUsFl", "locUsIn", "locCaOn"],
-                    "region": ["North America", "North America", "North America", "North America", "North America"],
-                    "country": ["USA", "USA", "USA", "USA", "Canada"],  
+                    "region": [
+                        "North America",
+                        "North America",
+                        "North America",
+                        "North America",
+                        "North America",
+                    ],
+                    "country": ["USA", "USA", "USA", "USA", "Canada"],
                     "state": ["Michigan", "Massachusetts", "Florida", "Indiana", "Ontario"],
-                    },
+                },
                 "name": "Locations",
                 "levels": {
                     "region": {
@@ -1540,13 +1630,13 @@ example = {
                 "type": "head",
                 "name": "Example KPI Header 1",
                 "icon": "bs/BsInboxes",
-                "variant": "icon"
+                "variant": "icon",
             },
             "kpiHeader2": {
                 "type": "head",
                 "name": "Example KPI Header 2",
                 "icon": "bs/BsTruck",
-                "variant": "icon"
+                "variant": "icon",
             },
             "key1": {
                 "name": "KPI Example 1",
