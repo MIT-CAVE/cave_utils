@@ -78,7 +78,7 @@ class appBar_data_star(ApiValidator):
                 * `"lowerRight"`: Lower section of the right-side bar
         * **`variant`**: `[str]` = `None` &rarr; The variant of the button.
             * **Accepted Values**:
-                * When **`type`** == `"pane"` | `"page"`:
+                * When **`type`** == `"pane"`:
                     * `"modal"`: A [modal pane][]
                     * `"wall"`: A [wall pane][]
                 * Otherwise:
