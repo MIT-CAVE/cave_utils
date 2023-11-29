@@ -365,6 +365,7 @@ class maps_data_star_legendGroups_star_data_star(ApiValidator):
             * **Notes**:
                 * If `None`, the data layer will not be colored.
                 * Does not apply to shape layers
+                * Only props of type `"num"`, `"toggle"`, and `"selector"` can be colored.
             * **Example**:
                 ```py
                 "colorByOptions": {
@@ -386,6 +387,7 @@ class maps_data_star_legendGroups_star_data_star(ApiValidator):
             * **Notes**:
                 * If `None`, the data layer will not be sized.
                 * Does not apply to shape layers
+                * Only props of type `"num"` can be sized.
             * **Example**:
                 ```py
                 "sizeByOptions": {
