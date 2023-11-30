@@ -60,9 +60,10 @@ class groupedOutputs_data_star(ApiValidator):
         * **`stats`**: `[dict]` &rarr; A dictionary of stats that are available for the data.
             * **See**: `cave_utils.api.groupedOutputs.groupedOutputs_data_star_stats`
         **`valueLists`**: `[dict]` &rarr; A dictionary of lists that make up the stats for the data.
+            * **See**: `cave_utils.api.groupedOutputs.groupedOutputs_data_star_valueLists`
+            * **Note**: Each key must also be a key in `groupedOutputs.data.*.stats`.
         **`groupLists`**: `[dict]` &rarr; A dictionary of lists that make up the groupings for the data.
         """
-        # TODO: Flesh out valueLists and groupLists
         return {"kwargs": kwargs, "accepted_values": {}}
 
     def __extend_spec__(self, **kwargs):
@@ -74,45 +75,37 @@ class groupedOutputs_data_star(ApiValidator):
             validator=groupedOutputs_data_star_stats,
             **kwargs,
         )
-        list_lengths = []
-        pass_list_lengths = True
         # Ensure Valid Value Lists
         valueLists_data = self.data.get("valueLists", {})
-        for key, value in valueLists_data.items():
-            if not self.__check_type__(
-                value=value, check_type=(list,), prepend_path=["valueLists", key]
-            ):
-                pass_list_lengths = False
-                continue
-            list_lengths.append(len(value))
-            self.__check_type_list__(
-                data=value, types=(int, float), prepend_path=["valueLists", key]
-            )
-        # Ensure Valid Group Lists
-        available_groups = kwargs.get("available_groups", {})
-        groupLists_data = self.data.get("groupLists", {})
-        self.__check_subset_valid__(
-            subset=list(groupLists_data.keys()),
-            valid_values=list(available_groups.keys()),
-            prepend_path=["groupLists"],
+        groupedOutputs_data_star_valueLists(
+            data=valueLists_data,
+            log=self.log,
+            prepend_path=["valueLists"],
+            acceptable_data_keys=list(stats_data.keys()),
+            **kwargs,
         )
-        for key, value in groupLists_data.items():
-            if not self.__check_type__(
-                value=value, check_type=(list,), prepend_path=["groupLists", key]
+        # Ensure Valid Group Lists
+        groupLists_data = self.data.get("groupLists", {})
+        groupedOutputs_data_star_groupLists(
+            data=groupLists_data,
+            log=self.log,
+            prepend_path=["groupLists"],
+            **kwargs,
+        )
+
+        # Ensure that all lists are the same length
+        try:
+            if (
+                len(
+                    set(
+                        [len(v) for v in valueLists_data.values()]
+                        + [len(v) for v in groupLists_data.values()]
+                    )
+                )
+                != 1
             ):
-                pass_list_lengths = False
-                continue
-            list_lengths.append(len(value))
-            valid_values = available_groups.get(key, [])
-            if not self.__check_type_list__(
-                data=valid_values, types=(str,), prepend_path=["groupLists", key]
-            ):
-                continue
-            self.__check_subset_valid__(
-                subset=value, valid_values=valid_values, prepend_path=["groupLists", key]
-            )
-        # Ensure all lists are the same length
-        if not pass_list_lengths or len(set(list_lengths)) != 1:
+                raise Exception
+        except:
             self.__error__(
                 msg="All values in groupedOutputs.data.*.groupLists and groupedOutputs.data.*.valueLists must be lists of the same length.",
             )
@@ -180,14 +173,58 @@ class groupedOutputs_data_star_valueLists(ApiValidator):
     @staticmethod
     def spec(**kwargs):
         """
-        Accepts any key value pairs as a dictionary structure for the data.
-        Each value must be a list of integers or floats.
+        Arguments:
+
+        - **`yourCustomKeyHere`**: `[list]` &rarr;
+            - * **Note**: Each custom key passed must also be a key in `groupedOutputs.data.*.stats`.
+            - * **Note**: Each value must be a list of integers or floats.
         """
         return {"kwargs": {}, "accepted_values": {}}
 
     def __extend_spec__(self, **kwargs):
+        if not self.__check_subset_valid__(
+            subset=list(self.data.keys()),
+            valid_values=kwargs.get("acceptable_data_keys", []),
+            prepend_path=[],
+        ):
+            return
         for key, value in self.data.items():
-            self.__check_type_list__(data=value, types=(int, float), prepend_path=[key])
+            if self.__check_type__(value=value, check_type=(list,), prepend_path=[key]):
+                self.__check_type_list__(data=value, types=(int, float), prepend_path=[key])
+
+
+@type_enforced.Enforcer
+class groupedOutputs_data_star_groupLists(ApiValidator):
+    """
+    The group lists are located under the path **`groupedOutputs.data.*.groupLists`**.
+    """
+
+    @staticmethod
+    def spec(**kwargs):
+        """
+        Arguments:
+
+        - **`yourCustomKeyHere`**: `[list]` &rarr;
+            - * **Note**: Each value must be a list of strings
+            - * **Note**: Each item in the passed value must also be found in `groupedOutputs.groupings.{yourCustomKeyHere}.data.id`.
+        """
+        return {"kwargs": {}, "accepted_values": {}}
+
+    def __extend_spec__(self, **kwargs):
+        available_groups = kwargs.get("available_groups", {})
+        if self.__check_subset_valid__(
+            subset=list(self.data.keys()),
+            valid_values=list(available_groups.keys()),
+            prepend_path=[],
+        ):
+            for key, value in self.data.items():
+                if self.__check_type__(value=value, check_type=(list,), prepend_path=[key]):
+                    self.__check_type_list__(data=value, types=(str,), prepend_path=[key])
+                    self.__check_subset_valid__(
+                        subset=value,
+                        valid_values=available_groups.get(key, []),
+                        prepend_path=[key],
+                    )
 
 
 @type_enforced.Enforcer
