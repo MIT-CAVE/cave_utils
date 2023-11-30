@@ -93,40 +93,42 @@ class ApiValidator:
         """
         Validate an rgba string and if an issue is present, log an error
         """
+        msg = "Invalid RGBA string. Must be in the format 'rgba(0, 0, 0, 0)' where each value is an integer between 0 and 255."
         try:
             if "rgba(" != rgba_string[:5]:
-                self.__error__(path=prepend_path, msg="Invalid RGBA string")
+                self.__error__(path=prepend_path, msg=msg)
                 return
             if ")" != rgba_string[-1]:
-                self.__error__(path=prepend_path, msg="Invalid RGBA string")
+                self.__error__(path=prepend_path, msg=msg)
                 return
             rgba_list = rgba_string[5:-1].replace(" ", "").split(",")
             for rgba in rgba_list:
                 if not rgba.isdigit():
-                    self.__error__(path=prepend_path, msg="Invalid RGBA string")
+                    self.__error__(path=prepend_path, msg=msg)
                     return
                 if int(rgba) < 0 or int(rgba) > 255:
-                    self.__error__(path=prepend_path, msg="Invalid RGBA string")
+                    self.__error__(path=prepend_path, msg=msg)
                     return
         except:
-            self.__error__(path=prepend_path, msg="Invalid RGBA string")
+            self.__error__(path=prepend_path, msg=msg)
 
     def __check_pixel_string_valid__(self, pixel_string: str, prepend_path: list = list()):
         """
         Validate a pixel string and if an issue is present, log an error
         """
+        msg = "Invalid pixel string. Must be in the format '5px' where the value portion is a whole number."
         try:
             if "px" != pixel_string[-2:]:
-                self.__error__(path=prepend_path, msg="Invalid pixel string")
+                self.__error__(path=prepend_path, msg=msg)
                 return
-            if int(pixel_string[:-2]) <= 0:
-                self.__error__(path=prepend_path, msg="Invalid pixel string")
+            if int(pixel_string[:-2]) < 0:
+                self.__error__(path=prepend_path, msg=msg)
         except:
-            self.__error__(path=prepend_path, msg="Invalid pixel string")
+            self.__error__(path=prepend_path, msg=msg)
 
     def __check_url_valid__(self, url: str, prepend_path: list = list()):
         """
-        Validate a url and if an issue is present, log an error
+        Validate a url and if an issue is present, log an error.
         """
         # Use Django regex for URL validation
         # See https://stackoverflow.com/a/7160778/12014156
