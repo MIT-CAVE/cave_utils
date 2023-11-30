@@ -40,6 +40,7 @@ class props(ApiValidator):
         unitPlacement: [str, None] = None,
         locale: [str, None] = None,
         fallbackValue: [str, None] = None,
+        allowNone: [bool, None] = None,
         **kwargs,
     ):
         """
@@ -88,11 +89,14 @@ class props(ApiValidator):
                     * `"picture"`: Show a PNG or JPG image
                     * `"video"`: Display a YouTube, Vimeo, or Dailymotion video clip
         * **`enabled`**: `[bool]` = `True` &rarr; Whether or not the prop will be enabled.
+            * **Note**: This attribute is applicable to all props except `"head"` props.
         * **`apiCommand`**: `[str]` = `None` &rarr; The name of the API command to trigger.
             * **Note**: If `None`, no `apiCommand` is triggered.
+            * **Note**: This attribute is applicable to all props except `"head"` props.
         * **`apiCommandKeys`**: `[list]` = `None` &rarr;
             * The root API keys to pass to your `execute_command` function if an `apiCommand` is provided.
             * **Note**: If `None`, all API keys are passed to your `execute_command`.
+            * **Note**: This attribute is applicable to all props except `"head"` props.
         * **`icon`**: `[str]` = `None` &rarr; The icon to use for the prop.
             * **Notes**:
                 * It must be a valid icon name from the [react-icons][] bundle, preceded by the abbreviated name of the icon library source.
@@ -146,8 +150,10 @@ class props(ApiValidator):
                 * This attribute is applicable exclusively to `"num"` props.
         * **`fallbackValue`**: [str] = `None` &rarr; A value to show when the value is missing or invalid.
             * **Notes**:
+                * This is only for display purposes as related to number formatting. It does not affect the actual value or any computations.
+                    * For example, if the value passed is `None`, the fallback value will be displayed instead.
                 * If left unspecified (i.e., `None`), it will default to `settings.defaults.fallbackValue`.
-                * This attribute only applies to `"num"` props.
+                * This attribute is applicable exclusively to `"num"` props.
         * **`unit`**: `[str]` = `None` &rarr; The unit to use for the prop.
             * **Notes**:
                 * If left unspecified (i.e., `None`), it will default to `settings.defaults.unit`.
@@ -229,6 +235,17 @@ class props(ApiValidator):
                 * Takes precedence over other formatting, except when used in a node cluster and the `cave_utils.api.maps.group` attribute is `True`. In this case, the max value within the node cluster is displayed.
                 * If left unspecified (i.e., `None`), it will default to `settings.defaults.legendMaxLabel`.
                 * This attribute is applicable exclusively to `"num"` props.
+        * **`allowNone`**: `[bool]` = `False` &rarr;
+            * Whether or not to allow `None` as a valid value for the prop. This is primarily used to help when validating `values` and `valueLists`.
+            * **Notes**:
+                * If `True`, `None` will be a valid value for the prop.
+                    * `None` values will be treated differently in the front end
+                        * For map display purposes: `None` values will be shown as a different color or ignored.
+                            * See `nullColor` in: `/cave_utils/cave_utils/api/maps.html#colorByOptions`
+                        * For prop purposes: `None` values will be left blank.
+                * If `False`, `None` will not be a valid value for the prop.
+                * This attribute is applicable to all props except `"head"` props.
+
 
         [metric prefix]: https://en.wikipedia.org/wiki/Metric_prefix
         [Scientific notation]: https://en.wikipedia.org/wiki/Scientific_notation
@@ -236,9 +253,9 @@ class props(ApiValidator):
         """
         passed_values = {k: v for k, v in locals().items() if (v is not None) and k != "kwargs"}
         required_fields = ["name", "type"]
-        optional_fields = ["help", "variant", "enabled"]
+        optional_fields = ["help", "variant"]
         if type != "head":
-            optional_fields += ["apiCommand", "apiCommandKeys"]
+            optional_fields += ["enabled", "apiCommand", "apiCommandKeys", "allowNone"]
         if type == "head":
             if variant == "icon":
                 required_fields += ["icon"]
@@ -458,8 +475,12 @@ class values(ApiValidator):
                 )
                 continue
             prop_type = prop_spec.get("type", None)
+            if prop_type == "head":
+                self.__error__(
+                    msg=f"`{prop_key}` with the prop type of `{prop_type}` can not have an associated value."
+                )
+                continue
             acceptable_types = {
-                "head": (str,),
                 "num": (int, float),
                 "toggle": (bool,),
                 "button": (str,),
@@ -467,8 +488,15 @@ class values(ApiValidator):
                 "selector": (list,),
                 "date": (str,),
                 "media": (str,),
-            }.get(prop_type, None)
+            }.get(prop_type, tuple())
+            # Add None to acceptable types if allowed
+            if prop_spec.get("allowNone", False):
+                acceptable_types += (type(None),)
+            # Validate types and continue if invalid
             if not self.__check_type__(prop_value, acceptable_types, prepend_path=[prop_key]):
+                continue
+            # Continue if the value is None
+            if prop_value is None:
                 continue
             if prop_type == "num":
                 min_value = prop_spec.get("minValue", float("-inf"))
@@ -480,10 +508,6 @@ class values(ApiValidator):
             elif prop_type == "selector":
                 options = list(prop_spec.get("options", {}).keys())
                 self.__check_subset_valid__(prop_value, options, prepend_path=[prop_key])
-            elif prop_type == "head":
-                self.__error__(
-                    msg=f"`{prop_key}` with the prop type of `{prop_type}` can not have an associated value."
-                )
             elif prop_type == "date":
                 pass
                 # TODO: Validate date string
@@ -498,7 +522,7 @@ class valueLists(ApiValidator):
         """
         Accepts all arbitrary values depending on what you have in your props as part of the API spec.
 
-        The valueLists you pass will be validated against the props in your API spec.
+        The valueLists you pass will be validated against the `props` from your API spec.
         """
         return {
             "kwargs": {},
@@ -520,8 +544,12 @@ class valueLists(ApiValidator):
                 )
                 continue
             prop_type = prop_spec.get("type", None)
+            if prop_type == "head":
+                self.__error__(
+                    msg=f"`{prop_key}` with the prop type of `{prop_type}` can not have an associated value."
+                )
+                continue
             acceptable_types = {
-                "head": (str,),
                 "num": (int, float),
                 "toggle": (bool,),
                 "button": (str,),
@@ -529,11 +557,16 @@ class valueLists(ApiValidator):
                 "selector": (list,),
                 "date": (str,),
                 "media": (str,),
-            }.get(prop_type, None)
+            }.get(prop_type, tuple())
+            # Add None to acceptable types if allowed
+            if prop_spec.get("allowNone", False):
+                acceptable_types += (type(None),)
             if not self.__check_type_list__(
                 data=prop_value_list, types=acceptable_types, prepend_path=[prop_key]
             ):
                 continue
+            if prop_spec.get("allowNone", False):
+                prop_value_list = [v for v in prop_value_list if v is not None]
             if prop_type == "num":
                 # Validate minimum is met
                 min_value = prop_spec.get("minValue")

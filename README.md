@@ -64,9 +64,8 @@ pip install cave_utils
 
 2. Remove `cave_utils` from the root `requirements.txt` file
 
-3. In your cave_app, set `LIVE_API_VALIDATION=True` in the `.env` file
+3. In your cave_app, set `LIVE_API_VALIDATION_PRINT=True` in the `.env` file
     - This will validate your data every time an API command is called for each session
-    - Outputs will be stored in `logs/validation/{session_name}.log`
 
 4. Use the following command to run your cave_app:
     `cave run --docker-args "--volume {local_path_to_cave_utils}/cave_utils:/cave_utils"`

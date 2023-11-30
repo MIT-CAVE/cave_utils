@@ -449,7 +449,7 @@ class maps_data_star_legendGroups_star_data_star(ApiValidator):
         colorBy_availableProps = {
             k: v
             for k, v in available_props.items()
-            if v.get("type") in ["num", "toggle", "selector"]
+            if v.get("type") in ["num", "toggle", "selector", "text"]
         }
         sizeBy_availableProps = {
             k: v for k, v in available_props.items() if v.get("type") in ["num"]
@@ -593,8 +593,13 @@ class colorByOptions(ApiValidator):
                 ):
                     return
                 self.__check_rgba_string_valid__(rgba_string=value, prepend_path=[key])
+        elif prop_type == "text":
+            for key, value in self.data.items():
+                self.__check_rgba_string_valid__(rgba_string=value, prepend_path=[key])
         else:
-            self.__error__(msg=f"Invalid prop type ({prop_type}) for colorByOptions")
+            self.__error__(
+                msg=f"Invalid prop type ({prop_type}) for colorByOptions. Allowed props are `num`, `toggle`, `selector`, and `text`"
+            )
 
 
 @type_enforced.Enforcer
