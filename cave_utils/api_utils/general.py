@@ -82,9 +82,12 @@ class props(ApiValidator):
                     * `"hstepper"`: Select a unique option along a horizontal slider
                     * `"vstepper"`: Select a unique option along a vertical slider
                 * When **`type`** == `"date"`:
-                    * `"date"`: Select a date via a calendar pop-up that appears when the element is clicked
+                    * `"date"`: Select a date via a calendar pop-up that appears when the element is clicked (default)
+                        * **Note**: Passed as `YYYY-MM-DD`
                     * `"time"`: Select a time via a clock pop-up that appears when the element is clicked
+                        * **Note**: Passed as `HH:MM:SS`
                     * `"datetime"`: Select date and time via a pop-up with calendar and clock tabs that appear when the element is clicked
+                        * **Note**: Passed as `YYYY-MM-DDTHH:MM:SS`
                 * When **`type`** == `"media"`:
                     * `"picture"`: Show a PNG or JPG image
                     * `"video"`: Display a YouTube, Vimeo, or Dailymotion video clip
@@ -509,10 +512,13 @@ class values(ApiValidator):
                 options = list(prop_spec.get("options", {}).keys())
                 self.__check_subset_valid__(prop_value, options, prepend_path=[prop_key])
             elif prop_type == "date":
-                pass
-                # TODO: Validate date string
+                self.__check_date_valid__(
+                    prop_value,
+                    date_variant=prop_spec.get("variant", "date"),
+                    prepend_path=[prop_key],
+                )
             elif prop_type == "media":
-                self.__check_url_valid__(prop_value)
+                self.__check_url_valid__(prop_value, prepend_path=[prop_key])
 
 
 @type_enforced.Enforcer
@@ -593,8 +599,14 @@ class valueLists(ApiValidator):
                     msg=f"`{prop_key}` with the prop type of `{prop_type}` can not have an associated value."
                 )
             elif prop_type == "date":
-                pass
-                # TODO: Validate date string
+                prop_value_list_set = list(set(prop_value_list))
+                date_variant = prop_spec.get("variant", "date")
+                for prop_value in prop_value_list:
+                    if not self.__check_date_valid__(
+                        prop_value, date_variant=date_variant, prepend_path=[prop_key]
+                    ):
+                        continue
             elif prop_type == "media":
                 for prop_value in prop_value_list:
-                    self.__check_url_valid__(prop_value)
+                    if not self.__check_url_valid__(prop_value, prepend_path=[prop_key]):
+                        continue

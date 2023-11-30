@@ -3,7 +3,7 @@ Special utility functions to help in validating your data against the CAVE API. 
 """
 from pamda import pamda
 import type_enforced
-import re
+import re, datetime
 from cave_utils.log import LogHelper, LogObject
 
 
@@ -143,6 +143,47 @@ class ApiValidator:
         )
         if re.match(regex, url) is None:
             self.__error__(path=prepend_path, msg="Invalid url")
+            return False
+        return True
+
+    def __check_date_valid__(self, input: str, date_variant: str, prepend_path: list = list()):
+        """
+        Validate a date string and if an issue is present, log an error.
+        """
+        if date_variant == "date":
+            try:
+                datetime.datetime.strptime(input, "%Y-%m-%d")
+            except ValueError:
+                self.__error__(
+                    path=prepend_path,
+                    msg=f"Invalid input for type of `date` with variant `date`. Must be in the format `YYYY-MM-DD`",
+                )
+                return False
+        elif date_variant == "datetime":
+            try:
+                datetime.datetime.strptime(input, "%Y-%m-%dT%H:%M:%S")
+            except ValueError:
+                self.__error__(
+                    path=prepend_path,
+                    msg=f"Invalid input for type of `date` with variant `datetime`. Must be in the format `YYYY-MM-DDTHH:MM:SS`",
+                )
+                return False
+        elif date_variant == "time":
+            try:
+                datetime.datetime.strptime(input, "%H:%M:%S")
+            except ValueError:
+                self.__error__(
+                    path=prepend_path,
+                    msg=f"Invalid input for type of `date` with variant `time`. Must be in the format `HH:MM:SS`",
+                )
+                return False
+        else:
+            self.__error__(
+                path=prepend_path,
+                msg=f"Invalid variant ({date_variant}) for prop with type `date`. Must be one of `date`, `datetime`, or `time`",
+            )
+            return False
+        return True
 
     def __check_subset_valid__(
         self,
