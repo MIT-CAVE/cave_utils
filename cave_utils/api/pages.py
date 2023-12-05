@@ -97,6 +97,7 @@ class pages_data_star_pageLayout(ApiValidator):
                 * When **`type`** == `"groupedOutput"`:
                     * `"area"`: An [area chart][]
                     * `"bar"`: A [bar chart][]
+                    * `"stacked_bar"`: A [stacked bar chart][]
                     * `"box_plot"`: A [box plot chart][]
                     * `"cumulative_line"`: A cumulative line chart
                     * `"gauge"`: A [gauge chart][]
@@ -137,6 +138,7 @@ class pages_data_star_pageLayout(ApiValidator):
 
         [area chart]: https://en.wikipedia.org/wiki/Area_chart
         [bar chart]: https://en.wikipedia.org/wiki/Bar_chart
+        [stacked bar chart]: https://en.wikipedia.org/wiki/Bar_chart
         [box plot chart]: https://en.wikipedia.org/wiki/Box_plot
         [cumulative line chart]: #
         [gauge chart]: https://echarts.apache.org/examples/en/index.html#chart-type-gauge
@@ -156,6 +158,7 @@ class pages_data_star_pageLayout(ApiValidator):
             variant_options = [
                 "area",
                 "bar",
+                "stacked_bar",
                 "box_plot",
                 "cumulative_line",
                 "gauge",
