@@ -124,6 +124,7 @@ example = {
         },
     },
     "panes": {
+        "paneState": {"left": {}, "right": {}, "center": {}},
         "data": {
             "exampleModal": {
                 "name": "Example Modal",
