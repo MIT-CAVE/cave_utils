@@ -21,7 +21,6 @@ class props(ApiValidator):
         placeholder: [str, None] = None,
         maxValue: [float, int, None] = None,
         minValue: [float, int, None] = None,
-        numberFormat: [dict, None] = None,
         maxRows: [int, None] = None,
         minRows: [int, None] = None,
         rows: [int, None] = None,
@@ -273,7 +272,6 @@ class props(ApiValidator):
                 required_fields += ["icon"]
             optional_fields += [
                 "unit",
-                "numberFormat",
                 "notation",
                 "precision",
                 "notationDisplay",
