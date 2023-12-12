@@ -71,6 +71,7 @@ class props(ApiValidator):
                     * `"field"`: A numeric input field
                     * `"slider"`: A range of values along a bar, from which users may select a single value
                     * `"icon"`: A fixed numerical value presented alongside a corresponding icon.
+                    * `"iconCompact"`: Similar to `"icon"`, but designed in a compact format for appropriate rendering within a draggable pad.
                 * When **`type`** == `"selector"`:
                     * `"checkbox"`: Select one or more items from a set of checkboxes
                     * `"combobox"`: A dropdown with a search bar that allows users to filter options when typing
@@ -311,9 +312,9 @@ class props(ApiValidator):
                 # TODO: Validate These
                 # TODO: Add Other value checks here
                 "variant": {
-                    "head": ["column", "row", "icon"],
+                    "head": ["column", "row", "icon", "iconRow"],
                     "text": ["textarea"],
-                    "num": ["slider", "icon"],
+                    "num": ["field", "slider", "icon", "iconCompact"],
                     "selector": [
                         "dropdown",
                         "checkbox",
