@@ -238,6 +238,11 @@ class props(ApiValidator):
                 * Takes precedence over other formatting, except when used in a node cluster and the `cave_utils.api.maps.group` attribute is `True`. In this case, the max value within the node cluster is displayed.
                 * If left unspecified (i.e., `None`), it will default to `settings.defaults.legendMaxLabel`.
                 * This attribute is applicable exclusively to `"num"` props.
+        * **`draggable`**: `[bool]` = `None` &rarr;
+            * If `True`, the prop will be rendered within the draggable global outputs pad.
+            * **Notes**:
+                * The prop's `variant` is enforced to `iconCompact` to accommodate it within the draggable pad.
+                * This attribute is applicable exclusively to `"num"` props defined within `cave_utils.api.globalOutputs`.
         * **`allowNone`**: `[bool]` = `False` &rarr;
             * Whether or not to allow `None` as a valid value for the prop. This is primarily used to help when validating `values` and `valueLists`.
             * **Notes**:
@@ -283,6 +288,7 @@ class props(ApiValidator):
                 "legendMaxLabel",
                 "trailingZeros",
                 "unitPlacement",
+                "draggable",
             ]
         if type == "selector":
             required_fields += ["options"]
