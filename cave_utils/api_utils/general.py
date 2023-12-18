@@ -39,6 +39,7 @@ class props(ApiValidator):
         unitPlacement: [str, None] = None,
         locale: [str, None] = None,
         fallbackValue: [str, None] = None,
+        draggable: [bool, None] = None,
         allowNone: [bool, None] = None,
         **kwargs,
     ):
