@@ -266,7 +266,7 @@ class props(ApiValidator):
         if type != "head":
             optional_fields += ["enabled", "apiCommand", "apiCommandKeys", "allowNone"]
         if type == "head":
-            if variant == "icon":
+            if variant == "icon" or variant == "iconRow":
                 required_fields += ["icon"]
         if type == "text":
             optional_fields += ["minRows", "maxRows", "rows"]
@@ -275,7 +275,7 @@ class props(ApiValidator):
                 required_fields += ["maxValue", "minValue"]
             else:
                 optional_fields += ["maxValue", "minValue"]
-            if variant == "icon":
+            if variant == "icon" or variant == "iconCompact":
                 required_fields += ["icon"]
             optional_fields += [
                 "unit",
