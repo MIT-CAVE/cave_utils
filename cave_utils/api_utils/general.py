@@ -310,10 +310,8 @@ class props(ApiValidator):
                 "notationDisplay": ["short", "long", "e", "e+", "E", "E+", "x10^", "x10^+"],
                 "legendNotation": ["compact", "precision", "scientific", "engineering"],
                 "legendNotationDisplay": ["short", "long", "e", "e+", "E", "E+", "x10^", "x10^+"],
-                # TODO: Validate These
-                # TODO: Add Other value checks here
                 "variant": {
-                    "head": ["column", "row", "icon"],
+                    "head": ["column", "row", "icon", "iconRow"],
                     "text": ["textarea"],
                     "num": ["slider", "icon"],
                     "selector": [
