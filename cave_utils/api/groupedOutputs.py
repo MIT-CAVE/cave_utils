@@ -205,7 +205,7 @@ class groupedOutputs_data_star_groupLists(ApiValidator):
         Arguments:
 
         - **`yourCustomKeyHere`**: `[list]` &rarr;
-            - * **Note**: Each value must be a list of strings
+            - * **Note**: Each value must be a list of strings or ints.
             - * **Note**: Each item in the passed value must also be found in `groupedOutputs.groupings.{yourCustomKeyHere}.data.id`.
         """
         return {"kwargs": {}, "accepted_values": {}}
@@ -219,7 +219,7 @@ class groupedOutputs_data_star_groupLists(ApiValidator):
         ):
             for key, value in self.data.items():
                 if self.__check_type__(value=value, check_type=(list,), prepend_path=[key]):
-                    self.__check_type_list__(data=value, types=(str,), prepend_path=[key])
+                    self.__check_type_list__(data=value, types=(str, int), prepend_path=[key])
                     self.__check_subset_valid__(
                         subset=value,
                         valid_values=available_groups.get(key, []),
@@ -302,9 +302,11 @@ class groupedOutputs_groupings_star_data(ApiValidator):
         Arguments:
 
         * **`id`**: `[list]` &rarr; The id of the data to be grouped.
+            * **Note**: This can be a list of strings or ints.
         * **`customKeyHere`**: `[list]` &rarr;
             * The names of the data to be grouped for this feature/level.
             * **Note**: Each key listed here must be in `groupedOutputs.groupings.*.levels.*`
+            * **Note**: Each value must be a list of strings or ints.
         """
         return {"kwargs": {}, "accepted_values": {}}
 
@@ -324,7 +326,7 @@ class groupedOutputs_groupings_star_data(ApiValidator):
         # Ensure that all values are lists of strings
         for key, value in self.data.items():
             if isinstance(value, list):
-                self.__check_type_list__(data=value, types=(str,), prepend_path=[key])
+                self.__check_type_list__(data=value, types=(str, int), prepend_path=[key])
         # Ensure that all lists are the same length
         if len(set([len(v) for v in self.data.values()])) != 1:
             self.__error__(
