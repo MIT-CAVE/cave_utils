@@ -21,7 +21,6 @@ class props(ApiValidator):
         placeholder: [str, None] = None,
         maxValue: [float, int, None] = None,
         minValue: [float, int, None] = None,
-        numberFormat: [dict, None] = None,
         maxRows: [int, None] = None,
         minRows: [int, None] = None,
         rows: [int, None] = None,
@@ -40,6 +39,7 @@ class props(ApiValidator):
         unitPlacement: [str, None] = None,
         locale: [str, None] = None,
         fallbackValue: [str, None] = None,
+        draggable: [bool, None] = None,
         allowNone: [bool, None] = None,
         **kwargs,
     ):
@@ -72,6 +72,7 @@ class props(ApiValidator):
                     * `"field"`: A numeric input field
                     * `"slider"`: A range of values along a bar, from which users may select a single value
                     * `"icon"`: A fixed numerical value presented alongside a corresponding icon.
+                    * `"iconCompact"`: Similar to `"icon"`, but designed in a compact format for appropriate rendering within a draggable pad.
                 * When **`type`** == `"selector"`:
                     * `"checkbox"`: Select one or more items from a set of checkboxes
                     * `"combobox"`: A dropdown with a search bar that allows users to filter options when typing
@@ -238,6 +239,11 @@ class props(ApiValidator):
                 * Takes precedence over other formatting, except when used in a node cluster and the `cave_utils.api.maps.group` attribute is `True`. In this case, the max value within the node cluster is displayed.
                 * If left unspecified (i.e., `None`), it will default to `settings.defaults.legendMaxLabel`.
                 * This attribute is applicable exclusively to `"num"` props.
+        * **`draggable`**: `[bool]` = `None` &rarr;
+            * If `True`, the prop will be rendered within the draggable global outputs pad.
+            * **Notes**:
+                * The prop's `variant` is enforced to `iconCompact` to accommodate it within the draggable pad.
+                * This attribute is applicable exclusively to `"num"` props defined within `cave_utils.api.globalOutputs`.
         * **`allowNone`**: `[bool]` = `False` &rarr;
             * Whether or not to allow `None` as a valid value for the prop. This is primarily used to help when validating `values` and `valueLists`.
             * **Notes**:
@@ -273,7 +279,6 @@ class props(ApiValidator):
                 required_fields += ["icon"]
             optional_fields += [
                 "unit",
-                "numberFormat",
                 "notation",
                 "precision",
                 "notationDisplay",
@@ -284,6 +289,7 @@ class props(ApiValidator):
                 "legendMaxLabel",
                 "trailingZeros",
                 "unitPlacement",
+                "draggable",
             ]
         if type == "selector":
             required_fields += ["options"]
@@ -313,9 +319,9 @@ class props(ApiValidator):
                 # TODO: Validate These
                 # TODO: Add Other value checks here
                 "variant": {
-                    "head": ["column", "row", "icon"],
+                    "head": ["column", "row", "icon", "iconRow"],
                     "text": ["textarea"],
-                    "num": ["slider", "icon"],
+                    "num": ["field", "slider", "icon", "iconCompact"],
                     "selector": [
                         "dropdown",
                         "checkbox",

@@ -120,10 +120,9 @@ class panes_paneState_star(ApiValidator):
         if self.data.get("type", "pane") == "pane":
             self.__check_subset_valid__(
                 subset=[self.data.get("open")],
-                valid_values=kwargs.get("pane_keys"),
+                valid_values=kwargs.get("pane_keys") + [None],
                 prepend_path=["open"],
             )
-        # TODO: Validate map modal/panes
 
 
 @type_enforced.Enforcer
