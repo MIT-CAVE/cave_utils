@@ -130,7 +130,7 @@ class pages_data_star_pageLayout(ApiValidator):
                 * `"min"`: Find the minimum values within the aggregated data
                 * `"max"`: Find the maximum values the aggregated data
         * **`groupedOutputDataId`**: `[str]` = `None` &rarr; The id of the grouped output data to use.
-        * **`groupedOutputDataId`**: `[str]` = `None` &rarr; The id of the stat to use.
+        * **`statId`**: `[str]` = `None` &rarr; The id of the stat to use.
         * **`showToolbar`**: `[bool]` = `None` &rarr; Whether or not the chart toolbar should be shown.
             * **Note**: If left unspecified (i.e., `None`), it will default to `settings.showToolbar`.
         * **`maximized`**: `[bool]` = `False` &rarr; Whether or not the layout should be maximized.
