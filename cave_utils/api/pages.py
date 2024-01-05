@@ -78,8 +78,8 @@ class pages_data_star_pageLayout(ApiValidator):
         groupingLevel: [list, None] = None,
         lockedLayout: bool = False,
         statAggregation: str = "sum",
-        groupedOutputDataId: [str, None] = None,
-        statId: [str, None] = None,
+        groupedOutputDataId: [str, list, None] = None,
+        statId: [str, list, None] = None,
         showToolbar: bool = True,
         maximized: bool = False,
         **kwargs,
@@ -87,7 +87,7 @@ class pages_data_star_pageLayout(ApiValidator):
         """
         Arguments:
 
-        * **`type`**: `[str]` = `"groupedOutputs"` &rarr; The type of the page layout.
+        * **`type`**: `[str]` = `"groupedOutput"` &rarr; The type of the page layout.
             * **Accepted Values**:
                 * `"groupedOutput"`: The `unit` appears after the value.
                 * `"globalOutput"`: The `unit` appears after the value, separated by a space.
@@ -129,8 +129,8 @@ class pages_data_star_pageLayout(ApiValidator):
                 * `"mean"`: Calculate the mean of the aggregated data
                 * `"min"`: Find the minimum values within the aggregated data
                 * `"max"`: Find the maximum values the aggregated data
-        * **`groupedOutputDataId`**: `[str]` = `None` &rarr; The id of the grouped output data to use.
-        * **`statId`**: `[str]` = `None` &rarr; The id of the stat to use.
+        * **`groupedOutputDataId`**: `[str | list]` = `None` &rarr; The id or list of ids representing the grouped output data to use.
+        * **`statId`**: `[str | list]` = `None` &rarr; The id or list of ids corresponding to the stat(s) to be used.
         * **`showToolbar`**: `[bool]` = `None` &rarr; Whether or not the chart toolbar should be shown.
             * **Note**: If left unspecified (i.e., `None`), it will default to `settings.showToolbar`.
         * **`maximized`**: `[bool]` = `False` &rarr; Whether or not the layout should be maximized.
@@ -148,7 +148,7 @@ class pages_data_star_pageLayout(ApiValidator):
         [stacked area chart]: https://en.wikipedia.org/wiki/Area_chart
         [stacked waterfall chart]: https://en.wikipedia.org/wiki/Waterfall_chart
         [sunburst chart]: https://en.wikipedia.org/wiki/Pie_chart#Ring_chart,_sunburst_chart,_and_multilevel_pie_chart
-        [table chart]:
+        [table chart]: #
         [treemap chart]: https://en.wikipedia.org/wiki/Treemapping
         [waterfall chart]: https://en.wikipedia.org/wiki/Waterfall_chart
         """
@@ -218,7 +218,8 @@ class pages_data_star_pageLayout(ApiValidator):
             # Validate groupedOutputDataId
             groupedOutputDataId = self.data.get("groupedOutputDataId")
             if groupedOutputDataId is not None:
-                self.__check_type__(groupedOutputDataId, str, prepend_path=["groupedOutputDataId"])
+                self.__check_type__(groupedOutputDataId, [str, list], prepend_path=["groupedOutputDataId"])
+                # TODO: Review subset validation
                 # Ensure that the groupedOutputDataId is valid
                 self.__check_subset_valid__(
                     subset=[groupedOutputDataId],
@@ -228,15 +229,18 @@ class pages_data_star_pageLayout(ApiValidator):
             # Validate statId
             statId = self.data.get("statId")
             if statId is not None:
-                self.__check_type__(statId, str, prepend_path=["statId"])
-                # Ensure that the statId is valid
-                self.__check_subset_valid__(
-                    subset=[statId],
-                    valid_values=list(
-                        kwargs.get("groupedOutputs_validStatIds", {}).get(groupedOutputDataId, [])
-                    ),
-                    prepend_path=["statId"],
-                )
+                self.__check_type__(statId, [str, list], prepend_path=["statId"])
+                statIds = statId if isinstance(statId, list) else [statId]
+                # TODO: Review subset validation
+                for sid in statIds:
+                    # Ensure that the statId is valid
+                    self.__check_subset_valid__(
+                        subset=[sid],
+                        valid_values=list(
+                            kwargs.get("groupedOutputs_validStatIds", {}).get(groupedOutputDataId, [])
+                        ),
+                        prepend_path=["statId"],
+                    )
             # Validate groupingId
             groupingId = self.data.get("groupingId")
             if groupingId is not None:
