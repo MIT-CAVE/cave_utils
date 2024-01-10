@@ -14,6 +14,7 @@ class props(ApiValidator):
         type: str,
         help: [str, None] = None,
         variant: [str, None] = None,
+        display: [bool, None] = None,
         enabled: [bool, None] = None,
         apiCommand: [str, None] = None,
         apiCommandKeys: [list, None] = None,
@@ -58,6 +59,7 @@ class props(ApiValidator):
                 * `"date"`: Select a date and/or time
                 * `"media"`: View various media formats
         * **`help`**: `[str]` = `None` &rarr; The help text to display.
+        * **`display`**: `[bool]` = `None` &rarr; Whether or not the prop will be displayed.
         * **`variant`**: `[str]` = `None` &rarr; The variant of the prop.
             * **Accepted Values**:
                 * When **`type`** == `"head"`:
