@@ -218,7 +218,7 @@ class pages_data_star_pageLayout(ApiValidator):
             # Validate groupedOutputDataId
             groupedOutputDataId = self.data.get("groupedOutputDataId")
             if groupedOutputDataId is not None:
-                self.__check_type__(groupedOutputDataId, [str, list], prepend_path=["groupedOutputDataId"])
+                self.__check_type__(groupedOutputDataId, (str, list), prepend_path=["groupedOutputDataId"])
                 # TODO: Review subset validation
                 # Ensure that the groupedOutputDataId is valid
                 self.__check_subset_valid__(
@@ -229,7 +229,7 @@ class pages_data_star_pageLayout(ApiValidator):
             # Validate statId
             statId = self.data.get("statId")
             if statId is not None:
-                self.__check_type__(statId, [str, list], prepend_path=["statId"])
+                self.__check_type__(statId, (str, list), prepend_path=["statId"])
                 statIds = statId if isinstance(statId, list) else [statId]
                 # TODO: Review subset validation
                 for sid in statIds:
