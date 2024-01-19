@@ -81,7 +81,7 @@ class groupedOutputs_data_star(ApiValidator):
             data=valueLists_data,
             log=self.log,
             prepend_path=["valueLists"],
-            calculation_values=[i.get('calculation') for i in stats_data.values()],
+            calculation_values=[i.get("calculation") for i in stats_data.values()],
             **kwargs,
         )
         # Ensure Valid Group Lists
@@ -183,14 +183,12 @@ class groupedOutputs_data_star_valueLists(ApiValidator):
 
     def __extend_spec__(self, **kwargs):
         # Custom Validation to ensure that all keys are in calculation strings
-        valid_values=kwargs.get("calculation_values", [])
-        invalid_values = [i for i in list(self.data.keys()) if not any([i in j for j in valid_values])]
+        valid_values = kwargs.get("calculation_values", [])
+        invalid_values = [
+            i for i in list(self.data.keys()) if not any([i in j for j in valid_values])
+        ]
         if len(invalid_values) > 0:
-            valid_values = (
-                valid_values[:10] + ["..."]
-                if len(valid_values) > 10
-                else valid_values
-            )
+            valid_values = valid_values[:10] + ["..."] if len(valid_values) > 10 else valid_values
             self.__error__(
                 path=[],
                 msg=f"Invalid keys(s) selected: {str(invalid_values)}. Accepted keys are substrings of your calculations: {valid_values}",
