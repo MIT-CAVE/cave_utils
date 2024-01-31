@@ -264,7 +264,7 @@ class props(ApiValidator):
         """
         passed_values = {k: v for k, v in locals().items() if (v is not None) and k != "kwargs"}
         required_fields = ["name", "type"]
-        optional_fields = ["help", "variant"]
+        optional_fields = ["help", "variant", "display"]
         if type != "head":
             optional_fields += ["enabled", "apiCommand", "apiCommandKeys", "allowNone"]
         if type == "head":
