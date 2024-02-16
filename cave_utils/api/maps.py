@@ -32,9 +32,15 @@ class maps(ApiValidator):
             **kwargs,
         )
         available_styles = list(self.data.get("additionalMapStyles", {}).keys()) + [
-            "default",
-            "dark",
-            "light",
+            "mapboxDark",
+            "mapboxLight",
+            "mapboxStreets",
+            "mapboxSatellite",
+            "mapboxNavDay",
+            "mapboxNavNight",
+            "cartoDarkMatter",
+            "cartoPositron",
+            "openStreetMap",
         ]
         CustomKeyValidator(
             data=data,
