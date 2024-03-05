@@ -4,6 +4,12 @@ from datetime import datetime, timedelta
 
 class GroupsUtils:
     def serialize(self):
+        """
+        Serialize the group structure to a dictionary of the proper format.
+
+        Returns:
+        * `[dict]` &rarr; The serialized group structure.
+        """
         return {
             'name': self.group_name,
             'order': {
@@ -15,20 +21,126 @@ class GroupsUtils:
         
 @type_enforced.Enforcer
 class GroupsBuilder(GroupsUtils):
-    def __init__(self, group_name:str, group_data:list[dict[str]]) -> None:
+    def __init__(self, group_name:str, group_data:list[dict[str]], group_parents:dict[str], group_names: dict[str]) -> None:
+        """
+        Initialize a group builder.
+
+        Arguments:
+
+        * **`group_name`**: `[str]` &rarr; The name of the group.
+        * **`group_data`**: `[list[dict[str]]]` &rarr; The data to use to build the group.
+            * **Note**: This should be a list of dictionaries where each dictionary represents a combination of group keys and values.
+            * **Note**: The keys in the dictionaries should be the same for all records.
+            * **Example**: `[{'key1': 'value1', 'key2': 'value2'}, {'key1': 'value3', 'key2': 'value4'}]`
+        * **`group_parents`**: `[dict[str]]` &rarr; Parent allocations to make for groups.
+            * **Note**: This should be a dictionary where the keys are the child group keys and the values are the parent group keys.
+            * **Example**: `{'child_key': 'parent_key'}`
+                * **Note**: This would mean that `child_key` has a parent of `fparent_key`.
+            * **Note**: If a group is not a child of another group, it should not be included in the dictionary.
+        * **`group_names`**: `[dict[str]]` &rarr; The group names to use for the group keys.
+            * **Note**: This should be a dictionary where the keys are the group keys and the values are the group_names to use for the group keys.
+        
+        Returns:
+
+        * `[GroupsBuilder]` &rarr; The initialized GroupsBuilder object.
+        """
         self.group_name = group_name
         self.group_keys = list(group_data[0].keys())
-        self.validate_group_data(group_data = group_data)
-        self.gen_structures(group_data=group_data)
+        self.group_parents = group_parents
+        self.group_names = group_names
+        self.__validate_group_data__(group_data = group_data)
+        self.__validate_parent_data__(group_parents = group_parents)
+        self.__validate_name_data__(group_names = group_names)
+        self.__gen_structures__(group_data=group_data)
 
 
-    def validate_group_data(self, group_data):
+    def __validate_group_data__(self, group_data):
+        """
+        Validate the group data to ensure it is in the proper format.
+
+        Arguments:
+
+        * **`group_data`**: `[list[dict[str]]]` &rarr; The data to use to build the group.
+
+        Raises:
+
+        * **`ValueError`** &rarr; If the group data is not in the proper format.
+        """
         for record in group_data:
             if list(record.keys()) != self.group_keys:
                 raise ValueError("Group data must have the same keys in the same order for all records.")
-            
-    def gen_structures(self, group_data):
-        groups = [i[0] for i in pamda.groupKeys(keys=self.group_keys, data=group_data)]
+
+    def __validate_name_data__(self, group_names):
+        """
+        Validate the name data to ensure it is in the proper format.
+
+        Arguments:
+
+        * **`group_names`**: `[dict[str]]` &rarr; The group_names to use for the group keys.
+
+        Raises:
+
+        * **`ValueError`** &rarr; If the name data is not in the proper format.
+        """
+        bad_keys = pamda.difference(self.group_keys, list(group_names.keys()))
+        if len(bad_keys) > 0:
+            raise ValueError(f"You specified group data keys {bad_keys}, but they are not specified in group_names.")
+
+    def __validate_parent_data__(self, group_parents):
+        """
+        Validate the parent data to ensure it is in the proper format.
+
+        Arguments:
+
+        * **`group_parents`**: `[dict[str]]` &rarr; Parent allocations to make for groups.
+
+        Raises:
+
+        * **`ValueError`** &rarr; If the parent data is not in the proper format.
+        """
+        parent_values = list(group_parents.values())
+        child_values = list(group_parents.keys())
+        root_keys = pamda.difference(self.group_keys, child_values)
+        if len(root_keys) < 1:
+            raise ValueError("No root keys found in parent data. At least one key must be a root key and have no parent.")
+        bad_keys = pamda.difference(child_values, self.group_keys) + pamda.difference(parent_values, self.group_keys)
+        if len(bad_keys) > 0:
+            raise ValueError(f"The keys and values {list(set(bad_keys))} were passed in the group_parents dict, but not found as keys in the group data.")
+        for key, value in group_parents.items():
+            if key == value:
+                raise ValueError(f"Parent key '{key}' cannot be the same as the parent value.")
+        for key in child_values:
+            idx = 0
+            while True:
+                if idx > len(self.group_keys):
+                    raise ValueError(f"A circular reference was found in your parent data.")
+                if key in group_parents:
+                    key = group_parents[key]
+                    idx += 1
+                else:
+                    break
+
+
+    def __gen_structures__(self, group_data):
+        """
+        Generate the group structures.
+
+        Arguments:
+
+        * **`group_data`**: `[list[dict[str]]]` &rarr; The data to use to build the group.
+
+        
+        Modifies:
+
+        * **`self.id_structure`**: `[dict]` &rarr; The structure to use to get the id of a group.
+        * **`self.data_structure`**: `[dict]` &rarr; The serialized data strucutre given the group_data.
+        * **`self.levels_structure`**: `[dict]` &rarr; The structure to use to get the levels of a group.
+
+        Returns:
+
+        * `[None]`
+        """
+        groups = [dict(i[0]) for i in pamda.groupKeys(keys=self.group_keys, data=group_data)]
         self.id_structure = {}
         for idx, group in enumerate(groups):
             idx = str(idx)
@@ -39,10 +151,10 @@ class GroupsBuilder(GroupsUtils):
         self.levels_structure = {}
         for idx, key in enumerate(self.group_keys):
             self.levels_structure[key] = {
-                "name": key.replace("_", " ").replace('-',' ').title(),
+                "name": self.group_names[key],
             }
-            if idx > 0:
-                self.levels_structure[key]["parent"] = self.group_keys[idx-1]
+            if key in self.group_parents:
+                self.levels_structure[key]["parent"] = self.group_parents[key]
         
     def get_id(self, group:dict[str]):
         return pamda.path(path=pamda.props(self.group_keys, group), data=self.id_structure)
@@ -64,6 +176,29 @@ class DateGroupsBuilder(GroupsUtils):
         include_month_day:bool=False,
         include_week_day:bool=True
     ) -> None:
+        """
+        Initialize a date group builder.
+
+        Arguments:
+
+        * **`group_name`**: `[str]` &rarr; The name of the group.
+        * **`date_data`**: `[list[str]]` &rarr; The list of dates to use to build the group.
+            * **Note**: This should be a list of strings where each string is a date in the format specified by `date_format`.
+        * **`date_format`**: `[str]` = `"%Y-%m-%d"` &rarr; The format of the dates in `date_data`.
+        * **`include_year`**: `[bool]` = `True` &rarr; Whether or not to include the year in the group.
+        * **`include_year_month`**: `[bool]` = `True` &rarr; Whether or not to include the year and month in the group.
+        * **`include_year_month_day`**: `[bool]` = `True` &rarr; Whether or not to include the year, month, and day in the group.
+        * **`include_year_week`**: `[bool]` = `False` &rarr; Whether or not to include the year and week in the group.
+        * **`include_year_day`**: `[bool]` = `False` &rarr; Whether or not to include the year and day in the group.
+        * **`include_month`**: `[bool]` = `True` &rarr; Whether or not to include the month in the group.
+        * **`include_month_week`**: `[bool]` = `False` &rarr; Whether or not to include the month and week in the group.
+        * **`include_month_day`**: `[bool]` = `False` &rarr; Whether or not to include the month and day in the group.
+        * **`include_week_day`**: `[bool]` = `True` &rarr; Whether or not to include the week day in the group.
+
+        Returns:
+
+        * `[DateGroupsBuilder]` &rarr; The initialized DateGroupsBuilder object.
+        """
         self.group_name = group_name
         self.date_format = date_format
         self.include_year = include_year
@@ -75,17 +210,41 @@ class DateGroupsBuilder(GroupsUtils):
         self.include_month_week = include_month_week
         self.include_month_day = include_month_day
         self.include_week_day = include_week_day
-        self.date_objects = self.get_date_objects(date_data=date_data)
-        self.gen_structures()
+        self.date_objects = self.__get_date_objects__(date_data=date_data)
+        self.__gen_structures__()
 
-    def get_date_objects(self, date_data):
+    def __get_date_objects__(self, date_data):
+        """
+        Get the date objects from the date data.
+
+        Arguments:
+
+        * **`date_data`**: `[list[str]]` &rarr; The list of dates to use to build the group.
+
+        Returns:
+
+        * `[list[datetime]]` &rarr; The list of date objects.
+        """
         date_objects_raw = [datetime.strptime(date, self.date_format) for date in date_data]
         max_date = max(date_objects_raw)
         min_date = min(date_objects_raw)
         date_objects = [min_date + timedelta(days=i) for i in range((max_date - min_date).days+1)]
         return date_objects
     
-    def gen_structures(self):
+    def __gen_structures__(self):
+        """
+        Generate the group structures.
+
+        Modifies:
+
+        * **`self.data_structure`**: `[dict]` &rarr; The serialized data structure given the group_data.
+        * **`self.levels_structure`**: `[dict]` &rarr; The structure to use to get the levels of a group.
+        * **`self.group_keys`**: `[list[str]]` &rarr; The keys of the group.
+
+        Returns:
+
+        * `[None]`
+        """
         self.data_structure = {
             "id": [i.strftime(self.date_format) for i in self.date_objects],
         }
@@ -156,5 +315,8 @@ class DateGroupsBuilder(GroupsUtils):
             self.group_keys.append("week_day")
 
     def get_id(self, *args, **kwargs):
+        """
+        Ensure that the get_id function is not called with date Groups.
+        """
         raise NotImplementedError("This function is not supported with date Groupss.")
 
