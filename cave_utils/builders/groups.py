@@ -31,6 +31,7 @@ class GroupsBuilder(GroupsUtils):
         * **`group_data`**: `[list[dict[str]]]` &rarr; The data to use to build the group.
             * **Note**: This should be a list of dictionaries where each dictionary represents a combination of group keys and values.
             * **Note**: The keys in the dictionaries should be the same for all records.
+            * **Note**: If the key `id` is specified, it will be used as the id for the group and not included in the group data.
             * **Example**: `[{'key1': 'value1', 'key2': 'value2'}, {'key1': 'value3', 'key2': 'value4'}]`
         * **`group_parents`**: `[dict[str]]` &rarr; Parent allocations to make for groups.
             * **Note**: This should be a dictionary where the keys are the child group keys and the values are the parent group keys.
@@ -39,74 +40,65 @@ class GroupsBuilder(GroupsUtils):
             * **Note**: If a group is not a child of another group, it should not be included in the dictionary.
         * **`group_names`**: `[dict[str]]` &rarr; The group names to use for the group keys.
             * **Note**: This should be a dictionary where the keys are the group keys and the values are the group_names to use for the group keys.
+            
         
         Returns:
 
         * `[GroupsBuilder]` &rarr; The initialized GroupsBuilder object.
         """
         self.group_name = group_name
-        self.group_keys = list(group_data[0].keys())
+        self.group_keys_all = list(group_data[0].keys())
+        self.group_keys = [i for i in self.group_keys_all if i!="id"]
         self.group_parents = group_parents
         self.group_names = group_names
-        self.__validate_group_data__(group_data = group_data)
-        self.__validate_parent_data__(group_parents = group_parents)
-        self.__validate_name_data__(group_names = group_names)
-        self.__gen_structures__(group_data=group_data)
+        self.group_data = [dict(i) for i in group_data]
+        self.__validate_group_data__()
+        self.__validate_parent_data__()
+        self.__validate_name_data__()
+        self.__gen_structures__()
 
 
-    def __validate_group_data__(self, group_data):
+    def __validate_group_data__(self):
         """
         Validate the group data to ensure it is in the proper format.
-
-        Arguments:
-
-        * **`group_data`**: `[list[dict[str]]]` &rarr; The data to use to build the group.
 
         Raises:
 
         * **`ValueError`** &rarr; If the group data is not in the proper format.
         """
-        for record in group_data:
-            if list(record.keys()) != self.group_keys:
+        for record in self.group_data:
+            if list(record.keys()) != self.group_keys_all:
                 raise ValueError("Group data must have the same keys in the same order for all records.")
 
-    def __validate_name_data__(self, group_names):
+    def __validate_name_data__(self):
         """
         Validate the name data to ensure it is in the proper format.
-
-        Arguments:
-
-        * **`group_names`**: `[dict[str]]` &rarr; The group_names to use for the group keys.
 
         Raises:
 
         * **`ValueError`** &rarr; If the name data is not in the proper format.
         """
-        bad_keys = pamda.difference(self.group_keys, list(group_names.keys()))
+        bad_keys = pamda.difference(self.group_keys, list(self.group_names.keys()))
         if len(bad_keys) > 0:
             raise ValueError(f"You specified group data keys {bad_keys}, but they are not specified in group_names.")
 
-    def __validate_parent_data__(self, group_parents):
+    def __validate_parent_data__(self):
         """
         Validate the parent data to ensure it is in the proper format.
-
-        Arguments:
-
-        * **`group_parents`**: `[dict[str]]` &rarr; Parent allocations to make for groups.
 
         Raises:
 
         * **`ValueError`** &rarr; If the parent data is not in the proper format.
         """
-        parent_values = list(group_parents.values())
-        child_values = list(group_parents.keys())
+        parent_values = list(self.group_parents.values())
+        child_values = list(self.group_parents.keys())
         root_keys = pamda.difference(self.group_keys, child_values)
         if len(root_keys) < 1:
             raise ValueError("No root keys found in parent data. At least one key must be a root key and have no parent.")
         bad_keys = pamda.difference(child_values, self.group_keys) + pamda.difference(parent_values, self.group_keys)
         if len(bad_keys) > 0:
             raise ValueError(f"The keys and values {list(set(bad_keys))} were passed in the group_parents dict, but not found as keys in the group data.")
-        for key, value in group_parents.items():
+        for key, value in self.group_parents.items():
             if key == value:
                 raise ValueError(f"Parent key '{key}' cannot be the same as the parent value.")
         for key in child_values:
@@ -114,14 +106,14 @@ class GroupsBuilder(GroupsUtils):
             while True:
                 if idx > len(self.group_keys):
                     raise ValueError(f"A circular reference was found in your parent data.")
-                if key in group_parents:
-                    key = group_parents[key]
+                if key in self.group_parents:
+                    key = self.group_parents[key]
                     idx += 1
                 else:
                     break
 
 
-    def __gen_structures__(self, group_data):
+    def __gen_structures__(self):
         """
         Generate the group structures.
 
@@ -140,12 +132,19 @@ class GroupsBuilder(GroupsUtils):
 
         * `[None]`
         """
-        groups = [dict(i[0]) for i in pamda.groupKeys(keys=self.group_keys, data=group_data)]
+        groups_data = pamda.groupKeys(keys=self.group_keys, data=self.group_data)
+        # Validate that the id is consistent if it is specified
+        if 'id' in self.group_keys_all:
+            for group in groups_data:
+                if len(set(pamda.pluck('id', group))) > 1:
+                    raise ValueError(f"The 'id' key has different values for items that are supposed to be in the same group. This is not allowed.")
+        # Get only relevant data from each group
+        groups = [i[0] for i in groups_data]
         self.id_structure = {}
         for idx, group in enumerate(groups):
-            idx = str(idx)
-            self.id_structure = pamda.assocPath(path=list(group.values()), value=idx, data=self.id_structure)
-            group['id']=idx
+            id = group.pop('id', str(idx))
+            self.id_structure = pamda.assocPath(path=list(group.values()), value=id, data=self.id_structure)
+            group['id']=id
         self.data_structure = pamda.pivot(groups)
         
         self.levels_structure = {}

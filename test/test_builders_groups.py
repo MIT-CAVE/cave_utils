@@ -18,7 +18,9 @@ success = {
     "get_id": False,
     "bad_parents": False,
     "circular_group_parents": False,
-    "bad_group_data": False
+    "bad_group_data": False,
+    "id_col_serialize": False,
+    "id_col_broken": False
 }
 
 geo_builder = GroupsBuilder(
@@ -96,6 +98,51 @@ try:
     )
 except ValueError as e:
     success['bad_group_data'] = True
+
+id_group_data = [
+    {"id": "a", "continent": "North America", "country": "USA", "state": "New York"},
+    {"id": "b", "continent": "North America", "country": "USA", "state": "California"},
+    {"id": "c", "continent": "North America", "country": "Canada", "state": "Ontario"},
+    {"id": "d", "continent": "Europe", "country": "France", "state": "Paris"},
+    {"id": "e", "continent": "Europe", "country": "France", "state": "Lyon"},
+    {"id": "f", "continent": "Europe", "country": "Germany", "state": "Berlin"},
+]
+
+geo_builder = GroupsBuilder(
+    group_name="Geography", 
+    group_data=id_group_data, 
+    group_parents=group_parents, 
+    group_names=group_names
+)
+
+expected_output = {
+    'data': {
+        'continent': ['North America', 'North America', 'North America', 'Europe', 'Europe', 'Europe'],
+        'country': ['USA', 'USA', 'Canada', 'France', 'France', 'Germany'],
+        'id': ['a', 'b', 'c', 'd', 'e', 'f'],
+        'state': ['New York', 'California', 'Ontario', 'Paris', 'Lyon', 'Berlin']
+    },
+    'levels': {
+        'continent': {'name': 'Continents'},
+        'country': {'name': 'Countries', 'parent': 'continent'},
+        'state': {'name': 'States', 'parent': 'country'}
+    },
+    'name': 'Geography',
+    'order': {'data': ['continent', 'country', 'state']}
+}
+
+if geo_builder.serialize() == expected_output:
+    success["id_col_serialize"] = True
+
+try:
+    geo_builder = GroupsBuilder(
+        group_name="Geography", 
+        group_data=[*id_group_data, {"id": "b", "continent": "North America", "country": "USA", "state": "New York"}], 
+        group_parents=group_parents, 
+        group_names=group_names
+    )
+except ValueError as e:
+    success['id_col_broken'] = True
 
 if all(success.values()):
     print("Builder Groups Tests: passed!")
