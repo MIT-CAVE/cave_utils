@@ -8,8 +8,8 @@ group_data = [
     {"continent": "Europe", "country": "France", "state": "Lyon"},
     {"continent": "Europe", "country": "Germany", "state": "Berlin"},
 ]
-group_parents = {'state': 'country', 'country': 'continent'}
-group_names = {'continent': 'Continents', 'country': 'Countries', 'state': 'States'}
+group_parents = {"state": "country", "country": "continent"}
+group_names = {"continent": "Continents", "country": "Countries", "state": "States"}
 
 success = {
     "init": False,
@@ -20,42 +20,49 @@ success = {
     "circular_group_parents": False,
     "bad_group_data": False,
     "id_col_serialize": False,
-    "id_col_broken": False
+    "id_col_broken": False,
 }
 
 geo_builder = GroupsBuilder(
-    group_name="Geography", 
-    group_data=group_data, 
-    group_parents=group_parents, 
-    group_names=group_names
+    group_name="Geography",
+    group_data=group_data,
+    group_parents=group_parents,
+    group_names=group_names,
 )
 success["init"] = True
 
 try:
     geo_builder = GroupsBuilder(
-        group_name="Geography", 
-        group_data=group_data, 
-        group_parents=group_parents, 
-        group_names=group_names
+        group_name="Geography",
+        group_data=group_data,
+        group_parents=group_parents,
+        group_names=group_names,
     )
-    success['double_init'] = True
+    success["double_init"] = True
 except:
     pass
 
 expected_output = {
-    'data': {
-        'continent': ['North America', 'North America', 'North America', 'Europe', 'Europe', 'Europe'],
-        'country': ['USA', 'USA', 'Canada', 'France', 'France', 'Germany'],
-        'id': ['0', '1', '2', '3', '4', '5'],
-        'state': ['New York', 'California', 'Ontario', 'Paris', 'Lyon', 'Berlin']
+    "data": {
+        "continent": [
+            "North America",
+            "North America",
+            "North America",
+            "Europe",
+            "Europe",
+            "Europe",
+        ],
+        "country": ["USA", "USA", "Canada", "France", "France", "Germany"],
+        "id": ["0", "1", "2", "3", "4", "5"],
+        "state": ["New York", "California", "Ontario", "Paris", "Lyon", "Berlin"],
     },
-    'levels': {
-        'continent': {'name': 'Continents'},
-        'country': {'name': 'Countries', 'parent': 'continent'},
-        'state': {'name': 'States', 'parent': 'country'}
+    "levels": {
+        "continent": {"name": "Continents"},
+        "country": {"name": "Countries", "parent": "continent"},
+        "state": {"name": "States", "parent": "country"},
     },
-    'name': 'Geography',
-    'order': {'data': ['continent', 'country', 'state']}
+    "name": "Geography",
+    "order": {"data": ["continent", "country", "state"]},
 }
 
 if geo_builder.serialize() == expected_output:
@@ -64,40 +71,40 @@ if geo_builder.serialize() == expected_output:
 if geo_builder.get_id({"continent": "North America", "country": "USA", "state": "New York"}) == "0":
     success["get_id"] = True
 
-bad_parents = {'state_mispelled': 'country'}
-circular_group_parents = {'state': 'country', 'country': 'state'}
-bad_group_data = group_data + [{'bad_record': 'bad_value'}]
+bad_parents = {"state_mispelled": "country"}
+circular_group_parents = {"state": "country", "country": "state"}
+bad_group_data = group_data + [{"bad_record": "bad_value"}]
 
 try:
     test_builder = GroupsBuilder(
-        group_name="Geography", 
-        group_data=group_data, 
-        group_parents=bad_parents, 
-        group_names=group_names
+        group_name="Geography",
+        group_data=group_data,
+        group_parents=bad_parents,
+        group_names=group_names,
     )
 except ValueError as e:
-    success['bad_parents'] = True
+    success["bad_parents"] = True
 
 try:
     test_builder = GroupsBuilder(
-        group_name="Geography", 
-        group_data=group_data, 
-        group_parents=circular_group_parents, 
-        group_names=group_names
+        group_name="Geography",
+        group_data=group_data,
+        group_parents=circular_group_parents,
+        group_names=group_names,
     )
 except ValueError as e:
-    success['circular_group_parents'] = True
+    success["circular_group_parents"] = True
 
 
 try:
     test_builder = GroupsBuilder(
-        group_name="Geography", 
-        group_data=bad_group_data, 
-        group_parents=group_parents, 
-        group_names=group_names
+        group_name="Geography",
+        group_data=bad_group_data,
+        group_parents=group_parents,
+        group_names=group_names,
     )
 except ValueError as e:
-    success['bad_group_data'] = True
+    success["bad_group_data"] = True
 
 id_group_data = [
     {"id": "a", "continent": "North America", "country": "USA", "state": "New York"},
@@ -109,26 +116,33 @@ id_group_data = [
 ]
 
 geo_builder = GroupsBuilder(
-    group_name="Geography", 
-    group_data=id_group_data, 
-    group_parents=group_parents, 
-    group_names=group_names
+    group_name="Geography",
+    group_data=id_group_data,
+    group_parents=group_parents,
+    group_names=group_names,
 )
 
 expected_output = {
-    'data': {
-        'continent': ['North America', 'North America', 'North America', 'Europe', 'Europe', 'Europe'],
-        'country': ['USA', 'USA', 'Canada', 'France', 'France', 'Germany'],
-        'id': ['a', 'b', 'c', 'd', 'e', 'f'],
-        'state': ['New York', 'California', 'Ontario', 'Paris', 'Lyon', 'Berlin']
+    "data": {
+        "continent": [
+            "North America",
+            "North America",
+            "North America",
+            "Europe",
+            "Europe",
+            "Europe",
+        ],
+        "country": ["USA", "USA", "Canada", "France", "France", "Germany"],
+        "id": ["a", "b", "c", "d", "e", "f"],
+        "state": ["New York", "California", "Ontario", "Paris", "Lyon", "Berlin"],
     },
-    'levels': {
-        'continent': {'name': 'Continents'},
-        'country': {'name': 'Countries', 'parent': 'continent'},
-        'state': {'name': 'States', 'parent': 'country'}
+    "levels": {
+        "continent": {"name": "Continents"},
+        "country": {"name": "Countries", "parent": "continent"},
+        "state": {"name": "States", "parent": "country"},
     },
-    'name': 'Geography',
-    'order': {'data': ['continent', 'country', 'state']}
+    "name": "Geography",
+    "order": {"data": ["continent", "country", "state"]},
 }
 
 if geo_builder.serialize() == expected_output:
@@ -136,13 +150,16 @@ if geo_builder.serialize() == expected_output:
 
 try:
     geo_builder = GroupsBuilder(
-        group_name="Geography", 
-        group_data=[*id_group_data, {"id": "b", "continent": "North America", "country": "USA", "state": "New York"}], 
-        group_parents=group_parents, 
-        group_names=group_names
+        group_name="Geography",
+        group_data=[
+            *id_group_data,
+            {"id": "b", "continent": "North America", "country": "USA", "state": "New York"},
+        ],
+        group_parents=group_parents,
+        group_names=group_names,
     )
 except ValueError as e:
-    success['id_col_broken'] = True
+    success["id_col_broken"] = True
 
 if all(success.values()):
     print("Builder Groups Tests: passed!")
