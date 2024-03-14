@@ -18,6 +18,22 @@ class GroupsUtils:
             "levels": self.levels_structure,
         }
 
+    def get_id_list(self):
+        """
+        Get the list of ids for the groups in the same order as the provided group_data.
+
+        Returns:
+        * `[list]` &rarr; The list of ids for the groups in the same order as the provided group_data.
+        """
+        if isinstance(self, DateGroupsBuilder):
+            return self.date_data
+        elif isinstance(self, GroupsBuilder):
+            return [self.get_id(i) for i in self.group_data]
+        else:
+            raise NotImplementedError(
+                "This function is not supported with this type of GroupsBuilder."
+            )
+
 
 @type_enforced.Enforcer
 class GroupsBuilder(GroupsUtils):
@@ -218,6 +234,7 @@ class DateGroupsBuilder(GroupsUtils):
         * `[DateGroupsBuilder]` &rarr; The initialized DateGroupsBuilder object.
         """
         self.group_name = group_name
+        self.date_data = date_data
         self.date_format = date_format
         self.include_year = include_year
         self.include_year_month = include_year_month
@@ -338,4 +355,4 @@ class DateGroupsBuilder(GroupsUtils):
         """
         Ensure that the get_id function is not called with date Groups.
         """
-        raise NotImplementedError("This function is not supported with date Groupss.")
+        raise NotImplementedError("This function is not supported with date Groups.")
