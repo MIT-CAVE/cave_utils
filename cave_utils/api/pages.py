@@ -82,6 +82,7 @@ class pages_data_star_pageLayout(ApiValidator):
         statId: [str, list, None] = None,
         showToolbar: bool = True,
         maximized: bool = False,
+        defaultToZero: bool = False,
         **kwargs,
     ):
         """
@@ -135,7 +136,8 @@ class pages_data_star_pageLayout(ApiValidator):
             * **Note**: If left unspecified (i.e., `None`), it will default to `settings.showToolbar`.
         * **`maximized`**: `[bool]` = `False` &rarr; Whether or not the layout should be maximized.
             * **Note**: If more than one chart belonging to the same page layout is set to `True`, the first one found in the list will take precedence.
-
+        * **`defaultToZero`**: `[bool]` = `False` &rarr; Whether or not the chart should default missing values to zero.
+            
         [area chart]: https://en.wikipedia.org/wiki/Area_chart
         [bar chart]: https://en.wikipedia.org/wiki/Bar_chart
         [stacked bar chart]: https://en.wikipedia.org/wiki/Bar_chart
