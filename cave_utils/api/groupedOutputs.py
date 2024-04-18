@@ -279,13 +279,13 @@ class groupedOutputs_groupings_star(ApiValidator):
         levels_data = self.data.get("levels", {})
         levels_data_keys = list(levels_data.keys())
         data_data = self.data.get("data", {})
-
         CustomKeyValidator(
             data=levels_data,
             log=self.log,
             prepend_path=["levels"],
             validator=groupedOutputs_groupings_star_levels_star,
             acceptable_parents=levels_data_keys,
+            acceptable_data_levels=data_data,
             **kwargs,
         )
         groupedOutputs_groupings_star_data(
@@ -348,7 +348,7 @@ class groupedOutputs_groupings_star_levels_star(ApiValidator):
     """
 
     @staticmethod
-    def spec(name: str, parent: [str, None] = None, ordering: [list, None] = None, **kwargs):
+    def spec(name: str, parent: [str, None] = None, ordering: [list, None] = None, orderWithParent: bool = True, coloring: [dict, None] = None, **kwargs):
         """
         Arguments:
 
@@ -358,16 +358,22 @@ class groupedOutputs_groupings_star_levels_star(ApiValidator):
             * **Notes**:
                 * The parent level key must be defined in `groupedOutputs.groupings.*.levels.*`
                 * If `None`, this will be considered to be the root of the hierarchy.
+        * **`ordering`**: `[list]` &rarr;
+            * The ordering of individual values for this level in charts and tables.
+            * **Note**: If none, the ordering will be alphabetical.
+            * **Note**: If a partial ordering is provided, the provided values will be placed first in order.
+            * **Note**: If a partial ordering is provided, the remaining values will be placed in alphabetical order.
+            * **Note**: All items in this list must be defined in `groupedOutputs.groupings.*.levels.*.values.*`
+        * **`orderWithParent`**: `[bool]`=True &rarr;
+            * Weather or not to order this level based on the parent level.
+            * If `True`, the ordering of this level will also be based on the parent level.
+            * If `False`, the ordering will be based on the ordering of this level only.
+        * **`coloring`**: `[dict]` &rarr;
+            * A dictionary of colors to be used for the level.
+            * Each key in this dictionary is a value in the level.
+            * Each value in this dictionary is an rgba string.
+            * **See**: `cave_utils.api.groupedOutputs.groupedOutputs_groupings_star_levels_star_coloring`
         """
-        # TODO: Figure out new way for ordering
-        # - `ordering`:
-        #     - Type: list
-        #     - What: The ordering of individual values for this level in charts and tables.
-        #     - Note: If none, the ordering will be alphabetical.
-        #     - Note: If a partial ordering is provided, the provided values will be placed first in order.
-        #     - Note: If a partial ordering is provided, the remaining values will be placed in alphabetical order.
-        #     - Note: All items in this list must be defined in `groupedOutputs.groupings.*.levels.*.values.*`
-        # """
         return {"kwargs": kwargs, "accepted_values": {}}
 
     def __extend_spec__(self, **kwargs):
@@ -378,9 +384,18 @@ class groupedOutputs_groupings_star_levels_star(ApiValidator):
                 valid_values=kwargs.get("acceptable_parents", []),
                 prepend_path=["parent"],
             )
-        # ordering = self.data.get("ordering")
-        # if ordering is not None:
-        #     print(ordering, kwargs.get("acceptable_data_keys", []))
-        #     self.__check_subset_valid__(
-        #         subset=ordering, valid_values=kwargs.get("acceptable_data_keys", []), prepend_path=["ordering"]
-        #     )
+        ordering = self.data.get("ordering")
+        if ordering is not None:
+            self.__check_subset_valid__(
+                subset=ordering, valid_values=kwargs.get("acceptable_data_levels", {}).get(kwargs.get('CustomKeyValidatorFieldId'),[]), prepend_path=["ordering"]
+            )
+
+        coloring = self.data.get("coloring")
+        if coloring is not None:
+            self.__check_subset_valid__(
+                subset=list(coloring.keys()),
+                valid_values=kwargs.get("acceptable_data_levels", {}).get(kwargs.get('CustomKeyValidatorFieldId'),[]),
+                prepend_path=["coloring"],
+            )
+            for key, value in coloring.items():
+                self.__check_rgba_string_valid__(rgba_string=value, prepend_path=['coloring', key])
