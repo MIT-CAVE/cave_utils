@@ -95,6 +95,9 @@ class Root(ApiValidator):
             root_data=self.data,
             **kwargs,
         )
+        # Special logic to add timeLength to kwargs
+        # This is used to validate timeValues across the app
+        kwargs["timeLength"] = pamda.path(["settings","time","timeLength"], self.data)
         # Validate panes
         panes_data = self.data.get("panes")
         pane_validPaneIds = []

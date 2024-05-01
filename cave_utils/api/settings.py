@@ -291,3 +291,8 @@ class settings_time(ApiValidator):
             * **Example**: `"Decade"`.
         """
         return {"kwargs": kwargs, "accepted_values": {}}
+    
+    def __extend_spec__(self, **kwargs):
+        timeLength = self.data.get("timeLength")
+        if timeLength < 1:
+            self.__error__(f"Time length must be greater than 0.", path=["timeLength"])
