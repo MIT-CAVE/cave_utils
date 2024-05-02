@@ -1,10 +1,10 @@
 """
 General API Spec items that are found in multiple places. This is not a key that should be passed as part of your `session_data`.
 """
+
 from pamda import pamda
 import type_enforced
 from cave_utils.api_utils.validator_utils import ApiValidator, CustomKeyValidator
-from typing import Literal
 
 
 @type_enforced.Enforcer
@@ -323,13 +323,13 @@ class props(ApiValidator):
             if k not in required_fields + optional_fields:
                 kwargs[k] = v
         notationDisplay_options_dict = {
-            'compact': ['short', 'long'],
-            'scientific': ['e', 'e+', 'E', 'E+', 'x10^', 'x10^+'],
-            'engineering': ['e', 'e+', 'E', 'E+', 'x10^', 'x10^+'],
-            'standard': []
+            "compact": ["short", "long"],
+            "scientific": ["e", "e+", "E", "E+", "x10^", "x10^+"],
+            "engineering": ["e", "e+", "E", "E+", "x10^", "x10^+"],
+            "standard": [],
         }
-        notation = passed_values.get('notation', 'standard')
-        legendNotation = passed_values.get('legendNotation', 'standard')
+        notation = passed_values.get("notation", "standard")
+        legendNotation = passed_values.get("legendNotation", "standard")
         view_options_dict = {
             "date": ["year", "month", "day"],
             "time": ["hours", "minutes", "seconds"],
@@ -376,6 +376,7 @@ class props(ApiValidator):
                 variant=self.data.get("variant"),
                 **kwargs,
             )
+
 
 @type_enforced.Enforcer
 class props_options(ApiValidator):

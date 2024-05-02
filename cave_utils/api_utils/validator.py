@@ -1,6 +1,7 @@
 """
 This module contains the primary Validator class that is used to validate your session_data against the API spec.
 """
+
 from cave_utils.api_utils.validator_utils import LogObject
 from cave_utils.api import Root
 import type_enforced

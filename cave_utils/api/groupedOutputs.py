@@ -1,6 +1,7 @@
 """
 Create grouped outputs for building generalized charts and tables.
 """
+
 from cave_utils.api_utils.validator_utils import ApiValidator, CustomKeyValidator
 import type_enforced
 from pamda import pamda
@@ -348,7 +349,14 @@ class groupedOutputs_groupings_star_levels_star(ApiValidator):
     """
 
     @staticmethod
-    def spec(name: str, parent: [str, None] = None, ordering: [list, None] = None, orderWithParent: bool = True, coloring: [dict, None] = None, **kwargs):
+    def spec(
+        name: str,
+        parent: [str, None] = None,
+        ordering: [list, None] = None,
+        orderWithParent: bool = True,
+        coloring: [dict, None] = None,
+        **kwargs,
+    ):
         """
         Arguments:
 
@@ -387,15 +395,21 @@ class groupedOutputs_groupings_star_levels_star(ApiValidator):
         ordering = self.data.get("ordering")
         if ordering is not None:
             self.__check_subset_valid__(
-                subset=ordering, valid_values=kwargs.get("acceptable_data_levels", {}).get(kwargs.get('CustomKeyValidatorFieldId'),[]), prepend_path=["ordering"]
+                subset=ordering,
+                valid_values=kwargs.get("acceptable_data_levels", {}).get(
+                    kwargs.get("CustomKeyValidatorFieldId"), []
+                ),
+                prepend_path=["ordering"],
             )
 
         coloring = self.data.get("coloring")
         if coloring is not None:
             self.__check_subset_valid__(
                 subset=list(coloring.keys()),
-                valid_values=kwargs.get("acceptable_data_levels", {}).get(kwargs.get('CustomKeyValidatorFieldId'),[]),
+                valid_values=kwargs.get("acceptable_data_levels", {}).get(
+                    kwargs.get("CustomKeyValidatorFieldId"), []
+                ),
                 prepend_path=["coloring"],
             )
             for key, value in coloring.items():
-                self.__check_rgba_string_valid__(rgba_string=value, prepend_path=['coloring', key])
+                self.__check_rgba_string_valid__(rgba_string=value, prepend_path=["coloring", key])

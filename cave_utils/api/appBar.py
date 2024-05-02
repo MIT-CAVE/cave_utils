@@ -12,6 +12,7 @@ simultaneously.
 [predefined]: #appBar_data_star.spec
 [custom]: #appBar_data_star.spec
 """
+
 from cave_utils.api_utils.validator_utils import ApiValidator, CustomKeyValidator
 import type_enforced
 

@@ -1,6 +1,7 @@
 """
 Configure general settings for your application like the icons to use, how to sync data with the server, and more.
 """
+
 from cave_utils.api_utils.validator_utils import *
 import type_enforced
 
@@ -291,7 +292,7 @@ class settings_time(ApiValidator):
             * **Example**: `"Decade"`.
         """
         return {"kwargs": kwargs, "accepted_values": {}}
-    
+
     def __extend_spec__(self, **kwargs):
         timeLength = self.data.get("timeLength")
         if timeLength < 1:

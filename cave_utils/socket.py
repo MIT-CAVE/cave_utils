@@ -1,7 +1,6 @@
 class Socket:
     def __init__(self, silent=False):
         self.silent = silent
-        pass
 
     def broadcast(self, *args, **kwargs):
         if not self.silent:

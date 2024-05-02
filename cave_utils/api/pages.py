@@ -1,6 +1,7 @@
 """
 Configure your application's pages.
 """
+
 from cave_utils.api_utils.validator_utils import ApiValidator, CustomKeyValidator
 import type_enforced
 
@@ -137,7 +138,7 @@ class pages_data_star_pageLayout(ApiValidator):
         * **`maximized`**: `[bool]` = `False` &rarr; Whether or not the layout should be maximized.
             * **Note**: If more than one chart belonging to the same page layout is set to `True`, the first one found in the list will take precedence.
         * **`defaultToZero`**: `[bool]` = `False` &rarr; Whether or not the chart should default missing values to zero.
-            
+
         [area chart]: https://en.wikipedia.org/wiki/Area_chart
         [bar chart]: https://en.wikipedia.org/wiki/Bar_chart
         [stacked bar chart]: https://en.wikipedia.org/wiki/Bar_chart

@@ -1,6 +1,7 @@
 """
 Special utility functions to help in validating your data against the CAVE API. This is not a key that should be passed as part of your `session_data`.
 """
+
 from pamda import pamda
 import type_enforced
 import re, datetime
@@ -24,7 +25,7 @@ class ApiValidator:
             "accepted_values": {},
         }
 
-    def __validate__(self, data:dict, log: LogObject, prepend_path: list[str] = list(), **kwargs):
+    def __validate__(self, data: dict, log: LogObject, prepend_path: list[str] = list(), **kwargs):
         """
         Run the API validation process for the passed data.
         """
@@ -39,7 +40,7 @@ class ApiValidator:
             if extra_kwargs != {}:
                 self.__warn__(
                     msg=f"Unknown Fields: {str(list(extra_kwargs.keys()))}",
-                )            
+                )
 
         except Exception as e:
             self.__error__(
@@ -77,7 +78,7 @@ class ApiValidator:
 
     # Additional core validations for generic terms like `order` and `timeValues`
     def __genericKeyValidation__(self, **kwargs):
-        # Remove `timeValues` out prior to each level validation 
+        # Remove `timeValues` out prior to each level validation
         data_timeValues = self.data.pop("timeValues", None)
         # Remove `order` out prior to each level validation
         data_order = self.data.pop("order", None)
@@ -85,20 +86,22 @@ class ApiValidator:
             timeLength = kwargs.get("timeLength")
             if timeLength is None:
                 self.__error__(
-                    path=['timeValues'],
+                    path=["timeValues"],
                     msg="`settings.time.timeLength` must be specified to validate `timeValues`",
                 )
             else:
                 self.__timeValues_validation__(timeValues=data_timeValues, timeLength=timeLength)
         if data_order is not None:
             self.__order_validation__(order=data_order)
-            
+
     @type_enforced.Enforcer
-    def __order_validation__(self, order:dict[list[str,int]]):
+    def __order_validation__(self, order: dict[list[str, int]]):
         """
         Check that the ordering options are valid
         """
-        orderable_data_keys = {key: list(value.keys()) for key, value in self.data.items() if isinstance(value, dict)}
+        orderable_data_keys = {
+            key: list(value.keys()) for key, value in self.data.items() if isinstance(value, dict)
+        }
         if self.__check_subset_valid__(
             subset=list(order.keys()),
             valid_values=list(orderable_data_keys.keys()),
@@ -110,15 +113,15 @@ class ApiValidator:
                     valid_values=orderable_data_keys[order_key],
                     prepend_path=["order", order_key],
                 )
-    
+
     @type_enforced.Enforcer
-    def __timeValues_validation__(self, timeValues: [dict[dict],list[dict]], timeLength:int):
+    def __timeValues_validation__(self, timeValues: [dict[dict], list[dict]], timeLength: int):
         if len(timeValues) == 0:
             return
         if isinstance(timeValues, list):
             if len(timeValues) != timeLength:
                 self.__error__(
-                    path=['timeValues'],
+                    path=["timeValues"],
                     msg=f"The length of `timeValues` (as a list) must be equal to `settings.time.timeLength` ({timeLength})",
                 )
                 return
@@ -126,22 +129,22 @@ class ApiValidator:
             keys = list(timeValues.keys())
             if not all(isinstance(key, int) for key in keys):
                 self.__error__(
-                    path=['timeValues'],
+                    path=["timeValues"],
                     msg="`timeValues` (as a dict) keys must be integers",
                 )
                 return
-            if not all(key >= 0 and key<timeLength for key in keys):
+            if not all(key >= 0 and key < timeLength for key in keys):
                 self.__error__(
-                    path=['timeValues'],
+                    path=["timeValues"],
                     msg=f"`timeValues` (as a dict) keys must be integers between 0 and {timeLength-1} inclusive (1 minus the value at `settings.time.timeLength`)",
                 )
                 return
             timeValues = list(timeValues.values())
-        timeValueTypes = {k:type(v) for k,v in timeValues[0].items()}
+        timeValueTypes = {k: type(v) for k, v in timeValues[0].items()}
         for timeValue in timeValues:
-            if timeValueTypes != {k:type(v) for k,v in timeValue.items()}:
+            if timeValueTypes != {k: type(v) for k, v in timeValue.items()}:
                 self.__error__(
-                    path=['timeValues'],
+                    path=["timeValues"],
                     msg="All timeValues must have the same keys and each key must have the same type",
                 )
                 return
@@ -285,7 +288,9 @@ class ApiValidator:
             return False
         return True
 
-    def __check_coord_path_valid__(self, coord_path: list[list[int,float]], prepend_path: list[str] = list()):
+    def __check_coord_path_valid__(
+        self, coord_path: list[list[int, float]], prepend_path: list[str] = list()
+    ):
         """
         Validate a coordinate path and if an issue is present, log an error
         """

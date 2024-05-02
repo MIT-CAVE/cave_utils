@@ -1,6 +1,7 @@
 """
 Configure the style and UI elements of your application's maps.
 """
+
 from cave_utils.api_utils.validator_utils import ApiValidator, CustomKeyValidator
 import type_enforced
 

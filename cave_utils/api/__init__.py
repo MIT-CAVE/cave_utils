@@ -11,6 +11,7 @@ Submodules (and their classes) are used to define the api at each level. You can
 
 See the left hand side for all available submodules.
 """
+
 from cave_utils.api_utils.validator_utils import *
 from cave_utils.api.extraKwargs import extraKwargs
 from cave_utils.api.settings import settings
@@ -97,7 +98,7 @@ class Root(ApiValidator):
         )
         # Special logic to add timeLength to kwargs
         # This is used to validate timeValues across the app
-        kwargs["timeLength"] = pamda.path(["settings","time","timeLength"], self.data)
+        kwargs["timeLength"] = pamda.path(["settings", "time", "timeLength"], self.data)
         # Validate panes
         panes_data = self.data.get("panes")
         pane_validPaneIds = []

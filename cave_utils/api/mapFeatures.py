@@ -1,6 +1,7 @@
 """
 Create visualizations for your map, including `arc`s, `node`s, and `geo`s, and customize their appearance.
 """
+
 from cave_utils.api_utils.validator_utils import ApiValidator, CustomKeyValidator
 from cave_utils.api_utils.general import props, valueLists, layout
 import type_enforced
@@ -155,10 +156,8 @@ class mapFeatures_data_star_data(ApiValidator):
             **kwargs,
         )
         # Validate that all lengths are the same
-        lengths = [
-            len(v) for k, v in location_data.items() if k not in ['timeValues', 'order']
-        ] + [
-            len(v) for k, v in valueLists_data.items() if k not in ['timeValues', 'order']
+        lengths = [len(v) for k, v in location_data.items() if k not in ["timeValues", "order"]] + [
+            len(v) for k, v in valueLists_data.items() if k not in ["timeValues", "order"]
         ]
         if len(set(lengths)) > 1:
             self.__error__(msg=f"location and valueLists keys must have the same length.", path=[])
@@ -193,10 +192,26 @@ class mapFeatures_data_star_data_location(ApiValidator):
         elif layer_type == "arc":
             if layer_geoJson is not None:
                 required_keys = ["geoJsonValue"]
-                optional_keys += ["path", "startLatitude", "startLongitude", "endLatitude", "endLongitude","startAltitude", "endAltitude"]
+                optional_keys += [
+                    "path",
+                    "startLatitude",
+                    "startLongitude",
+                    "endLatitude",
+                    "endLongitude",
+                    "startAltitude",
+                    "endAltitude",
+                ]
             elif "path" in passed_keys:
                 required_keys = ["path"]
-                optional_keys += ["startLatitude", "startLongitude", "endLatitude", "endLongitude", "geoJsonValue","startAltitude", "endAltitude"]
+                optional_keys += [
+                    "startLatitude",
+                    "startLongitude",
+                    "endLatitude",
+                    "endLongitude",
+                    "geoJsonValue",
+                    "startAltitude",
+                    "endAltitude",
+                ]
             else:
                 required_keys = ["startLatitude", "startLongitude", "endLatitude", "endLongitude"]
                 optional_keys += ["startAltitude", "endAltitude", "geoJsonValue", "path"]
@@ -215,7 +230,7 @@ class mapFeatures_data_star_data_location(ApiValidator):
                 )
                 continue
             if key == "geoJsonValue":
-                if len(value_list)!=len(set(value_list)):
+                if len(value_list) != len(set(value_list)):
                     self.__warn__(
                         msg=f"`geoJsonValue` should be a list of unique values. Otherwise, the corresponding map feature may not render correctly.",
                         path=[key],
