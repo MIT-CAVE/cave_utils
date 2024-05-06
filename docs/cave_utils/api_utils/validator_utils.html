@@ -84,8 +84,7 @@
         } else {
             var new_url = version + '/';
         }
-        var path = window.location.pathname;
-        var url = path.split(split_at)[0]+ split_at + new_url + 'index.html';
+        var url = window.location.href.split(split_at)[0] + split_at + new_url + 'index.html';
         console.log(url);
         window.location.href = url;
     }
