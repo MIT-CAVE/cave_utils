@@ -1,6 +1,7 @@
 """
 General API Spec items that are found in multiple places. This is not a key that should be passed as part of your `session_data`.
 """
+
 from pamda import pamda
 import type_enforced
 from cave_utils.api_utils.validator_utils import ApiValidator, CustomKeyValidator
@@ -17,7 +18,7 @@ class props(ApiValidator):
         display: [bool, None] = None,
         enabled: [bool, None] = None,
         apiCommand: [str, None] = None,
-        apiCommandKeys: [list, None] = None,
+        apiCommandKeys: [list[str], None] = None,
         options: [dict, None] = None,
         placeholder: [str, None] = None,
         maxValue: [float, int, None] = None,
@@ -29,7 +30,7 @@ class props(ApiValidator):
         precision: [int, None] = None,
         notationDisplay: [str, None] = None,
         unit: [str, None] = None,
-        views: [list, None] = None,
+        views: [list[str], None] = None,
         legendNotation: [str, None] = None,
         legendPrecision: [int, None] = None,
         legendNotationDisplay: [str, None] = None,
@@ -99,7 +100,7 @@ class props(ApiValidator):
         * **`apiCommand`**: `[str]` = `None` &rarr; The name of the API command to trigger.
             * **Note**: If `None`, no `apiCommand` is triggered.
             * **Note**: This attribute is applicable to all props except `"head"` props.
-        * **`apiCommandKeys`**: `[list]` = `None` &rarr;
+        * **`apiCommandKeys`**: `[list[str]]` = `None` &rarr;
             * The root API keys to pass to your `execute_command` function if an `apiCommand` is provided.
             * **Note**: If `None`, all API keys are passed to your `execute_command`.
             * **Note**: This attribute is applicable to all props except `"head"` props.
@@ -126,15 +127,28 @@ class props(ApiValidator):
         * **`rows`**: `[int]` = `None` &rarr;
             * The fixed number of rows to show for a `"textarea"` variant.
             * **Note**: This attribute is applicable exclusively to `"text"` props.
-        * **`views`**: `[list]` = `["year", "day", "hours", "minutes"]` &rarr;
+        * **`views`**: `[list[str]]` &rarr;
             * The available time units for the represented date and/or time.
+            * **Default Value**:
+                * When **`variant`** == `"date"`: `["year", "day"]`
+                * When **`variant`** == `"time"`: `["hours", "minutes"]`
+                * When **`variant`** == `"datetime"`: `["year", "day", "hours", "minutes"]`
             * **Accepted Values**:
-                * `"year"`: The year view
-                * `"month"`: The month view
-                * `"day"`: The day view
-                * `"hours"`: The hours view
-                * `"minutes"`: The minutes view
-                * `"seconds"`: The seconds view
+                * When **`variant`** == `"date"`:
+                    * `"year"`: The year view
+                    * `"month"`: The month view
+                    * `"day"`: The day view
+                * When **`variant`** == `"time"`:
+                    * `"hours"`: The hours view
+                    * `"minutes"`: The minutes view
+                    * `"seconds"`: The seconds view
+                * When **`variant`** == `"datetime"`:
+                    * `"year"`: The year view
+                    * `"month"`: The month view
+                    * `"day"`: The day view
+                    * `"hours"`: The hours view
+                    * `"minutes"`: The minutes view
+                    * `"seconds"`: The seconds view
             * **Notes**:
                 * The views will be presented in the order specified in the `views` array.
                 * This attribute is applicable exclusively to `"date"` props.
@@ -173,7 +187,7 @@ class props(ApiValidator):
             * **Notes**:
                 * If left unspecified (i.e., `None`), it will default to `settings.defaults.unitPlacement`.
                 * This attribute is applicable exclusively to `"num"` props.
-        * **`notation`**: `[int]` = `"standard"` &rarr; The formatting style of a numeric value.
+        * **`notation`**: `[str]` = `"standard"` &rarr; The formatting style of a numeric value.
             * **Accepted Values**:
                 * `"standard"`: Plain number formatting
                 * `"compact"`: Resembles the [metric prefix][] system
@@ -184,14 +198,18 @@ class props(ApiValidator):
                 * This attribute is applicable exclusively to `"num"` props.
         * **`notationDisplay`**: `[str]` = `"e+"` | `"short"` &rarr; Further customize the formatting within the selected `notation`.
             * **Accepted Values**:
-                * `"short"`: Add symbols `K`, `M`, `B`, and `T` (in `"en-US"`) to denote thousands, millions, billions, and trillions, respectively.
-                * `"long"`: Present numeric values with the informal suffix words `thousand`, `million`, `billion`, and `trillion` (in `"en-US"`).
-                * `"e"`: Exponent symbol in lowercase as per the chosen `locale` identifier
-                * `"e+"`: Similar to `"e"`, but with a plus sign for positive exponents.
-                * `"E"`: Exponent symbol in uppercase as per the chosen `locale` identifier
-                * `"E+"`: Similar to `"E"`, but with a plus sign for positive exponents.
-                * `"x10^"`: Formal scientific notation representation
-                * `"x10^+"`: Similar to `"x10^"`, with a plus sign for positive exponents.
+                * When **`notation`** == `"compact"`:
+                    * `"short"`: Add symbols `K`, `M`, `B`, and `T` (in `"en-US"`) to denote thousands, millions, billions, and trillions, respectively.
+                    * `"long"`: Present numeric values with the informal suffix words `thousand`, `million`, `billion`, and `trillion` (in `"en-US"`).
+                * When **`notation`** == `"scientific"` or `"engineering"`:
+                    * `"e"`: Exponent symbol in lowercase as per the chosen `locale` identifier
+                    * `"e+"`: Similar to `"e"`, but with a plus sign for positive exponents.
+                    * `"E"`: Exponent symbol in uppercase as per the chosen `locale` identifier
+                    * `"E+"`: Similar to `"E"`, but with a plus sign for positive exponents.
+                    * `"x10^"`: Formal scientific notation representation
+                    * `"x10^+"`: Similar to `"x10^"`, with a plus sign for positive exponents.
+                * When **`notation`** == `"standard"`:
+                    * No `notationDisplay` option is allowed for a `"standard"` notation
             * **Notes**:
                 * No `notationDisplay` option is provided for a `"standard"` notation
                 * The options `"short"` and `"long"` are only provided for the `"compact"` notation
@@ -304,20 +322,30 @@ class props(ApiValidator):
         for k, v in passed_values.items():
             if k not in required_fields + optional_fields:
                 kwargs[k] = v
+        notationDisplay_options_dict = {
+            "compact": ["short", "long"],
+            "scientific": ["e", "e+", "E", "E+", "x10^", "x10^+"],
+            "engineering": ["e", "e+", "E", "E+", "x10^", "x10^+"],
+            "standard": [],
+        }
+        notation = passed_values.get("notation", "standard")
+        legendNotation = passed_values.get("legendNotation", "standard")
+        view_options_dict = {
+            "date": ["year", "month", "day"],
+            "time": ["hours", "minutes", "seconds"],
+            "datetime": ["year", "month", "day", "hours", "minutes", "seconds"],
+        }
+        variant = passed_values.get("variant", None)
         return {
             "kwargs": kwargs,
             "accepted_values": {
                 "type": ["head", "num", "toggle", "button", "text", "selector", "date", "media"],
-                "views": ["year", "month", "day", "hours", "minutes", "seconds"],
+                "views": view_options_dict.get(variant, []),
                 "unitPlacement": ["after", "afterWithSpace", "before", "beforeWithSpace"],
-                # TODO: Validate
-                # compact: allowed notation displays -> "short", "long"
-                # scientific|engineering: allowed notation displays -> "e", "e+", "E", "E+", "x10^", "x10^+"
-                # standard: allowed notation displays -> None
                 "notation": ["compact", "precision", "scientific", "engineering"],
-                "notationDisplay": ["short", "long", "e", "e+", "E", "E+", "x10^", "x10^+"],
+                "notationDisplay": notationDisplay_options_dict.get(notation, []),
                 "legendNotation": ["compact", "precision", "scientific", "engineering"],
-                "legendNotationDisplay": ["short", "long", "e", "e+", "E", "E+", "x10^", "x10^+"],
+                "legendNotationDisplay": notationDisplay_options_dict.get(legendNotation, []),
                 "variant": {
                     "head": ["column", "row", "icon", "iconRow"],
                     "text": ["textarea"],
@@ -350,14 +378,15 @@ class props(ApiValidator):
             )
 
 
+@type_enforced.Enforcer
 class props_options(ApiValidator):
     @staticmethod
-    def spec(name: str, path: [list, None] = None, **kwargs):
+    def spec(name: str, path: [list[str], None] = None, **kwargs):
         """
         Arguments:
 
         * **`name`**: `[str]` &rarr; The name of the option.
-        * **`path`**: `[list]` = `None` &rarr; The path to an option.
+        * **`path`**: `[list[str]]` = `None` &rarr; The path to an option.
             * **Notes**:
                 * If `None`, the option will not be selectable
                 * This attribute is applicable exclusively to `"nested"` props
@@ -379,9 +408,6 @@ class props_options(ApiValidator):
                     msg="`path` must be specified and a list of strings for nested options"
                 )
                 return
-            self.__check_type_list__(
-                data=self.data.get("path", []), types=(str,), prepend_path=["path"]
-            )
 
 
 @type_enforced.Enforcer

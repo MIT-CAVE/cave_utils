@@ -12,6 +12,7 @@ simultaneously.
 [predefined]: #appBar_data_star.spec
 [custom]: #appBar_data_star.spec
 """
+
 from cave_utils.api_utils.validator_utils import ApiValidator, CustomKeyValidator
 import type_enforced
 
@@ -52,9 +53,8 @@ class appBar_data_star(ApiValidator):
         bar: str,
         variant: [str, None] = None,
         color: [str, None] = None,
-        order: [dict, None] = None,
         apiCommand: [str, None] = None,
-        apiCommandKeys: [list, None] = None,
+        apiCommandKeys: [list[str], None] = None,
         **kwargs,
     ):
         """
@@ -88,7 +88,7 @@ class appBar_data_star(ApiValidator):
             * **Note**: It must be a valid RGBA string.
             * **Example**: `"rgba(255, 255, 255, 1)"`.
         * **`apiCommand`**: `[str]` = `None` &rarr; The name of the [API command][] to trigger.
-        * **`apiCommandKeys`**: `[list]` = `None` &rarr;
+        * **`apiCommandKeys`**: `[list[str]]` = `None` &rarr;
             * The root API keys to pass to your `execute_command` function if an
             `apiCommand` is provided. If omitted, all API keys are
             passed to `execute_command`.

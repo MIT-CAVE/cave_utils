@@ -1,6 +1,7 @@
 """
 Special utility functions to help in validating your data against the CAVE API. This is not a key that should be passed as part of your `session_data`.
 """
+
 from pamda import pamda
 import type_enforced
 import re, datetime
@@ -24,23 +25,23 @@ class ApiValidator:
             "accepted_values": {},
         }
 
-    def __validate__(self, data, log: LogObject, prepend_path: list = list(), **kwargs):
+    def __validate__(self, data: dict, log: LogObject, prepend_path: list[str] = list(), **kwargs):
         """
         Run the API validation process for the passed data.
         """
-        self.data = data
+        # Make a copy of the data to avoid modifying the original
+        self.data = {**data}
         self.ignore_keys = kwargs.get("ignore_keys", set())
         self.log = LogHelper(log=log, prepend_path=prepend_path)
         try:
+            self.__genericKeyValidation__(**kwargs)
             spec_output = self.spec(**self.data)
             extra_kwargs = spec_output.get("kwargs", {})
-            # TODO: Find way to custom check timeValues and order
-            extra_kwargs.pop("order", None)
-            extra_kwargs.pop("timeValues", None)
             if extra_kwargs != {}:
                 self.__warn__(
                     msg=f"Unknown Fields: {str(list(extra_kwargs.keys()))}",
                 )
+
         except Exception as e:
             self.__error__(
                 msg=f"Error validating spec: {e}",
@@ -75,21 +76,97 @@ class ApiValidator:
     def __extend_spec__(self, **kwargs):
         pass
 
+    # Additional core validations for generic terms like `order` and `timeValues`
+    def __genericKeyValidation__(self, **kwargs):
+        # Remove `timeValues` out prior to each level validation
+        data_timeValues = self.data.pop("timeValues", None)
+        # Remove `order` out prior to each level validation
+        data_order = self.data.pop("order", None)
+        if data_timeValues is not None:
+            timeLength = kwargs.get("timeLength")
+            if timeLength is None:
+                self.__error__(
+                    path=["timeValues"],
+                    msg="`settings.time.timeLength` must be specified to validate `timeValues`",
+                )
+            else:
+                self.__timeValues_validation__(timeValues=data_timeValues, timeLength=timeLength)
+        if data_order is not None:
+            self.__order_validation__(order=data_order)
+
+    @type_enforced.Enforcer
+    def __order_validation__(self, order: dict[list[str, int]]):
+        """
+        Check that the ordering options are valid
+        """
+        orderable_data_keys = {
+            key: list(value.keys()) for key, value in self.data.items() if isinstance(value, dict)
+        }
+        if self.__check_subset_valid__(
+            subset=list(order.keys()),
+            valid_values=list(orderable_data_keys.keys()),
+            prepend_path=["order"],
+        ):
+            for order_key, order_list in order.items():
+                self.__check_subset_valid__(
+                    subset=order_list,
+                    valid_values=orderable_data_keys[order_key],
+                    prepend_path=["order", order_key],
+                )
+
+    @type_enforced.Enforcer
+    def __timeValues_validation__(self, timeValues: [dict[dict], list[dict]], timeLength: int):
+        if len(timeValues) == 0:
+            return
+        if isinstance(timeValues, list):
+            if len(timeValues) != timeLength:
+                self.__error__(
+                    path=["timeValues"],
+                    msg=f"The length of `timeValues` (as a list) must be equal to `settings.time.timeLength` ({timeLength})",
+                )
+                return
+        if isinstance(timeValues, dict):
+            keys = list(timeValues.keys())
+            if not all(isinstance(key, int) for key in keys):
+                self.__error__(
+                    path=["timeValues"],
+                    msg="`timeValues` (as a dict) keys must be integers",
+                )
+                return
+            if not all(key >= 0 and key < timeLength for key in keys):
+                self.__error__(
+                    path=["timeValues"],
+                    msg=f"`timeValues` (as a dict) keys must be integers between 0 and {timeLength-1} inclusive (1 minus the value at `settings.time.timeLength`)",
+                )
+                return
+            timeValues = list(timeValues.values())
+        timeValueTypes = {k: type(v) for k, v in timeValues[0].items()}
+        for timeValue in timeValues:
+            if timeValueTypes != {k: type(v) for k, v in timeValue.items()}:
+                self.__error__(
+                    path=["timeValues"],
+                    msg="All timeValues must have the same keys and each key must have the same type",
+                )
+                return
+        # Update the data with the first timeValue prioritizing original data
+        # over the first timeValue
+        self.data = {**timeValues[0], **self.data}
+
     # Error and Warning Helpers
-    def __error__(self, msg: str, path: list = list()):
+    def __error__(self, msg: str, path: list[str] = list()):
         """
         Raise an error for the log the log
         """
         self.log.add(path=path, msg=msg)
 
-    def __warn__(self, msg: str, path: list = list()):
+    def __warn__(self, msg: str, path: list[str] = list()):
         """
         Raise a warning for the log the log
         """
         self.log.add(path=path, msg=msg, level="warning")
 
     # Useful Validator Checks
-    def __check_rgba_string_valid__(self, rgba_string: str, prepend_path: list = list()):
+    def __check_rgba_string_valid__(self, rgba_string: str, prepend_path: list[str] = list()):
         """
         Validate an rgba string and if an issue is present, log an error
         """
@@ -112,7 +189,7 @@ class ApiValidator:
         except:
             self.__error__(path=prepend_path, msg=msg)
 
-    def __check_pixel_string_valid__(self, pixel_string: str, prepend_path: list = list()):
+    def __check_pixel_string_valid__(self, pixel_string: str, prepend_path: list[str] = list()):
         """
         Validate a pixel string and if an issue is present, log an error
         """
@@ -126,7 +203,7 @@ class ApiValidator:
         except:
             self.__error__(path=prepend_path, msg=msg)
 
-    def __check_url_valid__(self, url: str, prepend_path: list = list()):
+    def __check_url_valid__(self, url: str, prepend_path: list[str] = list()):
         """
         Validate a url and if an issue is present, log an error.
         """
@@ -146,7 +223,7 @@ class ApiValidator:
             return False
         return True
 
-    def __check_date_valid__(self, input: str, date_variant: str, prepend_path: list = list()):
+    def __check_date_valid__(self, input: str, date_variant: str, prepend_path: list[str] = list()):
         """
         Validate a date string and if an issue is present, log an error.
         """
@@ -189,7 +266,7 @@ class ApiValidator:
         self,
         subset: list,
         valid_values: list,
-        prepend_path: list = list(),
+        prepend_path: list[str] = list(),
         valid_values_count: int = 6,
     ):
         """
@@ -211,7 +288,9 @@ class ApiValidator:
             return False
         return True
 
-    def __check_coord_path_valid__(self, coord_path: list, prepend_path: list = list()):
+    def __check_coord_path_valid__(
+        self, coord_path: list[list[int, float]], prepend_path: list[str] = list()
+    ):
         """
         Validate a coordinate path and if an issue is present, log an error
         """
@@ -257,7 +336,7 @@ class ApiValidator:
                 return False
         return True
 
-    def __check_type_dict__(self, data: dict, types: tuple, prepend_path: list = list()):
+    def __check_type_dict__(self, data: dict, types: tuple, prepend_path: list[str] = list()):
         """
         Validate a dict only contains certain object types for values and if an issue is present, log an error
 
@@ -274,7 +353,7 @@ class ApiValidator:
                 return False
         return True
 
-    def __check_type__(self, value, check_type, prepend_path: list = list()):
+    def __check_type__(self, value, check_type, prepend_path: list[str] = list()):
         """
         Validate a value is a certain type and if an issue is present, log an error
 

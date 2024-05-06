@@ -1,6 +1,7 @@
 """
 Create visualizations for your map, including `arc`s, `node`s, and `geo`s, and customize their appearance.
 """
+
 from cave_utils.api_utils.validator_utils import ApiValidator, CustomKeyValidator
 from cave_utils.api_utils.general import props, valueLists, layout
 import type_enforced
@@ -155,8 +156,8 @@ class mapFeatures_data_star_data(ApiValidator):
             **kwargs,
         )
         # Validate that all lengths are the same
-        lengths = [len(v) for k, v in location_data.items() if k not in ["order", "timeValues"]] + [
-            len(v) for k, v in valueLists_data.items() if k not in ["order", "timeValues"]
+        lengths = [len(v) for k, v in location_data.items() if k not in ["timeValues", "order"]] + [
+            len(v) for k, v in valueLists_data.items() if k not in ["timeValues", "order"]
         ]
         if len(set(lengths)) > 1:
             self.__error__(msg=f"location and valueLists keys must have the same length.", path=[])
@@ -185,16 +186,35 @@ class mapFeatures_data_star_data_location(ApiValidator):
         layer_type = kwargs.get("layer_type")
         layer_geoJson = kwargs.get("layer_geoJson")
         passed_keys = list(self.data.keys())
-        # TODO Figure out way to handle timeValues and order
-        optional_keys = ["timeValues", "order"]
-        if layer_type == "geo" or (layer_type == "arc" and layer_geoJson):
+        optional_keys = []
+        if layer_type == "geo":
             required_keys = ["geoJsonValue"]
         elif layer_type == "arc":
-            if "path" in passed_keys:
+            if layer_geoJson is not None:
+                required_keys = ["geoJsonValue"]
+                optional_keys += [
+                    "path",
+                    "startLatitude",
+                    "startLongitude",
+                    "endLatitude",
+                    "endLongitude",
+                    "startAltitude",
+                    "endAltitude",
+                ]
+            elif "path" in passed_keys:
                 required_keys = ["path"]
+                optional_keys += [
+                    "startLatitude",
+                    "startLongitude",
+                    "endLatitude",
+                    "endLongitude",
+                    "geoJsonValue",
+                    "startAltitude",
+                    "endAltitude",
+                ]
             else:
                 required_keys = ["startLatitude", "startLongitude", "endLatitude", "endLongitude"]
-                optional_keys += ["startAltitude", "endAltitude"]
+                optional_keys += ["startAltitude", "endAltitude", "geoJsonValue", "path"]
         else:
             required_keys = ["latitude", "longitude"]
             optional_keys += ["altitude"]
@@ -209,8 +229,12 @@ class mapFeatures_data_star_data_location(ApiValidator):
                     path=[],
                 )
                 continue
-            if key in ["timeValues", "order"]:
-                continue
+            if key == "geoJsonValue":
+                if len(value_list) != len(set(value_list)):
+                    self.__warn__(
+                        msg=f"`geoJsonValue` should be a list of unique values. Otherwise, the corresponding map feature may not render correctly.",
+                        path=[key],
+                    )
             if not isinstance(value_list, list):
                 self.__error__(
                     msg=f"`{key}` must be a list but got {type(value_list)} instead.", path=[key]
@@ -240,7 +264,7 @@ class mapFeatures_data_star_data_location(ApiValidator):
                         altitudes = None
                 except:
                     self.__error__(
-                        msg=f"`path` must be a list of lists of lists of length 2 or 3. EG: `[[[0,0],[1,1]],[[2,2],[3,3],[4,4],[5,5]]]`",
+                        msg=f"`path` must be a list of lists of lists of length 2 [long,lat] or 3 [long,lat,alt]. EG: `[[[0,0],[1,1]],[[2,2],[3,3],[4,4],[5,5]]]`",
                         path=[key],
                     )
                     continue
