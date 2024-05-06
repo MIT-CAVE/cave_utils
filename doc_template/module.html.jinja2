@@ -11,12 +11,12 @@
 </select>
 <script>
     var split_at = "/docs/";
-    if (window.location.pathname.includes('github.io')) {
+    if (window.location.href.includes('github.io')) {
         split_at = "github.io/cave_utils/";
     }
     // Set the currently selected option to be equivalent to that of the url version.
     var version = 'latest';
-    var version_path = window.location.pathname.split(split_at)[1];
+    var version_path = window.location.href.split(split_at)[1];
     if (version_path.includes('/')) {
         if (version_path.split('/')[0].match(/^\d+\.\d+\.\d+$/)) {
             version = version_path.split('/')[0];
