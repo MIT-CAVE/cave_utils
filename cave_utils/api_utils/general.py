@@ -348,7 +348,7 @@ class props(ApiValidator):
                 "legendNotationDisplay": notationDisplay_options_dict.get(legendNotation, []),
                 "variant": {
                     "head": ["column", "row", "icon", "iconRow"],
-                    "text": ["textarea"],
+                    "text": ["single", "textarea"],
                     "num": ["field", "slider", "icon", "iconCompact"],
                     "selector": [
                         "dropdown",
