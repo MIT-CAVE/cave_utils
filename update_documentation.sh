@@ -1,5 +1,5 @@
 
-VERSION="2.2.0"
+VERSION="2.2.1"
 OLD_DOC_VERSIONS="2.1.2 2.0.5"
 
 rm -r ./docs
