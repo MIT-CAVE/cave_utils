@@ -283,13 +283,15 @@ class settings_time(ApiValidator):
     """
 
     @staticmethod
-    def spec(timeLength: int, timeUnits: str, **kwargs):
+    def spec(timeLength: int, timeUnits: str, looping: bool, fps: float, **kwargs):
         """
         Arguments:
 
         * **`timeLength`**: `[int]` &rarr; The amount of time values to display.
         * **`timeUnits`**: `[str]` &rarr; The units of time to display.
             * **Example**: `"Decade"`.
+        * **`looping`**: `[bool]` &rarr; If `True`, the time animation will automatically restart from the beginning once it reaches the end.
+        * **`fps`**: `[float]` &rarr; The speed at which the animation advances to the next time step.
         """
         return {"kwargs": kwargs, "accepted_values": {}}
 
@@ -297,3 +299,7 @@ class settings_time(ApiValidator):
         timeLength = self.data.get("timeLength")
         if timeLength < 1:
             self.__error__(f"Time length must be greater than 0.", path=["timeLength"])
+        fps = self.data.get("fps")
+        accepted_fps_values = {0.5, 0.75, 1, 1.25, 1.5, 2}
+        if fps not in accepted_fps_values:
+            self.__error__(f"FPS must be one of the following values: {accepted_fps_values}.", path=["fps"])
