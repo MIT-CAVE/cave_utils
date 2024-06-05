@@ -1,6 +1,6 @@
 
-VERSION="2.2.1"
-OLD_DOC_VERSIONS="2.1.2 2.0.5"
+VERSION="2.3.0-dev"
+OLD_DOC_VERSIONS="2.2.1 2.1.2 2.0.5"
 
 rm -r ./docs
 python3 -m virtualenv venv
