@@ -283,7 +283,7 @@ class settings_time(ApiValidator):
     """
 
     @staticmethod
-    def spec(timeLength: int, timeUnits: str, looping: bool, speed: float, **kwargs):
+    def spec(timeLength: int, timeUnits: str, looping: bool, speed: [float,int], **kwargs):
         """
         Arguments:
 

@@ -60,6 +60,7 @@ class props(ApiValidator):
                 * `"selector"`: Select options from a set
                 * `"date"`: Select a date and/or time
                 * `"media"`: View various media formats
+                * `"coordinate"`: A coordinate input field
         * **`help`**: `[str]` = `None` &rarr; The help text to display.
         * **`display`**: `[bool]` = `None` &rarr; Whether or not the prop will be displayed.
         * **`variant`**: `[str]` = `None` &rarr; The variant of the prop.
@@ -97,6 +98,10 @@ class props(ApiValidator):
                 * When **`type`** == `"media"`:
                     * `"picture"`: Show a PNG or JPG image
                     * `"video"`: Display a YouTube, Vimeo, or Dailymotion video clip
+                * When **`type`** == `"coordinate"`:
+                    * `"latLngInput"`: A latitude and longitude input field
+                    * `"latLngMap"`: A clickable map to select a latitude and longitude
+                    * `"latLngPath"`: A clickable map to select a path of latitude and longitude points
         * **`enabled`**: `[bool]` = `True` &rarr; Whether or not the prop will be enabled.
             * **Note**: This attribute is applicable to all props except `"head"` props.
         * **`apiCommand`**: `[str]` = `None` &rarr; The name of the API command to trigger.
@@ -347,7 +352,7 @@ class props(ApiValidator):
         return {
             "kwargs": kwargs,
             "accepted_values": {
-                "type": ["head", "num", "toggle", "button", "text", "selector", "date", "media"],
+                "type": ["head", "num", "toggle", "button", "text", "selector", "date", "media", "coordinate"],
                 "views": view_options_dict.get(variant, []),
                 "unitPlacement": ["after", "afterWithSpace", "before", "beforeWithSpace"],
                 "notation": ["compact", "precision", "scientific", "engineering"],
@@ -370,6 +375,7 @@ class props(ApiValidator):
                     ],
                     "date": ["date", "time", "datetime"],
                     "media": ["picture", "video"],
+                    "coordinate": ["latLngInput", "latLngMap", "latLngPath"],
                 }.get(type, []),
             },
         }
@@ -531,6 +537,7 @@ class values(ApiValidator):
                 "selector": (list,),
                 "date": (str,),
                 "media": (str,),
+                "coordinate": (list,),
             }.get(prop_type, tuple())
             # Add None to acceptable types if allowed
             if prop_spec.get("allowNone", False):
@@ -559,6 +566,8 @@ class values(ApiValidator):
                 )
             elif prop_type == "media":
                 self.__check_url_valid__(prop_value, prepend_path=[prop_key])
+            elif prop_type == "coordinate":
+                self.__check_coord_path_valid__(prop_value, prepend_path=[prop_key])
 
 
 @type_enforced.Enforcer
