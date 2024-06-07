@@ -20,6 +20,7 @@ class props(ApiValidator):
         apiCommand: [str, None] = None,
         apiCommandKeys: [list[str], None] = None,
         options: [dict, None] = None,
+        valueOptions: [list[int, float], None] = None,
         placeholder: [str, None] = None,
         maxValue: [float, int, None] = None,
         minValue: [float, int, None] = None,
@@ -76,6 +77,7 @@ class props(ApiValidator):
                     * `"slider"`: A range of values along a bar, from which users may select a single value
                     * `"icon"`: A fixed numerical value presented alongside a corresponding icon.
                     * `"iconCompact"`: Similar to `"icon"`, but designed in a compact format for appropriate rendering within a draggable pad.
+                    * `"incslider"`: A range of values along a bar, from which users may select a single value, with a predefined set of options.
                 * When **`type`** == `"selector"`:
                     * `"checkbox"`: Select one or more items from a set of checkboxes
                     * `"combobox"`: A dropdown with a search bar that allows users to filter options when typing
@@ -111,7 +113,11 @@ class props(ApiValidator):
         * **`options`**: `[dict]` = `None` &rarr;
             * **Notes**:
                 * Only options provided here are valid for the prop value
-                * This attribute is applicable exclusively to `"selector"` props
+                * This attribute is applicable to only `"selector"` props
+        * **`valueOptions`**: `[list[int|float]]` = `None` &rarr;
+            * **Notes**:
+                * Only valueOptions provided here can be selected for the prop value
+                * This attribute is applicable to `"num"` props with the `incslider` variant.
         * **`placeholder`**: `[str]` = `None` &rarr; The placeholder text to display.
             * **Note**: This attribute is applicable exclusively to `"text"` props.
         * **`maxValue`**: `[float | int]` = `None` &rarr; The maximum value for the prop.
@@ -293,6 +299,8 @@ class props(ApiValidator):
         if type == "num":
             if variant == "slider":
                 required_fields += ["maxValue", "minValue"]
+            elif variant == "incslider":
+                required_fields += ["valueOptions"]
             else:
                 optional_fields += ["maxValue", "minValue"]
             if variant == "icon" or variant == "iconCompact":
@@ -349,7 +357,7 @@ class props(ApiValidator):
                 "variant": {
                     "head": ["column", "row", "icon", "iconRow"],
                     "text": ["single", "textarea"],
-                    "num": ["field", "slider", "icon", "iconCompact"],
+                    "num": ["field", "slider", "icon", "iconCompact", "incslider"],
                     "selector": [
                         "dropdown",
                         "checkbox",
