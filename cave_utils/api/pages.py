@@ -84,6 +84,9 @@ class pages_data_star_pageLayout(ApiValidator):
         showToolbar: bool = True,
         maximized: bool = False,
         defaultToZero: bool = False,
+        distributionType: [str, None] = None,
+        distributionYAxis: [str, None] = None,
+        distributionVariant: [str, None] = None,
         **kwargs,
     ):
         """
@@ -112,6 +115,7 @@ class pages_data_star_pageLayout(ApiValidator):
                     * `"table"`: A table showing the aggregated values.
                     * `"treemap"`: A [treemap chart][]
                     * `"waterfall"`: A [waterfall chart][]
+                    * `"distribution"`: A [distribution chart][]
                 * When **`type`** == `"globalOutput"`:
                     * `"bar"`: A [bar chart][]
                     * `"line"`: A [line chart][]
@@ -138,6 +142,27 @@ class pages_data_star_pageLayout(ApiValidator):
         * **`maximized`**: `[bool]` = `False` &rarr; Whether or not the layout should be maximized.
             * **Note**: If more than one chart belonging to the same page layout is set to `True`, the first one found in the list will take precedence.
         * **`defaultToZero`**: `[bool]` = `False` &rarr; Whether or not the chart should default missing values to zero.
+        * **`distributionType`**: `[str]` = `None` &rarr; The type of distribution function displayed in distribution charts.
+            * Accepted Values:
+                * `"pdf"`: Uses the probability density function.
+                * `"cdf"`: Uses the cumulative density function.
+            * **Notes**:
+                * If left unspecified (i.e., `None`), it will default to `"pdf"`.
+                * This attribute is applicable exclusively to the `"distribution"` variant.
+        * **`distributionYAxis`**: `[str]` = `None` &rarr; The y-axis metric in distribution charts.
+            * Accepted Values:
+                * `"counts"`: Displays the y-axis as raw counts of occurrences.
+                * `"density"`: Displays the y-axis as proportions of total counts.
+            * **Notes**:
+                * If left unspecified (i.e., `None`), it will default to `"counts"`.
+                * This attribute is applicable exclusively to the `"distribution"` variant.
+        * **`distributionVariant`**: `[str]` = `None` &rarr; The chart type displayed in distribution charts.
+            * Accepted Values:
+                * `"bar"`: A bar chart.
+                * `"line"`: A line chart.
+            * **Notes**:
+                * If left unspecified (i.e., `None`), it will default to `"bar"`.
+                * This attribute is applicable exclusively to the `"distribution"` variant.
 
         [area chart]: https://en.wikipedia.org/wiki/Area_chart
         [bar chart]: https://en.wikipedia.org/wiki/Bar_chart
@@ -154,6 +179,7 @@ class pages_data_star_pageLayout(ApiValidator):
         [table chart]: #
         [treemap chart]: https://en.wikipedia.org/wiki/Treemapping
         [waterfall chart]: https://en.wikipedia.org/wiki/Waterfall_chart
+        [distribution chart]: https://en.wikipedia.org/wiki/Probability_distribution
         """
         if type == "globalOutput":
             variant_options = ["bar", "line", "table", "overview"]
@@ -174,6 +200,7 @@ class pages_data_star_pageLayout(ApiValidator):
                 "table",
                 "treemap",
                 "waterfall",
+                "distribution",
             ]
         else:
             variant_options = []
@@ -183,6 +210,9 @@ class pages_data_star_pageLayout(ApiValidator):
                 "type": ["groupedOutput", "globalOutput", "map"],
                 "variant": variant_options,
                 "statAggregation": ["sum", "mean", "min", "max"],
+                "distributionType": ["pdf", "cdf"] if variant == "distribution" else [],
+                "distributionYAxis": ["counts", "density"] if variant == "distribution" else [],
+                "distributionVariant": ["bar", "line"] if variant == "distribution" else [],
             },
         }
 
