@@ -84,6 +84,8 @@ class pages_data_star_pageLayout(ApiValidator):
         showToolbar: bool = True,
         maximized: bool = False,
         defaultToZero: bool = False,
+        leftVariant: [str, None] = None,
+        rightVariant: [str, None] = None,
         **kwargs,
     ):
         """
@@ -112,6 +114,7 @@ class pages_data_star_pageLayout(ApiValidator):
                     * `"table"`: A table showing the aggregated values.
                     * `"treemap"`: A [treemap chart][]
                     * `"waterfall"`: A [waterfall chart][]
+                    * `"mixed"`: A chart combining two chart types.
                 * When **`type`** == `"globalOutput"`:
                     * `"bar"`: A [bar chart][]
                     * `"line"`: A [line chart][]
@@ -138,6 +141,22 @@ class pages_data_star_pageLayout(ApiValidator):
         * **`maximized`**: `[bool]` = `False` &rarr; Whether or not the layout should be maximized.
             * **Note**: If more than one chart belonging to the same page layout is set to `True`, the first one found in the list will take precedence.
         * **`defaultToZero`**: `[bool]` = `False` &rarr; Whether or not the chart should default missing values to zero.
+        * **`leftVariant`**: `[str]` = `"line"` &rarr; The chart type displayed on the left y-axis in mixed charts.
+            * **Accepted Values**:
+                * When **`variant`** == `"mixed"`:
+                    * `"bar"`: A bar chart
+                    * `"line"`: A line chart
+                    * `"cumulative_line"`: A cumulative line chart
+                * Otherwise:
+                    * `None`
+        * **`rightVariant`**: `[str]` = `"bar"` &rarr; The chart type displayed on the right y-axis in mixed charts.
+            * **Accepted Values**:
+                * When **`variant`** == `"mixed"`:
+                    * `"bar"`: A bar chart
+                    * `"line"`: A line chart
+                    * `"cumulative_line"`: A cumulative line chart
+                * Otherwise:
+                    * `None`
 
         [area chart]: https://en.wikipedia.org/wiki/Area_chart
         [bar chart]: https://en.wikipedia.org/wiki/Bar_chart
@@ -154,6 +173,7 @@ class pages_data_star_pageLayout(ApiValidator):
         [table chart]: #
         [treemap chart]: https://en.wikipedia.org/wiki/Treemapping
         [waterfall chart]: https://en.wikipedia.org/wiki/Waterfall_chart
+        [mixed chart]: #
         """
         if type == "globalOutput":
             variant_options = ["bar", "line", "table", "overview"]
@@ -174,6 +194,7 @@ class pages_data_star_pageLayout(ApiValidator):
                 "table",
                 "treemap",
                 "waterfall",
+                "mixed",
             ]
         else:
             variant_options = []
@@ -183,6 +204,8 @@ class pages_data_star_pageLayout(ApiValidator):
                 "type": ["groupedOutput", "globalOutput", "map"],
                 "variant": variant_options,
                 "statAggregation": ["sum", "mean", "min", "max"],
+                "leftVariant": ["bar", "line", "cumulative_line"] if variant == "mixed" else [],
+                "rightVariant": ["bar", "line", "cumulative_line"] if variant == "mixed" else [],
             },
         }
 
