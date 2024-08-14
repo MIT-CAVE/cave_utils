@@ -2,8 +2,10 @@
 Configure your application's pages.
 """
 
-from cave_utils.api_utils.validator_utils import ApiValidator, CustomKeyValidator
 import type_enforced
+
+from itertools import chain
+from cave_utils.api_utils.validator_utils import ApiValidator, CustomKeyValidator
 
 
 @type_enforced.Enforcer
@@ -84,6 +86,7 @@ class pages_data_star_pageLayout(ApiValidator):
         showToolbar: bool = True,
         maximized: bool = False,
         defaultToZero: bool = False,
+        showNA: bool = False,
         **kwargs,
     ):
         """
@@ -112,6 +115,7 @@ class pages_data_star_pageLayout(ApiValidator):
                     * `"table"`: A table showing the aggregated values.
                     * `"treemap"`: A [treemap chart][]
                     * `"waterfall"`: A [waterfall chart][]
+                    * `"distribution"`: A [distribution chart][]
                 * When **`type`** == `"globalOutput"`:
                     * `"bar"`: A [bar chart][]
                     * `"line"`: A [line chart][]
@@ -138,6 +142,7 @@ class pages_data_star_pageLayout(ApiValidator):
         * **`maximized`**: `[bool]` = `False` &rarr; Whether or not the layout should be maximized.
             * **Note**: If more than one chart belonging to the same page layout is set to `True`, the first one found in the list will take precedence.
         * **`defaultToZero`**: `[bool]` = `False` &rarr; Whether or not the chart should default missing values to zero.
+        * **`showNA`**: `[bool]` = `False` &rarr; Whether to display missing or filtered values in both the chart tooltip and the axis.
 
         [area chart]: https://en.wikipedia.org/wiki/Area_chart
         [bar chart]: https://en.wikipedia.org/wiki/Bar_chart
@@ -154,6 +159,7 @@ class pages_data_star_pageLayout(ApiValidator):
         [table chart]: #
         [treemap chart]: https://en.wikipedia.org/wiki/Treemapping
         [waterfall chart]: https://en.wikipedia.org/wiki/Waterfall_chart
+        [distribution chart]: #
         """
         if type == "globalOutput":
             variant_options = ["bar", "line", "table", "overview"]
@@ -168,6 +174,7 @@ class pages_data_star_pageLayout(ApiValidator):
                 "heatmap",
                 "line",
                 "scatter",
+                "distribution",
                 "stacked_area",
                 "stacked_waterfall",
                 "sunburst",
@@ -175,6 +182,9 @@ class pages_data_star_pageLayout(ApiValidator):
                 "treemap",
                 "waterfall",
             ]
+            # TODO: Add special `"distribution"` attributes
+            # distributionYAxis(pin):"counts", "density"
+            # distributionType(pin):"pdf", "cdf"
         else:
             variant_options = []
         return {
@@ -219,45 +229,56 @@ class pages_data_star_pageLayout(ApiValidator):
         # Validate groupedOutput
         else:
             # Validate groupedOutputDataId
-            groupedOutputDataId = self.data.get("groupedOutputDataId")
+            groupedOutputDataId_raw = self.data.get("groupedOutputDataId")
+            groupedOutputDataId = (
+                [groupedOutputDataId_raw]
+                if isinstance(groupedOutputDataId_raw, str)
+                else groupedOutputDataId_raw
+            )
             if groupedOutputDataId is not None:
                 self.__check_type__(
                     groupedOutputDataId, (str, list), prepend_path=["groupedOutputDataId"]
                 )
-                # TODO: Review subset validation
                 # Ensure that the groupedOutputDataId is valid
                 self.__check_subset_valid__(
-                    subset=[groupedOutputDataId],
+                    subset=groupedOutputDataId,
                     valid_values=list(kwargs.get("groupedOutputs_validGroupIds", {}).keys()),
                     prepend_path=["groupedOutputDataId"],
                 )
             # Validate statId
-            statId = self.data.get("statId")
-            if statId is not None:
-                self.__check_type__(statId, (str, list), prepend_path=["statId"])
-                statIds = statId if isinstance(statId, list) else [statId]
-                # TODO: Review subset validation
-                for sid in statIds:
+            statId_raw = self.data.get("statId")
+            if statId_raw is not None:
+                self.__check_type__(statId_raw, (str, list), prepend_path=["statId"])
+                statId = statId_raw if isinstance(statId_raw, list) else [statId_raw]
+                if len(groupedOutputDataId) != len(statId):
+                    self.__error__(
+                        msg="`groupingId` and `statId` must be the same length.",
+                    )
+                    return
+                for idx, sid in enumerate(statId):
                     # Ensure that the statId is valid
                     self.__check_subset_valid__(
                         subset=[sid],
                         valid_values=list(
                             kwargs.get("groupedOutputs_validStatIds", {}).get(
-                                groupedOutputDataId, []
+                                groupedOutputDataId[idx], []
                             )
                         ),
-                        prepend_path=["statId"],
+                        prepend_path=["statId", idx],
                     )
             # Validate groupingId
             groupingId = self.data.get("groupingId")
             if groupingId is not None:
                 self.__check_type__(groupingId, list, prepend_path=["groupingId"])
+                all_valid_group_ids = chain.from_iterable([
+                    kwargs.get("groupedOutputs_validGroupIds", {}).get(groupingId_item, [])
+                    for groupingId_item in groupedOutputDataId
+                ])
+                valid_values = list(set(all_valid_group_ids))
                 # Ensure that the groupingId is valid
                 self.__check_subset_valid__(
                     subset=groupingId,
-                    valid_values=list(
-                        kwargs.get("groupedOutputs_validGroupIds", {}).get(groupedOutputDataId, [])
-                    ),
+                    valid_values=valid_values,
                     prepend_path=["groupingId"],
                 )
             # Validate groupingLevel

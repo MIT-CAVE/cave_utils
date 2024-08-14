@@ -38,20 +38,14 @@ class GeoUtils:
             * A list of dictionaries with additional properties for each path.
             * Note: The dictionaries must have the same length as the input lists.
             * Note: The dictionaries are imputed into the output GeoJSON as properties.
-
-        Optional Arguments:
-
-        * **`show_progress`**: `[bool]` &rarr;
-            * If True, shows the progress of the calculations.
-            * Default: False
-        * **`filename`**: `[str, None]` &rarr;
+        * **`show_progress`**: `[bool]` = `False` &rarr;
+            * If `True`, shows the progress of the calculations.
+        * **`filename`**: `[str, None]` = `None` &rarr;
             * If provided, saves the output GeoJSON to the specified filename.
-            * Default: None
 
         Returns:
 
         * **`output`**: `[dict]` &rarr; A GeoJSON dictionary with the shortest paths given the input data.
-
         """
         if not hasattr(geoGraph, "get_shortest_path"):
             raise ValueError("`geoGraph` must be a geoGraph object from scgraph")

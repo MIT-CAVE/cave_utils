@@ -311,13 +311,13 @@ class maps_data_star_legendGroups_star_data_star(ApiValidator):
                 * `"solid"`: Represents a single continuous line.
                 * `"dashed"`: A series of dashes or line segments
                 * `"dotted"`: A dotted line
-            * **Note**: This attribute is applicable exclusively to `arc` layers.
+            * **Note**: This attribute applies exclusively to `arc` layers.
         * **`allowGrouping`**: `[bool]` = `False` &rarr; Whether or not to allow grouping of the data layer.
-            * **Note**: This attribute is applicable exclusively to `node` layers.
+            * **Note**: This attribute applies exclusively to `node` layers.
         * **`group`**: `[bool]` = `False` &rarr; Whether or not to group the data layer.
             * **Notes**:
                 * If `False`, the data layer will not be grouped
-                * This attribute is applicable exclusively to `node` layers
+                * This attribute applies exclusively to `node` layers
         * **`groupCalcBySize`**: `[str]` = `"count"` | `"mode"` &rarr; The aggregation function to use on the prop specified in `sizeBy`.
             * **Accepted Values**:
                 * When **`sizeBy`** prop's **`type`** == `"num"`:
@@ -338,7 +338,7 @@ class maps_data_star_legendGroups_star_data_star(ApiValidator):
                 * If `None`, the data layer will not be grouped
                 * The calculation is based on the values of the prop specified in `sizeBy`
                 * The default value for a `sizeBy` prop of type `"num"` is `"count"`. For other types, the default value is `"mode"`.
-                * This attribute is applicable exclusively to `node` layers
+                * This attribute applies exclusively to `node` layers
         * **`groupCalcByColor`**: `[str]` = `"count"` | `"mode"` &rarr; The aggregation function to use on the prop specified in `colorBy`.
             * **Accepted Values**:
                 * When **`colorBy`** prop's **`type`** == `"num"`:
@@ -359,15 +359,15 @@ class maps_data_star_legendGroups_star_data_star(ApiValidator):
                 * If `None`, the data layer will not be grouped
                 * The calculation is based on the prop specified in `colorBy`
                 * The default value for a `colorBy` prop of type `"num"` is `"count"`. For other types, the default value is `"mode"`.
-                * This attribute is applicable exclusively to `node` layers
+                * This attribute applies exclusively to `node` layers
         * **`groupScaleWithZoom`**: `[bool]` = `False` &rarr; Whether or not to scale the group size with zoom.
             * **Notes**:
                 * If `False`, the group size will be constant as set by `groupScale`
-                * This attribute is applicable exclusively to `node` layers
+                * This attribute applies exclusively to `node` layers
         * **`groupScale`**: `[float | int]` = `None` &rarr; The zoom level at which to conduct grouping of the nodes.
             * **Notes**:
                 * If `None`, the group scale will be determined by the map zoom.
-                * This attribute is applicable exclusively to `node` layers
+                * This attribute applies exclusively to `node` layers
         * **`colorByOptions`**: `[dict]` = `None` &rarr; The options for coloring the data layer.
             * **Notes**:
                 * If `None`, the data layer will not be colored.
@@ -411,7 +411,7 @@ class maps_data_star_legendGroups_star_data_star(ApiValidator):
             * **Notes**:
                 * Arc layer icons are determined by `lineBy`.
                 * Shape layer icons are always the default icon.
-                * This attribute is applicable exclusively to `node` layers
+                * This attribute applies exclusively to `node` layers
         """
         return {
             "kwargs": kwargs,
@@ -459,7 +459,8 @@ class maps_data_star_legendGroups_star_data_star(ApiValidator):
             if v.get("type") in ["num", "toggle", "selector", "text"]
         }
         sizeBy_availableProps = {
-            k: v for k, v in available_props.items() if v.get("type") in ["num"]
+            k: v for k, v in available_props.items()
+            if v.get("type") in ["num", "toggle", "selector"]
         }
 
         passed_colorByOptions = self.data.get("colorByOptions", {})
@@ -573,7 +574,7 @@ class colorByOptions(ApiValidator):
             for obj_key in ["startGradientColor", "endGradientColor", "nullColor"]:
                 obj_val = self.data.get(obj_key)
                 if obj_val is not None:
-                    self.__check_rgba_string_valid__(rgba_string=obj_val, prepend_path=[obj_key])
+                    self.__check_color_string_valid__(color_string=obj_val, prepend_path=[obj_key])
                 if obj_key in ["startGradientColor", "endGradientColor"] and obj_val == None:
                     self.__error__(msg=f"Missing key `{obj_key}`")
             for obj_key in ["min", "max"]:
@@ -590,7 +591,7 @@ class colorByOptions(ApiValidator):
                     prepend_path=[],
                 ):
                     return
-                self.__check_rgba_string_valid__(rgba_string=value, prepend_path=[key])
+                self.__check_color_string_valid__(color_string=value, prepend_path=[key])
         elif prop_type == "selector":
             for key, value in self.data.items():
                 if not self.__check_subset_valid__(
@@ -599,10 +600,10 @@ class colorByOptions(ApiValidator):
                     prepend_path=[],
                 ):
                     return
-                self.__check_rgba_string_valid__(rgba_string=value, prepend_path=[key])
+                self.__check_color_string_valid__(color_string=value, prepend_path=[key])
         elif prop_type == "text":
             for key, value in self.data.items():
-                self.__check_rgba_string_valid__(rgba_string=value, prepend_path=[key])
+                self.__check_color_string_valid__(color_string=value, prepend_path=[key])
         else:
             self.__error__(
                 msg=f"Invalid prop type ({prop_type}) for colorByOptions. Allowed props are `num`, `toggle`, `selector`, and `text`"
@@ -687,5 +688,23 @@ class sizeByOptions(ApiValidator):
                     if not isinstance(obj_val, (int, float)):
                         self.__error__(msg=f"Invalid `{obj_key}` ({obj_val}) must be a number")
                         continue
+        elif prop_type == "toggle":
+            for key, value in self.data.items():
+                if not self.__check_subset_valid__(
+                    subset=[key],
+                    valid_values=["true", "false", "nullSize"],
+                    prepend_path=[],
+                ):
+                    return
+                self.__check_pixel_string_valid__(pixel_string=value, prepend_path=[key])
+        elif prop_type == "selector":
+            for key, value in self.data.items():
+                if not self.__check_subset_valid__(
+                    subset=[key],
+                    valid_values=list(prop_data.get("options").keys()) + ["nullSize"],
+                    prepend_path=[],
+                ):
+                    return
+                self.__check_pixel_string_valid__(pixel_string=value, prepend_path=[key])
         else:
             self.__error__(msg=f"Invalid prop type ({prop_type}) for sizeByOptions")

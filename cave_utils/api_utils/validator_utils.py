@@ -189,6 +189,17 @@ class ApiValidator:
         except:
             self.__error__(path=prepend_path, msg=msg)
 
+    # TODO: Implement a color value validator: https://developer.mozilla.org/en-US/docs/Web/CSS/color_value
+    def __check_color_string_valid__(self, color_string: str, prepend_path: list[str] = list()):
+        """
+        Validate a color string and if an issue is present, log an error
+        """
+        msg = "Invalid color string. Must be in a valid color format. See: https://developer.mozilla.org/en-US/docs/Web/CSS/color_value"
+        try:
+            self.__check_rgba_string_valid__(color_string, prepend_path)
+        except:
+            self.__error__(path=prepend_path, msg=msg)
+
     def __check_pixel_string_valid__(self, pixel_string: str, prepend_path: list[str] = list()):
         """
         Validate a pixel string and if an issue is present, log an error
@@ -289,13 +300,21 @@ class ApiValidator:
         return True
 
     def __check_coord_path_valid__(
-        self, coord_path: list[list[int, float]], prepend_path: list[str] = list()
+        self,
+        coord_path: list[list[int, float]],
+        coord_variant: str,
+        prepend_path: list[str] = list(),
     ):
         """
         Validate a coordinate path and if an issue is present, log an error
         """
         try:
-            if len(coord_path) < 2:
+            if (
+                coord_variant == "latLngPath"
+                and len(coord_path) < 2
+                or coord_variant != "latLngPath"
+                and len(coord_path) > 1
+            ):
                 self.__error__(path=prepend_path, msg="Invalid coordinate path")
                 return
             for coord in coord_path:
