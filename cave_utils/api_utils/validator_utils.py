@@ -196,7 +196,7 @@ class ApiValidator:
         """
         msg = "Invalid color string. Must be in a valid color format. See: https://developer.mozilla.org/en-US/docs/Web/CSS/color_value"
         try:
-            self.__check_rgba_string_valid__(color_string, prepend_path)
+            self.__check_rgba_string_valid__(rgba_string, prepend_path)
         except:
             self.__error__(path=prepend_path, msg=msg)
 
