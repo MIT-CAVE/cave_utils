@@ -22,6 +22,7 @@ class props(ApiValidator):
         apiCommandKeys: [list[str], None] = None,
         options: [dict, None] = None,
         valueOptions: [list[int, float], None] = None,
+        label: [str, None] = None,
         placeholder: [str, None] = None,
         maxValue: [float, int, None] = None,
         minValue: [float, int, None] = None,
@@ -143,6 +144,8 @@ class props(ApiValidator):
             * **Notes**:
                 * Only valueOptions provided here can be selected for the prop value
                 * This attribute applies to `"num"` props with the `"incslider"` variant.
+        * **`label`**: `[str]` = `None` &rarr; The label to display above the input field when the prop is focused.
+            * **Note**: This attribute applies to `"num"`, `"text"`, and `"coordinate"` props.
         * **`placeholder`**: `[str]` = `None` &rarr; The placeholder text to display.
             * **Note**: This attribute applies exclusively to `"text"` props.
         * **`maxValue`**: `[float | int]` = `None` &rarr; The maximum value for the prop.
@@ -324,7 +327,7 @@ class props(ApiValidator):
             optional_fields += ["enabled", "apiCommand", "apiCommandKeys", "allowNone"]
 
         if type == "text":
-            optional_fields += ["minRows", "maxRows", "rows", "placeholder"]
+            optional_fields += ["minRows", "maxRows", "rows", "label", "placeholder"]
         elif type == "num":
             if variant == "slider":
                 required_fields += ["maxValue", "minValue"]
@@ -333,7 +336,7 @@ class props(ApiValidator):
             else:
                 optional_fields += ["maxValue", "minValue"]
                 if variant is None or variant == "field":
-                    optional_fields += ["placeholder"]
+                    optional_fields += [ "label", "placeholder"]
             if variant == "icon" or variant == "iconCompact":
                 required_fields += ["icon"]
             if notationDisplay:
@@ -361,6 +364,8 @@ class props(ApiValidator):
                 optional_fields += ["numVisibleTags"]
         elif type == "date":
             optional_fields += ["views"]
+        elif type == "coordinate":
+            optional_fields += ["label", "placeholder"]
 
         missing_required = pamda.difference(required_fields, list(passed_values.keys()))
         if len(missing_required) > 0:

@@ -574,7 +574,7 @@ class colorByOptions(ApiValidator):
             for obj_key in ["startGradientColor", "endGradientColor", "nullColor"]:
                 obj_val = self.data.get(obj_key)
                 if obj_val is not None:
-                    self.__check_color_string_valid__(color_string=obj_val, prepend_path=[obj_key])
+                    self.__check_rgba_string_valid__(color_string=obj_val, prepend_path=[obj_key])
                 if obj_key in ["startGradientColor", "endGradientColor"] and obj_val == None:
                     self.__error__(msg=f"Missing key `{obj_key}`")
             for obj_key in ["min", "max"]:
@@ -591,7 +591,7 @@ class colorByOptions(ApiValidator):
                     prepend_path=[],
                 ):
                     return
-                self.__check_color_string_valid__(color_string=value, prepend_path=[key])
+                self.__check_rgba_string_valid__(color_string=value, prepend_path=[key])
         elif prop_type == "selector":
             for key, value in self.data.items():
                 if not self.__check_subset_valid__(
@@ -600,10 +600,10 @@ class colorByOptions(ApiValidator):
                     prepend_path=[],
                 ):
                     return
-                self.__check_color_string_valid__(color_string=value, prepend_path=[key])
+                self.__check_rgba_string_valid__(color_string=value, prepend_path=[key])
         elif prop_type == "text":
             for key, value in self.data.items():
-                self.__check_color_string_valid__(color_string=value, prepend_path=[key])
+                self.__check_rgba_string_valid__(color_string=value, prepend_path=[key])
         else:
             self.__error__(
                 msg=f"Invalid prop type ({prop_type}) for colorByOptions. Allowed props are `num`, `toggle`, `selector`, and `text`"

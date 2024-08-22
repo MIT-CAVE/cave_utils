@@ -112,7 +112,7 @@ class appBar_data_star(ApiValidator):
     def __extend_spec__(self, **kwargs):
         color = self.data.get("color")
         if color:
-            self.__check_color_string_valid__(color_string=color, prepend_path=["color"])
+            self.__check_rgba_string_valid__(color_string=color, prepend_path=["color"])
         # Validate pageIds
         bar_type = self.data.get("type")
         if bar_type == "page":
