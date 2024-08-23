@@ -123,9 +123,11 @@ class groupedOutputs_data_star_stats(ApiValidator):
         name: str,
         calculation: str,
         unit: [str, None] = None,
-        unitPlacement: str = "afterWithSpace",
+        unitPlacement: [str, None] = None,
         precision: [int, None] = None,
-        trailingZeros: bool = False,
+        trailingZeros: [bool, None] = None,
+        notation: [str, None] = None,
+        notationDisplay: [str, None] = None,
         **kwargs,
     ):
         """
@@ -156,11 +158,36 @@ class groupedOutputs_data_star_stats(ApiValidator):
             * **Notes**:
                 * This ensures that all precision digits are shown. For example: `1.5` &rarr; `1.500` when precision is `3`.
                 * If left unspecified (i.e., `None`), it will default to `settings.defaults.trailingZeros`.
+        * **`notation`**: `[int]` = `"standard"` &rarr; The formatting style of a numeric value.
+        * **`notationDisplay`**: `[str]` = `"e+"` | `"short"` | `None` &rarr; Further customize the formatting within the selected `notation`.
+            * **Notes**:
+                * No `notationDisplay` option is provided for a `"standard"` notation
+                * The options `"short"` and `"long"` are only provided for the `"compact"` notation
+                * The options `"e"`, `"e+"`, `"E"`, `"E+"`, `"x10^"`, and `"x10^+"` are provided for the `"scientific"`, `"engineering"` and `"precision"` notations
+                * If `None`, it defaults to `"short"` for `"compact"` notation, and to `"e+"` for `"scientific"`, `"engineering"` or `"precision"` notations; if the option is set to `"standard"`, its value remains `None`.
+
+        [metric prefix]: https://en.wikipedia.org/wiki/Metric_prefix
+        [Scientific notation]: https://en.wikipedia.org/wiki/Scientific_notation
+        [Engineering notation]: https://en.wikipedia.org/wiki/Engineering_notation
+        [Number.prototype.toPrecision]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toPrecision
         """
+        passed_values = {k: v for k, v in locals().items() if (v is not None) and k != "kwargs"}
+        if notationDisplay and not notation:
+            raise Exception(f"Missing required fields: notation")
+        notation = passed_values.get("notation", "standard")
+
         return {
             "kwargs": kwargs,
             "accepted_values": {
                 "unitPlacement": ["after", "afterWithSpace", "before", "beforeWithSpace"],
+                "notation": ["standard", "compact", "scientific", "engineering", "precision"],
+                "notationDisplay": {
+                    "compact": ["short", "long"],
+                    "scientific": ["e", "e+", "E", "E+", "x10^", "x10^+"],
+                    "engineering": ["e", "e+", "E", "E+", "x10^", "x10^+"],
+                    "precision": ["e", "e+", "E", "E+", "x10^", "x10^+"],
+                    "standard": [],
+                }.get(notation, []),
             },
         }
 
@@ -268,6 +295,10 @@ class groupedOutputs_groupings_star(ApiValidator):
         * **`grouping`**: `[str]` = `None` &rarr;
             * A group that is created to put similar groupings together in the UI dropdowns when selecting groupings.
             * **Note**: If `None`, the grouping will be placed in the root of the UI dropdowns.
+
+        [metric prefix]: https://en.wikipedia.org/wiki/Metric_prefix
+        [Scientific notation]: https://en.wikipedia.org/wiki/Scientific_notation
+        [Engineering notation]: https://en.wikipedia.org/wiki/Engineering_notation
         """
         return {
             "kwargs": kwargs,
@@ -368,12 +399,12 @@ class groupedOutputs_groupings_star_levels_star(ApiValidator):
                 * If `None`, this will be considered to be the root of the hierarchy.
         * **`ordering`**: `[list]` &rarr;
             * The ordering of individual values for this level in charts and tables.
-            * **Note**: If none, the ordering will be alphabetical.
+            * **Note**: If `None`, the ordering will be alphabetical.
             * **Note**: If a partial ordering is provided, the provided values will be placed first in order.
             * **Note**: If a partial ordering is provided, the remaining values will be placed in alphabetical order.
             * **Note**: All items in this list must be defined in `groupedOutputs.groupings.*.levels.*.values.*`
-        * **`orderWithParent`**: `[bool]`=True &rarr;
-            * Weather or not to order this level based on the parent level.
+        * **`orderWithParent`**: `[bool]` = `True` &rarr;
+            * Wether or not to order this level based on the parent level.
             * If `True`, the ordering of this level will also be based on the parent level.
             * If `False`, the ordering will be based on the ordering of this level only.
         * **`coloring`**: `[dict]` &rarr;

@@ -17,9 +17,12 @@ class props(ApiValidator):
         variant: [str, None] = None,
         display: [bool, None] = None,
         enabled: [bool, None] = None,
+        container: [str, None] = None,
         apiCommand: [str, None] = None,
         apiCommandKeys: [list[str], None] = None,
         options: [dict, None] = None,
+        valueOptions: [list[int, float], None] = None,
+        label: [str, None] = None,
         placeholder: [str, None] = None,
         maxValue: [float, int, None] = None,
         minValue: [float, int, None] = None,
@@ -30,6 +33,7 @@ class props(ApiValidator):
         precision: [int, None] = None,
         notationDisplay: [str, None] = None,
         unit: [str, None] = None,
+        unitPlacement: [str, None] = None,
         views: [list[str], None] = None,
         legendNotation: [str, None] = None,
         legendPrecision: [int, None] = None,
@@ -38,7 +42,6 @@ class props(ApiValidator):
         legendMaxLabel: [str, None] = None,
         icon: [str, None] = None,
         trailingZeros: [bool, None] = None,
-        unitPlacement: [str, None] = None,
         locale: [str, None] = None,
         fallbackValue: [str, None] = None,
         draggable: [bool, None] = None,
@@ -59,6 +62,7 @@ class props(ApiValidator):
                 * `"selector"`: Select options from a set
                 * `"date"`: Select a date and/or time
                 * `"media"`: View various media formats
+                * `"coordinate"`: A coordinate input field
         * **`help`**: `[str]` = `None` &rarr; The help text to display.
         * **`display`**: `[bool]` = `None` &rarr; Whether or not the prop will be displayed.
         * **`variant`**: `[str]` = `None` &rarr; The variant of the prop.
@@ -76,9 +80,11 @@ class props(ApiValidator):
                     * `"slider"`: A range of values along a bar, from which users may select a single value
                     * `"icon"`: A fixed numerical value presented alongside a corresponding icon.
                     * `"iconCompact"`: Similar to `"icon"`, but designed in a compact format for appropriate rendering within a draggable pad.
+                    * `"incslider"`: A range of values along a bar, from which users may select a single value, with a predefined set of options.
                 * When **`type`** == `"selector"`:
                     * `"checkbox"`: Select one or more items from a set of checkboxes
-                    * `"combobox"`: A dropdown with a search bar that allows users to filter options when typing
+                    * `"combobox"`: A dropdown with a search bar allowing users to filter and select a single option by typing
+                    * `"comboboxMulti"`: A dropdown with a search bar, enabling users to filter and select multiple options. Selected items are displayed as tags within the input field.
                     * `"dropdown"`: Show multiple options that appear when the element is clicked
                     * `"nested"`: Select one or more options from a set of nested checkboxes
                     * `"radio"`: Select one option from a set of mutually exclusive options
@@ -95,38 +101,66 @@ class props(ApiValidator):
                 * When **`type`** == `"media"`:
                     * `"picture"`: Show a PNG or JPG image
                     * `"video"`: Display a YouTube, Vimeo, or Dailymotion video clip
+                * When **`type`** == `"coordinate"`:
+                    * `"latLngInput"`: A latitude and longitude input field
+                    * `"latLngMap"`: A clickable map to select a latitude and longitude
+                    * `"latLngPath"`: A clickable map to select a path of latitude and longitude points
+        * **`container`**: `[str]` = `"vertical"` | `"none"` &rarr;
+            * Specifies the type of prop container by selecting from predefined styles.
+            * **Accepted Values**:
+                * `"vertical"`: A vertical layout where the prop `name` appears at the top inside the container.
+                * `"horizontal"`: A horizontal layout where the prop `name` is on the left, followed by the actionable prop on the right.
+                * `"titled"`: Similar to the vertical container but without a background color, removing the embossed appearance of the prop.
+                * `"untitled"`: A slim container version without the prop `name` or `unit` label.
+                * `"none"`: Removes the prop container entirely, disabling the display of the prop `name`, `help` button and `unit` label. Only the actionable prop is displayed.
+            * **Notes**:
+                * This attribute applies to all props except the `"icon"` and `"iconCompact"` variants of the `"num"` prop.
+                * If left unspecified (i.e., `None`), the default is `"none"` for `"head"` props, and `"vertical"` for all others. As stated, the `"icon"` and `"iconCompact"` variants of the `"num"` prop are always set to `"none"`, regardless of this attribute.
+                * When the container is set to `"none"`, the `style` prop used at the `"item"` level of the `layout` becomes ineffective.
         * **`enabled`**: `[bool]` = `True` &rarr; Whether or not the prop will be enabled.
-            * **Note**: This attribute is applicable to all props except `"head"` props.
+            * **Note**: This attribute applies to all props except `"head"` props.
         * **`apiCommand`**: `[str]` = `None` &rarr; The name of the API command to trigger.
             * **Note**: If `None`, no `apiCommand` is triggered.
-            * **Note**: This attribute is applicable to all props except `"head"` props.
+            * **Note**: This attribute applies to all props except `"head"` props.
         * **`apiCommandKeys`**: `[list[str]]` = `None` &rarr;
             * The root API keys to pass to your `execute_command` function if an `apiCommand` is provided.
             * **Note**: If `None`, all API keys are passed to your `execute_command`.
-            * **Note**: This attribute is applicable to all props except `"head"` props.
+            * **Note**: This attribute applies to all props except `"head"` props.
         * **`icon`**: `[str]` = `None` &rarr; The icon to use for the prop.
             * **Notes**:
                 * It must be a valid icon name from the [react-icons][] bundle, preceded by the abbreviated name of the icon library source.
-                * This attribute is applicable exclusively to `"head"` props.
+                * This attribute applies exclusively to `"head"` props.
         * **`options`**: `[dict]` = `None` &rarr;
+            * The options to be displayed on the UI element mapped to their display properties.
             * **Notes**:
                 * Only options provided here are valid for the prop value
-                * This attribute is applicable exclusively to `"selector"` props
+                * This attribute applies to only `"selector"` props
+        * **`numVisibleTags`**: `[int]` = `None` &rarr;
+            * The maximum number of tags visible in a `"comboboxMulti"` variant of a `"selector"` prop when it is not focused.
+            * **Notes**:
+                * If `None`, all tags will be displayed
+                * This attribute applies exclusively to `"selector"` props using the `"comboboxMulti"` variant
+        * **`valueOptions`**: `[list[int|float]]` = `None` &rarr;
+            * **Notes**:
+                * Only valueOptions provided here can be selected for the prop value
+                * This attribute applies to `"num"` props with the `"incslider"` variant.
+        * **`label`**: `[str]` = `None` &rarr; The label to display above the input field when the prop is focused.
+            * **Note**: This attribute applies to `"num"`, `"text"`, and `"coordinate"` props.
         * **`placeholder`**: `[str]` = `None` &rarr; The placeholder text to display.
-            * **Note**: This attribute is applicable exclusively to `"text"` props.
+            * **Note**: This attribute applies exclusively to `"text"` props.
         * **`maxValue`**: `[float | int]` = `None` &rarr; The maximum value for the prop.
-            * **Note**: This attribute is applicable exclusively to `"num"` props.
+            * **Note**: This attribute applies exclusively to `"num"` props.
         * **`minValue`**: `[float | int]` = `None` &rarr; The minimum value for the prop.
-            * **Note**: This attribute is applicable exclusively to `"num"` props.
+            * **Note**: This attribute applies exclusively to `"num"` props.
         * **`maxRows`**: `[int]` = `None` &rarr;
             * The maximum number of rows to show for a `"textarea"` variant.
-            * **Note**: This attribute is applicable exclusively to `"text"` props.
+            * **Note**: This attribute applies exclusively to `"text"` props.
         * **`minRows`**: `[int]` = `None` &rarr;
             * The minimum number of rows to show for a `"textarea"` variant.
-            * **Note**: This attribute is applicable exclusively to `"text"` props.
+            * **Note**: This attribute applies exclusively to `"text"` props.
         * **`rows`**: `[int]` = `None` &rarr;
             * The fixed number of rows to show for a `"textarea"` variant.
-            * **Note**: This attribute is applicable exclusively to `"text"` props.
+            * **Note**: This attribute applies exclusively to `"text"` props.
         * **`views`**: `[list[str]]` &rarr;
             * The available time units for the represented date and/or time.
             * **Default Value**:
@@ -151,33 +185,33 @@ class props(ApiValidator):
                     * `"seconds"`: The seconds view
             * **Notes**:
                 * The views will be presented in the order specified in the `views` array.
-                * This attribute is applicable exclusively to `"date"` props.
+                * This attribute applies exclusively to `"date"` props.
         * **`locale`**: `[str]` = `None` &rarr;
             * Format numeric values based on language and regional conventions.
             * **Notes**:
                 * If left unspecified (i.e., `None`), it will default to `settings.defaults.locale`.
-                * This attribute is applicable exclusively to `"num"` props.
+                * This attribute applies exclusively to `"num"` props.
             * **See**: [Locale identifier][].
         * **`precision`**: `[int]` = `None` &rarr; The number of decimal places to display.
             * **Notes**:
                 * Set the precision to `0` to attach an integer constraint.
                 * If left unspecified (i.e., `None`), it will default to `settings.defaults.precision`.
-                * This attribute is applicable exclusively to `"num"` props.
+                * This attribute applies exclusively to `"num"` props.
         * **`trailingZeros`**: `[bool]` = `None` &rarr; If `True`, trailing zeros will be displayed.
             * **Notes**:
                 * This ensures that all precision digits are shown. For example: `1.5` &rarr; `1.500` when precision is `3`.
                 * If left unspecified (i.e., `None`), it will default to `settings.defaults.trailingZeros`.
-                * This attribute is applicable exclusively to `"num"` props.
+                * This attribute applies exclusively to `"num"` props.
         * **`fallbackValue`**: [str] = `None` &rarr; A value to show when the value is missing or invalid.
             * **Notes**:
                 * This is only for display purposes as related to number formatting. It does not affect the actual value or any computations.
                     * For example, if the value passed is `None`, the fallback value will be displayed instead.
                 * If left unspecified (i.e., `None`), it will default to `settings.defaults.fallbackValue`.
-                * This attribute is applicable exclusively to `"num"` props.
+                * This attribute applies exclusively to `"num"` props.
         * **`unit`**: `[str]` = `None` &rarr; The unit to use for the prop.
             * **Notes**:
                 * If left unspecified (i.e., `None`), it will default to `settings.defaults.unit`.
-                * This attribute is applicable exclusively to `"num"` props.
+                * This attribute applies exclusively to `"num"` props.
         * **`unitPlacement`**: `[str]` = `None` &rarr; The position of the `unit` symbol relative to the value.
             * **Accepted Values**:
                 * `"after"`: The `unit` appears after the value.
@@ -186,22 +220,23 @@ class props(ApiValidator):
                 * `"beforeWithSpace"`: The unit is placed before the value, with a space in between.
             * **Notes**:
                 * If left unspecified (i.e., `None`), it will default to `settings.defaults.unitPlacement`.
-                * This attribute is applicable exclusively to `"num"` props.
+                * This attribute applies exclusively to `"num"` props.
         * **`notation`**: `[str]` = `"standard"` &rarr; The formatting style of a numeric value.
             * **Accepted Values**:
                 * `"standard"`: Plain number formatting
                 * `"compact"`: Resembles the [metric prefix][] system
                 * `"scientific"`: [Scientific notation][]
                 * `"engineering"`: [Engineering notation][]
+                * `"precision"`: Emulates the [Number.prototype.toPrecision][] method
             * **Notes**:
                 * If left unspecified (i.e., `None`), it will default to `settings.defaults.notation`.
-                * This attribute is applicable exclusively to `"num"` props.
+                * This attribute applies exclusively to `"num"` props.
         * **`notationDisplay`**: `[str]` = `"e+"` | `"short"` &rarr; Further customize the formatting within the selected `notation`.
             * **Accepted Values**:
                 * When **`notation`** == `"compact"`:
                     * `"short"`: Add symbols `K`, `M`, `B`, and `T` (in `"en-US"`) to denote thousands, millions, billions, and trillions, respectively.
                     * `"long"`: Present numeric values with the informal suffix words `thousand`, `million`, `billion`, and `trillion` (in `"en-US"`).
-                * When **`notation`** == `"scientific"` or `"engineering"`:
+                * When **`notation`** == `"scientific"`, `"engineering"` or `"precision"`:
                     * `"e"`: Exponent symbol in lowercase as per the chosen `locale` identifier
                     * `"e+"`: Similar to `"e"`, but with a plus sign for positive exponents.
                     * `"E"`: Exponent symbol in uppercase as per the chosen `locale` identifier
@@ -213,24 +248,25 @@ class props(ApiValidator):
             * **Notes**:
                 * No `notationDisplay` option is provided for a `"standard"` notation
                 * The options `"short"` and `"long"` are only provided for the `"compact"` notation
-                * The options `"e"`, `"e+"`, `"E"`, `"E+"`, `"x10^"`, and `"x10^+"` are provided for the `"scientific"` and `"engineering"` notations
+                * The options `"e"`, `"e+"`, `"E"`, `"E+"`, `"x10^"`, and `"x10^+"` are provided for the `"scientific"`, `"engineering"` and `"precision"` notations
                 * If left unspecified (i.e., `None`), it will default to `settings.defaults.notationDisplay`.
-                * This attribute is applicable exclusively to `"num"` props.
+                * This attribute applies exclusively to `"num"` props.
         * **`legendPrecision`**: `[int]` = `None` &rarr;
             * The number of decimal places to display in the Map Legend.
             * **Notes**:
                 * Set the precision to `0` to attach an integer constraint.
                 * If left unspecified (i.e., `None`), it will default to `settings.defaults.legendPrecision`.
-                * This attribute is applicable exclusively to `"num"` props.
+                * This attribute applies exclusively to `"num"` props.
         * **`legendNotation`**: `[int]` = `"standard"` &rarr; The formatting style of a numeric value.
             * **Accepted Values**:
                 * `"standard"`: Plain number formatting
                 * `"compact"`: Resembles the [metric prefix][] system
                 * `"scientific"`: [Scientific notation][]
                 * `"engineering"`: [Engineering notation][]
+                * `"precision"`: Emulates the [Number.prototype.toPrecision][] method
             * **Notes**:
                 * If left unspecified (i.e., `None`), it will default to `settings.defaults.legendNotation`.
-                * This attribute is applicable exclusively to `"num"` props.
+                * This attribute applies exclusively to `"num"` props.
         * **`legendNotationDisplay`**: `[str]` = `"e+"` | `"short"` &rarr; Further customize the formatting within the selected `legendNotation`.
             * **Accepted Values**:
                 * `"short"`: Add symbols `K`, `M`, `B`, and `T` (in `"en-US"`) to denote thousands, millions, billions, and trillions, respectively.
@@ -244,26 +280,26 @@ class props(ApiValidator):
             * **Notes**:
                 * No `legendNotationDisplay` option is provided for a `"standard"` legend notation
                 * The options `"short"` and `"long"` are only provided for the `"compact"` legend notation
-                * The options `"e"`, `"e+"`, `"E"`, `"E+"`, `"x10^"`, and `"x10^+"` are provided for the `"scientific"` and `"engineering"` legend notations
+                * The options `"e"`, `"e+"`, `"E"`, `"E+"`, `"x10^"`, and `"x10^+"` are provided for the `"scientific"`, `"engineering"` and `"precision"` notations
                 * If left unspecified (i.e., `None`), it will default to `settings.defaults.legendNotationDisplay`.
-                * This attribute is applicable exclusively to `"num"` props.
+                * This attribute applies exclusively to `"num"` props.
         * **`legendMinLabel`**: `[str]` = `None` &rarr;
             * A custom and descriptive label in the Map Legend used to identify the lowest data point.
             * **Notes**:
                 * Takes precedence over other formatting, except when used in a node cluster and the `cave_utils.api.maps.group` attribute is `True`. In this case, the min value within the node cluster is displayed.
                 * If left unspecified (i.e., `None`), it will default to `settings.defaults.legendMinLabel`.
-                * This attribute is applicable exclusively to `"num"` props.
+                * This attribute applies exclusively to `"num"` props.
         * **`legendMaxLabel`**: `[str]` = `None` &rarr;
             * A custom and descriptive label in the Map Legend used to identify the highest data point.
             * **Notes**:
                 * Takes precedence over other formatting, except when used in a node cluster and the `cave_utils.api.maps.group` attribute is `True`. In this case, the max value within the node cluster is displayed.
                 * If left unspecified (i.e., `None`), it will default to `settings.defaults.legendMaxLabel`.
-                * This attribute is applicable exclusively to `"num"` props.
+                * This attribute applies exclusively to `"num"` props.
         * **`draggable`**: `[bool]` = `None` &rarr;
             * If `True`, the prop will be rendered within the draggable global outputs pad.
             * **Notes**:
                 * The prop's `variant` is enforced to `iconCompact` to accommodate it within the draggable pad.
-                * This attribute is applicable exclusively to `"num"` props defined within `cave_utils.api.globalOutputs`.
+                * This attribute applies exclusively to `"num"` props defined within `cave_utils.api.globalOutputs`.
         * **`allowNone`**: `[bool]` = `False` &rarr;
             * Whether or not to allow `None` as a valid value for the prop. This is primarily used to help when validating `values` and `valueLists`.
             * **Notes**:
@@ -273,30 +309,40 @@ class props(ApiValidator):
                             * See `nullColor` in: `/cave_utils/cave_utils/api/maps.html#colorByOptions`
                         * For prop purposes: `None` values will be left blank.
                 * If `False`, `None` will not be a valid value for the prop.
-                * This attribute is applicable to all props except `"head"` props.
+                * This attribute applies to all props except `"head"` props.
 
-
+        [react-icons]: https://react-icons.github.io/react-icons/search
         [metric prefix]: https://en.wikipedia.org/wiki/Metric_prefix
         [Scientific notation]: https://en.wikipedia.org/wiki/Scientific_notation
         [Engineering notation]: https://en.wikipedia.org/wiki/Engineering_notation
+        [Number.prototype.toPrecision]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toPrecision
         """
         passed_values = {k: v for k, v in locals().items() if (v is not None) and k != "kwargs"}
         required_fields = ["name", "type"]
-        optional_fields = ["help", "variant", "display"]
-        if type != "head":
-            optional_fields += ["enabled", "apiCommand", "apiCommandKeys", "allowNone"]
+        optional_fields = ["help", "variant", "display", "container"]
         if type == "head":
             if variant == "icon" or variant == "iconRow":
                 required_fields += ["icon"]
+        else:
+            optional_fields += ["enabled", "apiCommand", "apiCommandKeys", "allowNone"]
+
         if type == "text":
-            optional_fields += ["minRows", "maxRows", "rows"]
-        if type == "num":
+            optional_fields += ["minRows", "maxRows", "rows", "label", "placeholder"]
+        elif type == "num":
             if variant == "slider":
                 required_fields += ["maxValue", "minValue"]
+            elif variant == "incslider":
+                required_fields += ["valueOptions"]
             else:
                 optional_fields += ["maxValue", "minValue"]
+                if variant is None or variant == "field":
+                    optional_fields += [ "label", "placeholder"]
             if variant == "icon" or variant == "iconCompact":
                 required_fields += ["icon"]
+            if notationDisplay:
+                required_fields += ["notation"]
+            if legendNotationDisplay:
+                required_fields += ["legendNotation"]
             optional_fields += [
                 "unit",
                 "notation",
@@ -311,14 +357,20 @@ class props(ApiValidator):
                 "unitPlacement",
                 "draggable",
             ]
-        if type == "selector":
+        elif type == "selector":
             required_fields += ["options"]
             optional_fields += ["placeholder"]
-        if type == "date":
+            if variant == "comboboxMulti":
+                optional_fields += ["numVisibleTags"]
+        elif type == "date":
             optional_fields += ["views"]
+        elif type == "coordinate":
+            optional_fields += ["label", "placeholder"]
+
         missing_required = pamda.difference(required_fields, list(passed_values.keys()))
         if len(missing_required) > 0:
             raise Exception(f"Missing required fields: {str(missing_required)}")
+
         for k, v in passed_values.items():
             if k not in required_fields + optional_fields:
                 kwargs[k] = v
@@ -326,6 +378,7 @@ class props(ApiValidator):
             "compact": ["short", "long"],
             "scientific": ["e", "e+", "E", "E+", "x10^", "x10^+"],
             "engineering": ["e", "e+", "E", "E+", "x10^", "x10^+"],
+            "precision": ["e", "e+", "E", "E+", "x10^", "x10^+"],
             "standard": [],
         }
         notation = passed_values.get("notation", "standard")
@@ -339,17 +392,18 @@ class props(ApiValidator):
         return {
             "kwargs": kwargs,
             "accepted_values": {
-                "type": ["head", "num", "toggle", "button", "text", "selector", "date", "media"],
+                "type": ["head", "num", "toggle", "button", "text", "selector", "date", "media", "coordinate"],
+                "container": ["vertical", "horizontal", "titled", "untitled", "none"],
                 "views": view_options_dict.get(variant, []),
                 "unitPlacement": ["after", "afterWithSpace", "before", "beforeWithSpace"],
-                "notation": ["compact", "precision", "scientific", "engineering"],
+                "notation": ["standard", "compact", "scientific", "engineering", "precision"],
                 "notationDisplay": notationDisplay_options_dict.get(notation, []),
-                "legendNotation": ["compact", "precision", "scientific", "engineering"],
+                "legendNotation": ["standard", "compact", "scientific", "engineering", "precision"],
                 "legendNotationDisplay": notationDisplay_options_dict.get(legendNotation, []),
                 "variant": {
                     "head": ["column", "row", "icon", "iconRow"],
                     "text": ["single", "textarea"],
-                    "num": ["field", "slider", "icon", "iconCompact"],
+                    "num": ["field", "slider", "icon", "iconCompact", "incslider"],
                     "selector": [
                         "dropdown",
                         "checkbox",
@@ -362,6 +416,7 @@ class props(ApiValidator):
                     ],
                     "date": ["date", "time", "datetime"],
                     "media": ["picture", "video"],
+                    "coordinate": ["latLngInput", "latLngMap", "latLngPath"],
                 }.get(type, []),
             },
         }
@@ -389,7 +444,7 @@ class props_options(ApiValidator):
         * **`path`**: `[list[str]]` = `None` &rarr; The path to an option.
             * **Notes**:
                 * If `None`, the option will not be selectable
-                * This attribute is applicable exclusively to `"nested"` props
+                * This attribute applies exclusively to `"nested"` props
         """
         variant = kwargs.get("variant")
         kwargs = {k: v for k, v in kwargs.items() if k != "variant"}
@@ -421,6 +476,7 @@ class layout(ApiValidator):
         itemId: [str, None] = None,
         column: [int, None] = None,
         row: [int, None] = None,
+        style: [dict, None] = None,
         **kwargs,
     ):
         """
@@ -433,25 +489,29 @@ class layout(ApiValidator):
         * **`numColumns`**: `[str | int]` = `"auto"` &rarr; The number of columns for the grid layout.
             * **Notes**:
                 * If `"auto"`, the number of columns will be calculated based on the number of items.
-                * This attribute is applicable exclusively to `"grid"` layouts.
+                * This attribute applies exclusively to `"grid"` layouts.
         * **`numRows`**: `[str | int]` = `"auto"` &rarr; The number of rows for the grid layout.
             * **Notes**:
                 * If `"auto"`, the number of rows will be calculated based on the number of items.
-                * This attribute is applicable exclusively to `"grid"` layouts.
+                * This attribute applies exclusively to `"grid"` layouts.
         * **`data`**: `[dict]` = `None` &rarr; The data for the layout.
-            * **Note**: This attribute is applicable exclusively to `"grid"` layouts.
+            * **Note**: This attribute applies exclusively to `"grid"` layouts.
         * **`itemId`**: `[str]` = `None` &rarr; The id of the prop placed in the layout
-            * **Note**: This attribute is applicable exclusively to `"item"` layouts.
+            * **Note**: This attribute applies exclusively to `"item"` layouts.
         * **`column`**: `[int]` = `None` &rarr; The column in which to place the prop in the current grid.
         * **`row`**: `[int]` = `None` &rarr; The row in which to place the prop in the current grid.
+        * **`style`**: `[dict | None]` = `None` &rarr; Provides an escape hatch for specifying CSS rules.
+            * **Note**: In `"item"` layouts, the `style` is applied to the root of the prop container, while in `"grid"` layouts, it targets the CSS Grid layout level.
         """
         passed_values = {k: v for k, v in locals().items() if (v is not None) and k != "kwargs"}
+        required_fields = ["type"]
+        optional_fields = ["style"]
         if type == "grid":
-            required_fields = ["type", "data"]
-            optional_fields = ["numColumns", "numRows", "column", "row"]
-        if type == "item":
-            required_fields = ["type", "itemId"]
-            optional_fields = ["column", "row"]
+            required_fields += ["data"]
+            optional_fields += ["numColumns", "numRows", "column", "row"]
+        elif type == "item":
+            required_fields += ["itemId"]
+            optional_fields += ["column", "row"]
         missing_required = pamda.difference(required_fields, list(passed_values.keys()))
         if len(missing_required) > 0:
             raise Exception(f"Missing required fields: {str(missing_required)}")
@@ -467,9 +527,7 @@ class layout(ApiValidator):
             accepted_values["numColumns"] = ["auto"]
         return {
             "kwargs": kwargs,
-            "accepted_values": {
-                "type": ["grid", "item"],
-            },
+            "accepted_values": accepted_values,
         }
 
     def __extend_spec__(self, **kwargs):
@@ -523,6 +581,7 @@ class values(ApiValidator):
                 "selector": (list,),
                 "date": (str,),
                 "media": (str,),
+                "coordinate": (list,),
             }.get(prop_type, tuple())
             # Add None to acceptable types if allowed
             if prop_spec.get("allowNone", False):
@@ -551,6 +610,9 @@ class values(ApiValidator):
                 )
             elif prop_type == "media":
                 self.__check_url_valid__(prop_value, prepend_path=[prop_key])
+            elif prop_type == "coordinate":
+                coord_variant = prop_spec.get("variant", "latLngInput")
+                self.__check_coord_path_valid__(prop_value, coord_variant, prepend_path=[prop_key])
 
 
 @type_enforced.Enforcer
