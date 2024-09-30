@@ -404,7 +404,7 @@ class groupedOutputs_groupings_star_levels_star(ApiValidator):
             * **Note**: If a partial ordering is provided, the remaining values will be placed in alphabetical order.
             * **Note**: All items in this list must be defined in `groupedOutputs.groupings.*.levels.*.values.*`
         * **`orderWithParent`**: `[bool]` = `True` &rarr;
-            * Wether or not to order this level based on the parent level.
+            * Whether or not to order this level based on the parent level.
             * If `True`, the ordering of this level will also be based on the parent level.
             * If `False`, the ordering will be based on the ordering of this level only.
         * **`coloring`**: `[dict]` &rarr;

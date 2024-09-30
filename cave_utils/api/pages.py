@@ -198,7 +198,6 @@ class pages_data_star_pageLayout(ApiValidator):
                 "heatmap",
                 "line",
                 "scatter",
-                "distribution",
                 "stacked_area",
                 "stacked_waterfall",
                 "sunburst",

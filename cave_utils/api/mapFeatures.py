@@ -110,7 +110,7 @@ class mapFeatures_data_star(ApiValidator):
             if geoJson_data is None:
                 if self.data.get("type") == "geo":
                     self.__error__(
-                        msg=f"geoJson is must be specified for type: {self.data.get('type')}",
+                        msg=f"geoJson must be specified for type: {self.data.get('type')}",
                         path=["geoJson"],
                     )
             else:
