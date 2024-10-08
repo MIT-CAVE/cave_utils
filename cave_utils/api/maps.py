@@ -543,7 +543,7 @@ class colorByOptions(ApiValidator):
                 * This attribute is only required for numeric props
         * **`min`**: `[float | int]` = `None` &rarr; The minimum value for calculating the gradient.
             * **Note**: If `None`, the minimum of the relevant data will be used.
-        * **`min`**: `[float | int]` = `None` &rarr; The maximum value for calculating the gradient.
+        * **`max`**: `[float | int]` = `None` &rarr; The maximum value for calculating the gradient.
             * **Note**: If `None`, the maximum of the relevant data will be used.
         * **`nullColor`**: `[str]` = `None` &rarr; The color to use for null values.
             * **Note**: If `None`, null values will not be shown.
@@ -649,7 +649,7 @@ class sizeByOptions(ApiValidator):
                 * This attribute is only required for numeric props
         * **`min`**: `[float | int]` = `None` &rarr; The minimum value for calculating the size.
             * **Note**: If `None`, the minimum of the relevant data will be used.
-        * **`min`**: `[float | int]` = `None` &rarr; The maximum value for calculating the size.
+        * **`max`**: `[float | int]` = `None` &rarr; The maximum value for calculating the size.
             * **Note**: If `None`, the maximum of the relevant data will be used.
         * **`nullSize`**: `[str]` = `None` &rarr; The size to use for null values.
             * **Note**: If `None`, null values will not be shown.
