@@ -243,7 +243,15 @@ class mapFeatures_data_star_data_location(ApiValidator):
             latitudes = None
             longitudes = None
             altitudes = None
-            if "latitude" in key.lower():
+            nested_acceptable_types = None
+            if key == "latitude" or key == "longitude":
+                acceptable_types = (list,)
+                nested_acceptable_types = (int, float)
+                if key == "latitude":
+                    latitudes = [value for sublist in value_list for value in sublist]
+                else:
+                    longitudes = [value for sublist in value_list for value in sublist]
+            elif "latitude" in key.lower():
                 acceptable_types = (int, float)
                 latitudes = value_list
             elif "longitude" in key.lower():
@@ -272,6 +280,15 @@ class mapFeatures_data_star_data_location(ApiValidator):
                 acceptable_types = (str,)
             if not self.__check_type_list__(
                 data=value_list, types=acceptable_types, prepend_path=[key]
+            ):
+                continue
+            if nested_acceptable_types is not None and not all(
+                [
+                    self.__check_type_list__(
+                        data=value, types=nested_acceptable_types, prepend_path=[key]
+                    )
+                    for value in value_list
+                ]
             ):
                 continue
             if latitudes is not None:
