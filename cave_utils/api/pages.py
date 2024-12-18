@@ -43,11 +43,18 @@ class pages_data_star(ApiValidator):
     """
 
     @staticmethod
-    def spec(pageLayout: list, lockedLayout: bool = False, **kwargs):
+    def spec(
+        charts: [dict, None] = None,
+        pageLayout: [list, None] = None,
+        lockedLayout: bool = False, 
+        **kwargs
+        ):
         """
         Arguments:
 
-        * **`pageLayout`**: `[list]` = `{}` &rarr; The layout of the page.
+        * **`charts`**: `[dict]` = `{}` &rarr; The charts to display on the page.
+            * **See**: `cave_utils.api.pages.pages_data_star_charts`.
+        * **`pageLayout`**: `[list[str]]` = `{}` &rarr; The layout of the page.
             * **See**: `cave_utils.api.pages.pages_data_star_pageLayout`.
         * **`lockedLayout`**: `[bool]` = `False` &rarr; Whether or not the layout should be locked.
             * **See**: `cave_utils.api.pages.pages_data_star_pageLayout`.
@@ -55,34 +62,40 @@ class pages_data_star(ApiValidator):
         return {"kwargs": kwargs, "accepted_values": {}}
 
     def __extend_spec__(self, **kwargs):
-        for idx, pageLayout in enumerate(self.data.get("pageLayout", [])):
-            pages_data_star_pageLayout(
-                data=pageLayout,
+        for chartId, chart in self.data.get("charts", {}).items():
+            pages_data_star_charts(
+                data=chart,
                 log=self.log,
-                prepend_path=["pageLayout", idx],
+                prepend_path=["charts", chartId],
                 **kwargs,
+            )
+        if self.data.get("pageLayout") is not None:
+            self.__check_subset_valid__(
+                subset=self.data.get("pageLayout", []),
+                valid_values=list(self.data.get("charts", {}).keys())+[None],
+                prepend_path=["pageLayout"],
             )
 
 
 @type_enforced.Enforcer
-class pages_data_star_pageLayout(ApiValidator):
+class pages_data_star_charts(ApiValidator):
     """
-    The page layouts are located under the path **`pages.data.pageLayout`**.
+    The charts are located under the path **`pages.data.*.charts`**.
     """
 
     @staticmethod
     def spec(
         type: str = "groupedOutput",
-        variant: str = "bar",
+        dataset: [str, None] = None,
+        chartType: str = "bar",
         mapId: [str, None] = None,
         groupingId: [list, None] = None,
+        groupingLevel: [list, None] = None,
+        stats: [list, None] = None,
+        chartOptions: [dict, None] = None,
         sessions: [list, None] = None,
         globalOutput: [list, None] = None,
-        groupingLevel: [list, None] = None,
         lockedLayout: bool = False,
-        statAggregation: str = "sum",
-        groupedOutputDataId: [str, list, None] = None,
-        statId: [str, list, None] = None,
         showToolbar: bool = True,
         maximized: bool = False,
         defaultToZero: bool = False,
@@ -100,7 +113,8 @@ class pages_data_star_pageLayout(ApiValidator):
                 * `"groupedOutput"`: The `unit` appears after the value.
                 * `"globalOutput"`: The `unit` appears after the value, separated by a space.
                 * `"map"`: The `unit` appears before the value.
-        * **`variant`**: `[str]` = `"bar"` &rarr; The variant of the page layout.
+        * **`dataset`**: `[str | list]` = `None` &rarr; The id/key representing the grouped output data to use.
+        * **`chartType`**: `[str]` = `"bar"` &rarr; The variant of the page layout.
             * Accepted Values:
                 * When **`type`** == `"groupedOutput"`:
                     * `"area"`: An [area chart][]
@@ -128,9 +142,13 @@ class pages_data_star_pageLayout(ApiValidator):
                     * `None`
         * **`mapId`**: `[str]` = `None` &rarr; The id of the map to use.
         * **`groupingId`**: `[list]` = `None` &rarr; The ids of the grouping to use.
+        * **`groupingLevel`**: `[list]` = `None` &rarr; The ids of the grouping levels to use.
+        * **`stats`**: `[list]` = `None` &rarr; A list of stats to use.
+            * **See**: `cave_utils.api.pages.pages_data_star_charts_stats`.
+        * **`chartOptions`**: `[dict]` = `None` &rarr; The options to pass to the chart.
+            * TODO: Add more information about the chart options.
         * **`sessions`**: `[list]` = `None` &rarr; The ids of the sessions to use.
         * **`globalOutput`**: `[list]` = `None` &rarr; The ids of the global outputs to use.
-        * **`groupingLevel`**: `[list]` = `None` &rarr; The ids of the grouping levels to use.
         * **`lockedLayout`**: `[bool]` = `False` &rarr; Whether or not the layout should be locked.
         * **`statAggregation`**: `[str]` = `"sum"` &rarr; A stat aggregation function to apply to the chart data.
             * **Accepted Values**:
@@ -138,8 +156,6 @@ class pages_data_star_pageLayout(ApiValidator):
                 * `"mean"`: Calculate the mean of the aggregated data
                 * `"min"`: Find the minimum values within the aggregated data
                 * `"max"`: Find the maximum values the aggregated data
-        * **`groupedOutputDataId`**: `[str | list]` = `None` &rarr; The id or list of ids representing the grouped output data to use.
-        * **`statId`**: `[str | list]` = `None` &rarr; The id or list of ids corresponding to the stat(s) to be used.
         * **`showToolbar`**: `[bool]` = `None` &rarr; Whether or not the chart toolbar should be shown.
             * **Note**: If left unspecified (i.e., `None`), it will default to `settings.showToolbar`.
         * **`maximized`**: `[bool]` = `False` &rarr; Whether or not the layout should be maximized.
@@ -186,9 +202,9 @@ class pages_data_star_pageLayout(ApiValidator):
         [distribution chart]: https://en.wikipedia.org/wiki/Probability_distribution
         """
         if type == "globalOutput":
-            variant_options = ["bar", "line", "table", "overview"]
+            chartType_options = ["bar", "line", "table", "overview"]
         elif type == "groupedOutput":
-            variant_options = [
+            chartType_options = [
                 "area",
                 "bar",
                 "stacked_bar",
@@ -205,18 +221,19 @@ class pages_data_star_pageLayout(ApiValidator):
                 "treemap",
                 "waterfall",
                 "distribution",
+                "mixed",
             ]
         else:
-            variant_options = []
+            chartType_options = []
         return {
             "kwargs": kwargs,
             "accepted_values": {
                 "type": ["groupedOutput", "globalOutput", "map"],
-                "variant": variant_options,
+                "chartType": chartType_options,
                 "statAggregation": ["sum", "mean", "min", "max"],
-                "distributionType": ["pdf", "cdf"] if variant == "distribution" else [],
-                "distributionYAxis": ["counts", "density"] if variant == "distribution" else [],
-                "distributionVariant": ["bar", "line"] if variant == "distribution" else [],
+                "distributionType": ["pdf", "cdf"] if chartType == "distribution" else [],
+                "distributionYAxis": ["counts", "density"] if chartType == "distribution" else [],
+                "distributionVariant": ["bar", "line"] if chartType == "distribution" else [],
             },
         }
 
@@ -252,52 +269,19 @@ class pages_data_star_pageLayout(ApiValidator):
                 )
         # Validate groupedOutput
         else:
-            # Validate groupedOutputDataId
-            groupedOutputDataId_raw = self.data.get("groupedOutputDataId")
-            groupedOutputDataId = (
-                [groupedOutputDataId_raw]
-                if isinstance(groupedOutputDataId_raw, str)
-                else groupedOutputDataId_raw
-            )
-            if groupedOutputDataId is not None:
-                self.__check_type__(
-                    groupedOutputDataId, (str, list), prepend_path=["groupedOutputDataId"]
-                )
-                # Ensure that the groupedOutputDataId is valid
+            # Validate dataset
+            dataset = self.data.get("dataset")
+            if dataset is not None:
+                # Ensure that the dataset is valid
                 self.__check_subset_valid__(
-                    subset=groupedOutputDataId,
-                    valid_values=list(kwargs.get("groupedOutputs_validGroupIds", {}).keys()),
-                    prepend_path=["groupedOutputDataId"],
+                    subset=[dataset],
+                    valid_values=list(kwargs.get("groupedOutputs_validDatasetIds", {}).keys()),
+                    prepend_path=["dataset"],
                 )
-            # Validate statId
-            statId_raw = self.data.get("statId")
-            if statId_raw is not None:
-                self.__check_type__(statId_raw, (str, list), prepend_path=["statId"])
-                statId = statId_raw if isinstance(statId_raw, list) else [statId_raw]
-                if len(groupedOutputDataId) != len(statId):
-                    self.__error__(
-                        msg="`groupingId` and `statId` must be the same length.",
-                    )
-                    return
-                for idx, sid in enumerate(statId):
-                    # Ensure that the statId is valid
-                    self.__check_subset_valid__(
-                        subset=[sid],
-                        valid_values=list(
-                            kwargs.get("groupedOutputs_validStatIds", {}).get(
-                                groupedOutputDataId[idx], []
-                            )
-                        ),
-                        prepend_path=["statId", idx],
-                    )
-            # Validate groupingId
             groupingId = self.data.get("groupingId")
             if groupingId is not None:
                 self.__check_type__(groupingId, list, prepend_path=["groupingId"])
-                all_valid_group_ids = chain.from_iterable([
-                    kwargs.get("groupedOutputs_validGroupIds", {}).get(groupingId_item, [])
-                    for groupingId_item in groupedOutputDataId
-                ])
+                all_valid_group_ids = kwargs.get("groupedOutputs_validDatasetIds", {}).get(dataset, [])
                 valid_values = list(set(all_valid_group_ids))
                 # Ensure that the groupingId is valid
                 self.__check_subset_valid__(
@@ -323,3 +307,107 @@ class pages_data_star_pageLayout(ApiValidator):
                         ),
                         prepend_path=["groupingLevel", idx],
                     )
+            if self.data.get("stats") is not None:
+                for stat in self.data.get("stats"):
+                    pages_data_star_charts_stats(
+                        data=stat,
+                        log=self.log,
+                        prepend_path=["stats"],
+                        dataset = dataset,
+                        **kwargs,
+                    )
+
+
+@type_enforced.Enforcer
+class pages_data_star_charts_stats(ApiValidator):
+    """
+    The chart stats are located under the path **`pages.data.*.charts.stats`**.
+    """
+
+    @staticmethod
+    def spec(
+        statId: [str] = None,
+        aggregationType: [str, None] = None,
+        statIdDivisor: [str, None] = "sum",
+        aggregationGroupingId: [str, None] = None,
+        aggregationGroupingLevel: [str, None] = None,
+        distributionType: [str, None] = None,
+        distributionYAxis: [str, None] = None,
+        distributionVariant: [str, None] = None,
+        **kwargs,
+    ):
+        """
+        Arguments:
+
+        * **`statId`**: `[str]` = `None` &rarr; The id corresponding to the stat to be used.
+        * **`aggregationType`**: `[str]` = `None` &rarr; The type of aggregation to apply to the stat.
+            * Accepted Values:
+                * `"sum"`: Sum the values.
+                * `"mean"`: Calculate the mean of the values.
+                * `"min"`: Find the minimum value.
+                * `"max"`: Find the maximum value.
+                * `"divisor"`: Divide the values by the `statIdDivisor`.
+            * **Notes**:
+                * If left unspecified (i.e., `None`), it will default to `"sum"`.
+        * ** `aggregationGroupingId`**: `[str]` = `None` &rarr; The id of the grouping to use for aggregation.
+            * **Notes**:
+                * This is not applicable for the following aggregationTypes ['sum', 'divisor'].
+        * ** `aggregationGroupingLevel`**: `[str]` = `None` &rarr; The id of the grouping level to use for aggregation.
+            * **Notes**:
+                * This is not applicable for the following aggregationTypes ['sum', 'divisor'].
+        * **`statIdDivisor`**: `[str]` = `"sum"` &rarr; The id of the stat to use as the divisor.
+        """
+        return {
+            "kwargs": kwargs,
+            "accepted_values": {
+                "aggregationType": ["sum", "mean", "min", "max", "divisor"],
+            },
+        }
+
+    def __extend_spec__(self, **kwargs):
+        statId = self.data.get("statId")
+        if statId is not None:
+            self.__check_subset_valid__(
+                subset=[statId],
+                valid_values=kwargs.get("groupedOutputs_validStatIds", {}).get(kwargs.get("dataset"), []),
+                prepend_path=["statId"],
+            )
+        if self.data.get("aggregationType") == "sum":
+            pass
+        elif self.data.get("aggregationType") == "divisor":
+            statIdDivisor = self.data.get("statIdDivisor")
+            if statIdDivisor is not None:
+                self.__check_subset_valid__(
+                    subset=[statIdDivisor],
+                    valid_values=kwargs.get("groupedOutputs_validStatIds", {}).get(kwargs.get("dataset"), []),
+                    prepend_path=["statIdDivisor"],
+                )
+            else:
+                self.__warn__(
+                    msg="The `statIdDivisor` key should be passed when `aggregationType='divisor'`."
+                )
+        else:
+            aggregationGroupingId = self.data.get("aggregationGroupingId")
+            if aggregationGroupingId is not None:
+                is_valid_aggregationGroupingId = self.__check_subset_valid__(
+                    subset=[aggregationGroupingId],
+                    valid_values=list(kwargs.get("groupedOutputs_validLevelIds", {}).keys()),
+                    prepend_path=["aggregationGroupingId"],
+                )
+                if is_valid_aggregationGroupingId:
+                    aggregationGroupingLevel = self.data.get("aggregationGroupingLevel")
+                    if aggregationGroupingLevel is not None:
+                        self.__check_subset_valid__(
+                            subset=[aggregationGroupingLevel],
+                            valid_values=kwargs.get("groupedOutputs_validLevelIds", {}).get(aggregationGroupingId, []),
+                            prepend_path=["aggregationGroupingLevel"],
+                        )
+                    else:
+                        self.__warn__(
+                            msg="The `aggregationGroupingLevel` key should be passed when `aggregationGroupingId` is passed."
+                        )
+                else:
+                    self.__warn__(
+                        msg="The `aggregationGroupingId` key should be passed when `aggregationType` is not 'sum' or 'divisor'."
+                    )
+    pass

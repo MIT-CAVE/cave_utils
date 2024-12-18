@@ -144,7 +144,7 @@ class Root(ApiValidator):
         groupedOutputs_data = self.data.get("groupedOutputs", dict())
         groupedOutputs_validLevelIds = {}
         groupedOutputs_validStatIds = {}
-        groupedOutputs_validGroupIds = {}
+        groupedOutputs_validDatasetIds = {}
         if groupedOutputs_data != {}:
             groupedOutputs(
                 data=groupedOutputs_data,
@@ -162,13 +162,13 @@ class Root(ApiValidator):
                 pass
             try:
                 groupedOutputs_validStatIds = {
-                    k: list(v.get("stats").keys())
+                    k: list(v.get("stats",[]))
                     for k, v in groupedOutputs_data.get("data", {}).items()
                 }
             except:
                 pass
             try:
-                groupedOutputs_validGroupIds = {
+                groupedOutputs_validDatasetIds = {
                     k: list(v.get("groupLists").keys())
                     for k, v in groupedOutputs_data.get("data", {}).items()
                 }
@@ -187,7 +187,7 @@ class Root(ApiValidator):
                 maps_validMapIds=maps_validMapIds,
                 groupedOutputs_validLevelIds=groupedOutputs_validLevelIds,
                 groupedOutputs_validStatIds=groupedOutputs_validStatIds,
-                groupedOutputs_validGroupIds=groupedOutputs_validGroupIds,
+                groupedOutputs_validDatasetIds=groupedOutputs_validDatasetIds,
                 **kwargs,
             )
             page_validPageIds = list(pages_data.get("data", {}).keys())

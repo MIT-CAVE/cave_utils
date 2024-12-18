@@ -82,7 +82,7 @@ class groupedOutputs_data_star(ApiValidator):
             data=valueLists_data,
             log=self.log,
             prepend_path=["valueLists"],
-            calculation_values=[i.get("calculation") for i in stats_data.values()],
+            stat_keys=[k for k in stats_data.keys()],
             **kwargs,
         )
         # Ensure Valid Group Lists
@@ -121,7 +121,6 @@ class groupedOutputs_data_star_stats(ApiValidator):
     @staticmethod
     def spec(
         name: str,
-        calculation: str,
         unit: [str, None] = None,
         unitPlacement: [str, None] = None,
         precision: [int, None] = None,
@@ -134,13 +133,6 @@ class groupedOutputs_data_star_stats(ApiValidator):
         Arguments:
 
         * **`name`**: `[str]` &rarr; The name of the stat.
-        * **`calculation`**: `[str]` &rarr; The calculation to generate the stat for each group.
-            * **Notes**:
-                * This can use operators [`+`, `-`, `*`, `/`, and `groupSum`]
-                * This can call in keys from `groupedOutputs.data.*.valueLists.*` as variables
-            * **Examples**:
-                * Create a variable that can be used to aggregate on your stat demand on arbitrary groupings: `'demand'`.
-                * Create a variable that can be used to aggregate your percent of demand met on arbitrary groupings. (This only shows the percent of demand met for each group if they are summed in the chart): `'sales / groupSum("demand")'`
         * **`unit`**: `[str]` &rarr; The unit to use for the stat.
             * **Note**: If left unspecified (i.e., `None`), it will default to `settings.defaults.unit`.
         * **`unitPlacement`**: `[str]` = `None` &rarr; The position of the `unit` symbol relative to the value.
@@ -211,7 +203,7 @@ class groupedOutputs_data_star_valueLists(ApiValidator):
 
     def __extend_spec__(self, **kwargs):
         # Custom Validation to ensure that all keys are in calculation strings
-        valid_values = kwargs.get("calculation_values", [])
+        valid_values = kwargs.get("stat_keys", [])
         invalid_values = [
             i for i in list(self.data.keys()) if not any([i in j for j in valid_values])
         ]
