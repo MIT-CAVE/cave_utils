@@ -870,7 +870,9 @@ example = {
                         "longitude": 14,
                     },
                 },
-                "legendView": "minimal",
+                "legendView": "compact",
+                "legendLayout": "auto",
+                "legendWidth": "auto",
                 "showLegendGroupNames": True,
                 "legendGroups": {
                     "lga": {
@@ -1173,7 +1175,7 @@ example = {
                                     "value": 28,
                                     "color": "rgb(255, 69, 0)",
                                     "label": "Very High",
-                                    "sie": "12px",
+                                    "size": "12px",
                                 },
                                 {
                                     "value": 40,

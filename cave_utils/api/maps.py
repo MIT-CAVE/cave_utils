@@ -108,6 +108,8 @@ class maps_data_star(ApiValidator):
         legendGroups: [dict, None] = None,
         legendView: [str, None] = None,
         showLegendGroupNames: [bool, None] = None,
+        legendLayout: [str, None] = None,
+        legendWidth: [str, None] = None,
         **kwargs,
     ):
         """
@@ -128,9 +130,19 @@ class maps_data_star(ApiValidator):
         * **`legendGroups`**: `[dict]` = `None` &rarr; The legend groups to show in the map selection menu.
         * **`legendView`**: `[str]` = `None` &rarr; The view to show in the map selection menu.
             * ** Accepted Values**:
-                * `"minimal"`: Display the legend in a minimal format.
+                * `"compact"`: Display the legend in a compact format.
                 * `"full"`: Display the full legend.
         * **`showLegendGroupNames`**: `[bool]` = `None` &rarr; Whether or not to show the legend group names in the map selection menu.
+        * **`legendLayout`**: `[str]` = `None` &rarr; The layout of the legend.
+            * **Accepted Values**:
+                * `"auto"`: Sets the layout to column when legedView is full and row when legendView is compact.
+                * `"column"`: Display the legend attributes per column (side by side).
+                * `"row"`: Display the legend attributes per row (stacked vertically).
+        * **`legendWidth`**: `[str]` = `None` &rarr; The width of the legend.
+            * **Accepted Values**:
+                * `"auto"`: Sets the width to `wide` when legendView is full and `slim` when legendView is compact.
+                * `"slim"`: Sets teh legend witdth to 400px.
+                * `"wide"`: Sets the legend width to 700px.
 
         [Mercator projection]: https://en.wikipedia.org/wiki/Mercator_projection
         """
@@ -138,7 +150,9 @@ class maps_data_star(ApiValidator):
             "kwargs": kwargs,
             "accepted_values": {
                 "currentProjection": ["mercator", "globe"],
-                "legendView": ["minimal", "full"],
+                "legendView": ["compact", "full"],
+                "legendLayout": ["auto", "column", "row"],
+                "legendWidth": ["auto", "slim", "wide"],
             },
         }
 

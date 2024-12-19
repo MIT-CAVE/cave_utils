@@ -318,7 +318,12 @@ class pages_data_star_charts(ApiValidator):
                         **kwargs,
                     )
             if self.data.get("chartOptions") is not None:
-                self.__warn__(msg="`chartOptions` is not yet validated.")
+                pages_data_star_charts_chartOptions(
+                    data=self.data.get("chartOptions"),
+                    log=self.log,
+                    prepend_path=["chartOptions"],
+                    **kwargs,
+                )
 
 
 @type_enforced.Enforcer
@@ -419,3 +424,42 @@ class pages_data_star_charts_stats(ApiValidator):
                     self.__warn__(
                         msg="The `aggregationGroupingId` key should be passed when `aggregationType` is not 'sum' or 'divisor'."
                     )
+
+
+@type_enforced.Enforcer
+class pages_data_star_charts_chartOptions(ApiValidator):
+    """
+    The chart options are located under the path **`pages.data.*.charts.chartOptions`**.
+    """
+
+    @staticmethod
+    def spec(
+        leftChartType: [str, None] = None,
+        rightChartType: [str, None] = None,
+        **kwargs,
+    ):
+        """
+        Arguments:
+
+        * ** `leftChartType`**: `[str]` = `None` &rarr; The chart type to use for the left y-axis.
+            * **Accepted Values**:
+                * `"bar"`: A [bar chart][]
+                * `"line"`: A [line chart][]
+                * `"cumulative_line"`: A cumulative line chart
+        * ** `rightChartType`**: `[str]` = `None` &rarr; The chart type to use for the right y-axis.
+            * **Accepted Values**:
+                * `"bar"`: A [bar chart][]
+                * `"line"`: A [line chart][]
+                * `"cumulative_line"`: A cumulative line chart
+        * ** `cumulative`**: `[bool]` = `False` &rarr; Whether or not the chart should be cumulative.
+        """
+        return {
+            "kwargs": kwargs,
+            "accepted_values": {
+                "leftChartType": ["bar", "line", "cumulative_line"],
+                "rightChartType": ["bar", "line", "cumulative_line"],
+            },
+        }
+
+    def __extend_spec__(self, **kwargs):
+        pass
