@@ -4,7 +4,6 @@ Configure your application's pages.
 
 import type_enforced
 
-from itertools import chain
 from cave_utils.api_utils.validator_utils import ApiValidator, CustomKeyValidator
 
 
@@ -46,9 +45,9 @@ class pages_data_star(ApiValidator):
     def spec(
         charts: [dict, None] = None,
         pageLayout: [list, None] = None,
-        lockedLayout: bool = False, 
-        **kwargs
-        ):
+        lockedLayout: bool = False,
+        **kwargs,
+    ):
         """
         Arguments:
 
@@ -72,7 +71,7 @@ class pages_data_star(ApiValidator):
         if self.data.get("pageLayout") is not None:
             self.__check_subset_valid__(
                 subset=self.data.get("pageLayout", []),
-                valid_values=list(self.data.get("charts", {}).keys())+[None],
+                valid_values=list(self.data.get("charts", {}).keys()) + [None],
                 prepend_path=["pageLayout"],
             )
 
@@ -114,7 +113,7 @@ class pages_data_star_charts(ApiValidator):
                 * `"globalOutput"`: The `unit` appears after the value, separated by a space.
                 * `"map"`: The `unit` appears before the value.
         * **`dataset`**: `[str | list]` = `None` &rarr; The id/key representing the grouped output data to use.
-        * **`chartType`**: `[str]` = `"bar"` &rarr; The variant of the page layout.
+        * **`chartType`**: `[str]` = `"bar"` &rarr; The chartType of the page layout.
             * Accepted Values:
                 * When **`type`** == `"groupedOutput"`:
                     * `"area"`: An [area chart][]
@@ -146,7 +145,7 @@ class pages_data_star_charts(ApiValidator):
         * **`stats`**: `[list]` = `None` &rarr; A list of stats to use.
             * **See**: `cave_utils.api.pages.pages_data_star_charts_stats`.
         * **`chartOptions`**: `[dict]` = `None` &rarr; The options to pass to the chart.
-            * TODO: Add more information about the chart options.
+            * TODO: Validate chart options
         * **`sessions`**: `[list]` = `None` &rarr; The ids of the sessions to use.
         * **`globalOutput`**: `[list]` = `None` &rarr; The ids of the global outputs to use.
         * **`lockedLayout`**: `[bool]` = `False` &rarr; Whether or not the layout should be locked.
@@ -167,21 +166,21 @@ class pages_data_star_charts(ApiValidator):
                 * `"cdf"`: Uses the cumulative density function.
             * **Notes**:
                 * If left unspecified (i.e., `None`), it will default to `"pdf"`.
-                * This attribute is applicable exclusively to the `"distribution"` variant.
+                * This attribute is applicable exclusively to the `"distribution"` chartType.
         * **`distributionYAxis`**: `[str]` = `None` &rarr; The y-axis metric in distribution charts.
             * Accepted Values:
                 * `"counts"`: Displays the y-axis as raw counts of occurrences.
                 * `"density"`: Displays the y-axis as proportions of total counts.
             * **Notes**:
                 * If left unspecified (i.e., `None`), it will default to `"counts"`.
-                * This attribute is applicable exclusively to the `"distribution"` variant.
+                * This attribute is applicable exclusively to the `"distribution"` chartType.
         * **`distributionVariant`**: `[str]` = `None` &rarr; The chart type displayed in distribution charts.
             * Accepted Values:
                 * `"bar"`: A bar chart.
                 * `"line"`: A line chart.
             * **Notes**:
                 * If left unspecified (i.e., `None`), it will default to `"bar"`.
-                * This attribute is applicable exclusively to the `"distribution"` variant.
+                * This attribute is applicable exclusively to the `"distribution"` chartType.
         * **`showNA`**: `[bool]` = `False` &rarr; Whether to display missing or filtered values in both the chart tooltip and the axis.
 
         [area chart]: https://en.wikipedia.org/wiki/Area_chart
@@ -248,10 +247,10 @@ class pages_data_star_charts(ApiValidator):
                     valid_values=kwargs.get("globalOuputs_validPropIds", []),
                     prepend_path=["globalOutput"],
                 )
-            elif self.data.get("variant") != "overview":
+            elif self.data.get("chartType") != "overview":
                 self.__error__(
-                    msg="`globalOutput` is a required key for `globalOutput` type pageLayouts when variant is not `overview`.",
-                    path=["globalOutput"],
+                    msg="`globalOutput` is a required key for `globalOutput` type pageLayouts when chartType is not `overview`.",
+                    path=[],
                 )
         # Validate map
         elif pageLayout_type == "map":
@@ -281,7 +280,9 @@ class pages_data_star_charts(ApiValidator):
             groupingId = self.data.get("groupingId")
             if groupingId is not None:
                 self.__check_type__(groupingId, list, prepend_path=["groupingId"])
-                all_valid_group_ids = kwargs.get("groupedOutputs_validDatasetIds", {}).get(dataset, [])
+                all_valid_group_ids = kwargs.get("groupedOutputs_validDatasetIds", {}).get(
+                    dataset, []
+                )
                 valid_values = list(set(all_valid_group_ids))
                 # Ensure that the groupingId is valid
                 self.__check_subset_valid__(
@@ -313,9 +314,11 @@ class pages_data_star_charts(ApiValidator):
                         data=stat,
                         log=self.log,
                         prepend_path=["stats"],
-                        dataset = dataset,
+                        dataset=dataset,
                         **kwargs,
                     )
+            if self.data.get("chartOptions") is not None:
+                self.__warn__(msg="`chartOptions` is not yet validated.")
 
 
 @type_enforced.Enforcer
@@ -369,7 +372,9 @@ class pages_data_star_charts_stats(ApiValidator):
         if statId is not None:
             self.__check_subset_valid__(
                 subset=[statId],
-                valid_values=kwargs.get("groupedOutputs_validStatIds", {}).get(kwargs.get("dataset"), []),
+                valid_values=kwargs.get("groupedOutputs_validStatIds", {}).get(
+                    kwargs.get("dataset"), []
+                ),
                 prepend_path=["statId"],
             )
         if self.data.get("aggregationType") == "sum":
@@ -379,7 +384,9 @@ class pages_data_star_charts_stats(ApiValidator):
             if statIdDivisor is not None:
                 self.__check_subset_valid__(
                     subset=[statIdDivisor],
-                    valid_values=kwargs.get("groupedOutputs_validStatIds", {}).get(kwargs.get("dataset"), []),
+                    valid_values=kwargs.get("groupedOutputs_validStatIds", {}).get(
+                        kwargs.get("dataset"), []
+                    ),
                     prepend_path=["statIdDivisor"],
                 )
             else:
@@ -399,7 +406,9 @@ class pages_data_star_charts_stats(ApiValidator):
                     if aggregationGroupingLevel is not None:
                         self.__check_subset_valid__(
                             subset=[aggregationGroupingLevel],
-                            valid_values=kwargs.get("groupedOutputs_validLevelIds", {}).get(aggregationGroupingId, []),
+                            valid_values=kwargs.get("groupedOutputs_validLevelIds", {}).get(
+                                aggregationGroupingId, []
+                            ),
                             prepend_path=["aggregationGroupingLevel"],
                         )
                     else:
@@ -410,4 +419,3 @@ class pages_data_star_charts_stats(ApiValidator):
                     self.__warn__(
                         msg="The `aggregationGroupingId` key should be passed when `aggregationType` is not 'sum' or 'divisor'."
                     )
-    pass

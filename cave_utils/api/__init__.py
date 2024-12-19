@@ -162,7 +162,7 @@ class Root(ApiValidator):
                 pass
             try:
                 groupedOutputs_validStatIds = {
-                    k: list(v.get("stats",[]))
+                    k: list(v.get("stats", []))
                     for k, v in groupedOutputs_data.get("data", {}).items()
                 }
             except:

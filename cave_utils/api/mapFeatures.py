@@ -107,13 +107,7 @@ class mapFeatures_data_star(ApiValidator):
             )
         if self.data.get("type") in ["geo", "arc"]:
             geoJson_data = self.data.get("geoJson")
-            if geoJson_data is None:
-                if self.data.get("type") == "geo":
-                    self.__error__(
-                        msg=f"geoJson must be specified for type: {self.data.get('type')}",
-                        path=["geoJson"],
-                    )
-            else:
+            if geoJson_data is not None:
                 mapFeatures_data_star_geoJson(
                     data=geoJson_data,
                     log=self.log,
@@ -170,13 +164,35 @@ class mapFeatures_data_star_data_location(ApiValidator):
     """
 
     @staticmethod
-    def spec(**kwargs):
+    def spec(
+        latitude: [list[list[float, int]], None] = None,
+        longitude: [list[list[float, int]], None] = None,
+        altitude: [list[list[float, int]], None] = None,
+        path: [list[list[list[float, int]]], None] = None,
+        geoJsonValue: [list[str], None] = None,
+        **kwargs,
+    ):
         """
-        Accepts all arbitrary values.
+        Arguments:
 
-        The location lists you pass will be validated based on other selections in your API spec.
+        * **`latitude`**: `list[list[float, int]]` = `None` &rarr; A list of latitudes for each node.
+            * ** Example **: `[45.34, 46.27, 47.34, 48.34]`
+            * ** Notes **: Used for `node` layers
+        * **`longitude`**: `list[list[float, int]]` = `None` &rarr; A list of longitudes for each node.
+            * ** Example **: `[120.34, 121.27, 122.34, 123.34]`
+            * ** Note **: Used for `node` layers
+        * **`altitude`**: `list[list[float, int]]` = `None` &rarr; The altitude for each node / geo in kilometers.
+            * ** Example **: `[0, 1000, 2000, 3000]`
+            * ** Notes **:
+                * Used for `node` and `geo` layers
+                * This is currently ignored but is planned to be supported in the future.
+        * **`path`**: `list[list[list[float, int]]]` = `None` &rarr; A path for each arc in the format `[[long1,lat1,(optional alt1)],[long2,lat2,(optional alt2)],...]`.
+            * ** Example **: `[[[0,0],[1,1]],[[2,2],[3,3],[4,4],[5,5]]]`
+            * ** Example with Altitude **: `[[[0,0,0],[1,1,1000]],[[2,2,2000],[3,3,3000],[4,4,4000],[5,5,5000]]]`
+            * ** Note **: Used for `arc` layers
+        * **`geoJsonValue`**: `list[str]` = `None` &rarr; A list of geoJsonValue keys that correspond to the `properties` key specified as geoJsonProp in `mapFeatures.data.*.geoJson`.
+            * ** Note **: Used for `arc`, `node`, and `geo` layers
         """
-        # TODO: Add docs here given the extended spec below.
         return {
             "kwargs": {},
             "accepted_values": {},
@@ -185,47 +201,24 @@ class mapFeatures_data_star_data_location(ApiValidator):
     def __extend_spec__(self, **kwargs):
         layer_type = kwargs.get("layer_type")
         layer_geoJson = kwargs.get("layer_geoJson")
-        passed_keys = list(self.data.keys())
+        passed_keys = {k: v for k, v in self.data.items() if v is not None}
         optional_keys = []
-        if layer_type == "geo":
-            required_keys = ["geoJsonValue"]
-        elif layer_type == "arc":
+        if layer_type in ["geo", "arc"]:
             if layer_geoJson is not None:
                 required_keys = ["geoJsonValue"]
-                optional_keys += [
-                    "path",
-                    "startLatitude",
-                    "startLongitude",
-                    "endLatitude",
-                    "endLongitude",
-                    "startAltitude",
-                    "endAltitude",
-                ]
-            elif "path" in passed_keys:
-                required_keys = ["path"]
-                optional_keys += [
-                    "startLatitude",
-                    "startLongitude",
-                    "endLatitude",
-                    "endLongitude",
-                    "geoJsonValue",
-                    "startAltitude",
-                    "endAltitude",
-                ]
             else:
-                required_keys = ["startLatitude", "startLongitude", "endLatitude", "endLongitude"]
-                optional_keys += ["startAltitude", "endAltitude", "geoJsonValue", "path"]
+                required_keys = ["path"]
         else:
             required_keys = ["latitude", "longitude"]
             optional_keys += ["altitude"]
-        missing_keys = pamda.difference(required_keys, list(self.data.keys()))
+        missing_keys = pamda.difference(required_keys, list(passed_keys.keys()))
         if len(missing_keys) > 0:
             self.__error__(msg=f"Missing required keys: {missing_keys}", path=[])
             return
-        for key, value_list in self.data.items():
+        for key, value_list in passed_keys.items():
             if key not in required_keys + optional_keys:
-                self.__error__(
-                    msg=f"`{key}` is not a valid key for location for layer type `{layer_type}`",
+                self.__warn__(
+                    msg=f"`{key}` is not a valid key for location with this configuration of layer type `{layer_type}`. Allowed keys are: {required_keys + optional_keys}",
                     path=[],
                 )
                 continue
@@ -235,26 +228,12 @@ class mapFeatures_data_star_data_location(ApiValidator):
                         msg=f"`geoJsonValue` should be a list of unique values. Otherwise, the corresponding map feature may not render correctly.",
                         path=[key],
                     )
-            if not isinstance(value_list, list):
-                self.__error__(
-                    msg=f"`{key}` must be a list but got {type(value_list)} instead.", path=[key]
-                )
                 continue
+
             latitudes = None
             longitudes = None
             altitudes = None
-            if "latitude" in key.lower():
-                acceptable_types = (int, float)
-                latitudes = value_list
-            elif "longitude" in key.lower():
-                acceptable_types = (int, float)
-                longitudes = value_list
-            elif "altitude" in key.lower():
-                acceptable_types = (int, float)
-                altitudes = value_list
-            elif "path" in key.lower():
-                acceptable_types = (list,)
-                # TODO: Write a better custom path validator to run here.
+            if "path" in key.lower():
                 try:
                     longitudes = [y[0] for x in value_list for y in x]
                     latitudes = [y[1] for x in value_list for y in x]
@@ -268,12 +247,13 @@ class mapFeatures_data_star_data_location(ApiValidator):
                         path=[key],
                     )
                     continue
-            else:
-                acceptable_types = (str,)
-            if not self.__check_type_list__(
-                data=value_list, types=acceptable_types, prepend_path=[key]
-            ):
-                continue
+            elif "latitude" in key.lower():
+                latitudes = [i[0] for i in value_list]
+            elif "longitude" in key.lower():
+                longitudes = [i[0] for i in value_list]
+            elif "altitude" in key.lower():
+                altitudes = [i[0] for i in value_list]
+
             if latitudes is not None:
                 if max(latitudes) > 90 or min(latitudes) < -90:
                     self.__error__(

@@ -37,6 +37,12 @@ class panes(ApiValidator):
         )
         pane_keys = list(data.keys())
         paneState = self.data.get("paneState", {})
+        allowedPaneStateKeys = ["left", "center", "right"]
+        for key in paneState.keys():
+            if key not in allowedPaneStateKeys:
+                self.__warn__(
+                    f"Invalid key '{key}' found in 'paneState'. Valid keys are: {allowedPaneStateKeys}"
+                )
         CustomKeyValidator(
             data=paneState,
             log=self.log,
@@ -103,32 +109,6 @@ class panes_data_star(ApiValidator):
 @type_enforced.Enforcer
 class panes_paneState_star(ApiValidator):
     """
-    The pane states are located under the path **`panes.paneState.*`**.
-    """
-
-    @staticmethod
-    def spec(type: str = "pane", open: [str, None] = None, pin: bool = False, **kwargs):
-        """
-        Arguments:
-
-        * **`left`**: `[dict]` = `"wall"` &rarr; The state of a pane activated from the left-side app bar.
-        * **`center`**: `[dict]` = `"wall"` &rarr; The state of a centered modal.
-        * **`right`**: `[dict]` = `"wall"` &rarr; The state of a pane activated from the right-side app bar.
-        """
-        return {"kwargs": kwargs, "accepted_values": {}}
-
-    def __extend_spec__(self, **kwargs):
-        if self.data.get("type", "pane") == "pane":
-            self.__check_subset_valid__(
-                subset=[self.data.get("open")],
-                valid_values=kwargs.get("pane_keys") + [None],
-                prepend_path=["open"],
-            )
-
-
-@type_enforced.Enforcer
-class panes_paneState_star_star(ApiValidator):
-    """
     The pane state data is located under the path **`panes.paneState.*.*`**.
     """
 
@@ -158,10 +138,10 @@ class panes_paneState_star_star(ApiValidator):
         }
 
     def __extend_spec__(self, **kwargs):
-        if self.data.get("type", "pane") == "pane":
-            self.__check_subset_valid__(
-                subset=[self.data.get("open")],
-                valid_values=kwargs.get("pane_keys"),
-                prepend_path=["open"],
-            )
-        # TODO: Validate map modal/panes
+        if self.data.get("open") is not None:
+            if self.data.get("type") == "pane":
+                self.__check_subset_valid__(
+                    subset=[self.data.get("open")],
+                    valid_values=kwargs.get("pane_keys"),
+                    prepend_path=["open"],
+                )

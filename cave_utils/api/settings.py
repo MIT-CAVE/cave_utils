@@ -27,7 +27,7 @@ class settings(ApiValidator):
 
         * **`iconUrl`**: `[str]` &rarr; The URL to the icon bundle for your application.
             * **Example**: `"https://react-icons.mitcave.com/5.4.0"`.
-            * **Notes**: 
+            * **Notes**:
                 * This is the only required attribute in `settings`.
                 * See the available versions provided by the cave team here:
                     * https://react-icons.mitcave.com/versions.txt

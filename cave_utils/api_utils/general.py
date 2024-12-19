@@ -26,6 +26,8 @@ class props(ApiValidator):
         placeholder: [str, None] = None,
         maxValue: [float, int, None] = None,
         minValue: [float, int, None] = None,
+        gradient: [dict, None] = None,
+        fallback: [dict, None] = None,
         maxRows: [int, None] = None,
         minRows: [int, None] = None,
         rows: [int, None] = None,
@@ -152,6 +154,10 @@ class props(ApiValidator):
             * **Note**: This attribute applies exclusively to `"num"` props.
         * **`minValue`**: `[float | int]` = `None` &rarr; The minimum value for the prop.
             * **Note**: This attribute applies exclusively to `"num"` props.
+        * **`gradient`**: `[dict]` = `None` &rarr; The gradient to apply to the prop.
+            * **Note**: TODO: Validate gradients
+        * **`fallback`**: `[dict]` = `None` &rarr; The fallback dict for color and sizing props with missing or invalid values.
+            * **Note**: TODO: Validate fallbacks
         * **`maxRows`**: `[int]` = `None` &rarr;
             * The maximum number of rows to show for a `"textarea"` variant.
             * **Note**: This attribute applies exclusively to `"text"` props.
@@ -327,7 +333,7 @@ class props(ApiValidator):
             optional_fields += ["enabled", "apiCommand", "apiCommandKeys", "allowNone"]
 
         if type == "text":
-            optional_fields += ["minRows", "maxRows", "rows", "label", "placeholder"]
+            optional_fields += ["minRows", "maxRows", "rows", "label", "placeholder", "options"]
         elif type == "num":
             if variant == "slider":
                 required_fields += ["maxValue", "minValue"]
@@ -336,7 +342,7 @@ class props(ApiValidator):
             else:
                 optional_fields += ["maxValue", "minValue"]
                 if variant is None or variant == "field":
-                    optional_fields += [ "label", "placeholder"]
+                    optional_fields += ["label", "placeholder"]
             if variant == "icon" or variant == "iconCompact":
                 required_fields += ["icon"]
             if notationDisplay:
@@ -356,6 +362,7 @@ class props(ApiValidator):
                 "trailingZeros",
                 "unitPlacement",
                 "draggable",
+                "gradient",
             ]
         elif type == "selector":
             required_fields += ["options"]
@@ -366,6 +373,11 @@ class props(ApiValidator):
             optional_fields += ["views"]
         elif type == "coordinate":
             optional_fields += ["label", "placeholder"]
+        elif type == "toggle":
+            optional_fields += ["options"]
+
+        if type in ["selector", "num", "toggle", "text"]:
+            optional_fields += ["fallback"]
 
         missing_required = pamda.difference(required_fields, list(passed_values.keys()))
         if len(missing_required) > 0:
@@ -392,7 +404,17 @@ class props(ApiValidator):
         return {
             "kwargs": kwargs,
             "accepted_values": {
-                "type": ["head", "num", "toggle", "button", "text", "selector", "date", "media", "coordinate"],
+                "type": [
+                    "head",
+                    "num",
+                    "toggle",
+                    "button",
+                    "text",
+                    "selector",
+                    "date",
+                    "media",
+                    "coordinate",
+                ],
                 "container": ["vertical", "horizontal", "titled", "untitled", "none"],
                 "views": view_options_dict.get(variant, []),
                 "unitPlacement": ["after", "afterWithSpace", "before", "beforeWithSpace"],
@@ -409,6 +431,7 @@ class props(ApiValidator):
                         "checkbox",
                         "radio",
                         "combobox",
+                        "comboboxMulti",
                         "hstepper",
                         "vstepper",
                         "hradio",
@@ -431,12 +454,22 @@ class props(ApiValidator):
                 variant=self.data.get("variant"),
                 **kwargs,
             )
+        if self.data.get("gradient"):
+            self.__warn__("`gradient` validation not implemented")
+        if self.data.get("fallback"):
+            self.__warn__("`fallback` validation not implemented")
 
 
 @type_enforced.Enforcer
 class props_options(ApiValidator):
     @staticmethod
-    def spec(name: str, path: [list[str], None] = None, **kwargs):
+    def spec(
+        name: str,
+        path: [list[str], None] = None,
+        color: [str, None] = None,
+        size: [str, None] = None,
+        **kwargs,
+    ):
         """
         Arguments:
 
@@ -445,6 +478,10 @@ class props_options(ApiValidator):
             * **Notes**:
                 * If `None`, the option will not be selectable
                 * This attribute applies exclusively to `"nested"` props
+        * **`color`**: `[str]` = `None` &rarr; The color to use for this option.
+            * **Note**: A valid color string (EG: "RGBA(0,0,0,1)")
+        * **`size`**: `[str]` = `None` &rarr; The size to use for this option.
+            * **Note**: A valid size string (EG: "5px")
         """
         variant = kwargs.get("variant")
         kwargs = {k: v for k, v in kwargs.items() if k != "variant"}
@@ -463,6 +500,10 @@ class props_options(ApiValidator):
                     msg="`path` must be specified and a list of strings for nested options"
                 )
                 return
+        if self.data.get("color"):
+            self.__check_color_string_valid__(color_string=self.data.get("color"))
+        if self.data.get("size"):
+            self.__check_pixel_string_valid__(pixel_string=self.data.get("size"))
 
 
 @type_enforced.Enforcer

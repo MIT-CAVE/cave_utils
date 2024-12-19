@@ -435,4 +435,6 @@ class groupedOutputs_groupings_star_levels_star(ApiValidator):
                 prepend_path=["coloring"],
             )
             for key, value in coloring.items():
-                self.__check_rgba_string_valid__(rgba_string=value, prepend_path=["coloring", key])
+                self.__check_color_string_valid__(
+                    color_string=value, prepend_path=["coloring", key]
+                )

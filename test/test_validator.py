@@ -45,14 +45,15 @@ example = {
                 "data": {"db1": ["pages", "data"]},
             },
         },
-        "iconUrl": "https://react-icons.mitcave.com/4.10.1",
+        "iconUrl": "https://react-icons.mitcave.com/5.4.0",
         "order": {
             "sync": ["panes", "modals", "pageSelection", "mapLayers", "pages"],
         },
-        "debug": True,
         "time": {
             "timeLength": 3,
             "timeUnits": "Century",
+            "looping": False,
+            "speed": 1,
         },
         "defaults": {
             "precision": 4,
@@ -64,36 +65,17 @@ example = {
     "appBar": {
         "order": {
             "data": [
-                "session",
-                "appSettings",
-                "resetButton",
                 "buttonSolve",
                 "examplePropsPane",
+                "buttonExport",
                 "dash1",
                 "dash2",
             ],
         },
         "data": {
-            "session": {
-                "icon": "md/MdApi",
-                "type": "session",
-                "bar": "upperLeft",
-            },
-            "appSettings": {
-                "icon": "md/MdOutlineSettings",
-                "type": "settings",
-                "bar": "upperLeft",
-            },
-            "resetButton": {
-                "icon": "md/MdSync",
-                "color": "rgba(255, 101, 101, 255)",
-                "apiCommand": "reset",
-                "type": "button",
-                "bar": "upperLeft",
-            },
             "buttonSolve": {
                 "icon": "bs/BsLightningFill",
-                "color": "rgba(178, 179, 55, 255)",
+                "color": "rgb(178 179 55)",
                 "apiCommand": "solve",
                 "type": "button",
                 "bar": "upperLeft",
@@ -103,6 +85,12 @@ example = {
                 "type": "pane",
                 "bar": "upperLeft",
                 "variant": "wall",
+            },
+            "buttonExport": {
+                "icon": "md/MdFileDownload",
+                "apiCommand": "exportData",
+                "type": "button",
+                "bar": "upperLeft",
             },
             "dash1": {
                 "type": "page",
@@ -116,7 +104,7 @@ example = {
             },
             "exampleModal": {
                 "icon": "md/MdInfo",
-                "color": "rgba(195, 164, 222, 255)",
+                "color": "rgb(195 164 222)",
                 "type": "pane",
                 "bar": "upperRight",
                 "variant": "modal",
@@ -133,7 +121,6 @@ example = {
                         "name": "Info Button",
                         "type": "button",
                         "apiCommand": "viewInfo",
-                        "enabled": True,
                         "help": "Press this button to view info",
                     },
                 },
@@ -165,7 +152,6 @@ example = {
                     "numericInputExample": {
                         "name": "Numeric Input Example",
                         "type": "num",
-                        "enabled": True,
                         "help": "Help for the numeric input example",
                         "maxValue": 100,
                         "minValue": 0,
@@ -177,11 +163,18 @@ example = {
                     "numericSliderExample": {
                         "name": "Numeric Slider Example",
                         "type": "num",
-                        "enabled": True,
                         "variant": "slider",
                         "help": "Help for the numeric slider example",
                         "maxValue": 100,
                         "minValue": 0,
+                        "unit": "%",
+                    },
+                    "incrementalSliderExample": {
+                        "name": "Incrimental Slider Example",
+                        "type": "num",
+                        "variant": "incslider",
+                        "help": "Help for the incremental slider example",
+                        "valueOptions": [0, 25, 50, 75, 100],
                         "unit": "%",
                     },
                     "miscHeader": {
@@ -192,14 +185,12 @@ example = {
                     "toggleInputExample": {
                         "name": "Toggle Input Example",
                         "type": "toggle",
-                        "enabled": True,
                         "help": "Help for the toggle input example",
                     },
                     "buttonInputExample": {
                         "name": "Button Input Example (Creates an Error)",
                         "type": "button",
                         "apiCommand": "test",
-                        "enabled": True,
                         "help": "Press this button to create an error",
                     },
                     "pictureExample": {
@@ -222,7 +213,6 @@ example = {
                     "textInputExample": {
                         "name": "Text Input Example",
                         "type": "text",
-                        "enabled": True,
                         "help": "Help for the text input example",
                     },
                     "textAreaInputExample": {
@@ -230,7 +220,6 @@ example = {
                         "type": "text",
                         "variant": "textarea",
                         "rows": 6,
-                        "enabled": True,
                         "help": "Help for the text area input example",
                     },
                     "selectorHeader": {
@@ -247,7 +236,6 @@ example = {
                             "option_b": {"name": "Option B"},
                             "option_c": {"name": "Option C"},
                         },
-                        "enabled": True,
                         "help": "Select an option from the dropdown",
                     },
                     "checkboxItemExample": {
@@ -259,7 +247,6 @@ example = {
                             "option_b": {"name": "Option B"},
                             "option_c": {"name": "Option C"},
                         },
-                        "enabled": True,
                         "help": "Select all relevant items",
                     },
                     "radioItemExample": {
@@ -271,7 +258,6 @@ example = {
                             "option_b": {"name": "Option B"},
                             "option_c": {"name": "Option C"},
                         },
-                        "enabled": True,
                         "help": "Select one item from the list",
                     },
                     "hstepperItemExample": {
@@ -283,7 +269,6 @@ example = {
                             "option_b": {"name": "Option B"},
                             "option_c": {"name": "Option C"},
                         },
-                        "enabled": True,
                         "help": "Select an option from the stepper",
                     },
                     "vstepperItemExample": {
@@ -295,7 +280,6 @@ example = {
                             "option_b": {"name": "Option B"},
                             "option_c": {"name": "Option C"},
                         },
-                        "enabled": True,
                         "help": "Select an option from the stepper",
                     },
                     "hradioItemExample": {
@@ -307,38 +291,74 @@ example = {
                             "option_b": {"name": "Option B"},
                             "option_c": {"name": "Option C"},
                         },
-                        "enabled": True,
                         "help": "Select an option from the radio",
                     },
                     "comboBoxItemExample": {
                         "name": "ComboBox Item Example",
                         "type": "selector",
                         "variant": "combobox",
-                        "placeholder": "Option",
+                        "placeholder": "Options",
                         "options": {
                             "option_a": {"name": "Option A"},
                             "option_b": {"name": "Option B"},
                             "option_c": {"name": "Option C"},
                         },
-                        "enabled": True,
                         "help": "Select an option from the combobox",
+                    },
+                    "comboBoxMultiExample": {
+                        "name": "ComboBox Multi Example",
+                        "type": "selector",
+                        "variant": "comboboxMulti",
+                        "placeholder": "Select multiple options",
+                        "options": {
+                            "option_a": {"name": "Option A"},
+                            "option_b": {"name": "Option B"},
+                            "option_c": {"name": "Option C"},
+                        },
+                        "help": "Select multiple options from the combobox",
                     },
                     "nestedItemExample": {
                         "name": "Nested Item Example",
                         "type": "selector",
                         "variant": "nested",
                         "options": {
-                            "t1_b1_tw1": {"name": "Twig1", "path": ["Tree1", "Branch1"]},
-                            "t1_b1_tw2": {"name": "Twig2", "path": ["Tree1", "Branch1"]},
-                            "t1_b1_tw3": {"name": "Twig3", "path": ["Tree1", "Branch1"]},
-                            "t1_b2_tw1": {"name": "Twig1", "path": ["Tree1", "Branch2"]},
-                            "t1_b2_tw2": {"name": "Twig2", "path": ["Tree1", "Branch2"]},
-                            "t2_b1_tw1": {"name": "Twig1", "path": ["Tree2", "Branch1"]},
-                            "t2_b1_tw2": {"name": "Twig2", "path": ["Tree2", "Branch1"]},
-                            "t2_b2_tw1": {"name": "Twig1", "path": ["Tree2", "Branch2"]},
-                            "t2_b2_tw2": {"name": "Twig2", "path": ["Tree2", "Branch2"]},
+                            "t1_b1_tw1": {
+                                "name": "Twig1",
+                                "path": ["Tree1", "Branch1"],
+                            },
+                            "t1_b1_tw2": {
+                                "name": "Twig2",
+                                "path": ["Tree1", "Branch1"],
+                            },
+                            "t1_b1_tw3": {
+                                "name": "Twig3",
+                                "path": ["Tree1", "Branch1"],
+                            },
+                            "t1_b2_tw1": {
+                                "name": "Twig1",
+                                "path": ["Tree1", "Branch2"],
+                            },
+                            "t1_b2_tw2": {
+                                "name": "Twig2",
+                                "path": ["Tree1", "Branch2"],
+                            },
+                            "t2_b1_tw1": {
+                                "name": "Twig1",
+                                "path": ["Tree2", "Branch1"],
+                            },
+                            "t2_b1_tw2": {
+                                "name": "Twig2",
+                                "path": ["Tree2", "Branch1"],
+                            },
+                            "t2_b2_tw1": {
+                                "name": "Twig1",
+                                "path": ["Tree2", "Branch2"],
+                            },
+                            "t2_b2_tw2": {
+                                "name": "Twig2",
+                                "path": ["Tree2", "Branch2"],
+                            },
                         },
-                        "enabled": True,
                         "help": "Select all relevant items",
                     },
                     "dateTimeHeader": {
@@ -350,14 +370,12 @@ example = {
                         "name": "Date Example",
                         "type": "date",
                         "variant": "date",
-                        "enabled": True,
                         "help": "The Eagle has landed!",
                     },
                     "timeItemExample": {
                         "name": "Time Example",
                         "type": "date",
                         "variant": "time",
-                        "enabled": True,
                         "views": ["hours", "minutes", "seconds"],
                         "help": "The Eagle has landed!",
                     },
@@ -365,13 +383,36 @@ example = {
                         "name": "Date and Time Example",
                         "type": "date",
                         "variant": "datetime",
-                        "enabled": True,
                         "help": "The Eagle has landed!",
+                    },
+                    "coordinateHeader": {
+                        "name": "Coordinate Props",
+                        "type": "head",
+                        "help": "Some help for Coordinate Props",
+                    },
+                    "latLngInputExample": {
+                        "name": "Lat/Lng Input Example",
+                        "type": "coordinate",
+                        "variant": "latLngInput",
+                        "help": "Help for the latLngInput example",
+                    },
+                    "latLngMapExample": {
+                        "name": "Lat/Lng Map Example",
+                        "type": "coordinate",
+                        "variant": "latLngMap",
+                        "help": "Help for the latLngMap example",
+                    },
+                    "latLngPathExample": {
+                        "name": "Lat/Lng Path Example",
+                        "type": "coordinate",
+                        "variant": "latLngPath",
+                        "help": "Help for the latLngPath example",
                     },
                 },
                 "values": {
                     "numericInputExample": 50,
                     "numericSliderExample": 50,
+                    "incrementalSliderExample": 50,
                     "toggleInputExample": True,
                     "buttonInputExample": "Press Me!",
                     "pictureExample": "https://ctl.mit.edu/sites/ctl.mit.edu/files/inline-images/MIT_CTL_CAVE_Lab_2.png",
@@ -385,6 +426,7 @@ example = {
                     "vstepperItemExample": ["option_c"],
                     "hradioItemExample": ["option_c"],
                     "comboBoxItemExample": ["option_b"],
+                    "comboBoxMultiExample": ["option_a", "option_b"],
                     "nestedItemExample": [
                         "t1_b1_tw1",
                         "t1_b1_tw2",
@@ -395,6 +437,12 @@ example = {
                     "dateItemExample": "1969-07-20",
                     "timeItemExample": "20:17:40",
                     "dateTimeItemExample": "1969-07-20T20:17:40",
+                    "latLngInputExample": [[-71.092003, 42.360001]],
+                    "latLngMapExample": [[-71.092003, 42.360001]],
+                    "latLngPathExample": [
+                        [-71.092003, 42.360001],
+                        [-71.093003, 42.361001],
+                    ],
                 },
                 "layout": {
                     "type": "grid",
@@ -418,6 +466,12 @@ example = {
                             "column": 1,
                             "row": 3,
                             "itemId": "numericSliderExample",
+                        },
+                        "col1Row4": {
+                            "type": "item",
+                            "column": 1,
+                            "row": 4,
+                            "itemId": "incrementalSliderExample",
                         },
                         "col2Row1": {
                             "type": "item",
@@ -501,24 +555,30 @@ example = {
                             "type": "item",
                             "column": 4,
                             "row": 6,
-                            "itemId": "hstepperItemExample",
+                            "itemId": "comboBoxMultiExample",
                         },
                         "col4Row7": {
                             "type": "item",
                             "column": 4,
                             "row": 7,
-                            "itemId": "vstepperItemExample",
+                            "itemId": "hstepperItemExample",
                         },
                         "col4Row8": {
                             "type": "item",
                             "column": 4,
                             "row": 8,
-                            "itemId": "hradioItemExample",
+                            "itemId": "vstepperItemExample",
                         },
                         "col4Row9": {
                             "type": "item",
                             "column": 4,
                             "row": 9,
+                            "itemId": "hradioItemExample",
+                        },
+                        "col4Row10": {
+                            "type": "item",
+                            "column": 4,
+                            "row": 10,
                             "itemId": "nestedItemExample",
                         },
                         "col5Row1": {
@@ -545,6 +605,30 @@ example = {
                             "row": 4,
                             "itemId": "dateTimeItemExample",
                         },
+                        "col6Row1": {
+                            "type": "item",
+                            "column": 6,
+                            "row": 1,
+                            "itemId": "coordinateHeader",
+                        },
+                        "col6Row2": {
+                            "type": "item",
+                            "column": 6,
+                            "row": 2,
+                            "itemId": "latLngInputExample",
+                        },
+                        "col6Row3": {
+                            "type": "item",
+                            "column": 6,
+                            "row": 3,
+                            "itemId": "latLngMapExample",
+                        },
+                        "col6Row4": {
+                            "type": "item",
+                            "column": 6,
+                            "row": 4,
+                            "itemId": "latLngPathExample",
+                        },
                     },
                 },
             },
@@ -554,62 +638,110 @@ example = {
         "currentPage": "dash2",
         "data": {
             "dash1": {
-                "pageLayout": [
-                    {
-                        "variant": "bar",
-                        "statAggregation": "mean",
+                "charts": {
+                    "allBar": {
+                        "dataset": "locationGroup",
+                        "chartType": "bar",
+                        "stats": [
+                            {
+                                "statId": "numericStatExampleB",
+                                "aggregationType": "mean",
+                            }
+                        ],
+                        "groupingId": [],
+                        "groupingLevel": [],
+                        "showNA": True,
                     },
-                    {
+                    "map1": {
                         "type": "map",
                         "mapId": "map1",
                         "showToolbar": False,
                         "maximized": True,
                     },
-                    {
-                        "variant": "bar",
-                        "groupingLevel": ["size"],
-                        "groupingId": ["sku"],
-                        "lockedLayout": True,
-                        "statAggregation": "sum",
-                        "groupedOutputDataId": "locationGroup",
-                        "statId": "numericExampleCalculationStat",
+                    "statBar": {
+                        "dataset": "locationGroup",
+                        "chartType": "bar",
+                        "stats": [
+                            {
+                                "statId": "numericStatExampleA",
+                                "aggregationType": "sum",
+                            }
+                        ],
+                        "groupingId": [],
+                        "groupingLevel": [],
                     },
-                ],
+                },
+                "pageLayout": ["allBar", "map1", None, "statBar"],
                 "lockedLayout": False,
             },
             "dash2": {
-                "pageLayout": [
-                    {
-                        "variant": "bar",
-                        "statAggregation": "mean",
-                        "groupedOutputDataId": "locationGroup",
-                        "statId": "numericStatExampleB",
+                "charts": {
+                    "allBar": {
+                        "dataset": "locationGroup",
+                        "chartType": "bar",
+                        "stats": [
+                            {
+                                "statId": "numericStatExampleB",
+                                "aggregationType": "mean",
+                            }
+                        ],
+                        "groupingId": [],
+                        "groupingLevel": [],
+                        "showNA": True,
                     },
-                    {
-                        "type": "globalOutput",
-                        "variant": "bar",
-                        "statAggregation": "sum",
-                        "sessions": [],
-                        "globalOutput": ["key1", "key2"],
-                        "showToolbar": False,
+                    "mixed": {
+                        "type": "groupedOutput",
+                        "dataset": "locationGroup",
+                        "chartType": "mixed",
+                        "groupingId": ["location"],
+                        "groupingLevel": ["state"],
+                        "stats": [
+                            {
+                                "statId": "numericStatExampleA",
+                                "aggregationType": "sum",
+                            },
+                            {
+                                "statId": "numericStatExampleB",
+                                "aggregationType": "sum",
+                            },
+                        ],
+                        "chartOptions": {
+                            "leftChartType": "bar",
+                            "rightChartType": "cumulative_line",
+                        },
                     },
-                    {
-                        "variant": "box_plot",
-                        "groupingLevel": ["size"],
-                        "lockedLayout": True,
+                    "boxPlot": {
+                        "dataset": "locationGroup",
+                        "chartType": "box_plot",
+                        "stats": [
+                            {
+                                "statId": "numericStatExampleA",
+                                "aggregationType": "mean",
+                            },
+                        ],
                         "groupingId": ["sku"],
-                        "statAggregation": "mean",
-                        "groupedOutputDataId": "locationGroup",
-                        "statId": "numericExampleCalculationStat",
+                        "groupingLevel": ["size"],
+                        "showNA": True,
                     },
-                    {
-                        "variant": "cumulative_line",
-                        "statAggregation": "sum",
-                        "groupedOutputDataId": "locationGroup",
-                        "statId": "numericStatExampleB",
+                    "cumulativeLine": {
+                        "dataset": "locationGroup",
+                        "chartType": "cumulative_line",
+                        "stats": [
+                            {
+                                "statId": "numericStatExampleB",
+                                "aggregationType": "sum",
+                            },
+                        ],
                         "groupingId": ["location", "sku"],
                         "groupingLevel": ["state", "sku"],
+                        "defaultToZero": True,
                     },
+                },
+                "pageLayout": [
+                    "allBar",
+                    "mixed",
+                    "boxPlot",
+                    "cumulativeLine",
                 ],
                 "lockedLayout": False,
             },
@@ -644,8 +776,8 @@ example = {
                 },
                 "fog": {
                     "range": [0.5, 10],
-                    "color": "#ffffff",
-                    "high-color": "#245cdf",
+                    "color": "rgba(255, 255, 255, 1)",
+                    "high-color": "rgba(36, 92, 223, 1)",
                     "space-color": [
                         "interpolate",
                         ["linear"],
@@ -738,99 +870,48 @@ example = {
                         "longitude": 14,
                     },
                 },
+                "legendView": "minimal",
+                "showLegendGroupNames": True,
                 "legendGroups": {
                     "lga": {
                         "name": "Legend Group A",
                         "data": {
                             "nodeTypeA": {
                                 "value": True,
-                                "sizeBy": "numericPropExampleA",
                                 "colorBy": "booleanPropExample",
+                                "sizeBy": "numericPropExampleA",
                                 "allowGrouping": True,
-                                "group": True,
+                                "group": False,
                                 "groupCalcBySize": "sum",
                                 "groupCalcByColor": "mode",
                                 # "groupScaleWithZoom": True,
                                 # "groupScale": 10,
-                                "colorByOptions": {
-                                    "numericPropExampleA": {
-                                        "timeValues": {
-                                            0: {"min": 50},
-                                            1: {"min": 0},
-                                            2: {"min": 20},
-                                        },
-                                        "max": 80,
-                                        "startGradientColor": "rgba(233, 0, 0, 255)",
-                                        "endGradientColor": "rgba(96, 2, 2, 255)",
-                                    },
-                                    "numericPropExampleB": {
-                                        "min": 0,
-                                        "max": 50,
-                                        "startGradientColor": "rgba(233, 0, 0, 255)",
-                                        "endGradientColor": "rgba(96, 2, 2, 255)",
-                                    },
-                                    "booleanPropExample": {
-                                        "false": "rgba(255,0,0, 255)",
-                                        "true": "rgba(0,255,0, 255)",
-                                        "nullColor": "rgba(0,255,0, 255)",
-                                    },
-                                },
-                                "sizeByOptions": {
-                                    "numericPropExampleA": {
-                                        "min": 0,
-                                        "max": 80,
-                                        "startSize": "30px",
-                                        "endSize": "45px",
-                                    },
-                                    "numericPropExampleB": {
-                                        "min": 0,
-                                        "max": 50,
-                                        "startSize": "15px",
-                                        "endSize": "30px",
-                                    },
-                                },
                                 "icon": "fa6/FaIgloo",
+                                "colorByOptions": [
+                                    "numericPropExampleA",
+                                    "numericPropExampleB",
+                                    "booleanPropExample",
+                                    "selectorPropExample",
+                                ],
+                                "sizeByOptions": [
+                                    "numericPropExampleA",
+                                    "numericPropExampleB",
+                                    "booleanPropExample",
+                                    "selectorPropExample",
+                                ],
                             },
                             "T1": {
-                                "colorBy": "numericPropExampleA",
-                                "sizeBy": "numericPropExampleB",
+                                "colorBy": "numericPropExampleB",
+                                "sizeBy": "numericPropExampleA",
                                 "value": True,
-                                "sizeByOptions": {
-                                    "numericPropExampleA": {
-                                        "min": 0,
-                                        "max": 50,
-                                        "startSize": "15px",
-                                        "endSize": "30px",
-                                    },
-                                    "numericPropExampleB": {
-                                        "min": 0,
-                                        "max": 40,
-                                        "startSize": "5px",
-                                        "endSize": "15px",
-                                    },
-                                },
-                                "colorByOptions": {
-                                    "selectorPropForColor": {
-                                        "a": "rgba(128,255,255, 255)",
-                                        "b": "rgba(0,153,51, 255)",
-                                        "c": "rgba(0,0,128, 255)",
-                                        "d": "rgba(204,0,0, 255)",
-                                        "e": "rgba(153,77,0, 255)",
-                                        "f": "rgba(255,25,255, 255)",
-                                    },
-                                    "numericPropExampleA": {
-                                        "min": 0,
-                                        "max": 50,
-                                        "startGradientColor": "rgba(233, 0, 0, 255)",
-                                        "endGradientColor": "rgba(96, 2, 2, 255)",
-                                    },
-                                    "numericPropExampleB": {
-                                        "min": 0,
-                                        "max": 40,
-                                        "startGradientColor": "rgba(233, 0, 0, 255)",
-                                        "endGradientColor": "rgba(96, 2, 2, 255)",
-                                    },
-                                },
+                                "colorByOptions": [
+                                    "numericPropExampleA",
+                                    "numericPropExampleB",
+                                ],
+                                "sizeByOptions": [
+                                    "numericPropExampleA",
+                                    "selectorPropExample",
+                                ],
                             },
                         },
                     },
@@ -839,8 +920,8 @@ example = {
                         "data": {
                             "nodeTypeB": {
                                 "value": True,
-                                "sizeBy": "numericPropExampleB",
-                                "colorBy": "booleanPropExample",
+                                "colorBy": "numericPropExampleB",
+                                "sizeBy": "numericPropExampleA",
                                 "allowGrouping": True,
                                 "group": True,
                                 "groupCalcBySize": "count",
@@ -848,111 +929,55 @@ example = {
                                 # "groupScaleWithZoom": True,
                                 # # Equivalent to zoom level unless groupScale is set
                                 # "groupScale": 10,
-                                "colorByOptions": {
-                                    "numericPropExampleA": {
-                                        "min": 0,
-                                        "max": 1000,
-                                        "startGradientColor": "rgba(233, 0, 0, 255)",
-                                        "endGradientColor": "rgba(96, 2, 2, 255)",
-                                    },
-                                    "numericPropExampleB": {
-                                        "min": 0,
-                                        "max": 50,
-                                        "startGradientColor": "rgba(233, 0, 0, 255)",
-                                        "endGradientColor": "rgba(96, 2, 2, 255)",
-                                    },
-                                    "booleanPropExample": {
-                                        "false": "rgba(233, 0, 0, 255)",
-                                        "true": "rgba(0, 233, 0, 255)",
-                                    },
-                                },
-                                "sizeByOptions": {
-                                    "numericPropExampleA": {
-                                        "min": 0,
-                                        "max": 100,
-                                        "startSize": "15px",
-                                        "endSize": "30px",
-                                    },
-                                    "numericPropExampleB": {
-                                        "min": 0,
-                                        "max": 250,
-                                        "startSize": "5px",
-                                        "endSize": "15px",
-                                    },
-                                },
                                 "icon": "bs/BsBuilding",
+                                "colorByOptions": [
+                                    "numericPropExampleA",
+                                    "numericPropExampleB",
+                                ],
+                                "sizeByOptions": [
+                                    "numericPropExampleA",
+                                    "booleanPropExample",
+                                ],
                             },
                             "T2": {
-                                "colorBy": "numericPropExampleA",
+                                "colorBy": "selectorPropExample",
                                 "sizeBy": "numericPropExampleB",
                                 "value": True,
-                                "colorByOptions": {
-                                    "selectorPropForColor": {
-                                        "a": "rgba(128,255,255, 255)",
-                                        "b": "rgba(0,153,51, 255)",
-                                        "c": "rgba(0,0,128, 255)",
-                                        "d": "rgba(204,0,0, 255)",
-                                        "e": "rgba(153,77,0, 255)",
-                                        "f": "rgba(255,25,255, 255)",
-                                    },
-                                    "numericPropExampleA": {
-                                        "min": 0,
-                                        "max": 50,
-                                        "startGradientColor": "rgba(233, 0, 0, 255)",
-                                        "endGradientColor": "rgba(96, 2, 2, 255)",
-                                    },
-                                    "numericPropExampleB": {
-                                        "min": 0,
-                                        "max": 40,
-                                        "startGradientColor": "rgba(233, 0, 0, 255)",
-                                        "endGradientColor": "rgba(96, 2, 2, 255)",
-                                    },
-                                },
-                                "lineBy": "dotted",
-                                "sizeByOptions": {
-                                    "numericPropExampleA": {
-                                        "min": 0,
-                                        "max": 50,
-                                        "startSize": "15px",
-                                        "endSize": "30px",
-                                    },
-                                    "numericPropExampleB": {
-                                        "min": 0,
-                                        "max": 40,
-                                        "startSize": "5px",
-                                        "endSize": "15px",
-                                    },
-                                },
+                                "lineStyle": "dotted",
+                                "colorByOptions": [
+                                    "numericPropExampleA",
+                                    "numericPropExampleB",
+                                    "selectorPropExample",
+                                ],
+                                "sizeByOptions": [
+                                    "numericPropExampleA",
+                                    "numericPropExampleB",
+                                    "selectorPropExample",
+                                ],
                             },
                             "state": {
                                 "value": True,
                                 "colorBy": "numericPropExampleC",
-                                "colorByOptions": {
-                                    "numericPropExampleC": {
-                                        "min": 0,
-                                        "max": 300,
-                                        "startGradientColor": "rgba(100, 100, 100, 255)",
-                                        "endGradientColor": "rgba(20, 205, 20, 255)",
-                                    },
-                                    "booleanPropExample": {
-                                        "false": "rgba(233, 0, 0, 255)",
-                                        "true": "rgba(0, 233, 0, 255)",
-                                    },
-                                },
                                 "icon": "bs/BsHexagon",
+                                "colorByOptions": [
+                                    "numericPropExampleC",
+                                    "booleanPropExample",
+                                ],
                             },
                             "country": {
                                 "value": False,
                                 "colorBy": "numericPropExampleC",
-                                "colorByOptions": {
-                                    "numericPropExampleC": {
-                                        "min": 0,
-                                        "max": 800,
-                                        "startGradientColor": "rgba(100, 100, 100, 255)",
-                                        "endGradientColor": "rgba(20, 205, 20, 255)",
-                                    }
-                                },
-                                "icon": "bs/BsHexagon",
+                                "icon": "pi/PiMountains",
+                                "colorByOptions": ["numericPropExampleC"],
+                            },
+                            "customGeoJson": {
+                                "value": False,
+                                "colorBy": "numericPropExampleC",
+                                "icon": "tb/TbLassoPolygon",
+                                "colorByOptions": [
+                                    "numericPropExampleC",
+                                    "booleanPropExample",
+                                ],
                             },
                         },
                     },
@@ -1003,86 +1028,36 @@ example = {
                         "data": {
                             "nodeTypeA": {
                                 "value": True,
-                                "sizeBy": "numericPropExampleA",
                                 "colorBy": "booleanPropExample",
-                                "colorByOptions": {
-                                    "numericPropExampleA": {
-                                        "timeValues": {
-                                            0: {"min": 50},
-                                            1: {"min": 0},
-                                            2: {"min": 20},
-                                        },
-                                        "max": 80,
-                                        "startGradientColor": "rgba(233, 0, 0, 255)",
-                                        "endGradientColor": "rgba(96, 2, 2, 255)",
-                                    },
-                                    "numericPropExampleB": {
-                                        "min": 0,
-                                        "max": 50,
-                                        "startGradientColor": "rgba(233, 0, 0, 255)",
-                                        "endGradientColor": "rgba(96, 2, 2, 255)",
-                                    },
-                                    "booleanPropExample": {
-                                        "false": "rgba(255,0,0, 255)",
-                                        "true": "rgba(0,255,0, 255)",
-                                    },
-                                },
-                                "sizeByOptions": {
-                                    "numericPropExampleA": {
-                                        "min": 0,
-                                        "max": 80,
-                                        "startSize": "30px",
-                                        "endSize": "45px",
-                                    },
-                                    "numericPropExampleB": {
-                                        "min": 0,
-                                        "max": 50,
-                                        "startSize": "15px",
-                                        "endSize": "30px",
-                                    },
-                                },
+                                "sizeBy": "numericPropExampleA",
                                 "icon": "fa6/FaIgloo",
+                                "colorByOptions": [
+                                    "numericPropExampleA",
+                                    "numericPropExampleB",
+                                    "booleanPropExample",
+                                    "selectorPropExample",
+                                ],
+                                "sizeByOptions": [
+                                    "numericPropExampleA",
+                                    "numericPropExampleB",
+                                    "booleanPropExample",
+                                    "selectorPropExample",
+                                ],
                             },
                             "T1": {
                                 "colorBy": "numericPropExampleA",
                                 "sizeBy": "numericPropExampleB",
                                 "value": True,
-                                "sizeByOptions": {
-                                    "numericPropExampleA": {
-                                        "min": 0,
-                                        "max": 50,
-                                        "startSize": "15px",
-                                        "endSize": "30px",
-                                    },
-                                    "numericPropExampleB": {
-                                        "min": 0,
-                                        "max": 40,
-                                        "startSize": "5px",
-                                        "endSize": "15px",
-                                    },
-                                },
-                                "colorByOptions": {
-                                    "selectorPropForColor": {
-                                        "a": "rgba(128,255,255, 255)",
-                                        "b": "rgba(0,153,51, 255)",
-                                        "c": "rgba(0,0,128, 255)",
-                                        "d": "rgba(204,0,0, 255)",
-                                        "e": "rgba(153,77,0, 255)",
-                                        "f": "rgba(255,25,255, 255)",
-                                    },
-                                    "numericPropExampleA": {
-                                        "min": 0,
-                                        "max": 50,
-                                        "startGradientColor": "rgba(233, 0, 0, 255)",
-                                        "endGradientColor": "rgba(96, 2, 2, 255)",
-                                    },
-                                    "numericPropExampleB": {
-                                        "min": 0,
-                                        "max": 40,
-                                        "startGradientColor": "rgba(233, 0, 0, 255)",
-                                        "endGradientColor": "rgba(96, 2, 2, 255)",
-                                    },
-                                },
+                                "colorByOptions": [
+                                    "numericPropExampleA",
+                                    "numericPropExampleB",
+                                    "selectorPropExample",
+                                ],
+                                "sizeByOptions": [
+                                    "numericPropExampleA",
+                                    "numericPropExampleB",
+                                    "selectorPropExample",
+                                ],
                             },
                         },
                     },
@@ -1091,113 +1066,50 @@ example = {
                         "data": {
                             "nodeTypeB": {
                                 "value": True,
-                                "sizeBy": "numericPropExampleB",
                                 "colorBy": "booleanPropExample",
-                                "colorByOptions": {
-                                    "numericPropExampleA": {
-                                        "min": 0,
-                                        "max": 1000,
-                                        "startGradientColor": "rgba(233, 0, 0, 255)",
-                                        "endGradientColor": "rgba(96, 2, 2, 255)",
-                                    },
-                                    "numericPropExampleB": {
-                                        "min": 0,
-                                        "max": 50,
-                                        "startGradientColor": "rgba(233, 0, 0, 255)",
-                                        "endGradientColor": "rgba(96, 2, 2, 255)",
-                                    },
-                                    "booleanPropExample": {
-                                        "false": "rgba(233, 0, 0, 255)",
-                                        "true": "rgba(0, 233, 0, 255)",
-                                    },
-                                },
-                                "sizeByOptions": {
-                                    "numericPropExampleA": {
-                                        "min": 0,
-                                        "max": 100,
-                                        "startSize": "15px",
-                                        "endSize": "30px",
-                                    },
-                                    "numericPropExampleB": {
-                                        "min": 0,
-                                        "max": 250,
-                                        "startSize": "5px",
-                                        "endSize": "15px",
-                                    },
-                                },
+                                "sizeBy": "numericPropExampleB",
                                 "icon": "bs/BsBuilding",
+                                "colorByOptions": [
+                                    "numericPropExampleA",
+                                    "numericPropExampleB",
+                                    "booleanPropExample",
+                                ],
+                                "sizeByOptions": [
+                                    "numericPropExampleA",
+                                    "numericPropExampleB",
+                                    "booleanPropExample",
+                                ],
                             },
                             "T2": {
                                 "colorBy": "numericPropExampleA",
                                 "sizeBy": "numericPropExampleB",
                                 "value": True,
-                                "colorByOptions": {
-                                    "selectorPropForColor": {
-                                        "a": "rgba(128,255,255, 255)",
-                                        "b": "rgba(0,153,51, 255)",
-                                        "c": "rgba(0,0,128, 255)",
-                                        "d": "rgba(204,0,0, 255)",
-                                        "e": "rgba(153,77,0, 255)",
-                                        "f": "rgba(255,25,255, 255)",
-                                    },
-                                    "numericPropExampleA": {
-                                        "min": 0,
-                                        "max": 50,
-                                        "startGradientColor": "rgba(233, 0, 0, 255)",
-                                        "endGradientColor": "rgba(96, 2, 2, 255)",
-                                    },
-                                    "numericPropExampleB": {
-                                        "min": 0,
-                                        "max": 40,
-                                        "startGradientColor": "rgba(233, 0, 0, 255)",
-                                        "endGradientColor": "rgba(96, 2, 2, 255)",
-                                    },
-                                },
-                                "lineBy": "dotted",
-                                "sizeByOptions": {
-                                    "numericPropExampleA": {
-                                        "min": 0,
-                                        "max": 50,
-                                        "startSize": "15px",
-                                        "endSize": "30px",
-                                    },
-                                    "numericPropExampleB": {
-                                        "min": 0,
-                                        "max": 40,
-                                        "startSize": "5px",
-                                        "endSize": "15px",
-                                    },
-                                },
+                                "lineStyle": "dotted",
+                                "colorByOptions": [
+                                    "numericPropExampleA",
+                                    "numericPropExampleB",
+                                    "selectorPropExample",
+                                ],
+                                "sizeByOptions": [
+                                    "numericPropExampleA",
+                                    "numericPropExampleB",
+                                    "selectorPropExample",
+                                ],
                             },
                             "state": {
                                 "value": True,
                                 "colorBy": "numericPropExampleC",
-                                "colorByOptions": {
-                                    "numericPropExampleC": {
-                                        "min": 0,
-                                        "max": 300,
-                                        "startGradientColor": "rgba(100, 100, 100, 255)",
-                                        "endGradientColor": "rgba(20, 205, 20, 255)",
-                                    },
-                                    "booleanPropExample": {
-                                        "false": "rgba(233, 0, 0, 255)",
-                                        "true": "rgba(0, 233, 0, 255)",
-                                    },
-                                },
                                 "icon": "bs/BsHexagon",
+                                "colorByOptions": [
+                                    "numericPropExampleC",
+                                    "booleanPropExample",
+                                ],
                             },
                             "country": {
                                 "value": False,
                                 "colorBy": "numericPropExampleC",
-                                "colorByOptions": {
-                                    "numericPropExampleC": {
-                                        "min": 0,
-                                        "max": 800,
-                                        "startGradientColor": "rgba(100, 100, 100, 255)",
-                                        "endGradientColor": "rgba(20, 205, 20, 255)",
-                                    }
-                                },
-                                "icon": "bs/BsHexagon",
+                                "icon": "pi/PiMountains",
+                                "colorByOptions": ["numericPropExampleC"],
                             },
                         },
                     },
@@ -1218,32 +1130,108 @@ example = {
                     "numericPropExampleA": {
                         "name": "Numeric Prop Example A",
                         "type": "num",
-                        "enabled": True,
-                        "help": "Help for numeric prop example A",
                         "unit": "A units",
-                        "legendNotation": "compact",
-                        "legendMinLabel": "small",
+                        "gradient": {
+                            "scale": "linear",
+                            "notation": "compact",
+                            "data": [
+                                {
+                                    "value": "min",
+                                    "color": "rgb(233 0 0)",
+                                    "size": "15px",
+                                    "label": "Small",
+                                },
+                                {"value": "max", "color": "rgb(96 2 2)", "size": "30px"},
+                            ],
+                        },
+                        "help": "Help for numeric prop example A",
                     },
                     "numericPropExampleB": {
                         "name": "Numeric Prop Example B",
                         "type": "num",
-                        "enabled": True,
-                        "help": "Help for numeric prop example B",
+                        "gradient": {
+                            "data": [
+                                {
+                                    "value": 0,
+                                    "color": "rgb(0, 128, 255)",
+                                    "label": "Very Low",
+                                    "size": "5px",
+                                },
+                                {
+                                    "value": 5,
+                                    "color": "rgb(0, 200, 150)",
+                                    "label": "Low-Mid",
+                                    "size": "8px",
+                                },
+                                {
+                                    "value": 15,
+                                    "color": "rgb(255, 165, 0)",
+                                    "label": "Moderate-High",
+                                    "size": "10px",
+                                },
+                                {
+                                    "value": 28,
+                                    "color": "rgb(255, 69, 0)",
+                                    "label": "Very High",
+                                    "sie": "12px",
+                                },
+                                {
+                                    "value": 40,
+                                    "color": "rgb(255, 0, 0)",
+                                    "label": "Critical",
+                                    "size": "15px",
+                                },
+                            ],
+                        },
                         "unit": "B units",
+                        "help": "Help for numeric prop example B",
                     },
-                    "selectorPropForColor": {
+                    "selectorPropExample": {
                         "name": "Example Categorical Prop",
                         "type": "selector",
                         "variant": "dropdown",
                         "options": {
-                            "a": {"name": "A"},
-                            "b": {"name": "B"},
-                            "c": {"name": "C"},
-                            "d": {"name": "D"},
-                            "e": {"name": "E"},
-                            "f": {"name": "F"},
+                            "a": {
+                                "name": "A",
+                                "color": "rgb(128 255 255)",
+                                "size": "3px",
+                            },
+                            "b": {
+                                "name": "B",
+                                "color": "rgb(0 153 51)",
+                                "size": "8px",
+                            },
+                            "c": {
+                                "name": "C",
+                                "color": "rgb(0 0 128)",
+                                "size": "13px",
+                            },
+                            "d": {
+                                "name": "D",
+                                "color": "rgb(204 0 0)",
+                                "size": "18px",
+                            },
+                            "e": {
+                                "name": "E",
+                                "color": "rgb(153 77 0)",
+                                "size": "23px",
+                            },
+                            "f": {
+                                "name": "F",
+                                "color": "rgb(255 25 255)",
+                                "size": "28px",
+                            },
+                            "g": {
+                                "name": "G",
+                                "color": "rgb(0 255 0)",
+                                "size": "33px",
+                            },
+                            "h": {
+                                "name": "H",
+                                "color": "rgb(255 255 0)",
+                                "size": "38px",
+                            },
                         },
-                        "enabled": True,
                     },
                 },
                 "layout": {
@@ -1263,7 +1251,7 @@ example = {
                         },
                         "col3": {
                             "type": "item",
-                            "itemId": "selectorPropForColor",
+                            "itemId": "selectorPropExample",
                             "column": 3,
                         },
                     },
@@ -1275,7 +1263,7 @@ example = {
                     "valueLists": {
                         "numericPropExampleA": [15],
                         "numericPropExampleB": [40],
-                        "selectorPropForColor": [["b"]],
+                        "selectorPropExample": [["b"]],
                     },
                 },
             },
@@ -1286,30 +1274,89 @@ example = {
                     "numericPropExampleA": {
                         "name": "Numeric Prop Example A",
                         "type": "num",
-                        "enabled": True,
+                        "gradient": {
+                            "data": [
+                                {
+                                    "value": 0,
+                                    "color": "rgb(233 0 0)",
+                                    "size": "15px",
+                                },
+                                {
+                                    "value": "max",
+                                    "color": "rgb(96 2 2)",
+                                    "size": "30px",
+                                },
+                            ],
+                        },
                         "help": "Help for numeric prop example A",
                         "unit": "A units",
                     },
                     "numericPropExampleB": {
                         "name": "Numeric Prop Example B",
                         "type": "num",
-                        "enabled": True,
+                        "gradient": {
+                            "data": [
+                                {
+                                    "value": "min",
+                                    "color": "rgb(233 0 0)",
+                                    "size": "5px",
+                                },
+                                {
+                                    "value": "max",
+                                    "color": "rgb(96 2 2)",
+                                    "size": "15px",
+                                },
+                            ],
+                        },
                         "help": "Help for numeric prop example B",
                         "unit": "B units",
                     },
-                    "selectorPropForColor": {
+                    "selectorPropExample": {
                         "name": "Example Categorical Prop",
                         "type": "selector",
                         "variant": "dropdown",
                         "options": {
-                            "a": {"name": "A"},
-                            "b": {"name": "B"},
-                            "c": {"name": "C"},
-                            "d": {"name": "D"},
-                            "e": {"name": "E"},
-                            "f": {"name": "F"},
+                            "a": {
+                                "name": "A",
+                                "color": "rgb(128 255 255)",
+                                "size": "3px",
+                            },
+                            "b": {
+                                "name": "B",
+                                "color": "rgb(0 153 51)",
+                                "size": "8px",
+                            },
+                            "c": {
+                                "name": "C",
+                                "color": "rgb(0 0 128)",
+                                "size": "13px",
+                            },
+                            "d": {
+                                "name": "D",
+                                "color": "rgb(204 0 0)",
+                                "size": "18px",
+                            },
+                            "e": {
+                                "name": "E",
+                                "color": "rgb(153 77 0)",
+                                "size": "23px",
+                            },
+                            "f": {
+                                "name": "F",
+                                "color": "rgb(255 25 255)",
+                                "size": "28px",
+                            },
+                            "g": {
+                                "name": "G",
+                                "color": "rgb(0 255 0)",
+                                "size": "33px",
+                            },
+                            "h": {
+                                "name": "H",
+                                "color": "rgb(255 255 0)",
+                                "size": "38px",
+                            },
                         },
-                        "enabled": True,
                     },
                 },
                 "layout": {
@@ -1329,22 +1376,23 @@ example = {
                         },
                         "row3": {
                             "type": "item",
-                            "itemId": "selectorPropForColor",
+                            "itemId": "selectorPropExample",
                             "row": 3,
                         },
                     },
                 },
                 "data": {
                     "location": {
-                        "startLatitude": [39.82, 39.82, 39.82],
-                        "startLongitude": [-86.18, -86.18, -86.18],
-                        "endLatitude": [42.89, 28.49, 42.361176],
-                        "endLongitude": [-85.68, -81.56, -71.084707],
+                        "path": [
+                            [[-86.18, 39.82], [-84.39, 41.82], [-85.68, 42.89]],
+                            [[-86.18, 39.82], [-81.56, 28.49]],
+                            [[-86.18, 39.82], [-71.08, 42.36]],
+                        ],
                     },
                     "valueLists": {
                         "numericPropExampleA": [30, 30, 30],
                         "numericPropExampleB": [20, 14, 6],
-                        "selectorPropForColor": [["e"], ["d"], ["f"]],
+                        "selectorPropExample": [["e"], ["d"], ["f"]],
                     },
                 },
             },
@@ -1355,48 +1403,147 @@ example = {
                     "numericPropExampleA": {
                         "name": "Numeric Prop Example A",
                         "type": "num",
-                        "enabled": True,
-                        "help": "Help for numeric prop example A",
                         "unit": "A units",
-                        "legendNotation": "precision",
-                        "legendPrecision": 5,
+                        "gradient": {
+                            "notation": "precision",
+                            "precision": 5,
+                            "data": [
+                                {
+                                    "timeValues": {
+                                        0: {"value": 50},
+                                        1: {"value": 0},
+                                        2: {"value": 20},
+                                    },
+                                    "color": "rgb(233 0 0)",
+                                    "size": "30px",
+                                },
+                                {
+                                    "value": 80,
+                                    "color": "rgb(96 2 2)",
+                                    "size": "45px",
+                                },
+                            ],
+                        },
+                        "fallback": {
+                            "name": "Outlier",
+                            "color": "rgb(128 128 128)",
+                            "size": "20px",
+                        },
+                        "help": "Help for numeric prop example A",
                     },
                     "numericPropExampleB": {
                         "name": "Numeric Prop Example B",
                         "type": "num",
-                        "enabled": True,
-                        "help": "Help for numeric prop example B",
                         "unit": "B units",
-                        "legendNotation": "scientific",
-                        "legendNotationDisplay": "x10^",
+                        "gradient": {
+                            "notation": "scientific",
+                            "notationDisplay": "x10^",
+                            "data": [
+                                {
+                                    "value": 0,
+                                    "color": "rgb(233 0 0)",
+                                    "size": "10px",
+                                },
+                                {
+                                    "value": "max",
+                                    "color": "rgb(96 2 2)",
+                                    "size": "70px",
+                                },
+                            ],
+                        },
+                        "help": "Help for numeric prop example B",
                     },
                     "booleanPropExample": {
                         "name": "Boolean Prop Example",
                         "type": "toggle",
-                        "enabled": True,
+                        "options": {
+                            "false": {
+                                "name": "Idle",
+                                "color": "rgb(255 0 0)",
+                                "size": "15px",
+                            },
+                            "true": {
+                                "name": "Active",
+                                "color": "rgb(0 255 0)",
+                                "size": "30px",
+                            },
+                        },
+                        "fallback": {
+                            "name": "Unknown",
+                            "color": "rgb(128 128 128)",
+                            "size": "100px",
+                        },
                         "help": "Help for boolean prop",
+                    },
+                    "selectorPropExample": {
+                        "name": "Example Categorical Prop",
+                        "type": "selector",
+                        "variant": "dropdown",
+                        "options": {
+                            "a": {
+                                "name": "A",
+                                "color": "rgb(128 255 255)",
+                                "size": "3px",
+                            },
+                            "b": {
+                                "name": "B",
+                                "color": "rgb(0 153 51)",
+                                "size": "8px",
+                            },
+                            "c": {
+                                "name": "C",
+                                "color": "rgb(0 0 128)",
+                                "size": "13px",
+                            },
+                            "d": {
+                                "name": "D",
+                                "color": "rgb(204 0 0)",
+                                "size": "18px",
+                            },
+                            "e": {
+                                "name": "E",
+                                "color": "rgb(153 77 0)",
+                                "size": "23px",
+                            },
+                            "f": {
+                                "name": "F",
+                                "color": "rgb(255 25 255)",
+                                "size": "28px",
+                            },
+                            "g": {
+                                "name": "G",
+                                "color": "rgb(0 255 0)",
+                                "size": "33px",
+                            },
+                            "h": {
+                                "name": "H",
+                                "color": "rgb(255 255 0)",
+                                "size": "38px",
+                            },
+                        },
                     },
                 },
                 "data": {
                     "location": {
                         "timeValues": {
                             0: {
-                                "latitude": [43.78, 39.82],
+                                "latitude": [[43.78], [39.82]],
                             },
                             1: {
-                                "latitude": [44.78, 39.82],
+                                "latitude": [[44.78], [39.82]],
                             },
                             2: {
-                                "latitude": [45.78, 39.82],
+                                "latitude": [[45.78], [39.82]],
                             },
                         },
-                        "latitude": [43.78, 39.82],
-                        "longitude": [-79.63, -86.18],
+                        "latitude": [[43.78], [39.82]],
+                        "longitude": [[-79.63], [-86.18]],
                     },
                     "valueLists": {
                         "numericPropExampleA": [100, 80],
                         "numericPropExampleB": [50, 40],
                         "booleanPropExample": [True, True],
+                        "selectorPropExample": [["a"], ["b"]],
                     },
                 },
             },
@@ -1407,33 +1554,57 @@ example = {
                     "numericPropExampleA": {
                         "name": "Numeric Prop Example A",
                         "type": "num",
-                        "enabled": True,
-                        "help": "Help for numeric prop example A",
-                        "precision": 2,
                         "unit": "A units",
-                        "legendNotation": "precision",
-                        "legendPrecision": 5,
+                        "gradient": {
+                            "notation": "precision",
+                            "precision": 5,
+                            "data": [
+                                {
+                                    "value": "min",
+                                    "color": "rgb(233 0 0)",
+                                    "size": "15px",
+                                },
+                                {
+                                    "value": "max",
+                                    "color": "rgb(96 2 2)",
+                                    "size": "30px",
+                                },
+                            ],
+                        },
+                        "help": "Help for numeric prop example A",
                     },
                     "numericPropExampleB": {
                         "name": "Numeric Prop Example B",
                         "type": "num",
-                        "enabled": True,
-                        "help": "Help for numeric prop example B",
                         "unit": "B units",
-                        "legendMinLabel": "Lo",
-                        "legendMaxLabel": "Hi",
+                        "gradient": {
+                            "data": [
+                                {"value": 0, "color": "rgb(233 0 0)", "size": "5px", "label": "Lo"},
+                                {"value": 10, "size": "40px", "color": "rgb(150, 1, 1)"},
+                                {
+                                    "value": 250,
+                                    "color": "rgb(96 2 2)",
+                                    "size": "70px",
+                                    "label": "Hi",
+                                },
+                            ],
+                        },
+                        "help": "Help for numeric prop example B",
                     },
                     "booleanPropExample": {
                         "name": "Boolean Prop Example",
                         "type": "toggle",
-                        "enabled": True,
+                        "options": {
+                            "false": {"color": "rgb(233 0 0)"},
+                            "true": {"color": "rgb(0 233 0)"},
+                        },
                         "help": "Help for boolean prop",
                     },
                 },
                 "data": {
                     "location": {
-                        "latitude": [42.89, 28.49, 42.361176],
-                        "longitude": [-85.68, -81.56, -71.084707],
+                        "latitude": [[42.89], [28.49], [42.361176]],
+                        "longitude": [[-85.68], [-81.56], [-71.084707]],
                     },
                     "valueLists": {
                         "numericPropExampleA": [500, 1000, 1000],
@@ -1453,22 +1624,64 @@ example = {
                     "numericPropExampleC": {
                         "name": "Numeric Prop Example C",
                         "type": "num",
-                        "enabled": True,
-                        "help": "Help with the example numeric prop for this State",
                         "unit": "C units",
+                        "gradient": {
+                            "scale": "log",
+                            "scaleParams": {
+                                "exponent": 0.5,
+                            },
+                            "data": [
+                                {
+                                    "value": 1,
+                                    "color": "rgb(200, 230, 255)",
+                                    "label": "Very Sparse",
+                                },
+                                {
+                                    "value": 100,
+                                    "color": "rgb(120, 180, 240)",
+                                    "label": "Sparse",
+                                },
+                                {
+                                    "value": 1000,
+                                    "color": "rgb(50, 130, 220)",
+                                    "label": "Moderate",
+                                },
+                                {
+                                    "value": 5000,
+                                    "color": "rgb(255, 140, 0)",
+                                    "label": "Dense",
+                                },
+                                {
+                                    "value": 10000,
+                                    "color": "rgb(255, 0, 0)",
+                                    "label": "Very Dense",
+                                },
+                            ],
+                        },
+                        "help": "Help with the example numeric prop for this State",
                     },
                     "booleanPropExample": {
                         "name": "Boolean Prop Example",
                         "type": "toggle",
+                        "options": {
+                            "false": {"color": "rgb(233 0 0)"},
+                            "true": {"color": "rgb(0 233 0)"},
+                        },
                         "help": "Help for boolean prop",
                     },
                 },
                 "data": {
                     "location": {
-                        "geoJsonValue": ["CA.ON", "US.MI", "US.MA", "US.FL", "US.IN"],
+                        "geoJsonValue": [
+                            "CA.ON",
+                            "US.MI",
+                            "US.MA",
+                            "US.FL",
+                            "US.IN",
+                        ],
                     },
                     "valueLists": {
-                        "numericPropExampleC": [0, 300, 250, 100, 200],
+                        "numericPropExampleC": [1, 8000, 250, 50, 2000],
                         "booleanPropExample": [True, True, False, False, False],
                     },
                 },
@@ -1484,9 +1697,20 @@ example = {
                     "numericPropExampleC": {
                         "name": "Numeric Prop Example C",
                         "type": "num",
-                        "enabled": True,
-                        "help": "Help with the example numeric prop for this Country",
                         "unit": "units",
+                        "gradient": {
+                            "data": [
+                                {
+                                    "value": "min",
+                                    "color": "rgb(100 100 100)",
+                                },
+                                {
+                                    "value": "max",
+                                    "color": "rgb(20 205 20)",
+                                },
+                            ],
+                        },
+                        "help": "Help with the example numeric prop for this Country",
                     },
                 },
                 "data": {
@@ -1495,6 +1719,55 @@ example = {
                     },
                     "valueLists": {
                         "numericPropExampleC": [50, 800],
+                    },
+                },
+            },
+            "customGeoJson": {
+                "type": "geo",
+                "name": "Custom",
+                "props": {
+                    "numericPropExampleC": {
+                        "name": "Numeric Prop Example C",
+                        "type": "num",
+                        "unit": "units",
+                        "gradient": {
+                            "data": [
+                                {
+                                    "value": "min",
+                                    "color": "rgb(100 100 100)",
+                                },
+                                {
+                                    "value": "max",
+                                    "color": "rgb(20 205 20)",
+                                },
+                            ],
+                        },
+                        "help": "Help with the example numeric prop for this Custom",
+                    },
+                    "booleanPropExample": {
+                        "name": "Boolean Prop Example",
+                        "type": "toggle",
+                        "options": {
+                            "false": {"color": "rgb(233 0 0)"},
+                            "true": {"color": "rgb(0 233 0)"},
+                        },
+                        "help": "Help for boolean prop",
+                    },
+                },
+                "data": {
+                    "location": {
+                        "path": [
+                            [
+                                [-75.447, 40.345],
+                                [-77.447, 42.345],
+                                [-77.447, 44.345],
+                                [-75.447, 40.345],
+                            ]
+                        ],
+                    },
+                    "valueLists": {
+                        "numericPropExampleC": [100],
+                        "booleanPropExample": [True],
                     },
                 },
             },
@@ -1519,21 +1792,40 @@ example = {
                         "North America",
                     ],
                     "country": ["USA", "USA", "USA", "USA", "Canada"],
-                    "state": ["Michigan", "Massachusetts", "Florida", "Indiana", "Ontario"],
+                    "state": [
+                        "Michigan",
+                        "Massachusetts",
+                        "Florida",
+                        "Indiana",
+                        "Ontario",
+                    ],
                 },
                 "name": "Locations",
                 "levels": {
                     "region": {
                         "name": "Regions",
+                        "coloring": {"North America": "rgb(255 255 255)"},
                     },
                     "country": {
                         "name": "Countries",
-                        "ordering": ["USA", "Canada"],
+                        "ordering": ["Canada", "USA"],
                         "parent": "region",
+                        "coloring": {
+                            "Canada": "rgb(0 0 255)",
+                            "USA": "rgb(255 0 0)",
+                        },
                     },
                     "state": {
                         "name": "States",
                         "parent": "country",
+                        "ordering": [
+                            "Michigan",
+                            "Florida",
+                            "Indiana",
+                            "Massachusetts",
+                            "Ontario",
+                        ],
+                        "orderWithParent": False,  # True if not specified
                     },
                 },
                 "layoutDirection": "horizontal",
@@ -1571,27 +1863,16 @@ example = {
                     "stats": [
                         "numericStatExampleA",
                         "numericStatExampleB",
-                        "numericExampleCalculationStat",
                     ],
                 },
                 "stats": {
                     "numericStatExampleA": {
                         "name": "Stat Example A",
-                        "calculation": "numericStatExampleA",
                         "unit": "units",
                     },
                     "numericStatExampleB": {
                         "name": "Stat Example B",
-                        "calculation": "numericStatExampleB",
                         "unit": "units",
-                    },
-                    "numericExampleCalculationStat": {
-                        "name": "Stat A as a percentage of Stat B",
-                        "calculation": 'numericStatExampleA / groupSum("numericStatExampleB")',
-                        "precision": 2,
-                        "trailingZeros": True,
-                        "unit": "%",
-                        "unitPlacement": "after",
                     },
                 },
                 "valueLists": {
@@ -1614,7 +1895,6 @@ example = {
                 "stats": {
                     "numericStatExampleD": {
                         "name": "Stat Example D",
-                        "calculation": "numericStatExampleD",
                         "unit": "units",
                     },
                 },
@@ -1646,6 +1926,7 @@ example = {
                 "unit": "frowns",
                 "type": "num",
                 "variant": "icon",
+                "draggable": True,
             },
             "key2": {
                 "name": "KPI Example 2",
@@ -1654,6 +1935,7 @@ example = {
                 "unit": "smiles",
                 "type": "num",
                 "variant": "icon",
+                "draggable": True,
             },
             "key3": {
                 "name": "KPI Example 3",
