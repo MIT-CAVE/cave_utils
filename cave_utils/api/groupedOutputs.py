@@ -82,7 +82,6 @@ class groupedOutputs_data_star(ApiValidator):
             data=valueLists_data,
             log=self.log,
             prepend_path=["valueLists"],
-            calculation_values=[i.get("calculation") for i in stats_data.values()],
             **kwargs,
         )
         # Ensure Valid Group Lists
@@ -121,7 +120,6 @@ class groupedOutputs_data_star_stats(ApiValidator):
     @staticmethod
     def spec(
         name: str,
-        calculation: str,
         unit: [str, None] = None,
         unitPlacement: [str, None] = None,
         precision: [int, None] = None,
@@ -134,13 +132,6 @@ class groupedOutputs_data_star_stats(ApiValidator):
         Arguments:
 
         * **`name`**: `[str]` &rarr; The name of the stat.
-        * **`calculation`**: `[str]` &rarr; The calculation to generate the stat for each group.
-            * **Notes**:
-                * This can use operators [`+`, `-`, `*`, `/`, and `groupSum`]
-                * This can call in keys from `groupedOutputs.data.*.valueLists.*` as variables
-            * **Examples**:
-                * Create a variable that can be used to aggregate on your stat demand on arbitrary groupings: `'demand'`.
-                * Create a variable that can be used to aggregate your percent of demand met on arbitrary groupings. (This only shows the percent of demand met for each group if they are summed in the chart): `'sales / groupSum("demand")'`
         * **`unit`**: `[str]` &rarr; The unit to use for the stat.
             * **Note**: If left unspecified (i.e., `None`), it will default to `settings.defaults.unit`.
         * **`unitPlacement`**: `[str]` = `None` &rarr; The position of the `unit` symbol relative to the value.
@@ -210,19 +201,6 @@ class groupedOutputs_data_star_valueLists(ApiValidator):
         return {"kwargs": {}, "accepted_values": {}}
 
     def __extend_spec__(self, **kwargs):
-        # Custom Validation to ensure that all keys are in calculation strings
-        valid_values = kwargs.get("calculation_values", [])
-        invalid_values = [
-            i for i in list(self.data.keys()) if not any([i in j for j in valid_values])
-        ]
-        if len(invalid_values) > 0:
-            valid_values = valid_values[:10] + ["..."] if len(valid_values) > 10 else valid_values
-            self.__error__(
-                path=[],
-                msg=f"Invalid keys(s) selected: {str(invalid_values)}. Accepted keys are substrings of your calculations: {valid_values}",
-            )
-            return
-        # End Custom Validation
         for key, value in self.data.items():
             if self.__check_type__(value=value, check_type=(list,), prepend_path=[key]):
                 self.__check_type_list__(data=value, types=(int, float), prepend_path=[key])

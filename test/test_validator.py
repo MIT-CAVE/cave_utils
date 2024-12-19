@@ -1577,17 +1577,14 @@ example = {
                 "stats": {
                     "numericStatExampleA": {
                         "name": "Stat Example A",
-                        "calculation": "numericStatExampleA",
                         "unit": "units",
                     },
                     "numericStatExampleB": {
                         "name": "Stat Example B",
-                        "calculation": "numericStatExampleB",
                         "unit": "units",
                     },
                     "numericExampleCalculationStat": {
                         "name": "Stat A as a percentage of Stat B",
-                        "calculation": 'numericStatExampleA / groupSum("numericStatExampleB")',
                         "precision": 2,
                         "trailingZeros": True,
                         "unit": "%",
@@ -1597,6 +1594,7 @@ example = {
                 "valueLists": {
                     "numericStatExampleA": [5, 4, 6, -3, -3, 1],
                     "numericStatExampleB": [10, 5, 7, 5, -2, -1],
+                    "numericExampleCalculationStat": [10, 5, 7, 5, -2, -1],
                 },
                 "groupLists": {
                     "location": [
@@ -1614,7 +1612,6 @@ example = {
                 "stats": {
                     "numericStatExampleD": {
                         "name": "Stat Example D",
-                        "calculation": "numericStatExampleD",
                         "unit": "units",
                     },
                 },
