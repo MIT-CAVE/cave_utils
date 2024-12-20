@@ -26,8 +26,13 @@ class settings(ApiValidator):
         Arguments:
 
         * **`iconUrl`**: `[str]` &rarr; The URL to the icon bundle for your application.
-            * **Example**: `"https://react-icons.mitcave.com/4.10.1"`.
-            * **Note**: This is the only required attribute in `settings`.
+            * **Example**: `"https://react-icons.mitcave.com/5.4.0"`.
+            * **Notes**:
+                * This is the only required attribute in `settings`.
+                * See the available versions provided by the cave team here:
+                    * https://react-icons.mitcave.com/versions.txt
+                * Once you select a version, you can see the available icons in the version icon list:
+                    * EG: https://react-icons.mitcave.com/5.4.0/icon_list.txt
         * **`demo`**: `[dict]` = `{}` &rarr; Settings for the demo mode of your application.
             * **See**: `settings_demo_star`.
         * **`sync`**: `[dict]` = `{}` &rarr; Settings for syncing data with the server.

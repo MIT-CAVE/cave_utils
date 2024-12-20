@@ -26,6 +26,8 @@ class props(ApiValidator):
         placeholder: [str, None] = None,
         maxValue: [float, int, None] = None,
         minValue: [float, int, None] = None,
+        gradient: [dict, None] = None,
+        fallback: [dict, None] = None,
         maxRows: [int, None] = None,
         minRows: [int, None] = None,
         rows: [int, None] = None,
@@ -152,6 +154,10 @@ class props(ApiValidator):
             * **Note**: This attribute applies exclusively to `"num"` props.
         * **`minValue`**: `[float | int]` = `None` &rarr; The minimum value for the prop.
             * **Note**: This attribute applies exclusively to `"num"` props.
+        * **`gradient`**: `[dict]` = `None` &rarr; The gradient to apply to the prop.
+            * **Note**: See the `props_gradient` function for more information.
+        * **`fallback`**: `[dict]` = `None` &rarr; The fallback dict for color and sizing props with missing or invalid values.
+            * **Note**: See the `props_fallback` function for more information.
         * **`maxRows`**: `[int]` = `None` &rarr;
             * The maximum number of rows to show for a `"textarea"` variant.
             * **Note**: This attribute applies exclusively to `"text"` props.
@@ -327,7 +333,7 @@ class props(ApiValidator):
             optional_fields += ["enabled", "apiCommand", "apiCommandKeys", "allowNone"]
 
         if type == "text":
-            optional_fields += ["minRows", "maxRows", "rows", "label", "placeholder"]
+            optional_fields += ["minRows", "maxRows", "rows", "label", "placeholder", "options"]
         elif type == "num":
             if variant == "slider":
                 required_fields += ["maxValue", "minValue"]
@@ -336,7 +342,7 @@ class props(ApiValidator):
             else:
                 optional_fields += ["maxValue", "minValue"]
                 if variant is None or variant == "field":
-                    optional_fields += [ "label", "placeholder"]
+                    optional_fields += ["label", "placeholder"]
             if variant == "icon" or variant == "iconCompact":
                 required_fields += ["icon"]
             if notationDisplay:
@@ -356,6 +362,7 @@ class props(ApiValidator):
                 "trailingZeros",
                 "unitPlacement",
                 "draggable",
+                "gradient",
             ]
         elif type == "selector":
             required_fields += ["options"]
@@ -366,6 +373,11 @@ class props(ApiValidator):
             optional_fields += ["views"]
         elif type == "coordinate":
             optional_fields += ["label", "placeholder"]
+        elif type == "toggle":
+            optional_fields += ["options"]
+
+        if type in ["selector", "num", "toggle", "text"]:
+            optional_fields += ["fallback"]
 
         missing_required = pamda.difference(required_fields, list(passed_values.keys()))
         if len(missing_required) > 0:
@@ -392,7 +404,17 @@ class props(ApiValidator):
         return {
             "kwargs": kwargs,
             "accepted_values": {
-                "type": ["head", "num", "toggle", "button", "text", "selector", "date", "media", "coordinate"],
+                "type": [
+                    "head",
+                    "num",
+                    "toggle",
+                    "button",
+                    "text",
+                    "selector",
+                    "date",
+                    "media",
+                    "coordinate",
+                ],
                 "container": ["vertical", "horizontal", "titled", "untitled", "none"],
                 "views": view_options_dict.get(variant, []),
                 "unitPlacement": ["after", "afterWithSpace", "before", "beforeWithSpace"],
@@ -409,6 +431,7 @@ class props(ApiValidator):
                         "checkbox",
                         "radio",
                         "combobox",
+                        "comboboxMulti",
                         "hstepper",
                         "vstepper",
                         "hradio",
@@ -431,12 +454,26 @@ class props(ApiValidator):
                 variant=self.data.get("variant"),
                 **kwargs,
             )
+        if self.data.get("gradient"):
+            props_gradient(
+                data=self.data.get("gradient"), log=self.log, prepend_path=["gradient"], **kwargs
+            )
+        if self.data.get("fallback"):
+            props_fallback(
+                data=self.data.get("fallback"), log=self.log, prepend_path=["fallback"], **kwargs
+            )
 
 
 @type_enforced.Enforcer
 class props_options(ApiValidator):
     @staticmethod
-    def spec(name: str, path: [list[str], None] = None, **kwargs):
+    def spec(
+        name: str,
+        path: [list[str], None] = None,
+        color: [str, None] = None,
+        size: [str, None] = None,
+        **kwargs,
+    ):
         """
         Arguments:
 
@@ -445,6 +482,10 @@ class props_options(ApiValidator):
             * **Notes**:
                 * If `None`, the option will not be selectable
                 * This attribute applies exclusively to `"nested"` props
+        * **`color`**: `[str]` = `None` &rarr; The color to use for this option.
+            * **Note**: A valid color string (EG: "RGBA(0,0,0,1)")
+        * **`size`**: `[str]` = `None` &rarr; The size to use for this option.
+            * **Note**: A valid size string (EG: "5px")
         """
         variant = kwargs.get("variant")
         kwargs = {k: v for k, v in kwargs.items() if k != "variant"}
@@ -463,6 +504,187 @@ class props_options(ApiValidator):
                     msg="`path` must be specified and a list of strings for nested options"
                 )
                 return
+        if self.data.get("color"):
+            self.__check_color_string_valid__(color_string=self.data.get("color"))
+        if self.data.get("size"):
+            self.__check_pixel_string_valid__(pixel_string=self.data.get("size"))
+
+
+@type_enforced.Enforcer
+class props_fallback(ApiValidator):
+    @staticmethod
+    def spec(
+        name: [str, None] = None,
+        color: [str, None] = None,
+        size: [str, None] = None,
+        **kwargs,
+    ):
+        """
+        Arguments:
+
+        * **`name`**: `[str]` = `None` &rarr; The name of the fallback.
+        * **`color`**: `[str]` = `None` &rarr; The color to use for this fallback.
+            * **Note**: A valid color string (EG: "RGBA(0,0,0,1)")
+        * **`size`**: `[str]` = `None` &rarr; The size to use for this fallback.
+            * **Note**: A valid size string (EG: "5px")
+        """
+        return {
+            "kwargs": kwargs,
+            "accepted_values": {},
+        }
+
+    def __extend_spec__(self, **kwargs):
+        if self.data.get("color"):
+            self.__check_color_string_valid__(color_string=self.data.get("color"))
+        if self.data.get("size"):
+            self.__check_pixel_string_valid__(pixel_string=self.data.get("size"))
+
+
+@type_enforced.Enforcer
+class props_gradient(ApiValidator):
+    @staticmethod
+    def spec(
+        scale: [str, None] = None,
+        scaleParams: [dict, None] = None,
+        notation: [str, None] = None,
+        notationDisplay: [str, None] = None,
+        precision: [int, None] = None,
+        data: [list, None] = None,
+        **kwargs,
+    ):
+        """
+        Arguments:
+
+        * **`scale`**: `[str]` = `None` &rarr; The scale to use for the gradient.
+            * **Accepted Values**:
+                * `"linear"`: A linear gradient
+                * `"log"`: A logarithmic gradient
+                * `"pow"`: A power gradient
+                * `"step"`: A step gradient
+        * **`scaleParams`**: `[dict]` = `None` &rarr; The parameters for the scale.
+            * **Note**: See `props_gradient_scaleParams` for more information.
+        * **`notation`**: `[str]` = `None` &rarr; The notation to use for the gradient.
+            * **Accepted Values**:
+                * `"standard"`: Plain number formatting
+                * `"compact"`: Resembles the [metric prefix][] system
+                * `"scientific"`: [Scientific notation][]
+                * `"engineering"`: [Engineering notation][]
+                * `"precision"`: Emulates the [Number.prototype.toPrecision][] method
+        * **`notationDisplay`**: `[str]` = `"e+"` | `"short"` &rarr; Further customize the formatting within the selected `notation` when shown next to the gradient.
+            * **Accepted Values**:
+                * When **`notation`** == `"compact"`:
+                    * `"short"`: Add symbols `K`, `M`, `B`, and `T` (in `"en-US"`) to denote thousands, millions, billions, and trillions, respectively.
+                    * `"long"`: Present numeric values with the informal suffix words `thousand`, `million`, `billion`, and `trillion` (in `"en-US"`).
+                * When **`notation`** == `"scientific"`, `"engineering"` or `"precision"`:
+                    * `"e"`: Exponent symbol in lowercase as per the chosen `locale` identifier
+                    * `"e+"`: Similar to `"e"`, but with a plus sign for positive exponents.
+                    * `"E"`: Exponent symbol in uppercase as per the chosen `locale` identifier
+                    * `"E+"`: Similar to `"E"`, but with a plus sign for positive exponents.
+                    * `"x10^"`: Formal scientific notation representation
+                    * `"x10^+"`: Similar to `"x10^"`, with a plus sign for positive exponents.
+                * When **`notation`** == `"standard"`:
+                    * No `notationDisplay` option is allowed for a `"standard"` notation
+            * **Notes**:
+                * If left unspecified (i.e., `None`), it will default to `settings.defaults.notationDisplay`.
+        * **`precision`**: `[int]` = `None` &rarr; The number of decimal places to display next to the gradient.
+        * **`data`**: `[list]` = `None` &rarr; The data for the gradient as a list of dicts.
+            * **Note**: See `props_gradient_data` for more information.
+        """
+        notationDisplay_options_dict = {
+            "compact": ["short", "long"],
+            "scientific": ["e", "e+", "E", "E+", "x10^", "x10^+"],
+            "engineering": ["e", "e+", "E", "E+", "x10^", "x10^+"],
+            "precision": ["e", "e+", "E", "E+", "x10^", "x10^+"],
+            "standard": [],
+        }
+        return {
+            "kwargs": kwargs,
+            "accepted_values": {
+                "scale": ["linear", "log", "pow", "step"],
+                "notation": ["standard", "compact", "scientific", "engineering", "precision"],
+                "notationDisplay": notationDisplay_options_dict.get(notation, []),
+                "notation": ["standard", "compact", "scientific", "engineering", "precision"],
+            },
+        }
+
+    def __extend_spec__(self, **kwargs):
+        props_gradient_scaleParams(
+            data=self.data.get("scaleParams", {}),
+            log=self.log,
+            prepend_path=["scaleParams"],
+            gradient_scale_type=self.data.get("scale"),
+        )
+        if self.data.get("data"):
+            for idx, gradient_data in enumerate(self.data.get("data")):
+                props_gradient_data(
+                    data=gradient_data,
+                    log=self.log,
+                    prepend_path=["data", idx],
+                    **kwargs,
+                )
+
+
+@type_enforced.Enforcer
+class props_gradient_scaleParams(ApiValidator):
+    @staticmethod
+    def spec(
+        exponent: [float, int, None] = None,
+        **kwargs,
+    ):
+        """
+        Arguments:
+
+        * **`exponent`**: `[float]` = `None` &rarr; The exponent for the scale if using a power gradient.
+        """
+        return {
+            "kwargs": kwargs,
+            "accepted_values": {},
+        }
+
+    def __extend_spec__(self, **kwargs):
+        if self.data.get("exponent") is not None:
+            if self.data.get("exponent") <= 0:
+                self.__error__(msg="`exponent` must be greater than 0 for a power gradient")
+        if kwargs.get("gradient_scale_type") == "pow":
+            if not self.data.get("exponent"):
+                self.__error__(msg="`exponent` must be specified for a power gradient")
+
+
+@type_enforced.Enforcer
+class props_gradient_data(ApiValidator):
+    @staticmethod
+    def spec(
+        value: [int, float, str],
+        color: [str, None] = None,
+        size: [str, None] = None,
+        label: [str, None] = None,
+        **kwargs,
+    ):
+        """
+        Arguments:
+
+        * **`value`**: `[int | float]` &rarr; The value for the split point in the gradient.
+        * **`color`**: `[str]` = `None` &rarr; The color string to use for the split point.
+            * **Note**: A valid color string (EG: "RGBA(0,0,0,1)")
+        * **`size`**: `[str]` = `None` &rarr; The size string to use for the split point.
+            * **Note**: A valid size string (EG: "5px")
+        * **`label`**: `[str]` = `None` &rarr; The label to use for the split point.
+        """
+        accepted_values = {}
+        if isinstance(value, str):
+            accepted_values = {
+                "value": ["min", "max"],
+            }
+        return {
+            "kwargs": kwargs,
+            "accepted_values": accepted_values,
+        }
+
+    def __extend_spec__(self, **kwargs):
+        if self.data.get("color"):
+            self.__check_color_string_valid__(color_string=self.data.get("color"))
+        if self.data.get("size"):
+            self.__check_pixel_string_valid__(pixel_string=self.data.get("size"))
 
 
 @type_enforced.Enforcer

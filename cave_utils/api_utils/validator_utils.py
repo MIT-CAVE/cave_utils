@@ -166,39 +166,41 @@ class ApiValidator:
         self.log.add(path=path, msg=msg, level="warning")
 
     # Useful Validator Checks
-    def __check_rgba_string_valid__(self, rgba_string: str, prepend_path: list[str] = list()):
-        """
-        Validate an rgba string and if an issue is present, log an error
-        """
-        msg = "Invalid RGBA string. Must be in the format 'rgba(0, 0, 0, 0)' where each value is an integer between 0 and 255."
-        try:
-            if "rgba(" != rgba_string[:5]:
-                self.__error__(path=prepend_path, msg=msg)
-                return
-            if ")" != rgba_string[-1]:
-                self.__error__(path=prepend_path, msg=msg)
-                return
-            rgba_list = rgba_string[5:-1].replace(" ", "").split(",")
-            for rgba in rgba_list:
-                if not rgba.isdigit():
-                    self.__error__(path=prepend_path, msg=msg)
-                    return
-                if int(rgba) < 0 or int(rgba) > 255:
-                    self.__error__(path=prepend_path, msg=msg)
-                    return
-        except:
-            self.__error__(path=prepend_path, msg=msg)
-
-    # TODO: Implement a color value validator: https://developer.mozilla.org/en-US/docs/Web/CSS/color_value
     def __check_color_string_valid__(self, color_string: str, prepend_path: list[str] = list()):
         """
         Validate a color string and if an issue is present, log an error
         """
-        msg = "Invalid color string. Must be in a valid color format. See: https://developer.mozilla.org/en-US/docs/Web/CSS/color_value"
-        try:
-            self.__check_rgba_string_valid__(rgba_string, prepend_path)
-        except:
-            self.__error__(path=prepend_path, msg=msg)
+        # Regular expression for HEX color (e.g., #000000 or #000)
+        hex_pattern = r"^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$"
+        # Regular expression for RGB color (e.g., rgb(0, 0, 0), rgb(0 0 0), or rgb(0,0,0), or rgb(0, 0, 0, 0) or rgba(0 0 0 0), ...)
+        rgb_pattern = r"(?i)^rgba?\(\s*(\d{1,3})\s*(,\s*|\s+)(\d{1,3})\s*(,\s*|\s+)(\d{1,3})(?:\s*(,\s*|\s+)(0|1|0?\.\d+))?\s*\)$"
+        # Regular expression for HSL color (e.g., hsl(0, 0%, 0%), hsl(0 0% 0%), or hsl(0,0%,0%))
+        hsl_pattern = r"(?i)^hsl\(\s*(\d{1,3})\s*(,\s*|\s+)(\d{1,3})%\s*(,\s*|\s+)(\d{1,3})%\s*\)$"
+
+        is_valid = False
+        if re.match(hex_pattern, color_string):
+            is_valid = True
+        elif match := re.match(rgb_pattern, color_string):
+            values = [value for value in match.groups() if match.groups().index(value) % 2 == 0]
+            if all(0 <= int(value) <= 255 for value in values[:3]):
+                is_valid = True
+                # Check A values if present
+                if len(values) == 4 and not (0 <= float(values[3]) <= 1):
+                    is_valid = False
+        elif match := re.match(hsl_pattern, color_string):
+            values = [value for value in match.groups() if match.groups().index(value) % 2 == 0]
+            if 0 <= int(match.group(1)) <= 360 and all(
+                0 <= int(value) <= 100 for value in values[1:]
+            ):
+                is_valid = True
+        else:
+            is_valid = False
+
+        if not is_valid:
+            self.__error__(
+                path=prepend_path,
+                msg="Invalid color string. Must be in a valid RGB, HSL or HEX format.",
+            )
 
     def __check_pixel_string_valid__(self, pixel_string: str, prepend_path: list[str] = list()):
         """
