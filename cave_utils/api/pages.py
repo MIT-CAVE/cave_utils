@@ -44,7 +44,7 @@ class pages_data_star(ApiValidator):
     @staticmethod
     def spec(
         charts: [dict, None] = None,
-        pageLayout: [list, None] = None,
+        pageLayout: [list[str | None], None] = None,
         lockedLayout: bool = False,
         **kwargs,
     ):
@@ -54,13 +54,33 @@ class pages_data_star(ApiValidator):
         * **`charts`**: `[dict]` = `{}` &rarr; The charts to display on the page.
             * **See**: `cave_utils.api.pages.pages_data_star_charts`.
         * **`pageLayout`**: `[list[str]]` = `{}` &rarr; The layout of the page.
-            * **See**: `cave_utils.api.pages.pages_data_star_pageLayout`.
+            * **Accepted Values**:
+                * Any key in the `charts` dict.
+                * `"left"`: The chart to the left will be stretched into this chart.
+                * `"up"`: The chart above will be stretched into this chart.
+                * `None`: An empty slot.
+            * **Notes**:
+                * This is a single list of strings representing the layout of the page where the grid is read from left to right and top to bottom.
+                    * For a 2x2 grid the layout would look like:
+                        * [top-left, top-right, bottom-left, bottom-right]
+                    * For a 3x3 grid the layout would look like:
+                        * [top-left, top-center, top-right, middle-left, middle-center, middle-right, bottom-left, bottom-center, bottom-right]
+                * The pageLayout must be of length 4 or 9 representing a 2x2 or 3x3 grid. It can be filled with `None` values if not all slots are used.
+                * A `left` item cannot be placed in the leftmost column and must be placed to the right of a valid chart.
+                * A `left` item cannot refer to an `up` item.
+                * An `up` item cannot be placed in the top row and must be placed below a valid chart or `left` item.
         * **`lockedLayout`**: `[bool]` = `False` &rarr; Whether or not the layout should be locked.
-            * **See**: `cave_utils.api.pages.pages_data_star_pageLayout`.
+            * **Notes**:
+                * If `True`, the page layout will not be able to be modified by users includng modifying chart selections, chart types, and chart layout.
         """
         return {"kwargs": kwargs, "accepted_values": {}}
 
     def __extend_spec__(self, **kwargs):
+        self.__prevent_subset_collision__(
+            subset=list(self.data.get("charts").keys()),
+            invalid_values=["left", "up"],
+            prepend_path=["charts"],
+        )
         for chartId, chart in self.data.get("charts", {}).items():
             pages_data_star_charts(
                 data=chart,
@@ -69,11 +89,62 @@ class pages_data_star(ApiValidator):
                 **kwargs,
             )
         if self.data.get("pageLayout") is not None:
+            page_layout = self.data.get("pageLayout", [])
             self.__check_subset_valid__(
-                subset=self.data.get("pageLayout", []),
-                valid_values=list(self.data.get("charts", {}).keys()) + [None],
+                subset=page_layout,
+                valid_values=list(self.data.get("charts", {}).keys()) + ["left", "up", None],
                 prepend_path=["pageLayout"],
             )
+            if len(page_layout) not in [4, 9]:
+                self.__error__(
+                    msg="`pageLayout` must be of length 4 or 9 representing a 2x2 or 3x3 grid. It can be filled with None values if not all slots are used.",
+                    path=["pageLayout"],
+                )
+            else:
+                if len(page_layout) == 4:
+                    page_layout_matrix = [page_layout[:2], page_layout[2:]]
+                elif len(page_layout) == 9:
+                    page_layout_matrix = [page_layout[:3], page_layout[3:6], page_layout[6:]]
+                for row_idx, row in enumerate(page_layout_matrix):
+                    for col_idx, item in enumerate(row):
+                        if item == "left":
+                            if col_idx == 0:
+                                self.__error__(
+                                    msg="`left` cannot be placed in the leftmost column.",
+                                    path=["pageLayout", row_idx * 3 + col_idx],
+                                )
+                            elif page_layout_matrix[row_idx][col_idx - 1] in [None, "up"]:
+                                self.__error__(
+                                    msg="`left` must be placed to the left of a valid chart and can not be referring to an `up`.",
+                                    path=["pageLayout", row_idx * 3 + col_idx],
+                                )
+                            else:
+                                loop_row_idx = row_idx + 1
+                                while loop_row_idx < len(page_layout_matrix):
+                                    if page_layout_matrix[loop_row_idx][col_idx - 1] == "up":
+                                        if page_layout_matrix[loop_row_idx][col_idx] != "up":
+                                            self.__error__(
+                                                msg="Something is not quite right with your `up` and `left` chart values.",
+                                                path=["pageLayout"],
+                                            )
+                                    if page_layout_matrix[loop_row_idx][col_idx - 1] != "up":
+                                        if page_layout_matrix[loop_row_idx][col_idx] == "up":
+                                            self.__error__(
+                                                msg="Something is not quite right with your `up` and `left` chart values.",
+                                                path=["pageLayout"],
+                                            )
+                                    loop_row_idx += 1
+                        elif item == "up":
+                            if row_idx == 0:
+                                self.__error__(
+                                    msg="`up` cannot be placed in the top row.",
+                                    path=["pageLayout", row_idx * 3 + col_idx],
+                                )
+                            elif page_layout_matrix[row_idx - 1][col_idx] is None:
+                                self.__error__(
+                                    msg="`up` must be placed below a valid value.",
+                                    path=["pageLayout", row_idx * 3 + col_idx],
+                                )
 
 
 @type_enforced.Enforcer
