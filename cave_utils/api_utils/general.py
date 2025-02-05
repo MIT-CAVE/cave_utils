@@ -64,6 +64,7 @@ class props(ApiValidator):
                 * `"selector"`: Select options from a set
                 * `"date"`: Select a date and/or time
                 * `"media"`: View various media formats
+                    * Note: A variant is required when using the `media` type
                 * `"coordinate"`: A coordinate input field
         * **`help`**: `[str]` = `None` &rarr; The help text to display.
         * **`display`**: `[bool]` = `None` &rarr; Whether or not the prop will be displayed.
@@ -375,6 +376,9 @@ class props(ApiValidator):
             optional_fields += ["label", "placeholder"]
         elif type == "toggle":
             optional_fields += ["options"]
+        elif type == "media":
+            required_fields += ["variant"]
+            optional_fields = [i for i in optional_fields if i != "variant"]
 
         if type in ["selector", "num", "toggle", "text"]:
             optional_fields += ["fallback"]
