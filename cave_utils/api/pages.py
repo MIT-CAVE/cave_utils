@@ -54,9 +54,24 @@ class pages_data_star(ApiValidator):
         * **`charts`**: `[dict]` = `{}` &rarr; The charts to display on the page.
             * **See**: `cave_utils.api.pages.pages_data_star_charts`.
         * **`pageLayout`**: `[list[str]]` = `{}` &rarr; The layout of the page.
-            * **See**: `cave_utils.api.pages.pages_data_star_pageLayout`.
+            * **Accepted Values**:
+                * Any key in the `charts` dict.
+                * `"left"`: The chart to the left will be stretched into this chart.
+                * `"up"`: The chart above will be stretched into this chart.
+                * `None`: An empty slot.
+            * **Notes**:
+                * This is a single list of strings representing the layout of the page where the grid is read from left to right and top to bottom.
+                    * For a 2x2 grid the layout would look like:
+                        * [top-left, top-right, bottom-left, bottom-right]
+                    * For a 3x3 grid the layout would look like:
+                        * [top-left, top-center, top-right, middle-left, middle-center, middle-right, bottom-left, bottom-center, bottom-right]
+                * The pageLayout must be of length 4 or 9 representing a 2x2 or 3x3 grid. It can be filled with `None` values if not all slots are used.
+                * A `left` item cannot be placed in the leftmost column and must be placed to the right of a valid chart.
+                * A `left` item cannot refer to an `up` item.
+                * An `up` item cannot be placed in the top row and must be placed below a valid chart or `left` item.
         * **`lockedLayout`**: `[bool]` = `False` &rarr; Whether or not the layout should be locked.
-            * **See**: `cave_utils.api.pages.pages_data_star_pageLayout`.
+            * **Notes**:
+                * If `True`, the page layout will not be able to be modified by users includng modifying chart selections, chart types, and chart layout.
         """
         return {"kwargs": kwargs, "accepted_values": {}}
 
