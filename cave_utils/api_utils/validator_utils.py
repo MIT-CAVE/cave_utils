@@ -274,6 +274,21 @@ class ApiValidator:
             )
             return False
         return True
+    
+    def __prevent_subset_collision__(self, subset: list[str], invalid_values: list[str], prepend_path: list[str] = list()):
+        """
+        Prevent a subset of values from colliding with a set of invalid values and if an issue is present, log an error
+
+        Returns True if the subset check passed and False otherwise
+        """
+        invalid = pamda.intersection(subset, invalid_values)
+        if len(invalid) > 0:
+            self.__error__(
+                path=prepend_path,
+                msg=f"Invalid value(s) selected: {str(invalid)}. Reserved Values are {invalid_values}",
+            )
+            return False
+        return True
 
     def __check_subset_valid__(
         self,
