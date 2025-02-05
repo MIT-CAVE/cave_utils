@@ -274,8 +274,10 @@ class ApiValidator:
             )
             return False
         return True
-    
-    def __prevent_subset_collision__(self, subset: list[str], invalid_values: list[str], prepend_path: list[str] = list()):
+
+    def __prevent_subset_collision__(
+        self, subset: list[str], invalid_values: list[str], prepend_path: list[str] = list()
+    ):
         """
         Prevent a subset of values from colliding with a set of invalid values and if an issue is present, log an error
 
