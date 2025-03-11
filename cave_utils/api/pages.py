@@ -166,7 +166,6 @@ class pages_data_star_charts(ApiValidator):
         sessions: [list, None] = None,
         globalOutput: [list, None] = None,
         lockedLayout: bool = False,
-        showToolbar: bool = True,
         maximized: bool = False,
         defaultToZero: bool = False,
         distributionType: [str, None] = None,
@@ -226,8 +225,6 @@ class pages_data_star_charts(ApiValidator):
                 * `"mean"`: Calculate the mean of the aggregated data
                 * `"min"`: Find the minimum values within the aggregated data
                 * `"max"`: Find the maximum values the aggregated data
-        * **`showToolbar`**: `[bool]` = `None` &rarr; Whether or not the chart toolbar should be shown.
-            * **Note**: If left unspecified (i.e., `None`), it will default to `settings.showToolbar`.
         * **`maximized`**: `[bool]` = `False` &rarr; Whether or not the layout should be maximized.
             * **Note**: If more than one chart belonging to the same page layout is set to `True`, the first one found in the list will take precedence.
         * **`defaultToZero`**: `[bool]` = `False` &rarr; Whether or not the chart should default missing values to zero.
