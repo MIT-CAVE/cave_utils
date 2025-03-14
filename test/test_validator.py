@@ -59,7 +59,6 @@ example = {
             "precision": 4,
             "trailingZeros": True,
             "unitPlacement": "afterWithSpace",
-            "showToolbar": True,
         },
     },
     "appBar": {
@@ -655,7 +654,6 @@ example = {
                     "map1": {
                         "type": "map",
                         "mapId": "map1",
-                        "showToolbar": False,
                         "maximized": True,
                     },
                     "statBar": {

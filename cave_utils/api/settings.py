@@ -89,7 +89,6 @@ class settings_defaults(ApiValidator):
 
     @staticmethod
     def spec(
-        showToolbar: bool = True,
         locale: str = "en-US",
         precision: int = 2,
         trailingZeros: bool = False,
@@ -108,7 +107,6 @@ class settings_defaults(ApiValidator):
         """
         Arguments:
 
-        * **`showToolbar`**: `[bool]` = `True` &rarr; If `True`, chart toolbars will be displayed by default.
         * **`locale`**: `[str]` = `"en-US"` &rarr;
             * Format numeric values based on language and regional conventions.
             * **Note**: This attribute only applies to `"num"` props or `stats`.
