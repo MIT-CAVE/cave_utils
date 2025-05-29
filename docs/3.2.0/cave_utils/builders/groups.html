@@ -244,7 +244,7 @@
 </span><span id="L-58"><a href="#L-58"><span class="linenos"> 58</span></a><span class="sd">        * **`group_parents`**: `[dict[str]]` &amp;rarr; Parent allocations to make for groups.</span>
 </span><span id="L-59"><a href="#L-59"><span class="linenos"> 59</span></a><span class="sd">            * **Note**: This should be a dictionary where the keys are the child group keys and the values are the parent group keys.</span>
 </span><span id="L-60"><a href="#L-60"><span class="linenos"> 60</span></a><span class="sd">            * **Example**: `{&#39;child_key&#39;: &#39;parent_key&#39;}`</span>
-</span><span id="L-61"><a href="#L-61"><span class="linenos"> 61</span></a><span class="sd">                * **Note**: This would mean that `child_key` has a parent of `fparent_key`.</span>
+</span><span id="L-61"><a href="#L-61"><span class="linenos"> 61</span></a><span class="sd">                * **Note**: This would mean that `child_key` has a parent of `parent_key`.</span>
 </span><span id="L-62"><a href="#L-62"><span class="linenos"> 62</span></a><span class="sd">            * **Note**: If a group is not a child of another group, it should not be included in the dictionary.</span>
 </span><span id="L-63"><a href="#L-63"><span class="linenos"> 63</span></a><span class="sd">        * **`group_names`**: `[dict[str]]` &amp;rarr; The group names to use for the group keys.</span>
 </span><span id="L-64"><a href="#L-64"><span class="linenos"> 64</span></a><span class="sd">            * **Note**: This should be a dictionary where the keys are the group keys and the values are the group_names to use for the group keys.</span>
@@ -706,7 +706,7 @@
 </span><span id="GroupsBuilder-59"><a href="#GroupsBuilder-59"><span class="linenos"> 59</span></a><span class="sd">        * **`group_parents`**: `[dict[str]]` &amp;rarr; Parent allocations to make for groups.</span>
 </span><span id="GroupsBuilder-60"><a href="#GroupsBuilder-60"><span class="linenos"> 60</span></a><span class="sd">            * **Note**: This should be a dictionary where the keys are the child group keys and the values are the parent group keys.</span>
 </span><span id="GroupsBuilder-61"><a href="#GroupsBuilder-61"><span class="linenos"> 61</span></a><span class="sd">            * **Example**: `{&#39;child_key&#39;: &#39;parent_key&#39;}`</span>
-</span><span id="GroupsBuilder-62"><a href="#GroupsBuilder-62"><span class="linenos"> 62</span></a><span class="sd">                * **Note**: This would mean that `child_key` has a parent of `fparent_key`.</span>
+</span><span id="GroupsBuilder-62"><a href="#GroupsBuilder-62"><span class="linenos"> 62</span></a><span class="sd">                * **Note**: This would mean that `child_key` has a parent of `parent_key`.</span>
 </span><span id="GroupsBuilder-63"><a href="#GroupsBuilder-63"><span class="linenos"> 63</span></a><span class="sd">            * **Note**: If a group is not a child of another group, it should not be included in the dictionary.</span>
 </span><span id="GroupsBuilder-64"><a href="#GroupsBuilder-64"><span class="linenos"> 64</span></a><span class="sd">        * **`group_names`**: `[dict[str]]` &amp;rarr; The group names to use for the group keys.</span>
 </span><span id="GroupsBuilder-65"><a href="#GroupsBuilder-65"><span class="linenos"> 65</span></a><span class="sd">            * **Note**: This should be a dictionary where the keys are the group keys and the values are the group_names to use for the group keys.</span>
@@ -875,7 +875,7 @@
 </span><span id="GroupsBuilder.__init__-59"><a href="#GroupsBuilder.__init__-59"><span class="linenos">59</span></a><span class="sd">        * **`group_parents`**: `[dict[str]]` &amp;rarr; Parent allocations to make for groups.</span>
 </span><span id="GroupsBuilder.__init__-60"><a href="#GroupsBuilder.__init__-60"><span class="linenos">60</span></a><span class="sd">            * **Note**: This should be a dictionary where the keys are the child group keys and the values are the parent group keys.</span>
 </span><span id="GroupsBuilder.__init__-61"><a href="#GroupsBuilder.__init__-61"><span class="linenos">61</span></a><span class="sd">            * **Example**: `{&#39;child_key&#39;: &#39;parent_key&#39;}`</span>
-</span><span id="GroupsBuilder.__init__-62"><a href="#GroupsBuilder.__init__-62"><span class="linenos">62</span></a><span class="sd">                * **Note**: This would mean that `child_key` has a parent of `fparent_key`.</span>
+</span><span id="GroupsBuilder.__init__-62"><a href="#GroupsBuilder.__init__-62"><span class="linenos">62</span></a><span class="sd">                * **Note**: This would mean that `child_key` has a parent of `parent_key`.</span>
 </span><span id="GroupsBuilder.__init__-63"><a href="#GroupsBuilder.__init__-63"><span class="linenos">63</span></a><span class="sd">            * **Note**: If a group is not a child of another group, it should not be included in the dictionary.</span>
 </span><span id="GroupsBuilder.__init__-64"><a href="#GroupsBuilder.__init__-64"><span class="linenos">64</span></a><span class="sd">        * **`group_names`**: `[dict[str]]` &amp;rarr; The group names to use for the group keys.</span>
 </span><span id="GroupsBuilder.__init__-65"><a href="#GroupsBuilder.__init__-65"><span class="linenos">65</span></a><span class="sd">            * **Note**: This should be a dictionary where the keys are the group keys and the values are the group_names to use for the group keys.</span>
@@ -916,7 +916,7 @@
 <li><strong>Note</strong>: This should be a dictionary where the keys are the child group keys and the values are the parent group keys.</li>
 <li><strong>Example</strong>: <code>{'child_key': 'parent_key'}</code>
 <ul>
-<li><strong>Note</strong>: This would mean that <code>child_key</code> has a parent of <code>fparent_key</code>.</li>
+<li><strong>Note</strong>: This would mean that <code>child_key</code> has a parent of <code>parent_key</code>.</li>
 </ul></li>
 <li><strong>Note</strong>: If a group is not a child of another group, it should not be included in the dictionary.</li>
 </ul></li>

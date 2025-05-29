@@ -58,7 +58,7 @@ class GroupsBuilder(GroupsUtils):
         * **`group_parents`**: `[dict[str]]` &rarr; Parent allocations to make for groups.
             * **Note**: This should be a dictionary where the keys are the child group keys and the values are the parent group keys.
             * **Example**: `{'child_key': 'parent_key'}`
-                * **Note**: This would mean that `child_key` has a parent of `fparent_key`.
+                * **Note**: This would mean that `child_key` has a parent of `parent_key`.
             * **Note**: If a group is not a child of another group, it should not be included in the dictionary.
         * **`group_names`**: `[dict[str]]` &rarr; The group names to use for the group keys.
             * **Note**: This should be a dictionary where the keys are the group keys and the values are the group_names to use for the group keys.
