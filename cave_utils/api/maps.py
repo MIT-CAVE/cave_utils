@@ -306,9 +306,9 @@ class maps_data_star_legendGroups_star_data_star(ApiValidator):
         value: bool,
         sizeBy: str | None = None,
         colorBy: str | None = None,
-        lineStyle: str | None = None, #solid, None?
+        lineStyle: str | None = None,
         allowGrouping: bool = False,
-        group: bool | None = False, #None?
+        group: bool | None = False,
         groupCalcBySize: str | None = None,
         groupCalcByColor: str | None = None,
         groupScaleWithZoom: bool = False,

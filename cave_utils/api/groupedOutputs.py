@@ -125,7 +125,7 @@ class groupedOutputs_data_star_stats(ApiValidator):
         unitPlacement: str | None = None,
         precision: int | None = None,
         trailingZeros: bool | None = None,
-        notation: str | None = None, #standard, None?
+        notation: str | None = None,
         notationDisplay: str | None = None,
         **kwargs,
     ):
