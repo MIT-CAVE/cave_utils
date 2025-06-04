@@ -15,7 +15,7 @@ class globalOutputs(ApiValidator):
     """
 
     @staticmethod
-    def spec(props: dict, values: [dict, None] = None, layout: [dict, None] = None, **kwargs):
+    def spec(props: dict, values: dict | None = None, layout: dict | None = None, **kwargs):
         """
         Arguments:
 

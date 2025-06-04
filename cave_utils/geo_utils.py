@@ -7,14 +7,14 @@ class GeoUtils:
     @staticmethod
     def create_shortest_paths_geojson(
         geoGraph,
-        ids: list[int, str],
-        origin_latitudes: list[int, float],
-        origin_longitudes: list[int, float],
-        destination_latitudes: list[int, float],
-        destination_longitudes: list[int, float],
-        additional_properties: [list[dict], None] = None,
+        ids: list[int | str],
+        origin_latitudes: list[int | float],
+        origin_longitudes: list[int | float],
+        destination_latitudes: list[int | float],
+        destination_longitudes: list[int | float],
+        additional_properties: list[dict] | None = None,
         show_progress: bool = False,
-        filename: [str, None] = None,
+        filename: str | None = None,
         **kwargs,
     ):
         """
@@ -24,23 +24,23 @@ class GeoUtils:
         Arguments:
 
         * **`geoGraph`**: `[geoGraph]` &rarr; A geoGraph object from scgraph.
-        * **`ids`**: `[list[int, str]]` &rarr; A list of identifiers for each path.
+        * **`ids`**: `[list[int | str]]` &rarr; A list of identifiers for each path.
             * Note: These are imputed into the output GeoJSON as an id property.
-        * **`origin_latitudes`**: `[list[int, float]]` &rarr;
+        * **`origin_latitudes`**: `[list[int | float]]` &rarr;
             * A list of latitudes for the origin points.
-        * **`origin_longitudes`**: `[list[int, float]]` &rarr;
+        * **`origin_longitudes`**: `[list[int | float]]` &rarr;
             * A list of longitudes for the origin points.
-        * **`destination_latitudes`**: `[list[int, float]]` &rarr;
+        * **`destination_latitudes`**: `[list[int | float]]` &rarr;
             * A list of latitudes for the destination points.
-        * **`destination_longitudes`**: `[list[int, float]]` &rarr;
+        * **`destination_longitudes`**: `[list[int | float]]` &rarr;
             * A list of longitudes for the destination points.
-        * **`additional_properties`**: `[list[dict], None]` &rarr;
+        * **`additional_properties`**: `[list[dict] | None]` &rarr;
             * A list of dictionaries with additional properties for each path.
             * Note: The dictionaries must have the same length as the input lists.
             * Note: The dictionaries are imputed into the output GeoJSON as properties.
         * **`show_progress`**: `[bool]` = `False` &rarr;
             * If `True`, shows the progress of the calculations.
-        * **`filename`**: `[str, None]` = `None` &rarr;
+        * **`filename`**: `[str | None]` = `None` &rarr;
             * If provided, saves the output GeoJSON to the specified filename.
 
         Returns:

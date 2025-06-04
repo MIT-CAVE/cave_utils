@@ -62,8 +62,8 @@ class maps_additionalMapStyles_star(ApiValidator):
     @staticmethod
     def spec(
         name: str,
-        spec: [dict, str],
-        fog: [dict, None] = None,
+        spec: dict | str,
+        fog: dict | None = None,
         icon: str = "md/MdMap",
         **kwargs,
     ):
@@ -101,15 +101,15 @@ class maps_data_star(ApiValidator):
     @staticmethod
     def spec(
         name: str,
-        currentStyle: [str, None] = None,
-        currentProjection: [str, None] = None,
-        defaultViewport: [dict, None] = None,
-        optionalViewports: [dict, None] = None,
-        legendGroups: [dict, None] = None,
-        legendView: [str, None] = None,
-        showLegendGroupNames: [bool, None] = None,
-        legendLayout: [str, None] = None,
-        legendWidth: [str, None] = None,
+        currentStyle: str | None = None,
+        currentProjection: str | None = None,
+        defaultViewport: dict | None = None,
+        optionalViewports: dict | None = None,
+        legendGroups: dict | None = None,
+        legendView: str | None = None,
+        showLegendGroupNames: bool | None = None,
+        legendLayout: str | None = None,
+        legendWidth: str | None = None,
         **kwargs,
     ):
         """
@@ -197,15 +197,15 @@ class viewport(ApiValidator):
 
     @staticmethod
     def spec(
-        latitude: [int, float],
-        longitude: [int, float],
-        zoom: [int, float],
-        bearing: [int, float, None] = None,
-        pitch: [int, float, None] = None,
-        maxZoom: [int, float, None] = None,
-        minZoom: [int, float, None] = None,
-        icon: [str, None] = None,
-        name: [str, None] = None,
+        latitude: int | float,
+        longitude: int | float,
+        zoom: int | float,
+        bearing: int | float | None = None,
+        pitch: int | float | None = None,
+        maxZoom: int | float | None = None,
+        minZoom: int | float | None = None,
+        icon: str | None = None,
+        name: str | None = None,
         **kwargs,
     ):
         """
@@ -304,18 +304,18 @@ class maps_data_star_legendGroups_star_data_star(ApiValidator):
     @staticmethod
     def spec(
         value: bool,
-        sizeBy: [str, None] = None,
-        colorBy: [str, None] = None,
-        lineStyle: [str, None] = None,
+        sizeBy: str | None = None,
+        colorBy: str | None = None,
+        lineStyle: str | None = None, #solid, None?
         allowGrouping: bool = False,
-        group: [bool, None] = False,
-        groupCalcBySize: [str, None] = None,
-        groupCalcByColor: [str, None] = None,
+        group: bool | None = False, #None?
+        groupCalcBySize: str | None = None,
+        groupCalcByColor: str | None = None,
         groupScaleWithZoom: bool = False,
-        groupScale: [int, float, None] = None,
-        colorByOptions: [list, None] = None,
-        sizeByOptions: [list, None] = None,
-        icon: [str, None] = None,
+        groupScale: int | float | None = None,
+        colorByOptions: list | None = None,
+        sizeByOptions: list | None = None,
+        icon: str | None = None,
         **kwargs,
     ):
         """

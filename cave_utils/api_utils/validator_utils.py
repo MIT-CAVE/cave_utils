@@ -95,7 +95,7 @@ class ApiValidator:
             self.__order_validation__(order=data_order)
 
     @type_enforced.Enforcer
-    def __order_validation__(self, order: dict[list[str, int]]):
+    def __order_validation__(self, order: dict[str, list[str | int]]):
         """
         Check that the ordering options are valid
         """
@@ -115,7 +115,7 @@ class ApiValidator:
                 )
 
     @type_enforced.Enforcer
-    def __timeValues_validation__(self, timeValues: [dict[dict], list[dict]], timeLength: int):
+    def __timeValues_validation__(self, timeValues: dict[int, dict] | list[dict], timeLength: int):
         if len(timeValues) == 0:
             return
         if isinstance(timeValues, list):
@@ -320,7 +320,7 @@ class ApiValidator:
 
     def __check_coord_path_valid__(
         self,
-        coord_path: list[list[int, float]],
+        coord_path: list[list[int | float]],
         coord_variant: str,
         prepend_path: list[str] = list(),
     ):

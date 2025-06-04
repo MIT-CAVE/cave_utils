@@ -92,16 +92,16 @@ class settings_defaults(ApiValidator):
         locale: str = "en-US",
         precision: int = 2,
         trailingZeros: bool = False,
-        notation: [str, None] = None,
-        notationDisplay: [str, None] = None,
-        fallbackValue: [str, None] = "N/A",
-        unit: [str, None] = None,
-        unitPlacement: [str, None] = None,
-        legendPrecision: [str, None] = None,
-        legendNotation: [str, None] = None,
-        legendNotationDisplay: [str, None] = None,
-        legendMinLabel: [str, None] = None,
-        legendMaxLabel: [str, None] = None,
+        notation: str | None = None,
+        notationDisplay: str | None = None,
+        fallbackValue: str | None = "N/A",
+        unit: str | None = None,
+        unitPlacement: str | None = None,
+        legendPrecision: int | None = None,
+        legendNotation: str | None = None,
+        legendNotationDisplay: str | None = None,
+        legendMinLabel: str | None = None,
+        legendMaxLabel: str | None = None,
         **kwargs,
     ):
         """
@@ -119,7 +119,7 @@ class settings_defaults(ApiValidator):
             * **Notes**:
                 * This ensures that all precision digits are shown. For example: `1.5` &rarr; `1.500` when precision is `3`.
                 * This attribute only applies to `"num"` props or `stats`.
-        * **`notation`**: `[int]` = `"standard"` &rarr; The formatting style of a numeric value.
+        * **`notation`**: `[str]` = `"standard"` &rarr; The formatting style of a numeric value.
             * **Accepted Values**:
                     * `"standard"`: Plain number formatting
                     * `"compact"`: Resembles the [metric prefix][] system
@@ -166,7 +166,7 @@ class settings_defaults(ApiValidator):
                 * Set the precision to `0` to attach an integer constraint.
                 * If left unspecified (i.e. `None`), the prop's or stat's `precision` will be used or in case the latter is undefined, `settings.precision` will be used.
                 * This attribute only applies to `"num"` props or `stats`.
-        * **`legendNotation`**: `[int]` = `"standard"` &rarr; The formatting style of a numeric value.
+        * **`legendNotation`**: `[str]` = `"standard"` &rarr; The formatting style of a numeric value.
             * **Accepted Values**:
                 * `"standard"`: Plain number formatting
                 * `"compact"`: Resembles the [metric prefix][] system
@@ -247,7 +247,7 @@ class settings_demo_star(ApiValidator):
     """
 
     @staticmethod
-    def spec(scrollSpeed: [int, float] = 1, displayTime: int = 5, **kwargs):
+    def spec(scrollSpeed: int | float = 1, displayTime: int = 5, **kwargs):
         """
         Arguments:
 
@@ -271,7 +271,7 @@ class settings_sync_star(ApiValidator):
     """
 
     @staticmethod
-    def spec(name: str, showToggle: bool, value: bool, data: dict[list[str | int]], **kwargs):
+    def spec(name: str, showToggle: bool, value: bool, data: dict[str, list[str | int]], **kwargs):
         """
 
         Arguments:
@@ -282,7 +282,7 @@ class settings_sync_star(ApiValidator):
             * **Notes**:
                 * This value determines if the data structure is synced with the server.
                 * This value is only relevant if it is `False`, as the entire data structure is synced by default.
-        * **`data`**: `[dict[list[str|int]]]` &rarr; A set of paths that allow you to toggle syncing.
+        * **`data`**: `[dict[str, list[str | int]]]` &rarr; A set of paths that allow you to toggle syncing.
             * **Notes**:
                 * This is a dict of lists of strings or integers.
                 * Each key is a custom key for your own organizational purposes.
@@ -328,7 +328,7 @@ class settings_time(ApiValidator):
     """
 
     @staticmethod
-    def spec(timeLength: int, timeUnits: str, looping: bool, speed: [float, int], **kwargs):
+    def spec(timeLength: int, timeUnits: str, looping: bool, speed: float | int, **kwargs):
         """
         Arguments:
 
@@ -336,7 +336,7 @@ class settings_time(ApiValidator):
         * **`timeUnits`**: `[str]` &rarr; The units of time to display.
             * **Example**: `"Decade"`.
         * **`looping`**: `[bool]` &rarr; If `True`, the time animation will automatically restart from the beginning once it reaches the end.
-        * **`speed`**: `[float]` &rarr; The speed at which the animation advances to the next time step.
+        * **`speed`**: `[float | int]` &rarr; The speed at which the animation advances to the next time step.
             * **Note**: While `speed` is intended to be measured in frames per second (fps), performance may degrade as the size of the time-varying data increases, resulting in slower animation.
         """
         return {"kwargs": kwargs, "accepted_values": {}}

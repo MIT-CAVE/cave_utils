@@ -16,12 +16,12 @@ class LogObject:
         return logs[:max_count] if max_count is not None and len(logs) > max_count else logs
 
     @type_enforced.Enforcer
-    def print_logs(self, level: [str, None] = None, max_count: [int, None] = None):
+    def print_logs(self, level: str | None = None, max_count: int | None = None):
         for i in self.get_logs(level=level, max_count=max_count):
             print(f"{i['level']}: {i['path']}\n\t{i['msg']}")
 
     @type_enforced.Enforcer
-    def write_logs(self, path: str, level: [str, None] = None, max_count: [int, None] = None):
+    def write_logs(self, path: str, level: str | None = None, max_count: int | None = None):
         if path[:1] != "/":
             path = os.getcwd() + "/" + path
         path = path.replace("/./", "/")
