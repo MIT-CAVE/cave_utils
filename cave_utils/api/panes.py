@@ -19,7 +19,7 @@ class panes(ApiValidator):
     def spec(data: dict = dict(), paneState: dict = dict(), **kwargs):
         """
         Arguments:
-        * **`data`**: `[str]` &rarr; The data to pass to `panes.data.*`.
+        * **`data`**: `[dict]` &rarr; The data to pass to `panes.data.*`.
         * **`paneState`**: `[dict]` &rarr;
             * A dictionary of pane states per their location in the `appBar` object.
             * **Accepted Values**:
@@ -61,7 +61,7 @@ class panes_data_star(ApiValidator):
 
     @staticmethod
     def spec(
-        name: str, props: dict, values: [dict, None] = None, layout: [dict, None] = None, **kwargs
+        name: str, props: dict, values: dict | None = None, layout: dict | None = None, **kwargs
     ):
         """
         Arguments:
@@ -112,8 +112,9 @@ class panes_paneState_star(ApiValidator):
     The pane state data is located under the path **`panes.paneState.*.*`**.
     """
 
+    #TODO check type of open
     @staticmethod
-    def spec(type: str = "pane", open: [str, None] = None, pin: bool = False, **kwargs):
+    def spec(type: str = "pane", open: str | None = None, pin: bool = False, **kwargs):
         """
         Arguments:
 

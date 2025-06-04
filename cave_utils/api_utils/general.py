@@ -13,41 +13,41 @@ class props(ApiValidator):
     def spec(
         name: str,
         type: str,
-        help: [str, None] = None,
-        variant: [str, None] = None,
-        display: [bool, None] = None,
-        enabled: [bool, None] = None,
-        container: [str, None] = None,
-        apiCommand: [str, None] = None,
-        apiCommandKeys: [list[str], None] = None,
-        options: [dict, None] = None,
-        valueOptions: [list[int, float], None] = None,
-        label: [str, None] = None,
-        placeholder: [str, None] = None,
-        maxValue: [float, int, None] = None,
-        minValue: [float, int, None] = None,
-        gradient: [dict, None] = None,
-        fallback: [dict, None] = None,
-        maxRows: [int, None] = None,
-        minRows: [int, None] = None,
-        rows: [int, None] = None,
-        notation: [str, None] = None,
-        precision: [int, None] = None,
-        notationDisplay: [str, None] = None,
-        unit: [str, None] = None,
-        unitPlacement: [str, None] = None,
-        views: [list[str], None] = None,
-        legendNotation: [str, None] = None,
-        legendPrecision: [int, None] = None,
-        legendNotationDisplay: [str, None] = None,
-        legendMinLabel: [str, None] = None,
-        legendMaxLabel: [str, None] = None,
-        icon: [str, None] = None,
-        trailingZeros: [bool, None] = None,
-        locale: [str, None] = None,
-        fallbackValue: [str, None] = None,
-        draggable: [bool, None] = None,
-        allowNone: [bool, None] = None,
+        help: str | None = None,
+        variant: str | None = None,
+        display: bool | None = None,
+        enabled: bool | None = None,
+        container: str | None = None,
+        apiCommand: str | None = None,
+        apiCommandKeys: list[str] | None = None,
+        options: dict | None = None,
+        valueOptions: list[int, float] | None = None,
+        label: str | None = None,
+        placeholder: str | None = None,
+        maxValue: float | int | None = None,
+        minValue: float | int | None = None,
+        gradient: dict | None = None,
+        fallback: dict | None = None,
+        maxRows: int | None = None,
+        minRows: int | None = None,
+        rows: int | None = None,
+        notation: str | None = None,
+        precision: int | None = None,
+        notationDisplay: str | None = None,
+        unit: str | None = None,
+        unitPlacement: str | None = None,
+        views: list[str] | None = None,
+        legendNotation: str | None = None,
+        legendPrecision: int | None = None,
+        legendNotationDisplay: str | None = None,
+        legendMinLabel: str | None = None,
+        legendMaxLabel: str | None = None,
+        icon: str | None = None,
+        trailingZeros: bool | None = None,
+        locale: str | None = None,
+        fallbackValue: str | None = None,
+        draggable: bool | None = None,
+        allowNone: bool | None = None,
         **kwargs,
     ):
         """
@@ -264,7 +264,7 @@ class props(ApiValidator):
                 * Set the precision to `0` to attach an integer constraint.
                 * If left unspecified (i.e., `None`), it will default to `settings.defaults.legendPrecision`.
                 * This attribute applies exclusively to `"num"` props.
-        * **`legendNotation`**: `[int]` = `"standard"` &rarr; The formatting style of a numeric value.
+        * **`legendNotation`**: `[str]` = `"standard"` &rarr; The formatting style of a numeric value.
             * **Accepted Values**:
                 * `"standard"`: Plain number formatting
                 * `"compact"`: Resembles the [metric prefix][] system
@@ -473,9 +473,9 @@ class props_options(ApiValidator):
     @staticmethod
     def spec(
         name: str,
-        path: [list[str], None] = None,
-        color: [str, None] = None,
-        size: [str, None] = None,
+        path: list[str] | None = None,
+        color: str | None = None,
+        size: str | None = None,
         **kwargs,
     ):
         """
@@ -518,9 +518,9 @@ class props_options(ApiValidator):
 class props_fallback(ApiValidator):
     @staticmethod
     def spec(
-        name: [str, None] = None,
-        color: [str, None] = None,
-        size: [str, None] = None,
+        name: str | None = None,
+        color: str | None = None,
+        size: str | None = None,
         **kwargs,
     ):
         """
@@ -548,12 +548,12 @@ class props_fallback(ApiValidator):
 class props_gradient(ApiValidator):
     @staticmethod
     def spec(
-        scale: [str, None] = None,
-        scaleParams: [dict, None] = None,
-        notation: [str, None] = None,
-        notationDisplay: [str, None] = None,
-        precision: [int, None] = None,
-        data: [list, None] = None,
+        scale: str | None = None,
+        scaleParams: dict | None = None,
+        notation: str | None = None,
+        notationDisplay: str | None = None,
+        precision: int | None = None,
+        data: list | None = None,
         **kwargs,
     ):
         """
@@ -632,13 +632,13 @@ class props_gradient(ApiValidator):
 class props_gradient_scaleParams(ApiValidator):
     @staticmethod
     def spec(
-        exponent: [float, int, None] = None,
+        exponent: float | int | None = None,
         **kwargs,
     ):
         """
         Arguments:
 
-        * **`exponent`**: `[float]` = `None` &rarr; The exponent for the scale if using a power gradient.
+        * **`exponent`**: `[float | int]` = `None` &rarr; The exponent for the scale if using a power gradient.
         """
         return {
             "kwargs": kwargs,
@@ -658,16 +658,16 @@ class props_gradient_scaleParams(ApiValidator):
 class props_gradient_data(ApiValidator):
     @staticmethod
     def spec(
-        value: [int, float, str],
-        color: [str, None] = None,
-        size: [str, None] = None,
-        label: [str, None] = None,
+        value: int | float | str,
+        color: str | None = None,
+        size: str | None = None,
+        label: str | None = None,
         **kwargs,
     ):
         """
         Arguments:
 
-        * **`value`**: `[int | float]` &rarr; The value for the split point in the gradient.
+        * **`value`**: `[int | float | str]` &rarr; The value for the split point in the gradient.
         * **`color`**: `[str]` = `None` &rarr; The color string to use for the split point.
             * **Note**: A valid color string (EG: "RGBA(0,0,0,1)")
         * **`size`**: `[str]` = `None` &rarr; The size string to use for the split point.
@@ -695,14 +695,14 @@ class props_gradient_data(ApiValidator):
 class layout(ApiValidator):
     @staticmethod
     def spec(
-        type: str,
-        numColumns: [str, int, None] = None,
-        numRows: [str, int, None] = None,
-        data: [dict, None] = None,
-        itemId: [str, None] = None,
-        column: [int, None] = None,
-        row: [int, None] = None,
-        style: [dict, None] = None,
+        type: str, #None
+        numColumns: str | int | None = None,
+        numRows: str | int | None = None,
+        data: dict | None = None,
+        itemId: str | None = None,
+        column: int | None = None,
+        row: int | None = None,
+        style: dict | None = None,
         **kwargs,
     ):
         """

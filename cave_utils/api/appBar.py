@@ -51,10 +51,10 @@ class appBar_data_star(ApiValidator):
         icon: str,
         type: str,
         bar: str,
-        variant: [str, None] = None,
-        color: [str, None] = None,
-        apiCommand: [str, None] = None,
-        apiCommandKeys: [list[str], None] = None,
+        variant: str | None = None,
+        color: str | None = None,
+        apiCommand: str | None = None,
+        apiCommandKeys: list[str] | None = None,
         **kwargs,
     ):
         """

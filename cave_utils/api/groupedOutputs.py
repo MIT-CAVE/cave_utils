@@ -121,12 +121,12 @@ class groupedOutputs_data_star_stats(ApiValidator):
     @staticmethod
     def spec(
         name: str,
-        unit: [str, None] = None,
-        unitPlacement: [str, None] = None,
-        precision: [int, None] = None,
-        trailingZeros: [bool, None] = None,
-        notation: [str, None] = None,
-        notationDisplay: [str, None] = None,
+        unit: str | None = None,
+        unitPlacement: str | None = None,
+        precision: int | None = None,
+        trailingZeros: bool | None = None,
+        notation: str | None = None,
+        notationDisplay: str | None = None,
         **kwargs,
     ):
         """
@@ -150,7 +150,7 @@ class groupedOutputs_data_star_stats(ApiValidator):
             * **Notes**:
                 * This ensures that all precision digits are shown. For example: `1.5` &rarr; `1.500` when precision is `3`.
                 * If left unspecified (i.e., `None`), it will default to `settings.defaults.trailingZeros`.
-        * **`notation`**: `[int]` = `"standard"` &rarr; The formatting style of a numeric value.
+        * **`notation`**: `[str]` = `"standard"` &rarr; The formatting style of a numeric value.
         * **`notationDisplay`**: `[str]` = `"e+"` | `"short"` | `None` &rarr; Further customize the formatting within the selected `notation`.
             * **Notes**:
                 * No `notationDisplay` option is provided for a `"standard"` notation
@@ -266,7 +266,7 @@ class groupedOutputs_groupings_star(ApiValidator):
         data: dict,
         name: str,
         layoutDirection: str = "vertical",
-        grouping: [str, None] = None,
+        grouping: str | None = None,
         **kwargs,
     ):
         """
@@ -374,10 +374,10 @@ class groupedOutputs_groupings_star_levels_star(ApiValidator):
     @staticmethod
     def spec(
         name: str,
-        parent: [str, None] = None,
-        ordering: [list, None] = None,
+        parent: str | None = None,
+        ordering: list | None = None,
         orderWithParent: bool = True,
-        coloring: [dict, None] = None,
+        coloring: dict | None = None,
         **kwargs,
     ):
         """
