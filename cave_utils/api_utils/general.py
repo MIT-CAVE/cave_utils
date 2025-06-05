@@ -21,7 +21,7 @@ class props(ApiValidator):
         apiCommand: str | None = None,
         apiCommandKeys: list[str] | None = None,
         options: dict | None = None,
-        valueOptions: list[int, float] | None = None,
+        valueOptions: list[int | float] | None = None,
         label: str | None = None,
         placeholder: str | None = None,
         maxValue: float | int | None = None,
@@ -695,7 +695,7 @@ class props_gradient_data(ApiValidator):
 class layout(ApiValidator):
     @staticmethod
     def spec(
-        type: str, #None
+        type: str,  # None
         numColumns: str | int | None = None,
         numRows: str | int | None = None,
         data: dict | None = None,

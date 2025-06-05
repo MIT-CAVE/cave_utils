@@ -112,7 +112,7 @@ class panes_paneState_star(ApiValidator):
     The pane state data is located under the path **`panes.paneState.*.*`**.
     """
 
-    #TODO check type of open
+    # TODO check type of open
     @staticmethod
     def spec(type: str = "pane", open: str | None = None, pin: bool = False, **kwargs):
         """

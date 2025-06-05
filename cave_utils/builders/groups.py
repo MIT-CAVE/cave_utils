@@ -189,7 +189,7 @@ class GroupsBuilder(GroupsUtils):
             if key in self.group_parents:
                 self.levels_structure[key]["parent"] = self.group_parents[key]
 
-    def get_id(self, group: dict[str]):
+    def get_id(self, group: dict[str, str]):
         return pamda.path(path=pamda.props(self.group_keys, group), data=self.id_structure)
 
 

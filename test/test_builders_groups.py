@@ -162,7 +162,7 @@ except ValueError as e:
     success["id_col_broken"] = True
 
 if all(success.values()):
-    print("Builder Groups Tests: passed!")
+    print("Builder Groups Tests: Passed!")
 else:
     print("Builder Groups Tests: Failed!")
     print(success)
