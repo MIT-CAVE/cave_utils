@@ -14,7 +14,7 @@ echo "from .geo_utils import GeoUtils" >> cave_utils/__init__.py
 
 
 # Specify versions for documentation purposes
-VERSION="3.2.0"
+VERSION="3.3.0"
 OLD_DOC_VERSIONS="3.2.0 3.1.0 3.0.0 2.3.0 2.2.1 2.1.2 2.0.5 1.6.1"
 export version_options="$VERSION $OLD_DOC_VERSIONS"
 
