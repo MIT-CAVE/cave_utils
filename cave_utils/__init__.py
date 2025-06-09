@@ -5,6 +5,14 @@
 Basic utilities for the MIT Cave App. 
 This package is intended to be used by the Cave App and the Cave API.
 
+## Overview
+
+This package is part of the larger [Cave App](https://github.com/MIT-CAVE/cave_app) framework. It provides utilities that are commonly used across different Cave applications, such as validation and logging. It is designed to be an easy to integrate library that can be used in any Cave application. It also serves to provide automated documentation and testing.
+
+You can find the low level documentation for this package [here](https://mit-cave.github.io/cave_utils/index.html).
+
+
+
 ## Setup
 
 Make sure you have Python 3.11.x (or higher) installed on your system. You can download it [here](https://www.python.org/downloads/).
@@ -47,6 +55,12 @@ Make sure Docker is installed and running.
 
     source ./utils/helpers/shell_functions.sh
     source ./utils/helpers/ensure_postgres_running.sh
+    # Check if the app is functional before proceeding
+    if [ "$(python ./manage.py check --deployment_type development | grep "System check identified no issues" | wc -l)" -eq "0" ]; then
+    printf "Unable to start the app due to an error in the code. See the stacktrace above." 2>&1 | pipe_log "ERROR"
+    rm -r "./tmp"
+    exit 1
+    fi
     source ./utils/helpers/ensure_db_setup.sh
 
     python "$APP_DIR/manage.py" runserver 0.0.0.0:8000 2>&1 | pipe_log "INFO"

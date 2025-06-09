@@ -46,7 +46,7 @@
 <footer>
 <select id="version-selector">
     <option value="latest">latest</option>
-        <option value="3.2.0">3.2.0</option>
+        <option value="3.3.0">3.3.0</option>
         <option value="3.2.0">3.2.0</option>
         <option value="3.1.0">3.1.0</option>
         <option value="3.0.0">3.0.0</option>
@@ -111,14 +111,14 @@
 </span><span id="L-7"><a href="#L-7"><span class="linenos">  7</span></a>    <span class="nd">@staticmethod</span>
 </span><span id="L-8"><a href="#L-8"><span class="linenos">  8</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">create_shortest_paths_geojson</span><span class="p">(</span>
 </span><span id="L-9"><a href="#L-9"><span class="linenos">  9</span></a>        <span class="n">geoGraph</span><span class="p">,</span>
-</span><span id="L-10"><a href="#L-10"><span class="linenos"> 10</span></a>        <span class="n">ids</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span> <span class="o">|</span> <span class="nb">str</span><span class="p">],</span>
-</span><span id="L-11"><a href="#L-11"><span class="linenos"> 11</span></a>        <span class="n">origin_latitudes</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span><span class="p">],</span>
-</span><span id="L-12"><a href="#L-12"><span class="linenos"> 12</span></a>        <span class="n">origin_longitudes</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span><span class="p">],</span>
-</span><span id="L-13"><a href="#L-13"><span class="linenos"> 13</span></a>        <span class="n">destination_latitudes</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span><span class="p">],</span>
-</span><span id="L-14"><a href="#L-14"><span class="linenos"> 14</span></a>        <span class="n">destination_longitudes</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span><span class="p">],</span>
-</span><span id="L-15"><a href="#L-15"><span class="linenos"> 15</span></a>        <span class="n">additional_properties</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="L-10"><a href="#L-10"><span class="linenos"> 10</span></a>        <span class="n">ids</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
+</span><span id="L-11"><a href="#L-11"><span class="linenos"> 11</span></a>        <span class="n">origin_latitudes</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
+</span><span id="L-12"><a href="#L-12"><span class="linenos"> 12</span></a>        <span class="n">origin_longitudes</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
+</span><span id="L-13"><a href="#L-13"><span class="linenos"> 13</span></a>        <span class="n">destination_latitudes</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
+</span><span id="L-14"><a href="#L-14"><span class="linenos"> 14</span></a>        <span class="n">destination_longitudes</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
+</span><span id="L-15"><a href="#L-15"><span class="linenos"> 15</span></a>        <span class="n">additional_properties</span><span class="p">:</span> <span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">],</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 </span><span id="L-16"><a href="#L-16"><span class="linenos"> 16</span></a>        <span class="n">show_progress</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-</span><span id="L-17"><a href="#L-17"><span class="linenos"> 17</span></a>        <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="L-17"><a href="#L-17"><span class="linenos"> 17</span></a>        <span class="n">filename</span><span class="p">:</span> <span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 </span><span id="L-18"><a href="#L-18"><span class="linenos"> 18</span></a>        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
 </span><span id="L-19"><a href="#L-19"><span class="linenos"> 19</span></a>    <span class="p">):</span>
 </span><span id="L-20"><a href="#L-20"><span class="linenos"> 20</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -128,23 +128,23 @@
 </span><span id="L-24"><a href="#L-24"><span class="linenos"> 24</span></a><span class="sd">        Arguments:</span>
 </span><span id="L-25"><a href="#L-25"><span class="linenos"> 25</span></a>
 </span><span id="L-26"><a href="#L-26"><span class="linenos"> 26</span></a><span class="sd">        * **`geoGraph`**: `[geoGraph]` &amp;rarr; A geoGraph object from scgraph.</span>
-</span><span id="L-27"><a href="#L-27"><span class="linenos"> 27</span></a><span class="sd">        * **`ids`**: `[list[int | str]]` &amp;rarr; A list of identifiers for each path.</span>
+</span><span id="L-27"><a href="#L-27"><span class="linenos"> 27</span></a><span class="sd">        * **`ids`**: `[list[int, str]]` &amp;rarr; A list of identifiers for each path.</span>
 </span><span id="L-28"><a href="#L-28"><span class="linenos"> 28</span></a><span class="sd">            * Note: These are imputed into the output GeoJSON as an id property.</span>
-</span><span id="L-29"><a href="#L-29"><span class="linenos"> 29</span></a><span class="sd">        * **`origin_latitudes`**: `[list[int | float]]` &amp;rarr;</span>
+</span><span id="L-29"><a href="#L-29"><span class="linenos"> 29</span></a><span class="sd">        * **`origin_latitudes`**: `[list[int, float]]` &amp;rarr;</span>
 </span><span id="L-30"><a href="#L-30"><span class="linenos"> 30</span></a><span class="sd">            * A list of latitudes for the origin points.</span>
-</span><span id="L-31"><a href="#L-31"><span class="linenos"> 31</span></a><span class="sd">        * **`origin_longitudes`**: `[list[int | float]]` &amp;rarr;</span>
+</span><span id="L-31"><a href="#L-31"><span class="linenos"> 31</span></a><span class="sd">        * **`origin_longitudes`**: `[list[int, float]]` &amp;rarr;</span>
 </span><span id="L-32"><a href="#L-32"><span class="linenos"> 32</span></a><span class="sd">            * A list of longitudes for the origin points.</span>
-</span><span id="L-33"><a href="#L-33"><span class="linenos"> 33</span></a><span class="sd">        * **`destination_latitudes`**: `[list[int | float]]` &amp;rarr;</span>
+</span><span id="L-33"><a href="#L-33"><span class="linenos"> 33</span></a><span class="sd">        * **`destination_latitudes`**: `[list[int, float]]` &amp;rarr;</span>
 </span><span id="L-34"><a href="#L-34"><span class="linenos"> 34</span></a><span class="sd">            * A list of latitudes for the destination points.</span>
-</span><span id="L-35"><a href="#L-35"><span class="linenos"> 35</span></a><span class="sd">        * **`destination_longitudes`**: `[list[int | float]]` &amp;rarr;</span>
+</span><span id="L-35"><a href="#L-35"><span class="linenos"> 35</span></a><span class="sd">        * **`destination_longitudes`**: `[list[int, float]]` &amp;rarr;</span>
 </span><span id="L-36"><a href="#L-36"><span class="linenos"> 36</span></a><span class="sd">            * A list of longitudes for the destination points.</span>
-</span><span id="L-37"><a href="#L-37"><span class="linenos"> 37</span></a><span class="sd">        * **`additional_properties`**: `[list[dict] | None]` &amp;rarr;</span>
+</span><span id="L-37"><a href="#L-37"><span class="linenos"> 37</span></a><span class="sd">        * **`additional_properties`**: `[list[dict], None]` &amp;rarr;</span>
 </span><span id="L-38"><a href="#L-38"><span class="linenos"> 38</span></a><span class="sd">            * A list of dictionaries with additional properties for each path.</span>
 </span><span id="L-39"><a href="#L-39"><span class="linenos"> 39</span></a><span class="sd">            * Note: The dictionaries must have the same length as the input lists.</span>
 </span><span id="L-40"><a href="#L-40"><span class="linenos"> 40</span></a><span class="sd">            * Note: The dictionaries are imputed into the output GeoJSON as properties.</span>
 </span><span id="L-41"><a href="#L-41"><span class="linenos"> 41</span></a><span class="sd">        * **`show_progress`**: `[bool]` = `False` &amp;rarr;</span>
 </span><span id="L-42"><a href="#L-42"><span class="linenos"> 42</span></a><span class="sd">            * If `True`, shows the progress of the calculations.</span>
-</span><span id="L-43"><a href="#L-43"><span class="linenos"> 43</span></a><span class="sd">        * **`filename`**: `[str | None]` = `None` &amp;rarr;</span>
+</span><span id="L-43"><a href="#L-43"><span class="linenos"> 43</span></a><span class="sd">        * **`filename`**: `[str, None]` = `None` &amp;rarr;</span>
 </span><span id="L-44"><a href="#L-44"><span class="linenos"> 44</span></a><span class="sd">            * If provided, saves the output GeoJSON to the specified filename.</span>
 </span><span id="L-45"><a href="#L-45"><span class="linenos"> 45</span></a>
 </span><span id="L-46"><a href="#L-46"><span class="linenos"> 46</span></a><span class="sd">        Returns:</span>
@@ -231,14 +231,14 @@
 </span><span id="GeoUtils-8"><a href="#GeoUtils-8"><span class="linenos">  8</span></a>    <span class="nd">@staticmethod</span>
 </span><span id="GeoUtils-9"><a href="#GeoUtils-9"><span class="linenos">  9</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">create_shortest_paths_geojson</span><span class="p">(</span>
 </span><span id="GeoUtils-10"><a href="#GeoUtils-10"><span class="linenos"> 10</span></a>        <span class="n">geoGraph</span><span class="p">,</span>
-</span><span id="GeoUtils-11"><a href="#GeoUtils-11"><span class="linenos"> 11</span></a>        <span class="n">ids</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span> <span class="o">|</span> <span class="nb">str</span><span class="p">],</span>
-</span><span id="GeoUtils-12"><a href="#GeoUtils-12"><span class="linenos"> 12</span></a>        <span class="n">origin_latitudes</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span><span class="p">],</span>
-</span><span id="GeoUtils-13"><a href="#GeoUtils-13"><span class="linenos"> 13</span></a>        <span class="n">origin_longitudes</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span><span class="p">],</span>
-</span><span id="GeoUtils-14"><a href="#GeoUtils-14"><span class="linenos"> 14</span></a>        <span class="n">destination_latitudes</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span><span class="p">],</span>
-</span><span id="GeoUtils-15"><a href="#GeoUtils-15"><span class="linenos"> 15</span></a>        <span class="n">destination_longitudes</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span><span class="p">],</span>
-</span><span id="GeoUtils-16"><a href="#GeoUtils-16"><span class="linenos"> 16</span></a>        <span class="n">additional_properties</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="GeoUtils-11"><a href="#GeoUtils-11"><span class="linenos"> 11</span></a>        <span class="n">ids</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
+</span><span id="GeoUtils-12"><a href="#GeoUtils-12"><span class="linenos"> 12</span></a>        <span class="n">origin_latitudes</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
+</span><span id="GeoUtils-13"><a href="#GeoUtils-13"><span class="linenos"> 13</span></a>        <span class="n">origin_longitudes</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
+</span><span id="GeoUtils-14"><a href="#GeoUtils-14"><span class="linenos"> 14</span></a>        <span class="n">destination_latitudes</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
+</span><span id="GeoUtils-15"><a href="#GeoUtils-15"><span class="linenos"> 15</span></a>        <span class="n">destination_longitudes</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
+</span><span id="GeoUtils-16"><a href="#GeoUtils-16"><span class="linenos"> 16</span></a>        <span class="n">additional_properties</span><span class="p">:</span> <span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">],</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 </span><span id="GeoUtils-17"><a href="#GeoUtils-17"><span class="linenos"> 17</span></a>        <span class="n">show_progress</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-</span><span id="GeoUtils-18"><a href="#GeoUtils-18"><span class="linenos"> 18</span></a>        <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="GeoUtils-18"><a href="#GeoUtils-18"><span class="linenos"> 18</span></a>        <span class="n">filename</span><span class="p">:</span> <span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 </span><span id="GeoUtils-19"><a href="#GeoUtils-19"><span class="linenos"> 19</span></a>        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
 </span><span id="GeoUtils-20"><a href="#GeoUtils-20"><span class="linenos"> 20</span></a>    <span class="p">):</span>
 </span><span id="GeoUtils-21"><a href="#GeoUtils-21"><span class="linenos"> 21</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -248,23 +248,23 @@
 </span><span id="GeoUtils-25"><a href="#GeoUtils-25"><span class="linenos"> 25</span></a><span class="sd">        Arguments:</span>
 </span><span id="GeoUtils-26"><a href="#GeoUtils-26"><span class="linenos"> 26</span></a>
 </span><span id="GeoUtils-27"><a href="#GeoUtils-27"><span class="linenos"> 27</span></a><span class="sd">        * **`geoGraph`**: `[geoGraph]` &amp;rarr; A geoGraph object from scgraph.</span>
-</span><span id="GeoUtils-28"><a href="#GeoUtils-28"><span class="linenos"> 28</span></a><span class="sd">        * **`ids`**: `[list[int | str]]` &amp;rarr; A list of identifiers for each path.</span>
+</span><span id="GeoUtils-28"><a href="#GeoUtils-28"><span class="linenos"> 28</span></a><span class="sd">        * **`ids`**: `[list[int, str]]` &amp;rarr; A list of identifiers for each path.</span>
 </span><span id="GeoUtils-29"><a href="#GeoUtils-29"><span class="linenos"> 29</span></a><span class="sd">            * Note: These are imputed into the output GeoJSON as an id property.</span>
-</span><span id="GeoUtils-30"><a href="#GeoUtils-30"><span class="linenos"> 30</span></a><span class="sd">        * **`origin_latitudes`**: `[list[int | float]]` &amp;rarr;</span>
+</span><span id="GeoUtils-30"><a href="#GeoUtils-30"><span class="linenos"> 30</span></a><span class="sd">        * **`origin_latitudes`**: `[list[int, float]]` &amp;rarr;</span>
 </span><span id="GeoUtils-31"><a href="#GeoUtils-31"><span class="linenos"> 31</span></a><span class="sd">            * A list of latitudes for the origin points.</span>
-</span><span id="GeoUtils-32"><a href="#GeoUtils-32"><span class="linenos"> 32</span></a><span class="sd">        * **`origin_longitudes`**: `[list[int | float]]` &amp;rarr;</span>
+</span><span id="GeoUtils-32"><a href="#GeoUtils-32"><span class="linenos"> 32</span></a><span class="sd">        * **`origin_longitudes`**: `[list[int, float]]` &amp;rarr;</span>
 </span><span id="GeoUtils-33"><a href="#GeoUtils-33"><span class="linenos"> 33</span></a><span class="sd">            * A list of longitudes for the origin points.</span>
-</span><span id="GeoUtils-34"><a href="#GeoUtils-34"><span class="linenos"> 34</span></a><span class="sd">        * **`destination_latitudes`**: `[list[int | float]]` &amp;rarr;</span>
+</span><span id="GeoUtils-34"><a href="#GeoUtils-34"><span class="linenos"> 34</span></a><span class="sd">        * **`destination_latitudes`**: `[list[int, float]]` &amp;rarr;</span>
 </span><span id="GeoUtils-35"><a href="#GeoUtils-35"><span class="linenos"> 35</span></a><span class="sd">            * A list of latitudes for the destination points.</span>
-</span><span id="GeoUtils-36"><a href="#GeoUtils-36"><span class="linenos"> 36</span></a><span class="sd">        * **`destination_longitudes`**: `[list[int | float]]` &amp;rarr;</span>
+</span><span id="GeoUtils-36"><a href="#GeoUtils-36"><span class="linenos"> 36</span></a><span class="sd">        * **`destination_longitudes`**: `[list[int, float]]` &amp;rarr;</span>
 </span><span id="GeoUtils-37"><a href="#GeoUtils-37"><span class="linenos"> 37</span></a><span class="sd">            * A list of longitudes for the destination points.</span>
-</span><span id="GeoUtils-38"><a href="#GeoUtils-38"><span class="linenos"> 38</span></a><span class="sd">        * **`additional_properties`**: `[list[dict] | None]` &amp;rarr;</span>
+</span><span id="GeoUtils-38"><a href="#GeoUtils-38"><span class="linenos"> 38</span></a><span class="sd">        * **`additional_properties`**: `[list[dict], None]` &amp;rarr;</span>
 </span><span id="GeoUtils-39"><a href="#GeoUtils-39"><span class="linenos"> 39</span></a><span class="sd">            * A list of dictionaries with additional properties for each path.</span>
 </span><span id="GeoUtils-40"><a href="#GeoUtils-40"><span class="linenos"> 40</span></a><span class="sd">            * Note: The dictionaries must have the same length as the input lists.</span>
 </span><span id="GeoUtils-41"><a href="#GeoUtils-41"><span class="linenos"> 41</span></a><span class="sd">            * Note: The dictionaries are imputed into the output GeoJSON as properties.</span>
 </span><span id="GeoUtils-42"><a href="#GeoUtils-42"><span class="linenos"> 42</span></a><span class="sd">        * **`show_progress`**: `[bool]` = `False` &amp;rarr;</span>
 </span><span id="GeoUtils-43"><a href="#GeoUtils-43"><span class="linenos"> 43</span></a><span class="sd">            * If `True`, shows the progress of the calculations.</span>
-</span><span id="GeoUtils-44"><a href="#GeoUtils-44"><span class="linenos"> 44</span></a><span class="sd">        * **`filename`**: `[str | None]` = `None` &amp;rarr;</span>
+</span><span id="GeoUtils-44"><a href="#GeoUtils-44"><span class="linenos"> 44</span></a><span class="sd">        * **`filename`**: `[str, None]` = `None` &amp;rarr;</span>
 </span><span id="GeoUtils-45"><a href="#GeoUtils-45"><span class="linenos"> 45</span></a><span class="sd">            * If provided, saves the output GeoJSON to the specified filename.</span>
 </span><span id="GeoUtils-46"><a href="#GeoUtils-46"><span class="linenos"> 46</span></a>
 </span><span id="GeoUtils-47"><a href="#GeoUtils-47"><span class="linenos"> 47</span></a><span class="sd">        Returns:</span>
@@ -343,7 +343,7 @@
         <div class="decorator decorator-staticmethod">@staticmethod</div>
 
         <span class="def">def</span>
-        <span class="name">create_shortest_paths_geojson</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">geoGraph</span>,</span><span class="param">	<span class="n">ids</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span> <span class="o">|</span> <span class="nb">str</span><span class="p">]</span>,</span><span class="param">	<span class="n">origin_latitudes</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span><span class="p">]</span>,</span><span class="param">	<span class="n">origin_longitudes</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span><span class="p">]</span>,</span><span class="param">	<span class="n">destination_latitudes</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span><span class="p">]</span>,</span><span class="param">	<span class="n">destination_longitudes</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span><span class="p">]</span>,</span><span class="param">	<span class="n">additional_properties</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">show_progress</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>,</span><span class="param">	<span class="n">filename</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="o">**</span><span class="n">kwargs</span></span><span class="return-annotation">):</span></span>
+        <span class="name">create_shortest_paths_geojson</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">geoGraph</span>,</span><span class="param">	<span class="n">ids</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span>,</span><span class="param">	<span class="n">origin_latitudes</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span>,</span><span class="param">	<span class="n">origin_longitudes</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span>,</span><span class="param">	<span class="n">destination_latitudes</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span>,</span><span class="param">	<span class="n">destination_longitudes</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span>,</span><span class="param">	<span class="n">additional_properties</span><span class="p">:</span> <span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">],</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">show_progress</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>,</span><span class="param">	filename: [&lt;class &#x27;str&#x27;&gt;, None] = None,</span><span class="param">	<span class="o">**</span><span class="n">kwargs</span></span><span class="return-annotation">):</span></span>
 
                 <label class="view-source-button" for="GeoUtils.create_shortest_paths_geojson-view-source"><span>View Source</span></label>
 
@@ -353,14 +353,14 @@
 </span><span id="GeoUtils.create_shortest_paths_geojson-8"><a href="#GeoUtils.create_shortest_paths_geojson-8"><span class="linenos">  8</span></a>    <span class="nd">@staticmethod</span>
 </span><span id="GeoUtils.create_shortest_paths_geojson-9"><a href="#GeoUtils.create_shortest_paths_geojson-9"><span class="linenos">  9</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">create_shortest_paths_geojson</span><span class="p">(</span>
 </span><span id="GeoUtils.create_shortest_paths_geojson-10"><a href="#GeoUtils.create_shortest_paths_geojson-10"><span class="linenos"> 10</span></a>        <span class="n">geoGraph</span><span class="p">,</span>
-</span><span id="GeoUtils.create_shortest_paths_geojson-11"><a href="#GeoUtils.create_shortest_paths_geojson-11"><span class="linenos"> 11</span></a>        <span class="n">ids</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span> <span class="o">|</span> <span class="nb">str</span><span class="p">],</span>
-</span><span id="GeoUtils.create_shortest_paths_geojson-12"><a href="#GeoUtils.create_shortest_paths_geojson-12"><span class="linenos"> 12</span></a>        <span class="n">origin_latitudes</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span><span class="p">],</span>
-</span><span id="GeoUtils.create_shortest_paths_geojson-13"><a href="#GeoUtils.create_shortest_paths_geojson-13"><span class="linenos"> 13</span></a>        <span class="n">origin_longitudes</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span><span class="p">],</span>
-</span><span id="GeoUtils.create_shortest_paths_geojson-14"><a href="#GeoUtils.create_shortest_paths_geojson-14"><span class="linenos"> 14</span></a>        <span class="n">destination_latitudes</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span><span class="p">],</span>
-</span><span id="GeoUtils.create_shortest_paths_geojson-15"><a href="#GeoUtils.create_shortest_paths_geojson-15"><span class="linenos"> 15</span></a>        <span class="n">destination_longitudes</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span><span class="p">],</span>
-</span><span id="GeoUtils.create_shortest_paths_geojson-16"><a href="#GeoUtils.create_shortest_paths_geojson-16"><span class="linenos"> 16</span></a>        <span class="n">additional_properties</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="GeoUtils.create_shortest_paths_geojson-11"><a href="#GeoUtils.create_shortest_paths_geojson-11"><span class="linenos"> 11</span></a>        <span class="n">ids</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
+</span><span id="GeoUtils.create_shortest_paths_geojson-12"><a href="#GeoUtils.create_shortest_paths_geojson-12"><span class="linenos"> 12</span></a>        <span class="n">origin_latitudes</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
+</span><span id="GeoUtils.create_shortest_paths_geojson-13"><a href="#GeoUtils.create_shortest_paths_geojson-13"><span class="linenos"> 13</span></a>        <span class="n">origin_longitudes</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
+</span><span id="GeoUtils.create_shortest_paths_geojson-14"><a href="#GeoUtils.create_shortest_paths_geojson-14"><span class="linenos"> 14</span></a>        <span class="n">destination_latitudes</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
+</span><span id="GeoUtils.create_shortest_paths_geojson-15"><a href="#GeoUtils.create_shortest_paths_geojson-15"><span class="linenos"> 15</span></a>        <span class="n">destination_longitudes</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
+</span><span id="GeoUtils.create_shortest_paths_geojson-16"><a href="#GeoUtils.create_shortest_paths_geojson-16"><span class="linenos"> 16</span></a>        <span class="n">additional_properties</span><span class="p">:</span> <span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">],</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 </span><span id="GeoUtils.create_shortest_paths_geojson-17"><a href="#GeoUtils.create_shortest_paths_geojson-17"><span class="linenos"> 17</span></a>        <span class="n">show_progress</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-</span><span id="GeoUtils.create_shortest_paths_geojson-18"><a href="#GeoUtils.create_shortest_paths_geojson-18"><span class="linenos"> 18</span></a>        <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="GeoUtils.create_shortest_paths_geojson-18"><a href="#GeoUtils.create_shortest_paths_geojson-18"><span class="linenos"> 18</span></a>        <span class="n">filename</span><span class="p">:</span> <span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 </span><span id="GeoUtils.create_shortest_paths_geojson-19"><a href="#GeoUtils.create_shortest_paths_geojson-19"><span class="linenos"> 19</span></a>        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
 </span><span id="GeoUtils.create_shortest_paths_geojson-20"><a href="#GeoUtils.create_shortest_paths_geojson-20"><span class="linenos"> 20</span></a>    <span class="p">):</span>
 </span><span id="GeoUtils.create_shortest_paths_geojson-21"><a href="#GeoUtils.create_shortest_paths_geojson-21"><span class="linenos"> 21</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -370,23 +370,23 @@
 </span><span id="GeoUtils.create_shortest_paths_geojson-25"><a href="#GeoUtils.create_shortest_paths_geojson-25"><span class="linenos"> 25</span></a><span class="sd">        Arguments:</span>
 </span><span id="GeoUtils.create_shortest_paths_geojson-26"><a href="#GeoUtils.create_shortest_paths_geojson-26"><span class="linenos"> 26</span></a>
 </span><span id="GeoUtils.create_shortest_paths_geojson-27"><a href="#GeoUtils.create_shortest_paths_geojson-27"><span class="linenos"> 27</span></a><span class="sd">        * **`geoGraph`**: `[geoGraph]` &amp;rarr; A geoGraph object from scgraph.</span>
-</span><span id="GeoUtils.create_shortest_paths_geojson-28"><a href="#GeoUtils.create_shortest_paths_geojson-28"><span class="linenos"> 28</span></a><span class="sd">        * **`ids`**: `[list[int | str]]` &amp;rarr; A list of identifiers for each path.</span>
+</span><span id="GeoUtils.create_shortest_paths_geojson-28"><a href="#GeoUtils.create_shortest_paths_geojson-28"><span class="linenos"> 28</span></a><span class="sd">        * **`ids`**: `[list[int, str]]` &amp;rarr; A list of identifiers for each path.</span>
 </span><span id="GeoUtils.create_shortest_paths_geojson-29"><a href="#GeoUtils.create_shortest_paths_geojson-29"><span class="linenos"> 29</span></a><span class="sd">            * Note: These are imputed into the output GeoJSON as an id property.</span>
-</span><span id="GeoUtils.create_shortest_paths_geojson-30"><a href="#GeoUtils.create_shortest_paths_geojson-30"><span class="linenos"> 30</span></a><span class="sd">        * **`origin_latitudes`**: `[list[int | float]]` &amp;rarr;</span>
+</span><span id="GeoUtils.create_shortest_paths_geojson-30"><a href="#GeoUtils.create_shortest_paths_geojson-30"><span class="linenos"> 30</span></a><span class="sd">        * **`origin_latitudes`**: `[list[int, float]]` &amp;rarr;</span>
 </span><span id="GeoUtils.create_shortest_paths_geojson-31"><a href="#GeoUtils.create_shortest_paths_geojson-31"><span class="linenos"> 31</span></a><span class="sd">            * A list of latitudes for the origin points.</span>
-</span><span id="GeoUtils.create_shortest_paths_geojson-32"><a href="#GeoUtils.create_shortest_paths_geojson-32"><span class="linenos"> 32</span></a><span class="sd">        * **`origin_longitudes`**: `[list[int | float]]` &amp;rarr;</span>
+</span><span id="GeoUtils.create_shortest_paths_geojson-32"><a href="#GeoUtils.create_shortest_paths_geojson-32"><span class="linenos"> 32</span></a><span class="sd">        * **`origin_longitudes`**: `[list[int, float]]` &amp;rarr;</span>
 </span><span id="GeoUtils.create_shortest_paths_geojson-33"><a href="#GeoUtils.create_shortest_paths_geojson-33"><span class="linenos"> 33</span></a><span class="sd">            * A list of longitudes for the origin points.</span>
-</span><span id="GeoUtils.create_shortest_paths_geojson-34"><a href="#GeoUtils.create_shortest_paths_geojson-34"><span class="linenos"> 34</span></a><span class="sd">        * **`destination_latitudes`**: `[list[int | float]]` &amp;rarr;</span>
+</span><span id="GeoUtils.create_shortest_paths_geojson-34"><a href="#GeoUtils.create_shortest_paths_geojson-34"><span class="linenos"> 34</span></a><span class="sd">        * **`destination_latitudes`**: `[list[int, float]]` &amp;rarr;</span>
 </span><span id="GeoUtils.create_shortest_paths_geojson-35"><a href="#GeoUtils.create_shortest_paths_geojson-35"><span class="linenos"> 35</span></a><span class="sd">            * A list of latitudes for the destination points.</span>
-</span><span id="GeoUtils.create_shortest_paths_geojson-36"><a href="#GeoUtils.create_shortest_paths_geojson-36"><span class="linenos"> 36</span></a><span class="sd">        * **`destination_longitudes`**: `[list[int | float]]` &amp;rarr;</span>
+</span><span id="GeoUtils.create_shortest_paths_geojson-36"><a href="#GeoUtils.create_shortest_paths_geojson-36"><span class="linenos"> 36</span></a><span class="sd">        * **`destination_longitudes`**: `[list[int, float]]` &amp;rarr;</span>
 </span><span id="GeoUtils.create_shortest_paths_geojson-37"><a href="#GeoUtils.create_shortest_paths_geojson-37"><span class="linenos"> 37</span></a><span class="sd">            * A list of longitudes for the destination points.</span>
-</span><span id="GeoUtils.create_shortest_paths_geojson-38"><a href="#GeoUtils.create_shortest_paths_geojson-38"><span class="linenos"> 38</span></a><span class="sd">        * **`additional_properties`**: `[list[dict] | None]` &amp;rarr;</span>
+</span><span id="GeoUtils.create_shortest_paths_geojson-38"><a href="#GeoUtils.create_shortest_paths_geojson-38"><span class="linenos"> 38</span></a><span class="sd">        * **`additional_properties`**: `[list[dict], None]` &amp;rarr;</span>
 </span><span id="GeoUtils.create_shortest_paths_geojson-39"><a href="#GeoUtils.create_shortest_paths_geojson-39"><span class="linenos"> 39</span></a><span class="sd">            * A list of dictionaries with additional properties for each path.</span>
 </span><span id="GeoUtils.create_shortest_paths_geojson-40"><a href="#GeoUtils.create_shortest_paths_geojson-40"><span class="linenos"> 40</span></a><span class="sd">            * Note: The dictionaries must have the same length as the input lists.</span>
 </span><span id="GeoUtils.create_shortest_paths_geojson-41"><a href="#GeoUtils.create_shortest_paths_geojson-41"><span class="linenos"> 41</span></a><span class="sd">            * Note: The dictionaries are imputed into the output GeoJSON as properties.</span>
 </span><span id="GeoUtils.create_shortest_paths_geojson-42"><a href="#GeoUtils.create_shortest_paths_geojson-42"><span class="linenos"> 42</span></a><span class="sd">        * **`show_progress`**: `[bool]` = `False` &amp;rarr;</span>
 </span><span id="GeoUtils.create_shortest_paths_geojson-43"><a href="#GeoUtils.create_shortest_paths_geojson-43"><span class="linenos"> 43</span></a><span class="sd">            * If `True`, shows the progress of the calculations.</span>
-</span><span id="GeoUtils.create_shortest_paths_geojson-44"><a href="#GeoUtils.create_shortest_paths_geojson-44"><span class="linenos"> 44</span></a><span class="sd">        * **`filename`**: `[str | None]` = `None` &amp;rarr;</span>
+</span><span id="GeoUtils.create_shortest_paths_geojson-44"><a href="#GeoUtils.create_shortest_paths_geojson-44"><span class="linenos"> 44</span></a><span class="sd">        * **`filename`**: `[str, None]` = `None` &amp;rarr;</span>
 </span><span id="GeoUtils.create_shortest_paths_geojson-45"><a href="#GeoUtils.create_shortest_paths_geojson-45"><span class="linenos"> 45</span></a><span class="sd">            * If provided, saves the output GeoJSON to the specified filename.</span>
 </span><span id="GeoUtils.create_shortest_paths_geojson-46"><a href="#GeoUtils.create_shortest_paths_geojson-46"><span class="linenos"> 46</span></a>
 </span><span id="GeoUtils.create_shortest_paths_geojson-47"><a href="#GeoUtils.create_shortest_paths_geojson-47"><span class="linenos"> 47</span></a><span class="sd">        Returns:</span>
@@ -463,27 +463,27 @@ origin and destination points.</p>
 
 <ul>
 <li><strong><code>geoGraph</code></strong>: <code>[geoGraph]</code> &rarr; A geoGraph object from scgraph.</li>
-<li><strong><code>ids</code></strong>: <code>[list[int | str]]</code> &rarr; A list of identifiers for each path.
+<li><strong><code>ids</code></strong>: <code>[list[int, str]]</code> &rarr; A list of identifiers for each path.
 <ul>
 <li>Note: These are imputed into the output GeoJSON as an id property.</li>
 </ul></li>
-<li><strong><code>origin_latitudes</code></strong>: <code>[list[int | float]]</code> &rarr;
+<li><strong><code>origin_latitudes</code></strong>: <code>[list[int, float]]</code> &rarr;
 <ul>
 <li>A list of latitudes for the origin points.</li>
 </ul></li>
-<li><strong><code>origin_longitudes</code></strong>: <code>[list[int | float]]</code> &rarr;
+<li><strong><code>origin_longitudes</code></strong>: <code>[list[int, float]]</code> &rarr;
 <ul>
 <li>A list of longitudes for the origin points.</li>
 </ul></li>
-<li><strong><code>destination_latitudes</code></strong>: <code>[list[int | float]]</code> &rarr;
+<li><strong><code>destination_latitudes</code></strong>: <code>[list[int, float]]</code> &rarr;
 <ul>
 <li>A list of latitudes for the destination points.</li>
 </ul></li>
-<li><strong><code>destination_longitudes</code></strong>: <code>[list[int | float]]</code> &rarr;
+<li><strong><code>destination_longitudes</code></strong>: <code>[list[int, float]]</code> &rarr;
 <ul>
 <li>A list of longitudes for the destination points.</li>
 </ul></li>
-<li><strong><code>additional_properties</code></strong>: <code>[list[dict] | None]</code> &rarr;
+<li><strong><code>additional_properties</code></strong>: <code>[list[dict], None]</code> &rarr;
 <ul>
 <li>A list of dictionaries with additional properties for each path.</li>
 <li>Note: The dictionaries must have the same length as the input lists.</li>
@@ -493,7 +493,7 @@ origin and destination points.</p>
 <ul>
 <li>If <code>True</code>, shows the progress of the calculations.</li>
 </ul></li>
-<li><strong><code>filename</code></strong>: <code>[str | None]</code> = <code>None</code> &rarr;
+<li><strong><code>filename</code></strong>: <code>[str, None]</code> = <code>None</code> &rarr;
 <ul>
 <li>If provided, saves the output GeoJSON to the specified filename.</li>
 </ul></li>

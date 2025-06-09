@@ -130,7 +130,7 @@
 <footer>
 <select id="version-selector">
     <option value="latest">latest</option>
-        <option value="3.2.0">3.2.0</option>
+        <option value="3.3.0">3.3.0</option>
         <option value="3.2.0">3.2.0</option>
         <option value="3.1.0">3.1.0</option>
         <option value="3.0.0">3.0.0</option>
@@ -228,9 +228,9 @@
 </span><span id="L-40"><a href="#L-40"><span class="linenos"> 40</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
 </span><span id="L-41"><a href="#L-41"><span class="linenos"> 41</span></a>        <span class="bp">self</span><span class="p">,</span>
 </span><span id="L-42"><a href="#L-42"><span class="linenos"> 42</span></a>        <span class="n">group_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-</span><span id="L-43"><a href="#L-43"><span class="linenos"> 43</span></a>        <span class="n">group_data</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]],</span>
-</span><span id="L-44"><a href="#L-44"><span class="linenos"> 44</span></a>        <span class="n">group_parents</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
-</span><span id="L-45"><a href="#L-45"><span class="linenos"> 45</span></a>        <span class="n">group_names</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
+</span><span id="L-43"><a href="#L-43"><span class="linenos"> 43</span></a>        <span class="n">group_data</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span>
+</span><span id="L-44"><a href="#L-44"><span class="linenos"> 44</span></a>        <span class="n">group_parents</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+</span><span id="L-45"><a href="#L-45"><span class="linenos"> 45</span></a>        <span class="n">group_names</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
 </span><span id="L-46"><a href="#L-46"><span class="linenos"> 46</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 </span><span id="L-47"><a href="#L-47"><span class="linenos"> 47</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="L-48"><a href="#L-48"><span class="linenos"> 48</span></a><span class="sd">        Initialize a group builder.</span>
@@ -238,17 +238,17 @@
 </span><span id="L-50"><a href="#L-50"><span class="linenos"> 50</span></a><span class="sd">        Arguments:</span>
 </span><span id="L-51"><a href="#L-51"><span class="linenos"> 51</span></a>
 </span><span id="L-52"><a href="#L-52"><span class="linenos"> 52</span></a><span class="sd">        * **`group_name`**: `[str]` &amp;rarr; The name of the group.</span>
-</span><span id="L-53"><a href="#L-53"><span class="linenos"> 53</span></a><span class="sd">        * **`group_data`**: `[list[dict[str, str]]]` &amp;rarr; The data to use to build the group.</span>
+</span><span id="L-53"><a href="#L-53"><span class="linenos"> 53</span></a><span class="sd">        * **`group_data`**: `[list[dict[str]]]` &amp;rarr; The data to use to build the group.</span>
 </span><span id="L-54"><a href="#L-54"><span class="linenos"> 54</span></a><span class="sd">            * **Note**: This should be a list of dictionaries where each dictionary represents a combination of group keys and values.</span>
 </span><span id="L-55"><a href="#L-55"><span class="linenos"> 55</span></a><span class="sd">            * **Note**: The keys in the dictionaries should be the same for all records.</span>
 </span><span id="L-56"><a href="#L-56"><span class="linenos"> 56</span></a><span class="sd">            * **Note**: If the key `id` is specified, it will be used as the id for the group and not included in the group data.</span>
 </span><span id="L-57"><a href="#L-57"><span class="linenos"> 57</span></a><span class="sd">            * **Example**: `[{&#39;key1&#39;: &#39;value1&#39;, &#39;key2&#39;: &#39;value2&#39;}, {&#39;key1&#39;: &#39;value3&#39;, &#39;key2&#39;: &#39;value4&#39;}]`</span>
-</span><span id="L-58"><a href="#L-58"><span class="linenos"> 58</span></a><span class="sd">        * **`group_parents`**: `[dict[str, str]]` &amp;rarr; Parent allocations to make for groups.</span>
+</span><span id="L-58"><a href="#L-58"><span class="linenos"> 58</span></a><span class="sd">        * **`group_parents`**: `[dict[str]]` &amp;rarr; Parent allocations to make for groups.</span>
 </span><span id="L-59"><a href="#L-59"><span class="linenos"> 59</span></a><span class="sd">            * **Note**: This should be a dictionary where the keys are the child group keys and the values are the parent group keys.</span>
 </span><span id="L-60"><a href="#L-60"><span class="linenos"> 60</span></a><span class="sd">            * **Example**: `{&#39;child_key&#39;: &#39;parent_key&#39;}`</span>
-</span><span id="L-61"><a href="#L-61"><span class="linenos"> 61</span></a><span class="sd">                * **Note**: This would mean that `child_key` has a parent of `parent_key`.</span>
+</span><span id="L-61"><a href="#L-61"><span class="linenos"> 61</span></a><span class="sd">                * **Note**: This would mean that `child_key` has a parent of `fparent_key`.</span>
 </span><span id="L-62"><a href="#L-62"><span class="linenos"> 62</span></a><span class="sd">            * **Note**: If a group is not a child of another group, it should not be included in the dictionary.</span>
-</span><span id="L-63"><a href="#L-63"><span class="linenos"> 63</span></a><span class="sd">        * **`group_names`**: `[dict[str, str]]` &amp;rarr; The group names to use for the group keys.</span>
+</span><span id="L-63"><a href="#L-63"><span class="linenos"> 63</span></a><span class="sd">        * **`group_names`**: `[dict[str]]` &amp;rarr; The group names to use for the group keys.</span>
 </span><span id="L-64"><a href="#L-64"><span class="linenos"> 64</span></a><span class="sd">            * **Note**: This should be a dictionary where the keys are the group keys and the values are the group_names to use for the group keys.</span>
 </span><span id="L-65"><a href="#L-65"><span class="linenos"> 65</span></a>
 </span><span id="L-66"><a href="#L-66"><span class="linenos"> 66</span></a>
@@ -337,7 +337,7 @@
 </span><span id="L-149"><a href="#L-149"><span class="linenos">149</span></a>
 </span><span id="L-150"><a href="#L-150"><span class="linenos">150</span></a><span class="sd">        Arguments:</span>
 </span><span id="L-151"><a href="#L-151"><span class="linenos">151</span></a>
-</span><span id="L-152"><a href="#L-152"><span class="linenos">152</span></a><span class="sd">        * **`group_data`**: `[list[dict[str, str]]]` &amp;rarr; The data to use to build the group.</span>
+</span><span id="L-152"><a href="#L-152"><span class="linenos">152</span></a><span class="sd">        * **`group_data`**: `[list[dict[str]]]` &amp;rarr; The data to use to build the group.</span>
 </span><span id="L-153"><a href="#L-153"><span class="linenos">153</span></a>
 </span><span id="L-154"><a href="#L-154"><span class="linenos">154</span></a>
 </span><span id="L-155"><a href="#L-155"><span class="linenos">155</span></a><span class="sd">        Modifies:</span>
@@ -377,7 +377,7 @@
 </span><span id="L-189"><a href="#L-189"><span class="linenos">189</span></a>            <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">group_parents</span><span class="p">:</span>
 </span><span id="L-190"><a href="#L-190"><span class="linenos">190</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">levels_structure</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s2">&quot;parent&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">group_parents</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
 </span><span id="L-191"><a href="#L-191"><span class="linenos">191</span></a>
-</span><span id="L-192"><a href="#L-192"><span class="linenos">192</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">get_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]):</span>
+</span><span id="L-192"><a href="#L-192"><span class="linenos">192</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">get_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
 </span><span id="L-193"><a href="#L-193"><span class="linenos">193</span></a>        <span class="k">return</span> <span class="n">pamda</span><span class="o">.</span><span class="n">path</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">pamda</span><span class="o">.</span><span class="n">props</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">group_keys</span><span class="p">,</span> <span class="n">group</span><span class="p">),</span> <span class="n">data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">id_structure</span><span class="p">)</span>
 </span><span id="L-194"><a href="#L-194"><span class="linenos">194</span></a>
 </span><span id="L-195"><a href="#L-195"><span class="linenos">195</span></a>
@@ -690,9 +690,9 @@
 </span><span id="GroupsBuilder-41"><a href="#GroupsBuilder-41"><span class="linenos"> 41</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
 </span><span id="GroupsBuilder-42"><a href="#GroupsBuilder-42"><span class="linenos"> 42</span></a>        <span class="bp">self</span><span class="p">,</span>
 </span><span id="GroupsBuilder-43"><a href="#GroupsBuilder-43"><span class="linenos"> 43</span></a>        <span class="n">group_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-</span><span id="GroupsBuilder-44"><a href="#GroupsBuilder-44"><span class="linenos"> 44</span></a>        <span class="n">group_data</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]],</span>
-</span><span id="GroupsBuilder-45"><a href="#GroupsBuilder-45"><span class="linenos"> 45</span></a>        <span class="n">group_parents</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
-</span><span id="GroupsBuilder-46"><a href="#GroupsBuilder-46"><span class="linenos"> 46</span></a>        <span class="n">group_names</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
+</span><span id="GroupsBuilder-44"><a href="#GroupsBuilder-44"><span class="linenos"> 44</span></a>        <span class="n">group_data</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span>
+</span><span id="GroupsBuilder-45"><a href="#GroupsBuilder-45"><span class="linenos"> 45</span></a>        <span class="n">group_parents</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+</span><span id="GroupsBuilder-46"><a href="#GroupsBuilder-46"><span class="linenos"> 46</span></a>        <span class="n">group_names</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
 </span><span id="GroupsBuilder-47"><a href="#GroupsBuilder-47"><span class="linenos"> 47</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 </span><span id="GroupsBuilder-48"><a href="#GroupsBuilder-48"><span class="linenos"> 48</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="GroupsBuilder-49"><a href="#GroupsBuilder-49"><span class="linenos"> 49</span></a><span class="sd">        Initialize a group builder.</span>
@@ -700,17 +700,17 @@
 </span><span id="GroupsBuilder-51"><a href="#GroupsBuilder-51"><span class="linenos"> 51</span></a><span class="sd">        Arguments:</span>
 </span><span id="GroupsBuilder-52"><a href="#GroupsBuilder-52"><span class="linenos"> 52</span></a>
 </span><span id="GroupsBuilder-53"><a href="#GroupsBuilder-53"><span class="linenos"> 53</span></a><span class="sd">        * **`group_name`**: `[str]` &amp;rarr; The name of the group.</span>
-</span><span id="GroupsBuilder-54"><a href="#GroupsBuilder-54"><span class="linenos"> 54</span></a><span class="sd">        * **`group_data`**: `[list[dict[str, str]]]` &amp;rarr; The data to use to build the group.</span>
+</span><span id="GroupsBuilder-54"><a href="#GroupsBuilder-54"><span class="linenos"> 54</span></a><span class="sd">        * **`group_data`**: `[list[dict[str]]]` &amp;rarr; The data to use to build the group.</span>
 </span><span id="GroupsBuilder-55"><a href="#GroupsBuilder-55"><span class="linenos"> 55</span></a><span class="sd">            * **Note**: This should be a list of dictionaries where each dictionary represents a combination of group keys and values.</span>
 </span><span id="GroupsBuilder-56"><a href="#GroupsBuilder-56"><span class="linenos"> 56</span></a><span class="sd">            * **Note**: The keys in the dictionaries should be the same for all records.</span>
 </span><span id="GroupsBuilder-57"><a href="#GroupsBuilder-57"><span class="linenos"> 57</span></a><span class="sd">            * **Note**: If the key `id` is specified, it will be used as the id for the group and not included in the group data.</span>
 </span><span id="GroupsBuilder-58"><a href="#GroupsBuilder-58"><span class="linenos"> 58</span></a><span class="sd">            * **Example**: `[{&#39;key1&#39;: &#39;value1&#39;, &#39;key2&#39;: &#39;value2&#39;}, {&#39;key1&#39;: &#39;value3&#39;, &#39;key2&#39;: &#39;value4&#39;}]`</span>
-</span><span id="GroupsBuilder-59"><a href="#GroupsBuilder-59"><span class="linenos"> 59</span></a><span class="sd">        * **`group_parents`**: `[dict[str, str]]` &amp;rarr; Parent allocations to make for groups.</span>
+</span><span id="GroupsBuilder-59"><a href="#GroupsBuilder-59"><span class="linenos"> 59</span></a><span class="sd">        * **`group_parents`**: `[dict[str]]` &amp;rarr; Parent allocations to make for groups.</span>
 </span><span id="GroupsBuilder-60"><a href="#GroupsBuilder-60"><span class="linenos"> 60</span></a><span class="sd">            * **Note**: This should be a dictionary where the keys are the child group keys and the values are the parent group keys.</span>
 </span><span id="GroupsBuilder-61"><a href="#GroupsBuilder-61"><span class="linenos"> 61</span></a><span class="sd">            * **Example**: `{&#39;child_key&#39;: &#39;parent_key&#39;}`</span>
-</span><span id="GroupsBuilder-62"><a href="#GroupsBuilder-62"><span class="linenos"> 62</span></a><span class="sd">                * **Note**: This would mean that `child_key` has a parent of `parent_key`.</span>
+</span><span id="GroupsBuilder-62"><a href="#GroupsBuilder-62"><span class="linenos"> 62</span></a><span class="sd">                * **Note**: This would mean that `child_key` has a parent of `fparent_key`.</span>
 </span><span id="GroupsBuilder-63"><a href="#GroupsBuilder-63"><span class="linenos"> 63</span></a><span class="sd">            * **Note**: If a group is not a child of another group, it should not be included in the dictionary.</span>
-</span><span id="GroupsBuilder-64"><a href="#GroupsBuilder-64"><span class="linenos"> 64</span></a><span class="sd">        * **`group_names`**: `[dict[str, str]]` &amp;rarr; The group names to use for the group keys.</span>
+</span><span id="GroupsBuilder-64"><a href="#GroupsBuilder-64"><span class="linenos"> 64</span></a><span class="sd">        * **`group_names`**: `[dict[str]]` &amp;rarr; The group names to use for the group keys.</span>
 </span><span id="GroupsBuilder-65"><a href="#GroupsBuilder-65"><span class="linenos"> 65</span></a><span class="sd">            * **Note**: This should be a dictionary where the keys are the group keys and the values are the group_names to use for the group keys.</span>
 </span><span id="GroupsBuilder-66"><a href="#GroupsBuilder-66"><span class="linenos"> 66</span></a>
 </span><span id="GroupsBuilder-67"><a href="#GroupsBuilder-67"><span class="linenos"> 67</span></a>
@@ -799,7 +799,7 @@
 </span><span id="GroupsBuilder-150"><a href="#GroupsBuilder-150"><span class="linenos">150</span></a>
 </span><span id="GroupsBuilder-151"><a href="#GroupsBuilder-151"><span class="linenos">151</span></a><span class="sd">        Arguments:</span>
 </span><span id="GroupsBuilder-152"><a href="#GroupsBuilder-152"><span class="linenos">152</span></a>
-</span><span id="GroupsBuilder-153"><a href="#GroupsBuilder-153"><span class="linenos">153</span></a><span class="sd">        * **`group_data`**: `[list[dict[str, str]]]` &amp;rarr; The data to use to build the group.</span>
+</span><span id="GroupsBuilder-153"><a href="#GroupsBuilder-153"><span class="linenos">153</span></a><span class="sd">        * **`group_data`**: `[list[dict[str]]]` &amp;rarr; The data to use to build the group.</span>
 </span><span id="GroupsBuilder-154"><a href="#GroupsBuilder-154"><span class="linenos">154</span></a>
 </span><span id="GroupsBuilder-155"><a href="#GroupsBuilder-155"><span class="linenos">155</span></a>
 </span><span id="GroupsBuilder-156"><a href="#GroupsBuilder-156"><span class="linenos">156</span></a><span class="sd">        Modifies:</span>
@@ -839,7 +839,7 @@
 </span><span id="GroupsBuilder-190"><a href="#GroupsBuilder-190"><span class="linenos">190</span></a>            <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">group_parents</span><span class="p">:</span>
 </span><span id="GroupsBuilder-191"><a href="#GroupsBuilder-191"><span class="linenos">191</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">levels_structure</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s2">&quot;parent&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">group_parents</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
 </span><span id="GroupsBuilder-192"><a href="#GroupsBuilder-192"><span class="linenos">192</span></a>
-</span><span id="GroupsBuilder-193"><a href="#GroupsBuilder-193"><span class="linenos">193</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">get_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]):</span>
+</span><span id="GroupsBuilder-193"><a href="#GroupsBuilder-193"><span class="linenos">193</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">get_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
 </span><span id="GroupsBuilder-194"><a href="#GroupsBuilder-194"><span class="linenos">194</span></a>        <span class="k">return</span> <span class="n">pamda</span><span class="o">.</span><span class="n">path</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">pamda</span><span class="o">.</span><span class="n">props</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">group_keys</span><span class="p">,</span> <span class="n">group</span><span class="p">),</span> <span class="n">data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">id_structure</span><span class="p">)</span>
 </span></pre></div>
 
@@ -850,7 +850,7 @@
                                         <input id="GroupsBuilder.__init__-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
             
-        <span class="name">GroupsBuilder</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">group_name</span><span class="p">:</span> <span class="nb">str</span>,</span><span class="param">	<span class="n">group_data</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span>,</span><span class="param">	<span class="n">group_parents</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span>,</span><span class="param">	<span class="n">group_names</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span></span>)</span>
+        <span class="name">GroupsBuilder</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">group_name</span><span class="p">:</span> <span class="nb">str</span>,</span><span class="param">	<span class="n">group_data</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span>,</span><span class="param">	<span class="n">group_parents</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>,</span><span class="param">	<span class="n">group_names</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span></span>)</span>
 
                 <label class="view-source-button" for="GroupsBuilder.__init__-view-source"><span>View Source</span></label>
 
@@ -859,9 +859,9 @@
             <div class="pdoc-code codehilite"><pre><span></span><span id="GroupsBuilder.__init__-41"><a href="#GroupsBuilder.__init__-41"><span class="linenos">41</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
 </span><span id="GroupsBuilder.__init__-42"><a href="#GroupsBuilder.__init__-42"><span class="linenos">42</span></a>        <span class="bp">self</span><span class="p">,</span>
 </span><span id="GroupsBuilder.__init__-43"><a href="#GroupsBuilder.__init__-43"><span class="linenos">43</span></a>        <span class="n">group_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-</span><span id="GroupsBuilder.__init__-44"><a href="#GroupsBuilder.__init__-44"><span class="linenos">44</span></a>        <span class="n">group_data</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]],</span>
-</span><span id="GroupsBuilder.__init__-45"><a href="#GroupsBuilder.__init__-45"><span class="linenos">45</span></a>        <span class="n">group_parents</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
-</span><span id="GroupsBuilder.__init__-46"><a href="#GroupsBuilder.__init__-46"><span class="linenos">46</span></a>        <span class="n">group_names</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
+</span><span id="GroupsBuilder.__init__-44"><a href="#GroupsBuilder.__init__-44"><span class="linenos">44</span></a>        <span class="n">group_data</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span>
+</span><span id="GroupsBuilder.__init__-45"><a href="#GroupsBuilder.__init__-45"><span class="linenos">45</span></a>        <span class="n">group_parents</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+</span><span id="GroupsBuilder.__init__-46"><a href="#GroupsBuilder.__init__-46"><span class="linenos">46</span></a>        <span class="n">group_names</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
 </span><span id="GroupsBuilder.__init__-47"><a href="#GroupsBuilder.__init__-47"><span class="linenos">47</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 </span><span id="GroupsBuilder.__init__-48"><a href="#GroupsBuilder.__init__-48"><span class="linenos">48</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="GroupsBuilder.__init__-49"><a href="#GroupsBuilder.__init__-49"><span class="linenos">49</span></a><span class="sd">        Initialize a group builder.</span>
@@ -869,17 +869,17 @@
 </span><span id="GroupsBuilder.__init__-51"><a href="#GroupsBuilder.__init__-51"><span class="linenos">51</span></a><span class="sd">        Arguments:</span>
 </span><span id="GroupsBuilder.__init__-52"><a href="#GroupsBuilder.__init__-52"><span class="linenos">52</span></a>
 </span><span id="GroupsBuilder.__init__-53"><a href="#GroupsBuilder.__init__-53"><span class="linenos">53</span></a><span class="sd">        * **`group_name`**: `[str]` &amp;rarr; The name of the group.</span>
-</span><span id="GroupsBuilder.__init__-54"><a href="#GroupsBuilder.__init__-54"><span class="linenos">54</span></a><span class="sd">        * **`group_data`**: `[list[dict[str, str]]]` &amp;rarr; The data to use to build the group.</span>
+</span><span id="GroupsBuilder.__init__-54"><a href="#GroupsBuilder.__init__-54"><span class="linenos">54</span></a><span class="sd">        * **`group_data`**: `[list[dict[str]]]` &amp;rarr; The data to use to build the group.</span>
 </span><span id="GroupsBuilder.__init__-55"><a href="#GroupsBuilder.__init__-55"><span class="linenos">55</span></a><span class="sd">            * **Note**: This should be a list of dictionaries where each dictionary represents a combination of group keys and values.</span>
 </span><span id="GroupsBuilder.__init__-56"><a href="#GroupsBuilder.__init__-56"><span class="linenos">56</span></a><span class="sd">            * **Note**: The keys in the dictionaries should be the same for all records.</span>
 </span><span id="GroupsBuilder.__init__-57"><a href="#GroupsBuilder.__init__-57"><span class="linenos">57</span></a><span class="sd">            * **Note**: If the key `id` is specified, it will be used as the id for the group and not included in the group data.</span>
 </span><span id="GroupsBuilder.__init__-58"><a href="#GroupsBuilder.__init__-58"><span class="linenos">58</span></a><span class="sd">            * **Example**: `[{&#39;key1&#39;: &#39;value1&#39;, &#39;key2&#39;: &#39;value2&#39;}, {&#39;key1&#39;: &#39;value3&#39;, &#39;key2&#39;: &#39;value4&#39;}]`</span>
-</span><span id="GroupsBuilder.__init__-59"><a href="#GroupsBuilder.__init__-59"><span class="linenos">59</span></a><span class="sd">        * **`group_parents`**: `[dict[str, str]]` &amp;rarr; Parent allocations to make for groups.</span>
+</span><span id="GroupsBuilder.__init__-59"><a href="#GroupsBuilder.__init__-59"><span class="linenos">59</span></a><span class="sd">        * **`group_parents`**: `[dict[str]]` &amp;rarr; Parent allocations to make for groups.</span>
 </span><span id="GroupsBuilder.__init__-60"><a href="#GroupsBuilder.__init__-60"><span class="linenos">60</span></a><span class="sd">            * **Note**: This should be a dictionary where the keys are the child group keys and the values are the parent group keys.</span>
 </span><span id="GroupsBuilder.__init__-61"><a href="#GroupsBuilder.__init__-61"><span class="linenos">61</span></a><span class="sd">            * **Example**: `{&#39;child_key&#39;: &#39;parent_key&#39;}`</span>
-</span><span id="GroupsBuilder.__init__-62"><a href="#GroupsBuilder.__init__-62"><span class="linenos">62</span></a><span class="sd">                * **Note**: This would mean that `child_key` has a parent of `parent_key`.</span>
+</span><span id="GroupsBuilder.__init__-62"><a href="#GroupsBuilder.__init__-62"><span class="linenos">62</span></a><span class="sd">                * **Note**: This would mean that `child_key` has a parent of `fparent_key`.</span>
 </span><span id="GroupsBuilder.__init__-63"><a href="#GroupsBuilder.__init__-63"><span class="linenos">63</span></a><span class="sd">            * **Note**: If a group is not a child of another group, it should not be included in the dictionary.</span>
-</span><span id="GroupsBuilder.__init__-64"><a href="#GroupsBuilder.__init__-64"><span class="linenos">64</span></a><span class="sd">        * **`group_names`**: `[dict[str, str]]` &amp;rarr; The group names to use for the group keys.</span>
+</span><span id="GroupsBuilder.__init__-64"><a href="#GroupsBuilder.__init__-64"><span class="linenos">64</span></a><span class="sd">        * **`group_names`**: `[dict[str]]` &amp;rarr; The group names to use for the group keys.</span>
 </span><span id="GroupsBuilder.__init__-65"><a href="#GroupsBuilder.__init__-65"><span class="linenos">65</span></a><span class="sd">            * **Note**: This should be a dictionary where the keys are the group keys and the values are the group_names to use for the group keys.</span>
 </span><span id="GroupsBuilder.__init__-66"><a href="#GroupsBuilder.__init__-66"><span class="linenos">66</span></a>
 </span><span id="GroupsBuilder.__init__-67"><a href="#GroupsBuilder.__init__-67"><span class="linenos">67</span></a>
@@ -906,23 +906,23 @@
 
 <ul>
 <li><strong><code><a href="#GroupsBuilder.group_name">group_name</a></code></strong>: <code>[str]</code> &rarr; The name of the group.</li>
-<li><strong><code><a href="#GroupsBuilder.group_data">group_data</a></code></strong>: <code>[list[dict[str, str]]]</code> &rarr; The data to use to build the group.
+<li><strong><code><a href="#GroupsBuilder.group_data">group_data</a></code></strong>: <code>[list[dict[str]]]</code> &rarr; The data to use to build the group.
 <ul>
 <li><strong>Note</strong>: This should be a list of dictionaries where each dictionary represents a combination of group keys and values.</li>
 <li><strong>Note</strong>: The keys in the dictionaries should be the same for all records.</li>
 <li><strong>Note</strong>: If the key <code>id</code> is specified, it will be used as the id for the group and not included in the group data.</li>
 <li><strong>Example</strong>: <code>[{'key1': 'value1', 'key2': 'value2'}, {'key1': 'value3', 'key2': 'value4'}]</code></li>
 </ul></li>
-<li><strong><code><a href="#GroupsBuilder.group_parents">group_parents</a></code></strong>: <code>[dict[str, str]]</code> &rarr; Parent allocations to make for groups.
+<li><strong><code><a href="#GroupsBuilder.group_parents">group_parents</a></code></strong>: <code>[dict[str]]</code> &rarr; Parent allocations to make for groups.
 <ul>
 <li><strong>Note</strong>: This should be a dictionary where the keys are the child group keys and the values are the parent group keys.</li>
 <li><strong>Example</strong>: <code>{'child_key': 'parent_key'}</code>
 <ul>
-<li><strong>Note</strong>: This would mean that <code>child_key</code> has a parent of <code>parent_key</code>.</li>
+<li><strong>Note</strong>: This would mean that <code>child_key</code> has a parent of <code>fparent_key</code>.</li>
 </ul></li>
 <li><strong>Note</strong>: If a group is not a child of another group, it should not be included in the dictionary.</li>
 </ul></li>
-<li><strong><code><a href="#GroupsBuilder.group_names">group_names</a></code></strong>: <code>[dict[str, str]]</code> &rarr; The group names to use for the group keys.
+<li><strong><code><a href="#GroupsBuilder.group_names">group_names</a></code></strong>: <code>[dict[str]]</code> &rarr; The group names to use for the group keys.
 <ul>
 <li><strong>Note</strong>: This should be a dictionary where the keys are the group keys and the values are the group_names to use for the group keys.</li>
 </ul></li>
@@ -1008,13 +1008,13 @@
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">get_id</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">group</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span></span><span class="return-annotation">):</span></span>
+        <span class="name">get_id</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">group</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span></span><span class="return-annotation">):</span></span>
 
                 <label class="view-source-button" for="GroupsBuilder.get_id-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#GroupsBuilder.get_id"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="GroupsBuilder.get_id-193"><a href="#GroupsBuilder.get_id-193"><span class="linenos">193</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">get_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="GroupsBuilder.get_id-193"><a href="#GroupsBuilder.get_id-193"><span class="linenos">193</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">get_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
 </span><span id="GroupsBuilder.get_id-194"><a href="#GroupsBuilder.get_id-194"><span class="linenos">194</span></a>        <span class="k">return</span> <span class="n">pamda</span><span class="o">.</span><span class="n">path</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">pamda</span><span class="o">.</span><span class="n">props</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">group_keys</span><span class="p">,</span> <span class="n">group</span><span class="p">),</span> <span class="n">data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">id_structure</span><span class="p">)</span>
 </span></pre></div>
 
