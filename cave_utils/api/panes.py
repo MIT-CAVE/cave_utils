@@ -146,5 +146,5 @@ class panes_paneState_star(ApiValidator):
                     valid_values=kwargs.get("pane_keys"),
                     prepend_path=["open"],
                 )
-            else:
+            elif self.data.get("type") == "feature":
                 self.__check_type__(value=open, check_type=dict, prepend_path=["open"])
