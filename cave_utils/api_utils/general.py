@@ -695,7 +695,7 @@ class props_gradient_data(ApiValidator):
 class layout(ApiValidator):
     @staticmethod
     def spec(
-        type: str,  # None
+        type: str,
         numColumns: str | int | None = None,
         numRows: str | int | None = None,
         data: dict | None = None,
