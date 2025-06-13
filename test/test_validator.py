@@ -1,5 +1,5 @@
 from cave_utils import Validator, Socket
-import os, importlib.resources
+import os, importlib
 
 # for each file in the examples folder, load the execute_command function and call it to get example data
 # Then validate the data using the Validator class
