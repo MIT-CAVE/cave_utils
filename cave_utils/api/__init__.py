@@ -36,7 +36,7 @@ class Root(ApiValidator):
     @staticmethod
     def spec(
         settings: dict,
-        appBar: dict | None = None,
+        appBar: dict = dict(),
         panes: dict = dict(),
         pages: dict = dict(),
         maps: dict = dict(),
@@ -52,9 +52,9 @@ class Root(ApiValidator):
         * **`settings`**: `[dict]` &rarr; General settings for your application.
             * **Note**: `settings.iconUrl` is the only required field in `settings`
             * **See**: `cave_utils.api.settings`
-        * **`appBar`**: `[dict | None]` = `None` &rarr; Configure actions for your app bar(s).
+        * **`appBar`**: `[dict]` = `None` &rarr; Configure actions for your app bar(s).
             * **Notes**: 
-                * If left unspecified (i.e., `None`), there will be no action elements on the app bar.
+                * If left unspecified, there will be no action elements on the app bar.
                 * Otherwise, `appBar.data` is required and should have at least one item in it.
             * **See**: `cave_utils.api.appBar`
         * **`panes`**: `[dict]` = `{}` &rarr; Configure panes for your application.
