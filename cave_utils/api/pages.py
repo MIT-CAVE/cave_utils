@@ -53,7 +53,7 @@ class pages_data_star(ApiValidator):
 
         * **`charts`**: `[dict]` = `{}` &rarr; The charts to display on the page.
             * **See**: `cave_utils.api.pages.pages_data_star_charts`.
-        * **`pageLayout`**: `[list[str]]` = `{}` &rarr; The layout of the page.
+        * **`pageLayout`**: `[list[str | None]]` = `{}` &rarr; The layout of the page.
             * **Accepted Values**:
                 * Any key in the `charts` dict.
                 * `"left"`: The chart to the left will be stretched into this chart.
@@ -171,6 +171,7 @@ class pages_data_star_charts(ApiValidator):
         distributionType: str | None = None,
         distributionYAxis: str | None = None,
         distributionVariant: str | None = None,
+        xAxisOrder: str | None = None,
         showNA: bool = False,
         **kwargs,
     ):
@@ -249,6 +250,14 @@ class pages_data_star_charts(ApiValidator):
             * **Notes**:
                 * If left unspecified (i.e., `None`), it will default to `"bar"`.
                 * This attribute is applicable exclusively to the `"distribution"` chartType.
+        * **`xAxisOrder`**: `[str]` = `None` &rarr; The order in which values on the x-axis should be ordered in, from left to right.
+            * Accepted Values:
+                * `"default"`: Does not reorder the x-axis in any way; keeps the default ordering.
+                * `"value_ascending"`: Orders the x-axis by increasing numerical value.
+                * `"value_descending"`: Orders the x-axis by decreasing numerical value.
+                * `"alpha_ascending"`: Orders the x-axis in alphabetical order.
+                * `"alpha_descending"`: Orders the x-axis in reverse alphabetical order.
+            * **Note**: If left unspecified (i.e., `None`), it will default to `"default"`.
         * **`showNA`**: `[bool]` = `False` &rarr; Whether to display missing or filtered values in both the chart tooltip and the axis.
 
         [area chart]: https://en.wikipedia.org/wiki/Area_chart
@@ -301,6 +310,7 @@ class pages_data_star_charts(ApiValidator):
                 "distributionType": ["pdf", "cdf"] if chartType == "distribution" else [],
                 "distributionYAxis": ["counts", "density"] if chartType == "distribution" else [],
                 "distributionVariant": ["bar", "line"] if chartType == "distribution" else [],
+                "xAxisOrder": ["default", "value_ascending", "value_descending", "alpha_ascending", "alpha_descending"]
             },
         }
 
