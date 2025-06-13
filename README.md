@@ -1,7 +1,7 @@
 # Cave Utilities for the Cave App
 [![PyPI version](https://badge.fury.io/py/cave_utils.svg)](https://badge.fury.io/py/cave_utils)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-Basic utilities for the MIT Cave App. 
+Basic utilities for the MIT Cave App.
 This package is intended to be used by the Cave App and the Cave API.
 
 ## Overview
@@ -9,6 +9,7 @@ This package is intended to be used by the Cave App and the Cave API.
 This package is part of the larger [Cave App](https://github.com/MIT-CAVE/cave_app) framework. It provides utilities that are commonly used across different Cave applications, such as validation and logging. It is designed to be an easy to integrate library that can be used in any Cave application. It also serves to provide automated documentation and testing.
 
 You can find the low level documentation for this package [here](https://mit-cave.github.io/cave_utils/index.html).
+
 
 
 ## Setup

@@ -2,7 +2,7 @@
 # Cave Utilities for the Cave App
 [![PyPI version](https://badge.fury.io/py/cave_utils.svg)](https://badge.fury.io/py/cave_utils)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-Basic utilities for the MIT Cave App. 
+Basic utilities for the MIT Cave App.
 This package is intended to be used by the Cave App and the Cave API.
 
 ## Overview
@@ -104,6 +104,7 @@ Make sure Docker is installed and running.
     - `source venv/bin/activate`
     - `./publish.sh`
 """
+
 from .log import LogObject, LogHelper
 from .socket import Socket
 from .api_utils.validator import Validator

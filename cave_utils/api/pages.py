@@ -310,7 +310,13 @@ class pages_data_star_charts(ApiValidator):
                 "distributionType": ["pdf", "cdf"] if chartType == "distribution" else [],
                 "distributionYAxis": ["counts", "density"] if chartType == "distribution" else [],
                 "distributionVariant": ["bar", "line"] if chartType == "distribution" else [],
-                "xAxisOrder": ["default", "value_ascending", "value_descending", "alpha_ascending", "alpha_descending"]
+                "xAxisOrder": [
+                    "default",
+                    "value_ascending",
+                    "value_descending",
+                    "alpha_ascending",
+                    "alpha_descending",
+                ],
             },
         }
 

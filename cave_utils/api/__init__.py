@@ -53,7 +53,7 @@ class Root(ApiValidator):
             * **Note**: `settings.iconUrl` is the only required field in `settings`
             * **See**: `cave_utils.api.settings`
         * **`appBar`**: `[dict]` = `None` &rarr; Configure actions for your app bar(s).
-            * **Notes**: 
+            * **Notes**:
                 * If left unspecified, there will be no action elements on the app bar.
                 * Otherwise, `appBar.data` is required and should have at least one item in it.
             * **See**: `cave_utils.api.appBar`
