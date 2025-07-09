@@ -4,5 +4,5 @@ build>=1.2.2
 pdoc>=15.0.1
 twine>=6.1.0
 virtualenv>=20.29.2
-scgraph>=2.5.0,<3.0.0
+scgraph>=2.6.0,<3.0.0
 -e .
