@@ -102,9 +102,7 @@ Make sure Docker is installed and running.
     - `pip install -r requirements.txt`
 5. Update the release
     - `source venv/bin/activate`
-    - `./publish.sh`
-"""
-
+    - `./publish.sh`"""
 from .log import LogObject, LogHelper
 from .socket import Socket
 from .api_utils.validator import Validator
