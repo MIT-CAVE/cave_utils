@@ -86,7 +86,7 @@ class props(ApiValidator):
                 * `"coordinate"`: A coordinate input field
         * **`subtitle`**: `[str]` = `None` &rarr; An optional subtitle for the prop.
         * **`help`**: `[str]` = `None` &rarr; The help text to display.
-            * **Notes**: 
+            * **Notes**:
                 - This is displayed when the user clicks on the help icon next to the prop.
                 - This can be regular text or markdown.
         * **`helperText`**: `[str]` = `None` &rarr; Additional help text to display below the prop without requiring a click on the help icon.
@@ -365,7 +365,7 @@ class props(ApiValidator):
                 - Only applies to 'text' props.
                 - Essentially operates an enabled without making the prop darkened.
         * **`marks`**: `[dict[str, dict[str, str]]]` = `None` &rarr; A dictionary of marks to display on the slider.
-            * **Notes**: 
+            * **Notes**:
                 - Only applies to `"num"` props with the `"incslider"` variant.
                 - Contains key-value pairs for each mark, where the key is the mark value and the value is a dictionary of properties for the mark (e.g., label, color).
                 - TODO: Add more details and validation for the `marks` dictionary.
@@ -393,23 +393,42 @@ class props(ApiValidator):
         """
         passed_values = {k: v for k, v in locals().items() if (v is not None) and k != "kwargs"}
         required_fields = ["name", "type"]
-        optional_fields = ["subtitle", "help", "helperText", "variant", "display", "container", "propStyle", "fullWidth", "placement", "labelPlacement"]
+        optional_fields = [
+            "subtitle",
+            "help",
+            "helperText",
+            "variant",
+            "display",
+            "container",
+            "propStyle",
+            "fullWidth",
+            "placement",
+            "labelPlacement",
+        ]
         if type == "head":
             if variant == "icon" or variant == "iconRow":
                 required_fields += ["icon"]
                 optional_fields += ["color", "size"]
-        else:   
+        else:
             optional_fields += ["enabled", "apiCommand", "apiCommandKeys", "allowNone"]
 
         if type == "text":
-            optional_fields += ["minRows", "maxRows", "rows", "label", "placeholder", "options", "readOnly"]
+            optional_fields += [
+                "minRows",
+                "maxRows",
+                "rows",
+                "label",
+                "placeholder",
+                "options",
+                "readOnly",
+            ]
         elif type == "num":
-            optional_fields += ['color']
+            optional_fields += ["color"]
             if variant == "slider":
                 required_fields += ["maxValue", "minValue"]
             elif variant == "incslider":
                 required_fields += ["valueOptions"]
-                optional_fields += ['marks']
+                optional_fields += ["marks"]
             else:
                 optional_fields += ["maxValue", "minValue"]
                 if variant is None or variant == "field":
@@ -438,15 +457,33 @@ class props(ApiValidator):
             ]
         elif type == "selector":
             required_fields += ["options"]
-            optional_fields += ["placeholder", "color", "activeColor", "size", "activeSize", "icon", "activeIcon"]
+            optional_fields += [
+                "placeholder",
+                "color",
+                "activeColor",
+                "size",
+                "activeSize",
+                "icon",
+                "activeIcon",
+            ]
             if variant == "comboboxMulti":
                 optional_fields += ["numVisibleTags"]
         elif type == "date":
             optional_fields += ["views"]
         elif type == "coordinate":
-            optional_fields += ["label", "placeholder","precision"]
+            optional_fields += ["label", "placeholder", "precision"]
         elif type == "toggle":
-            optional_fields += ["options", "icon", "color", "size", "label", "activeColor", "activeSize", "activeLabel", "activeIcon"]
+            optional_fields += [
+                "options",
+                "icon",
+                "color",
+                "size",
+                "label",
+                "activeColor",
+                "activeSize",
+                "activeLabel",
+                "activeIcon",
+            ]
         elif type == "button":
             optional_fields += ["icon", "color", "size", "startIcon", "endIcon", "url"]
         elif type == "media":
@@ -500,7 +537,17 @@ class props(ApiValidator):
                 "notationDisplay": notationDisplay_options_dict.get(notation, []),
                 "legendNotation": ["standard", "compact", "scientific", "engineering", "precision"],
                 "legendNotationDisplay": notationDisplay_options_dict.get(legendNotation, []),
-                "placement": ["topLeft", "topCenter", "topRight", "left", "center", "right", "bottomLeft", "bottomCenter", "bottomRight"],
+                "placement": [
+                    "topLeft",
+                    "topCenter",
+                    "topRight",
+                    "left",
+                    "center",
+                    "right",
+                    "bottomLeft",
+                    "bottomCenter",
+                    "bottomRight",
+                ],
                 "variant": {
                     "head": ["column", "row", "icon", "iconRow"],
                     "text": ["single", "textarea"],
@@ -552,7 +599,6 @@ class props(ApiValidator):
             self.__check_pixel_string_valid__(pixel_string=self.data.get("size"))
         if self.data.get("activeSize"):
             self.__check_pixel_string_valid__(pixel_string=self.data.get("activeSize"))
-        
 
 
 @type_enforced.Enforcer

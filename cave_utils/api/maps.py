@@ -84,7 +84,7 @@ class maps_additionalMapStyles_star(ApiValidator):
                 * Carto: https://github.com/CartoDB/basemap-styles/blob/master/docs/basemap_styles.json
                 * Raster: https://docs.mapbox.com/mapbox-gl-js/example/map-tiles/
         * **`fog`**: `[dict]` = `None` &rarr; The fog to show in the map selection menu.
-            * **Notes**: 
+            * **Notes**:
                 * `fog` is only validated for its type (`dict`).
                 * This is only used for when Mapbox is rendering the map.
                 * When not using Mapbox, use the `sky` property instead.
