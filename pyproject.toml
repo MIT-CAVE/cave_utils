@@ -12,18 +12,18 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "cave_utils"
-version = "3.2.0"
+version = "3.3.0"
 description = "Python wrapper for api use in the cave_app"
 authors = [
     {name="Connor Makowski", email="conmak@mit.edu"}
 ]
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 classifiers = [
     "Programming Language :: Python :: 3",
     "Operating System :: OS Independent",
 ]
-dependencies = ["pamda>=2.6.0", "type_enforced>=1.8.1",]
+dependencies = ["pamda>=2.7.0,<3.0.0", "type_enforced>=2.2.0,<3.0.0",]
 
 [project.urls]
 "Homepage" = "https://github.com/mit-cave/cave_utils"

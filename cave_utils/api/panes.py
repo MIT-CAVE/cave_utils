@@ -19,7 +19,7 @@ class panes(ApiValidator):
     def spec(data: dict = dict(), paneState: dict = dict(), **kwargs):
         """
         Arguments:
-        * **`data`**: `[str]` &rarr; The data to pass to `panes.data.*`.
+        * **`data`**: `[dict]` &rarr; The data to pass to `panes.data.*`.
         * **`paneState`**: `[dict]` &rarr;
             * A dictionary of pane states per their location in the `appBar` object.
             * **Accepted Values**:
@@ -61,7 +61,7 @@ class panes_data_star(ApiValidator):
 
     @staticmethod
     def spec(
-        name: str, props: dict, values: [dict, None] = None, layout: [dict, None] = None, **kwargs
+        name: str, props: dict, values: dict | None = None, layout: dict | None = None, **kwargs
     ):
         """
         Arguments:
@@ -113,7 +113,7 @@ class panes_paneState_star(ApiValidator):
     """
 
     @staticmethod
-    def spec(type: str = "pane", open: [str, None] = None, pin: bool = False, **kwargs):
+    def spec(type: str = "pane", open: str | dict | None = None, pin: bool = False, **kwargs):
         """
         Arguments:
 
@@ -138,10 +138,13 @@ class panes_paneState_star(ApiValidator):
         }
 
     def __extend_spec__(self, **kwargs):
-        if self.data.get("open") is not None:
+        open = self.data.get("open")
+        if open is not None:
             if self.data.get("type") == "pane":
                 self.__check_subset_valid__(
-                    subset=[self.data.get("open")],
+                    subset=[open],
                     valid_values=kwargs.get("pane_keys"),
                     prepend_path=["open"],
                 )
+            elif self.data.get("type") == "feature":
+                self.__check_type__(value=open, check_type=dict, prepend_path=["open"])

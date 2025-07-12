@@ -13,41 +13,59 @@ class props(ApiValidator):
     def spec(
         name: str,
         type: str,
-        help: [str, None] = None,
-        variant: [str, None] = None,
-        display: [bool, None] = None,
-        enabled: [bool, None] = None,
-        container: [str, None] = None,
-        apiCommand: [str, None] = None,
-        apiCommandKeys: [list[str], None] = None,
-        options: [dict, None] = None,
-        valueOptions: [list[int, float], None] = None,
-        label: [str, None] = None,
-        placeholder: [str, None] = None,
-        maxValue: [float, int, None] = None,
-        minValue: [float, int, None] = None,
-        gradient: [dict, None] = None,
-        fallback: [dict, None] = None,
-        maxRows: [int, None] = None,
-        minRows: [int, None] = None,
-        rows: [int, None] = None,
-        notation: [str, None] = None,
-        precision: [int, None] = None,
-        notationDisplay: [str, None] = None,
-        unit: [str, None] = None,
-        unitPlacement: [str, None] = None,
-        views: [list[str], None] = None,
-        legendNotation: [str, None] = None,
-        legendPrecision: [int, None] = None,
-        legendNotationDisplay: [str, None] = None,
-        legendMinLabel: [str, None] = None,
-        legendMaxLabel: [str, None] = None,
-        icon: [str, None] = None,
-        trailingZeros: [bool, None] = None,
-        locale: [str, None] = None,
-        fallbackValue: [str, None] = None,
-        draggable: [bool, None] = None,
-        allowNone: [bool, None] = None,
+        subtitle: str | None = None,
+        help: str | None = None,
+        helperText: str | None = None,
+        variant: str | None = None,
+        display: bool | None = None,
+        enabled: bool | None = None,
+        container: str | None = None,
+        apiCommand: str | None = None,
+        apiCommandKeys: list[str] | None = None,
+        options: dict | None = None,
+        valueOptions: list[int | float] | None = None,
+        label: str | None = None,
+        labelPlacement: str | None = None,
+        activeLabel: str | None = None,
+        placeholder: str | None = None,
+        maxValue: float | int | None = None,
+        minValue: float | int | None = None,
+        gradient: dict | None = None,
+        fallback: dict | None = None,
+        maxRows: int | None = None,
+        minRows: int | None = None,
+        rows: int | None = None,
+        notation: str | None = None,
+        precision: int | None = None,
+        notationDisplay: str | None = None,
+        unit: str | None = None,
+        unitPlacement: str | None = None,
+        views: list[str] | None = None,
+        legendNotation: str | None = None,
+        legendPrecision: int | None = None,
+        legendNotationDisplay: str | None = None,
+        legendMinLabel: str | None = None,
+        legendMaxLabel: str | None = None,
+        icon: str | None = None,
+        activeIcon: str | None = None,
+        startIcon: str | None = None,
+        endIcon: str | None = None,
+        color: str | None = None,
+        activeColor: str | None = None,
+        size: str | None = None,
+        activeSize: str | None = None,
+        placement: str | None = None,
+        fullWidth: bool | None = None,
+        url: str | None = None,
+        scaleMode: str | None = None,
+        propStyle: dict | None = None,
+        readOnly: bool | None = None,
+        marks: dict[str, dict[str, str]] | None = None,
+        trailingZeros: bool | None = None,
+        locale: str | None = None,
+        fallbackValue: str | None = None,
+        draggable: bool | None = None,
+        allowNone: bool | None = None,
         **kwargs,
     ):
         """
@@ -66,7 +84,12 @@ class props(ApiValidator):
                 * `"media"`: View various media formats
                     * Note: A variant is required when using the `media` type
                 * `"coordinate"`: A coordinate input field
+        * **`subtitle`**: `[str]` = `None` &rarr; An optional subtitle for the prop.
         * **`help`**: `[str]` = `None` &rarr; The help text to display.
+            * **Notes**:
+                - This is displayed when the user clicks on the help icon next to the prop.
+                - This can be regular text or markdown.
+        * **`helperText`**: `[str]` = `None` &rarr; Additional help text to display below the prop without requiring a click on the help icon.
         * **`display`**: `[bool]` = `None` &rarr; Whether or not the prop will be displayed.
         * **`variant`**: `[str]` = `None` &rarr; The variant of the prop.
             * **Accepted Values**:
@@ -149,6 +172,10 @@ class props(ApiValidator):
                 * This attribute applies to `"num"` props with the `"incslider"` variant.
         * **`label`**: `[str]` = `None` &rarr; The label to display above the input field when the prop is focused.
             * **Note**: This attribute applies to `"num"`, `"text"`, and `"coordinate"` props.
+        * **`labelPlacement`**: `[str]` = `None` &rarr; The placement of the label relative to the input field.
+            * **Accepted Values**: ['start', 'end', "top", "bottom"]
+        * **`activeLabel`**: `[str]` = `None` &rarr; The label to display when the prop value is True.
+            * **Notes**: This attribute applies exclusively to `"toggle"` props.
         * **`placeholder`**: `[str]` = `None` &rarr; The placeholder text to display.
             * **Note**: This attribute applies exclusively to `"text"` props.
         * **`maxValue`**: `[float | int]` = `None` &rarr; The maximum value for the prop.
@@ -264,7 +291,7 @@ class props(ApiValidator):
                 * Set the precision to `0` to attach an integer constraint.
                 * If left unspecified (i.e., `None`), it will default to `settings.defaults.legendPrecision`.
                 * This attribute applies exclusively to `"num"` props.
-        * **`legendNotation`**: `[int]` = `"standard"` &rarr; The formatting style of a numeric value.
+        * **`legendNotation`**: `[str]` = `"standard"` &rarr; The formatting style of a numeric value.
             * **Accepted Values**:
                 * `"standard"`: Plain number formatting
                 * `"compact"`: Resembles the [metric prefix][] system
@@ -302,6 +329,46 @@ class props(ApiValidator):
                 * Takes precedence over other formatting, except when used in a node cluster and the `cave_utils.api.maps.group` attribute is `True`. In this case, the max value within the node cluster is displayed.
                 * If left unspecified (i.e., `None`), it will default to `settings.defaults.legendMaxLabel`.
                 * This attribute applies exclusively to `"num"` props.
+        * **`icon`**: `[str]` = `None` &rarr; The icon to use for the prop.
+            * **Notes**: Applies to the `icon` variants of various props and also `toggle` and `button` props.
+        * **`activeIcon`**: `[str]` = `None` &rarr; The icon to use for the prop when it is active.
+            * **Notes**: Applies to the `toggle` and `selector` props.
+        * **`startIcon`**: `[str]` = `None` &rarr; The icon to display at the start of the prop.
+            * **Notes**: Applies to the `button` prop and offers a way to add an icon to the left side of the button.
+        * **`endIcon`**: `[str]` = `None` &rarr; The icon to display at the end of the prop.
+            * **Notes**: Applies to the `button` prop and offers a way to add an icon to the right side of the button.
+        * **`color`**: `[str]` = `None` &rarr; The color to use for the prop.
+            * **Notes**: Applies to the `icon` variants of various props and also `toggle` and `button` props.
+        * **`activeColor`**: `[str]` = `None` &rarr; The color to use for the prop when it is active.
+            * **Notes**: Applies to the `toggle` and `selector` props.
+        * **`size`**: `[str]` = `None` &rarr; The size of the icon in the prop.
+            * **Notes**: Applies to the `icon` variants of various props and also `toggle` and `button` props.
+        * **`activeSize`**: `[str]` = `None` &rarr; The size of the icon in the prop when it is active.
+            * **Notes**: Applies to the `toggle` and `selector` props.
+        * **`placement`**: `[str]` = `None` &rarr; The placement of the prop.
+            * **Accepted Values**:
+                * `"start"`: The prop is placed at the start of the container.
+                * `"end"`: The prop is placed at the end of the container.
+                * `"top"`: The prop is placed at the top of the container.
+                * `"bottom"`: The prop is placed at the bottom of the container.
+                * `"center"`: The prop is placed at the center of the container.
+        * **`fullWidth`**: `[bool]` = `None` &rarr; Whether or not the prop should take the full width of the container.
+        * **`url`**: `[str]` = `None` &rarr; The URL to navigate to when the button is clicked.
+            * **Notes**: Applies to `button` props.
+        * **`scaleMode`**: `[str]` = `None` &rarr; The scale mode to use for the prop.
+            * **Accepted Values**: ['fitWidth', 'fitHeight', 'fitContainer']
+            * **Notes**: Applies only to `media` props with a `variant` of `video`.
+        * **`propStyle`**: `[dict]` = `None` &rarr; A dictionary of css styles to apply to the prop.
+            * **Note**: This will not be validated as part of the API spec, so use with caution.
+        * **`readOnly`**: `[bool]` = `False` &rarr; Whether or not the prop is read-only.
+            * **Notes**:
+                - Only applies to 'text' props.
+                - Essentially operates an enabled without making the prop darkened.
+        * **`marks`**: `[dict[str, dict[str, str]]]` = `None` &rarr; A dictionary of marks to display on the slider.
+            * **Notes**:
+                - Only applies to `"num"` props with the `"incslider"` variant.
+                - Contains key-value pairs for each mark, where the key is the mark value and the value is a dictionary of properties for the mark (e.g., label, color).
+                - TODO: Add more details and validation for the `marks` dictionary.
         * **`draggable`**: `[bool]` = `None` &rarr;
             * If `True`, the prop will be rendered within the draggable global outputs pad.
             * **Notes**:
@@ -326,26 +393,49 @@ class props(ApiValidator):
         """
         passed_values = {k: v for k, v in locals().items() if (v is not None) and k != "kwargs"}
         required_fields = ["name", "type"]
-        optional_fields = ["help", "variant", "display", "container"]
+        optional_fields = [
+            "subtitle",
+            "help",
+            "helperText",
+            "variant",
+            "display",
+            "container",
+            "propStyle",
+            "fullWidth",
+            "placement",
+            "labelPlacement",
+        ]
         if type == "head":
             if variant == "icon" or variant == "iconRow":
                 required_fields += ["icon"]
+                optional_fields += ["color", "size"]
         else:
             optional_fields += ["enabled", "apiCommand", "apiCommandKeys", "allowNone"]
 
         if type == "text":
-            optional_fields += ["minRows", "maxRows", "rows", "label", "placeholder", "options"]
+            optional_fields += [
+                "minRows",
+                "maxRows",
+                "rows",
+                "label",
+                "placeholder",
+                "options",
+                "readOnly",
+            ]
         elif type == "num":
+            optional_fields += ["color"]
             if variant == "slider":
                 required_fields += ["maxValue", "minValue"]
             elif variant == "incslider":
                 required_fields += ["valueOptions"]
+                optional_fields += ["marks"]
             else:
                 optional_fields += ["maxValue", "minValue"]
                 if variant is None or variant == "field":
                     optional_fields += ["label", "placeholder"]
             if variant == "icon" or variant == "iconCompact":
                 required_fields += ["icon"]
+                optional_fields += ["color", "size"]
             if notationDisplay:
                 required_fields += ["notation"]
             if legendNotationDisplay:
@@ -367,19 +457,40 @@ class props(ApiValidator):
             ]
         elif type == "selector":
             required_fields += ["options"]
-            optional_fields += ["placeholder"]
+            optional_fields += [
+                "placeholder",
+                "color",
+                "activeColor",
+                "size",
+                "activeSize",
+                "icon",
+                "activeIcon",
+            ]
             if variant == "comboboxMulti":
                 optional_fields += ["numVisibleTags"]
         elif type == "date":
             optional_fields += ["views"]
         elif type == "coordinate":
-            optional_fields += ["label", "placeholder"]
+            optional_fields += ["label", "placeholder", "precision"]
         elif type == "toggle":
-            optional_fields += ["options"]
+            optional_fields += [
+                "options",
+                "icon",
+                "color",
+                "size",
+                "label",
+                "activeColor",
+                "activeSize",
+                "activeLabel",
+                "activeIcon",
+            ]
+        elif type == "button":
+            optional_fields += ["icon", "color", "size", "startIcon", "endIcon", "url"]
         elif type == "media":
             required_fields += ["variant"]
             optional_fields = [i for i in optional_fields if i != "variant"]
-
+            if variant == "video":
+                optional_fields += ["scaleMode"]
         if type in ["selector", "num", "toggle", "text"]:
             optional_fields += ["fallback"]
 
@@ -426,6 +537,17 @@ class props(ApiValidator):
                 "notationDisplay": notationDisplay_options_dict.get(notation, []),
                 "legendNotation": ["standard", "compact", "scientific", "engineering", "precision"],
                 "legendNotationDisplay": notationDisplay_options_dict.get(legendNotation, []),
+                "placement": [
+                    "topLeft",
+                    "topCenter",
+                    "topRight",
+                    "left",
+                    "center",
+                    "right",
+                    "bottomLeft",
+                    "bottomCenter",
+                    "bottomRight",
+                ],
                 "variant": {
                     "head": ["column", "row", "icon", "iconRow"],
                     "text": ["single", "textarea"],
@@ -439,11 +561,14 @@ class props(ApiValidator):
                         "hstepper",
                         "vstepper",
                         "hradio",
+                        "hcheckbox",
                         "nested",
                     ],
                     "date": ["date", "time", "datetime"],
                     "media": ["picture", "video"],
                     "coordinate": ["latLngInput", "latLngMap", "latLngPath"],
+                    "toggle": ["switch", "button", "checkbox"],
+                    "button": ["outlined", "text", "icon", "filled"],
                 }.get(type, []),
             },
         }
@@ -466,6 +591,14 @@ class props(ApiValidator):
             props_fallback(
                 data=self.data.get("fallback"), log=self.log, prepend_path=["fallback"], **kwargs
             )
+        if self.data.get("color"):
+            self.__check_color_string_valid__(color_string=self.data.get("color"))
+        if self.data.get("activeColor"):
+            self.__check_color_string_valid__(color_string=self.data.get("activeColor"))
+        if self.data.get("size"):
+            self.__check_pixel_string_valid__(pixel_string=self.data.get("size"))
+        if self.data.get("activeSize"):
+            self.__check_pixel_string_valid__(pixel_string=self.data.get("activeSize"))
 
 
 @type_enforced.Enforcer
@@ -473,23 +606,44 @@ class props_options(ApiValidator):
     @staticmethod
     def spec(
         name: str,
-        path: [list[str], None] = None,
-        color: [str, None] = None,
-        size: [str, None] = None,
+        activeName: str | None = None,
+        path: list[str] | None = None,
+        help: str | None = None,
+        helperText: str | None = None,
+        color: str | None = None,
+        activeColor: str | None = None,
+        size: str | None = None,
+        activeSize: str | None = None,
+        icon: str | None = None,
+        activeIcon: str | None = None,
+        enabled: bool | None = True,
         **kwargs,
     ):
         """
         Arguments:
 
         * **`name`**: `[str]` &rarr; The name of the option.
+        * **`activeName`**: `[str]` = `None` &rarr; The name of the option when it is active.
+            * **Note**: If not set, the `name` will be used regardless of the active state.
         * **`path`**: `[list[str]]` = `None` &rarr; The path to an option.
             * **Notes**:
                 * If `None`, the option will not be selectable
                 * This attribute applies exclusively to `"nested"` props
+        * **`help`**: `[str]` = `None` &rarr; The help text to display for this option.
+            * **Note**: This can be raw text or markdown formatted text.
+        * **`helperText`**: `[str]` = `None` &rarr; The helper text to display for this option.
         * **`color`**: `[str]` = `None` &rarr; The color to use for this option.
             * **Note**: A valid color string (EG: "RGBA(0,0,0,1)")
+        * **`activeColor`**: `[str]` = `None` &rarr; The color to use for this option when it is active.
+            * **Note**: If not set the `color` will be used regardless of the active state.
         * **`size`**: `[str]` = `None` &rarr; The size to use for this option.
             * **Note**: A valid size string (EG: "5px")
+        * **`activeSize`**: `[str]` = `None` &rarr; The size to use for this option when it is active.
+            * **Note**: If not set the `size` will be used regardless of the active state.
+        * **`icon`**: `[str]` = `None` &rarr; The icon to use for this option.
+        * **`activeIcon`**: `[str]` = `None` &rarr; The icon to use for this option when it is active.
+            * **Note**: If not set the `icon` will be used regardless of the active state.
+        * **`enabled`**: `[bool]` = `True` &rarr; Whether or not the option will be enabled.
         """
         variant = kwargs.get("variant")
         kwargs = {k: v for k, v in kwargs.items() if k != "variant"}
@@ -510,17 +664,21 @@ class props_options(ApiValidator):
                 return
         if self.data.get("color"):
             self.__check_color_string_valid__(color_string=self.data.get("color"))
+        if self.data.get("activeColor"):
+            self.__check_color_string_valid__(color_string=self.data.get("activeColor"))
         if self.data.get("size"):
             self.__check_pixel_string_valid__(pixel_string=self.data.get("size"))
+        if self.data.get("activeSize"):
+            self.__check_pixel_string_valid__(pixel_string=self.data.get("activeSize"))
 
 
 @type_enforced.Enforcer
 class props_fallback(ApiValidator):
     @staticmethod
     def spec(
-        name: [str, None] = None,
-        color: [str, None] = None,
-        size: [str, None] = None,
+        name: str | None = None,
+        color: str | None = None,
+        size: str | None = None,
         **kwargs,
     ):
         """
@@ -548,12 +706,12 @@ class props_fallback(ApiValidator):
 class props_gradient(ApiValidator):
     @staticmethod
     def spec(
-        scale: [str, None] = None,
-        scaleParams: [dict, None] = None,
-        notation: [str, None] = None,
-        notationDisplay: [str, None] = None,
-        precision: [int, None] = None,
-        data: [list, None] = None,
+        scale: str | None = None,
+        scaleParams: dict | None = None,
+        notation: str | None = None,
+        notationDisplay: str | None = None,
+        precision: int | None = None,
+        data: list | None = None,
         **kwargs,
     ):
         """
@@ -632,13 +790,13 @@ class props_gradient(ApiValidator):
 class props_gradient_scaleParams(ApiValidator):
     @staticmethod
     def spec(
-        exponent: [float, int, None] = None,
+        exponent: float | int | None = None,
         **kwargs,
     ):
         """
         Arguments:
 
-        * **`exponent`**: `[float]` = `None` &rarr; The exponent for the scale if using a power gradient.
+        * **`exponent`**: `[float | int]` = `None` &rarr; The exponent for the scale if using a power gradient.
         """
         return {
             "kwargs": kwargs,
@@ -658,16 +816,16 @@ class props_gradient_scaleParams(ApiValidator):
 class props_gradient_data(ApiValidator):
     @staticmethod
     def spec(
-        value: [int, float, str],
-        color: [str, None] = None,
-        size: [str, None] = None,
-        label: [str, None] = None,
+        value: int | float | str,
+        color: str | None = None,
+        size: str | None = None,
+        label: str | None = None,
         **kwargs,
     ):
         """
         Arguments:
 
-        * **`value`**: `[int | float]` &rarr; The value for the split point in the gradient.
+        * **`value`**: `[int | float | str]` &rarr; The value for the split point in the gradient.
         * **`color`**: `[str]` = `None` &rarr; The color string to use for the split point.
             * **Note**: A valid color string (EG: "RGBA(0,0,0,1)")
         * **`size`**: `[str]` = `None` &rarr; The size string to use for the split point.
@@ -696,13 +854,13 @@ class layout(ApiValidator):
     @staticmethod
     def spec(
         type: str,
-        numColumns: [str, int, None] = None,
-        numRows: [str, int, None] = None,
-        data: [dict, None] = None,
-        itemId: [str, None] = None,
-        column: [int, None] = None,
-        row: [int, None] = None,
-        style: [dict, None] = None,
+        numColumns: str | int | None = None,
+        numRows: str | int | None = None,
+        data: dict | None = None,
+        itemId: str | None = None,
+        column: int | None = None,
+        row: int | None = None,
+        style: dict | None = None,
         **kwargs,
     ):
         """

@@ -46,8 +46,8 @@ class mapFeatures_data_star(ApiValidator):
         name: str,
         props: dict,
         data: dict,
-        layout: [dict, None] = None,
-        geoJson: [dict, None] = None,
+        layout: dict | None = None,
+        geoJson: dict | None = None,
         **kwargs,
     ):
         """
@@ -165,28 +165,28 @@ class mapFeatures_data_star_data_location(ApiValidator):
 
     @staticmethod
     def spec(
-        latitude: [list[list[float, int]], None] = None,
-        longitude: [list[list[float, int]], None] = None,
-        altitude: [list[list[float, int]], None] = None,
-        path: [list[list[list[float, int]]], None] = None,
-        geoJsonValue: [list[str], None] = None,
+        latitude: list[list[float | int]] | None = None,
+        longitude: list[list[float | int]] | None = None,
+        altitude: list[list[float | int]] | None = None,
+        path: list[list[list[float | int]]] | None = None,
+        geoJsonValue: list[str] | None = None,
         **kwargs,
     ):
         """
         Arguments:
 
-        * **`latitude`**: `list[list[float, int]]` = `None` &rarr; A list of latitudes for each node.
+        * **`latitude`**: `list[list[float | int]]` = `None` &rarr; A list of latitudes for each node.
             * ** Example **: `[45.34, 46.27, 47.34, 48.34]`
             * ** Notes **: Used for `node` layers
-        * **`longitude`**: `list[list[float, int]]` = `None` &rarr; A list of longitudes for each node.
+        * **`longitude`**: `list[list[float | int]]` = `None` &rarr; A list of longitudes for each node.
             * ** Example **: `[120.34, 121.27, 122.34, 123.34]`
             * ** Note **: Used for `node` layers
-        * **`altitude`**: `list[list[float, int]]` = `None` &rarr; The altitude for each node / geo in kilometers.
+        * **`altitude`**: `list[list[float | int]]` = `None` &rarr; The altitude for each node / geo in kilometers.
             * ** Example **: `[0, 1000, 2000, 3000]`
             * ** Notes **:
                 * Used for `node` and `geo` layers
                 * This is currently ignored but is planned to be supported in the future.
-        * **`path`**: `list[list[list[float, int]]]` = `None` &rarr; A path for each arc in the format `[[long1,lat1,(optional alt1)],[long2,lat2,(optional alt2)],...]`.
+        * **`path`**: `list[list[list[float | int]]]` = `None` &rarr; A path for each arc in the format `[[long1,lat1,(optional alt1)],[long2,lat2,(optional alt2)],...]`.
             * ** Example **: `[[[0,0],[1,1]],[[2,2],[3,3],[4,4],[5,5]]]`
             * ** Example with Altitude **: `[[[0,0,0],[1,1,1000]],[[2,2,2000],[3,3,3000],[4,4,4000],[5,5,5000]]]`
             * ** Note **: Used for `arc` layers
