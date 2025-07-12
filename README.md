@@ -1,11 +1,20 @@
-Cave Utilities for the Cave App
-==========
-Basic utilities for the MIT Cave App. This package is intended to be used by the Cave App and the Cave API.
+# Cave Utilities for the Cave App
+[![PyPI version](https://badge.fury.io/py/cave_utils.svg)](https://badge.fury.io/py/cave_utils)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+Basic utilities for the MIT Cave App.
+This package is intended to be used by the Cave App and the Cave API.
 
-Setup
-----------
+## Overview
 
-Make sure you have Python 3.9.x (or higher) installed on your system. You can download it [here](https://www.python.org/downloads/).
+This package is part of the larger [Cave App](https://github.com/MIT-CAVE/cave_app) framework. It provides utilities that are commonly used across different Cave applications, such as validation and logging. It is designed to be an easy to integrate library that can be used in any Cave application. It also serves to provide automated documentation and testing.
+
+You can find the low level documentation for this package [here](https://mit-cave.github.io/cave_utils/index.html).
+
+
+
+## Setup
+
+Make sure you have Python 3.11.x (or higher) installed on your system. You can download it [here](https://www.python.org/downloads/).
 
 ### Installation
 
@@ -13,36 +22,24 @@ Make sure you have Python 3.9.x (or higher) installed on your system. You can do
 pip install cave_utils
 ```
 
-
-# Running Validator Tests
-
-## Example:
-1. In your cave_app, update the following file:
-
-    `cave_api/tests/test_init.py`
-    ```
-    from cave_api import execute_command
-    from cave_utils.socket import Socket
-    from cave_utils.validator import Validator
-
-
-    init_session_data = execute_command(session_data={}, socket=Socket(), command="init")
-
-    x = Validator(init_session_data)
-
-    x.log.print_logs()
-    # x.log.print_logs(level="error")
-    # x.log.print_logs(level="warning")
-    # x.log.print_logs(max_count=10)
-    ```
-
-2. Run the following command:
-    `cave test test_init.py`
-
-
 # cave_utils development
 
-## Using Local Hotloading
+## Running Tests, Prettifying Code, and Updating Docs
+
+Make sure Docker is installed and running.
+
+- Create a docker container and drop into a shell
+    - `./run.sh`
+- Run all tests (see ./utils/test.sh)
+    - `./run.sh test`
+- Prettify the code (see ./utils/prettify.sh)
+    - `./run.sh prettify`
+- Update the docs (see ./utils/docs.sh)
+    - `./run.sh docs`
+
+- Note: You can and should modify the `Dockerfile` to test different python versions.
+
+### Using Local Hotloading With a Cave App
 
 1. In your `cave_app`, update the following file:
 
@@ -57,6 +54,12 @@ pip install cave_utils
 
     source ./utils/helpers/shell_functions.sh
     source ./utils/helpers/ensure_postgres_running.sh
+    # Check if the app is functional before proceeding
+    if [ "$(python ./manage.py check --deployment_type development | grep "System check identified no issues" | wc -l)" -eq "0" ]; then
+    printf "Unable to start the app due to an error in the code. See the stacktrace above." 2>&1 | pipe_log "ERROR"
+    rm -r "./tmp"
+    exit 1
+    fi
     source ./utils/helpers/ensure_db_setup.sh
 
     python "$APP_DIR/manage.py" runserver 0.0.0.0:8000 2>&1 | pipe_log "INFO"
@@ -71,7 +74,13 @@ pip install cave_utils
     `cave run --docker-args "--volume {local_path_to_cave_utils}/cave_utils:/cave_utils"`
     - As you edit `cave_utils`, any changes will be hotloaded into your running `cave_app`
 
-## Using interactive mode and running tests
+### Using interactive mode in your Cave App and running tests
+
+- Note: This is for very specific use cases, such as running tests or debugging in an interactive shell.
+- Note: In general, we copy all included examples from the cave_app to the `cave_utils/test/api_examples` directory, so you can run tests against them without needing to run the cave_app.
+    - These copied examples can be tested by running `./run.sh test` in the cave_utils directory, which will run all tests in the `cave_utils/test`.
+        - This includes `test_validator.py` which runs all examples in the `cave_utils/test/api_examples` directory
+
 
 1. Run cave_app in interactive mode mounting cave_utils as a volume:
     `cave run --docker-args "--volume {local_path_to_cave_utils}/cave_utils:/cave_utils" -it`
@@ -80,25 +89,16 @@ pip install cave_utils
 3. Then run some tests (eg `validate_all_examples.py`):
     `python cave_api/tests/validate_all_examples.py`
 
-# Generate Documentation
-
-1. Set up your virtual environment
-    - `python3 -m virtualenv venv`
-    - `source venv/bin/activate`
-    - `pip install -r requirements.txt`
-2. Update the docs
-    - `source venv/bin/activate`
-    - `./update_documentation.sh`
 
 # Generate a New Release
 
-1. Set up your virtual environment
+1. Make sure all tests are passing and the code is prettified.
+2. Make sure the documentation is up to date.
+3. Make sure the version number is updated in `setup.cfg` and `pyproject.toml`.
+4. Set up your virtual environment
     - `python3 -m virtualenv venv`
     - `source venv/bin/activate`
     - `pip install -r requirements.txt`
-2. Update the version number in:
-    - `setup.cfg`
-    - `pyproject.toml`
-3. Update the release
+5. Update the release
     - `source venv/bin/activate`
-    - `./update_version.sh`
+    - `./publish.sh`

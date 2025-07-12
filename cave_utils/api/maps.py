@@ -62,9 +62,12 @@ class maps_additionalMapStyles_star(ApiValidator):
     @staticmethod
     def spec(
         name: str,
-        spec: [dict, str],
-        fog: [dict, None] = None,
+        spec: dict | str,
+        fog: dict | None = None,
         icon: str = "md/MdMap",
+        mapbox: bool = False,
+        light: bool = False,
+        sky: dict | None = None,
         **kwargs,
     ):
         """
@@ -81,8 +84,20 @@ class maps_additionalMapStyles_star(ApiValidator):
                 * Carto: https://github.com/CartoDB/basemap-styles/blob/master/docs/basemap_styles.json
                 * Raster: https://docs.mapbox.com/mapbox-gl-js/example/map-tiles/
         * **`fog`**: `[dict]` = `None` &rarr; The fog to show in the map selection menu.
-            * **Note**: `fog` is only validated for its type (`dict`).
-            * **See**: https://docs.mapbox.com/mapbox-gl-js/api/map/#map#setfog
+            * **Notes**:
+                * `fog` is only validated for its type (`dict`).
+                * This is only used for when Mapbox is rendering the map.
+                * When not using Mapbox, use the `sky` property instead.
+                * **See**: https://docs.mapbox.com/mapbox-gl-js/api/map/#map#setfog
+        * **`mapbox`**: `[bool]` = `False` &rarr; Enforces Mapbox rendering engine for this map style, even if using non-Mapbox tile sources.
+        * **`light`**: `[bool]` = `False` &rarr; Enforces a light theme for map properties, root styling, and controls to improve visualization on light maps.
+        * **`sky`**: `[dict | None]` = `None` &rarr; The sky settings for the map style.
+            * **Notes**:
+                * This is only used for when Mapbox is not rendering the map. This allows for sky rendering when using maplibre globe rendering.
+                * When using Mapbox, use the `fog` property instead.
+                * `sky` is only validated for its type `dict` and not its contents.
+                * **See**: https://maplibre.org/maplibre-style-spec/sky/
+
         """
         return {"kwargs": kwargs, "accepted_values": {}}
 
@@ -101,15 +116,15 @@ class maps_data_star(ApiValidator):
     @staticmethod
     def spec(
         name: str,
-        currentStyle: [str, None] = None,
-        currentProjection: [str, None] = None,
-        defaultViewport: [dict, None] = None,
-        optionalViewports: [dict, None] = None,
-        legendGroups: [dict, None] = None,
-        legendView: [str, None] = None,
-        showLegendGroupNames: [bool, None] = None,
-        legendLayout: [str, None] = None,
-        legendWidth: [str, None] = None,
+        currentStyle: str | None = None,
+        currentProjection: str | None = None,
+        defaultViewport: dict | None = None,
+        optionalViewports: dict | None = None,
+        legendGroups: dict | None = None,
+        legendView: str | None = None,
+        showLegendGroupNames: bool | None = None,
+        legendLayout: str | None = None,
+        legendWidth: str | None = None,
         **kwargs,
     ):
         """
@@ -197,15 +212,15 @@ class viewport(ApiValidator):
 
     @staticmethod
     def spec(
-        latitude: [int, float],
-        longitude: [int, float],
-        zoom: [int, float],
-        bearing: [int, float, None] = None,
-        pitch: [int, float, None] = None,
-        maxZoom: [int, float, None] = None,
-        minZoom: [int, float, None] = None,
-        icon: [str, None] = None,
-        name: [str, None] = None,
+        latitude: int | float,
+        longitude: int | float,
+        zoom: int | float,
+        bearing: int | float | None = None,
+        pitch: int | float | None = None,
+        maxZoom: int | float | None = None,
+        minZoom: int | float | None = None,
+        icon: str | None = None,
+        name: str | None = None,
         **kwargs,
     ):
         """
@@ -304,18 +319,18 @@ class maps_data_star_legendGroups_star_data_star(ApiValidator):
     @staticmethod
     def spec(
         value: bool,
-        sizeBy: [str, None] = None,
-        colorBy: [str, None] = None,
-        lineStyle: [str, None] = None,
+        sizeBy: str | None = None,
+        colorBy: str | None = None,
+        lineStyle: str | None = None,
         allowGrouping: bool = False,
-        group: [bool, None] = False,
-        groupCalcBySize: [str, None] = None,
-        groupCalcByColor: [str, None] = None,
+        group: bool | None = False,
+        groupCalcBySize: str | None = None,
+        groupCalcByColor: str | None = None,
         groupScaleWithZoom: bool = False,
-        groupScale: [int, float, None] = None,
-        colorByOptions: [list, None] = None,
-        sizeByOptions: [list, None] = None,
-        icon: [str, None] = None,
+        groupScale: int | float | None = None,
+        colorByOptions: list | None = None,
+        sizeByOptions: list | None = None,
+        icon: str | None = None,
         **kwargs,
     ):
         """

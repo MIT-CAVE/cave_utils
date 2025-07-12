@@ -40,9 +40,9 @@ class GroupsBuilder(GroupsUtils):
     def __init__(
         self,
         group_name: str,
-        group_data: list[dict[str]],
-        group_parents: dict[str],
-        group_names: dict[str],
+        group_data: list[dict[str, str]],
+        group_parents: dict[str, str],
+        group_names: dict[str, str],
     ) -> None:
         """
         Initialize a group builder.
@@ -50,17 +50,17 @@ class GroupsBuilder(GroupsUtils):
         Arguments:
 
         * **`group_name`**: `[str]` &rarr; The name of the group.
-        * **`group_data`**: `[list[dict[str]]]` &rarr; The data to use to build the group.
+        * **`group_data`**: `[list[dict[str, str]]]` &rarr; The data to use to build the group.
             * **Note**: This should be a list of dictionaries where each dictionary represents a combination of group keys and values.
             * **Note**: The keys in the dictionaries should be the same for all records.
             * **Note**: If the key `id` is specified, it will be used as the id for the group and not included in the group data.
             * **Example**: `[{'key1': 'value1', 'key2': 'value2'}, {'key1': 'value3', 'key2': 'value4'}]`
-        * **`group_parents`**: `[dict[str]]` &rarr; Parent allocations to make for groups.
+        * **`group_parents`**: `[dict[str, str]]` &rarr; Parent allocations to make for groups.
             * **Note**: This should be a dictionary where the keys are the child group keys and the values are the parent group keys.
             * **Example**: `{'child_key': 'parent_key'}`
                 * **Note**: This would mean that `child_key` has a parent of `parent_key`.
             * **Note**: If a group is not a child of another group, it should not be included in the dictionary.
-        * **`group_names`**: `[dict[str]]` &rarr; The group names to use for the group keys.
+        * **`group_names`**: `[dict[str, str]]` &rarr; The group names to use for the group keys.
             * **Note**: This should be a dictionary where the keys are the group keys and the values are the group_names to use for the group keys.
 
 
@@ -149,7 +149,7 @@ class GroupsBuilder(GroupsUtils):
 
         Arguments:
 
-        * **`group_data`**: `[list[dict[str]]]` &rarr; The data to use to build the group.
+        * **`group_data`**: `[list[dict[str, str]]]` &rarr; The data to use to build the group.
 
 
         Modifies:
@@ -189,7 +189,7 @@ class GroupsBuilder(GroupsUtils):
             if key in self.group_parents:
                 self.levels_structure[key]["parent"] = self.group_parents[key]
 
-    def get_id(self, group: dict[str]):
+    def get_id(self, group: dict[str, str]):
         return pamda.path(path=pamda.props(self.group_keys, group), data=self.id_structure)
 
 

@@ -1,19 +1,47 @@
+import sys
+
 from cave_utils import Arguments
 
-args = Arguments()
+try:
+    # Save original sys.argv
+    original_argv = sys.argv.copy()
 
-print(args.kwargs)
-print(args.flags)
-print(args.other)
+    # Mock command-line arguments
+    sys.argv = ["script_name.py", "--name", "value", "-v", "-flagonly", "pos1", "--another", "-x"]
 
-print(args.get_kwarg("test", "default"))
+    args = Arguments()
 
-args.delete("test", only_flag=True)
+    # Test kwargs
+    assert args.get_kwarg("name") == "value", "Failed to retrieve --name=value"
+    assert (
+        args.get_kwarg("nonexistent", "default") == "default"
+    ), "Failed default value for missing kwarg"
 
-args.delete("abc")
+    # Test flags
+    assert args.has_flag("v"), "Missing -v flag"
+    assert args.has_flag("flagonly"), "Missing -flagonly flag"
+    assert args.has_flag("x"), "Missing -x flag"
 
-print(args.kwargs)
-print(args.flags)
-print(args.other)
+    # Test others
+    assert "pos1" in args.other, "Missing positional argument 'pos1'"
 
-print(args.get_kwarg("test", "default"))
+    # Test delete function
+    args.delete("name")
+    assert args.get_kwarg("name") is None, "Failed to delete --name"
+
+    args.delete("v", only_flag=True)
+    assert not args.has_flag("v"), "Failed to delete -v flag"
+
+    args.delete("pos1")
+    assert "pos1" not in args.other, "Failed to delete positional argument 'pos1'"
+
+    print("Arguments Tests: Passed!")
+
+except Exception as e:
+    print("Arguments Tests: Failed!")
+    print(f"Error: {e}")
+    raise e
+
+finally:
+    # Restore original sys.argv
+    sys.argv = original_argv
