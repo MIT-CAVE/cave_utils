@@ -1,7 +1,7 @@
 import math
 from cave_utils import CustomCoordinateSystem
 
-TOLERANCE = 0.1
+TOLERANCE = 0.1 # Expected coordinates are approximate
 
 try:
     # Square (width = height)
