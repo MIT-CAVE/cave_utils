@@ -8,12 +8,12 @@ try:
     square_coordinate_system = CustomCoordinateSystem(1000, 1000)
     square_coordinates = [[0, 0], [200, 500], [500, 500], [750, 750]]
     expected_square_long_lat = [[-180, -85.05], [-108, 0], [0, 0], [90, 66.513]]
-    actual_square_long_lat = square_coordinate_system.convert_to_long_lat(square_coordinates)
+    actual_square_long_lat = square_coordinate_system.serialize_coordinates(square_coordinates)
 
     for index, actual_coordinate in enumerate(actual_square_long_lat):
         expected_coordinate = expected_square_long_lat[index]
-        assert math.isclose(actual_coordinate[0], expected_coordinate[0], abs_tol=TOLERANCE)
-        assert math.isclose(actual_coordinate[1], expected_coordinate[1], abs_tol=TOLERANCE)
+        assert abs(actual_coordinate[0] - expected_coordinate[0]) < TOLERANCE
+        assert abs(actual_coordinate[1] - expected_coordinate[1]) < TOLERANCE
 
     # Landscape (width > height)
     landscape_coordinate_system = CustomCoordinateSystem(576, 360)
@@ -35,23 +35,23 @@ try:
         [135, -41],
         [-22.5, -66.5]
         ]
-    actual_landscape_long_lat = landscape_coordinate_system.convert_to_long_lat(landscape_coordinates)
+    actual_landscape_long_lat = landscape_coordinate_system.serialize_coordinates(landscape_coordinates)
 
     for index, actual_coordinate in enumerate(actual_landscape_long_lat):
         expected_coordinate = expected_landscape_long_lat[index]
-        assert math.isclose(actual_coordinate[0], expected_coordinate[0], abs_tol=TOLERANCE)
-        assert math.isclose(actual_coordinate[1], expected_coordinate[1], abs_tol=TOLERANCE)
+        assert abs(actual_coordinate[0] - expected_coordinate[0]) < TOLERANCE
+        assert abs(actual_coordinate[1] - expected_coordinate[1]) < TOLERANCE
 
     # Portrait (height > width)
     portrait_coordinate_system = CustomCoordinateSystem(100, 200)
     portrait_coordinates = [[0, 0], [0, 100], [0, 125], [20, 100], [75, 125]]
     expected_portrait_long_lat = [[-90, -85.05], [-90, 0], [-90, 41], [-54, 0], [45, 41]]
-    actual_portrait_long_lat = portrait_coordinate_system.convert_to_long_lat(portrait_coordinates)
+    actual_portrait_long_lat = portrait_coordinate_system.serialize_coordinates(portrait_coordinates)
 
     for index, actual_coordinate in enumerate(actual_portrait_long_lat):
         expected_coordinate = expected_portrait_long_lat[index]
-        assert math.isclose(actual_coordinate[0], expected_coordinate[0], abs_tol=TOLERANCE)
-        assert math.isclose(actual_coordinate[1], expected_coordinate[1], abs_tol=TOLERANCE)
+        assert abs(actual_coordinate[0] - expected_coordinate[0]) < TOLERANCE
+        assert abs(actual_coordinate[1] - expected_coordinate[1]) < TOLERANCE
 
     print(f"Custom Coordinates Tests: Passed!")
 
