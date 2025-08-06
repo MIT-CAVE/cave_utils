@@ -24,17 +24,18 @@ class CustomCoordinateSystem():
 
     def convert_to_long_lat(self, coordinates: list[list[float | int]]):
         """
-        Converts (x, y) coordinates using this coordinate system to a longitude-latitude system.
+        Converts (x, y, z) coordinates using this coordinate system to a longitude-latitude-altitude system.
         Formula adapted from: https://en.wikipedia.org/wiki/Mercator_projection#Derivation
 
         Arguments:
 
-        * **`coordinates`**: `list[list[float | int]]` &rarr; The coordinates to be converted in this coordinate system in the format `[[x1,y1],[x2,y2],...]`.
+        * **`coordinates`**: `list[list[float | int]]` &rarr; The coordinates to be converted in this coordinate system in the format `[[x1,y1,(optional z1)],[x2,y2,(optional z2)],...]`.
             * ** Example **: `[[0,0],[103.5,99.1],[76.55,350],[12.01,12.01]]`
+            * ** Example with Altitude **: `[[0,0,0],[103.5,99.1,1],[76.55,350,0.2],[12.01,12.01,3.41]]`
 
         Returns:
 
-        * `list[list[float | int]]` &rarr; The converted coordinates in the format [[long1,lat1],[long2,lat2],...].
+        * `[list[list[float | int]]]` &rarr; The converted coordinates in the format `[[long1,lat1,(possible alt1)],[long2,lat2,(possible alt2)],...]` .
         """
         long_lat_coordinates = []
         for coordinate in coordinates:
@@ -53,3 +54,21 @@ class CustomCoordinateSystem():
             long_lat_coordinates.append([longitude - 180, latitude])
 
         return long_lat_coordinates
+
+    def serialize_nodes(self, coordinates: list[list[float | int]]):
+        """
+        Serialize the given node (x, y) coordinates in this coordinate system to a dictionary of the proper format.
+
+        Arguments:
+
+        * **`coordinates`**: `list[list[float | int]]` &rarr; The coordinates to be serialized in this coordinate system in the format `[[x1,y1],[x2,y2],...]`.
+
+        Returns:
+
+        * `[dict]` &rarr; The serialized location structure.
+        """
+        converted_coordinates = self.convert_to_long_lat(coordinates)
+        return {
+            "latitude": [[coordinate[1]] for coordinate in converted_coordinates],
+            "longitude": [[coordinate[0]] for coordinate in converted_coordinates]
+        }
