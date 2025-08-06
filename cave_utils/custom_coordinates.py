@@ -35,6 +35,7 @@ class CustomCoordinateSystem():
         * **`coordinates`**: `list[list[float | int]]` &rarr; The coordinates to be converted in this coordinate system in the format `[[x1,y1,(optional z1)],[x2,y2,(optional z2)],...]`.
             * ** Example **: `[[0,0],[103.5,99.1],[76.55,350],[12.01,12.01]]`
             * ** Example with Altitude **: `[[0,0,0],[103.5,99.1,1],[76.55,350,0.2],[12.01,12.01,3.41]]`
+            * ** Note **: All coordinates must have either no altitude or altitude values. There cannot be a mix of both.
 
         Returns:
 
@@ -65,18 +66,19 @@ class CustomCoordinateSystem():
 
         return long_lat_coordinates
 
-    def serialize_nodes(self, coordinates: list[list[float | int]]):
+    def serialize_nodes(self, coordinates: list[list[float | int]] | dict[str, list[float | int]]):
         """
-        Serialize the given node (x, y) coordinates in this coordinate system to a dictionary of the proper format.
+        Serialize the given node coordinates in this coordinate system to a dictionary of the proper format.
 
         Arguments:
 
-        * **`coordinates`**: `list[list[float | int]]` &rarr; The coordinates to be serialized in this coordinate system in the format `[[x1,y1],[x2,y2],...]`.
+        * **`coordinates`**: `[list[list[float | int]] | dict[str, list[float | int]]]` &rarr; The coordinates to be serialized in this coordinate system in the format `[[x1,y1],[x2,y2],...]` or a dictionary with "x", "y", and an optional "z" key with lists of values for each coordinate.
 
         Returns:
 
         * `[dict]` &rarr; The serialized location structure.
         """
+        # TODO: Handle dict case
         converted_coordinates = self.serialize_coordinates(coordinates)
         if len(converted_coordinates[0]) == 2:
             return {
@@ -88,3 +90,40 @@ class CustomCoordinateSystem():
             "longitude": [[coordinate[0]] for coordinate in converted_coordinates],
             "altitude": [[coordinate[2]] for coordinate in converted_coordinates]
         }
+    
+    def serialize_arcs(self, path: list[list[list[float | int]]] | list[dict[str, list[float | int]]]):
+        pass
+
+    def __validate_list_coordinates__(self, coordinates: list[list[float | int]]):
+        """
+        Validates that the given coordinates are in the proper format.
+
+        Arguments:
+
+        * **`coordinates`**: `list[list[float | int]]` &rarr; The coordinates to be validated.
+
+        Raises:
+
+        * **`ValueError`** &rarr; If the coordinate data is not in the proper format.
+        """
+        if not (all(len(coord) == 2 for coord in coordinates) or all(len(coord) == 3 for coord in coordinates)):
+            raise ValueError("Coordinates must be a list of lists that all have either two elements or three elements.")
+
+    def __validate_dict_coordinates__(self, coordinates: dict[str, list[float | int]]):
+        """
+        Validates that the given coordinates are in the proper format.
+
+        Arguments:
+
+        * **`coordinates`**: `dict[str, list[float | int]]` &rarr; The coordinates to be validated.
+
+        Raises:
+
+        * **`ValueError`** &rarr; If the coordinate data is not in the proper format.
+        """
+        if "x" not in coordinates or "y" not in coordinates:
+            raise ValueError("Coordinates must contain 'x' and 'y' keys.")
+        if len(coordinates["x"]) != len(coordinates["y"]):
+            raise ValueError("The number of x and y values must match.")
+        if "z" in coordinates and len(coordinates["x"]) != len(coordinates["z"]):
+            raise ValueError("The number of z values must match x and y.")
