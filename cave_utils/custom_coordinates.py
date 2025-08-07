@@ -41,6 +41,7 @@ class CustomCoordinateSystem():
 
         * `[list[list[float | int]]]` &rarr; The converted coordinates in the format `[[long1,lat1,(possible alt1)],[long2,lat2,(possible alt2)],...]` .
         """
+        self.__validate_list_coordinates__(coordinates)
         long_lat_coordinates = []
         has_altitude = len(coordinates[0]) == 3
         if has_altitude:
@@ -72,24 +73,34 @@ class CustomCoordinateSystem():
 
         Arguments:
 
-        * **`coordinates`**: `[list[list[float | int]] | dict[str, list[float | int]]]` &rarr; The coordinates to be serialized in this coordinate system in the format `[[x1,y1],[x2,y2],...]` or a dictionary with "x", "y", and an optional "z" key with lists of values for each coordinate.
+        * **`coordinates`**: `[list[list[float | int]] | dict[str, list[float | int]]]` &rarr; The coordinates to be serialized in this coordinate system in the format `[[x1,y1],[x2,y2],...]` or a dictionary with "x", "y", and an optional "z" key with lists of values for all coordinates.
+            * ** Example List Type **: `[[0,0],[103.5,99.1],[76.55,350],[12.01,12.01]]`
+            * ** Example Dictionary Type with Altitude **: `{"x": [0, 103.5, 76.55, 12.01], "y": [0, 99.1, 350, 12.01], "z": [0, 1, 0.2, 3.41]}`
 
         Returns:
 
         * `[dict]` &rarr; The serialized location structure.
         """
-        # TODO: Handle dict case
-        converted_coordinates = self.serialize_coordinates(coordinates)
+        if isinstance(coordinates, list):
+            converted_coordinates = self.serialize_coordinates(coordinates)
+        elif isinstance(coordinates, dict):
+            self.__validate_dict_coordinates__(coordinates)
+            if "z" in coordinates:
+                list_coordinates = [list(coordinate_list) for coordinate_list in zip(coordinates["x"], coordinates["y"], coordinates["z"])]
+            else:
+                list_coordinates = [list(coordinate_list) for coordinate_list in zip(coordinates["x"], coordinates["y"])]
+            converted_coordinates = self.serialize_coordinates(list_coordinates)
+
         if len(converted_coordinates[0]) == 2:
             return {
-            "latitude": [[coordinate[1]] for coordinate in converted_coordinates],
-            "longitude": [[coordinate[0]] for coordinate in converted_coordinates]
-            }
+                "latitude": [[coordinate[1]] for coordinate in converted_coordinates],
+                "longitude": [[coordinate[0]] for coordinate in converted_coordinates]
+                }
         return {
             "latitude": [[coordinate[1]] for coordinate in converted_coordinates],
             "longitude": [[coordinate[0]] for coordinate in converted_coordinates],
             "altitude": [[coordinate[2]] for coordinate in converted_coordinates]
-        }
+            }
     
     def serialize_arcs(self, path: list[list[list[float | int]]] | list[dict[str, list[float | int]]]):
         pass
