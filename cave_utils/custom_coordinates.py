@@ -75,7 +75,7 @@ class CustomCoordinateSystem():
 
         * **`coordinates`**: `[list[list[float | int]] | dict[str, list[float | int]]]` &rarr; The coordinates to be serialized in this coordinate system in the format `[[x1,y1],[x2,y2],...]` or a dictionary with "x", "y", and an optional "z" key with lists of values for all coordinates.
             * ** Example List Type **: `[[0,0],[103.5,99.1],[76.55,350],[12.01,12.01]]`
-            * ** Example Dictionary Type with Altitude **: `{"x": [0, 103.5, 76.55, 12.01], "y": [0, 99.1, 350, 12.01], "z": [0, 1, 0.2, 3.41]}`
+            * ** Example Dictionary Type with Altitude **: `{"x": [0,103.5,76.55,12.01], "y": [0,99.1,350,12.01], "z": [0,1,0.2,3.41]}`
 
         Returns:
 
@@ -90,20 +90,51 @@ class CustomCoordinateSystem():
             else:
                 list_coordinates = [list(coordinate_list) for coordinate_list in zip(coordinates["x"], coordinates["y"])]
             converted_coordinates = self.serialize_coordinates(list_coordinates)
+        else:
+            raise ValueError("Coordiates must be a list of coordinate values or a dictionary with 'x', 'y', and optional 'z' keys.")
 
         if len(converted_coordinates[0]) == 2:
             return {
                 "latitude": [[coordinate[1]] for coordinate in converted_coordinates],
-                "longitude": [[coordinate[0]] for coordinate in converted_coordinates]
+                "longitude": [[coordinate[0]] for coordinate in converted_coordinates],
                 }
         return {
             "latitude": [[coordinate[1]] for coordinate in converted_coordinates],
             "longitude": [[coordinate[0]] for coordinate in converted_coordinates],
-            "altitude": [[coordinate[2]] for coordinate in converted_coordinates]
+            "altitude": [[coordinate[2]] for coordinate in converted_coordinates],
             }
     
     def serialize_arcs(self, path: list[list[list[float | int]]] | list[dict[str, list[float | int]]]):
-        pass
+        """
+        Serializes the given path in this coordinate system to a dictionary of the proper format.
+
+        Arguments:
+
+        * **`path`**: `[list[list[list[float | int]]] | list[dict[str, list[float | int]]]]` &rarr; The path coordinates to be serialized in this coordinate system in the format `[[[x1,y1],[x2,y2]],...]` or a list of dictionaries with "x", "y", and an optional "z" key with lists of values for all coordinates of an arc.
+            * ** Example List Type **: `[[[0,0],[103.5,99.1]],[[76.55,350],[12.01,12.01]]]`
+            * ** Example Dictionary Type with Altitude **: `[{"x": [0,103.5], "y": [0,99.1], "z": [0,1]}, {"x": [76.55,12.01], "y": [350,12.01], "z": [0.2,3.41]}]`
+
+        Returns:
+
+        * `[dict]` &rarr; The serialized location structure.    
+        """
+        converted_path = []
+        for arc in path:
+            if isinstance(arc, list):
+                converted_arc = self.serialize_coordinates(arc)
+            elif isinstance(arc, dict):
+                self.__validate_dict_coordinates__(arc)
+                if "z" in arc:
+                    list_coordinates = [list(coordinate_list) for coordinate_list in zip(arc["x"], arc["y"], arc["z"])]
+                else:
+                    list_coordinates = [list(coordinate_list) for coordinate_list in zip(arc["x"], arc["y"])]
+                converted_arc = self.serialize_coordinates(list_coordinates)
+            else:
+                raise ValueError("Arc must be a list of coordinates or a dictionary with 'x', 'y', and optional 'z' keys.")
+            converted_path.append(converted_arc)
+        return {
+            "path": converted_path,
+        }
 
     def __validate_list_coordinates__(self, coordinates: list[list[float | int]]):
         """
