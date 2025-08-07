@@ -141,5 +141,10 @@ class CustomCoordinateSystem():
             raise ValueError("Coordinates must contain 'x' and 'y' keys.")
         if len(coordinates["x"]) != len(coordinates["y"]):
             raise ValueError("The number of x and y values must match.")
-        if "z" in coordinates and len(coordinates["x"]) != len(coordinates["z"]):
-            raise ValueError("The number of z values must match x and y.")
+        if not (all(0 <= x <= self.length for x in coordinates["x"]) and all(0 <= y <= self.width for y in coordinates["y"])):
+            raise ValueError("The given x and y coordinates are out of range.")
+        if "z" in coordinates:
+            if len(coordinates["x"]) != len(coordinates["z"]):
+                raise ValueError("The number of z values must match x and y.")
+            if not all(0 <= z <= self.height for z in coordinates["z"]):
+                raise ValueError("The given z coordinates are out of range.")
