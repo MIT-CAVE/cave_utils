@@ -86,11 +86,12 @@ def list_out_of_range():
 # TODO: add test with path/arc
 bad_list_coordinates_tests = [list_missing_altitude, list_out_of_range]
 
-try:
-    for test in bad_list_coordinates_tests:
+for test in bad_list_coordinates_tests:
+    try:
         test()
-except ValueError as e:
-    success["bad_list_coordinates"] = True
+        break
+    except ValueError as e:
+        success["bad_list_coordinates"] = True
 
 def dict_missing_altitude():
     coordinate_system.__validate_dict_coordinates__({
@@ -113,13 +114,12 @@ def dict_out_of_range():
 # TODO: add test with path/arc
 bad_dict_coordinates_tests = [dict_missing_altitude, dict_missing_latitude, dict_out_of_range]
 
-try:
-    for test in bad_dict_coordinates_tests:
+for test in bad_dict_coordinates_tests:
+    try:
         test()
-except ValueError as e:
-    success["bad_dict_coordinates"] = True
-
-
+        break
+    except ValueError as e:
+        success["bad_dict_coordinates"] = True
 
 if all(success.values()):
     print("Custom Coordinates Tests: Passed!")
