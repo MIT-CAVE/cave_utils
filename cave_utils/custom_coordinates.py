@@ -119,6 +119,11 @@ class CustomCoordinateSystem():
         """
         if not (all(len(coord) == 2 for coord in coordinates) or all(len(coord) == 3 for coord in coordinates)):
             raise ValueError("Coordinates must be a list of lists that all have either two elements or three elements.")
+        for coordinate in coordinates:
+            if not (0 <= coordinate[0] <= self.length and 0 <= coordinate[1] <= self.width):
+                raise ValueError("The given x and y coordinates are out of range.")
+            if len(coordinate) == 3 and not (0 <= coordinate[2] <= self.height):
+                raise ValueError("The given z coordinates are out of range.")
 
     def __validate_dict_coordinates__(self, coordinates: dict[str, list[float | int]]):
         """
