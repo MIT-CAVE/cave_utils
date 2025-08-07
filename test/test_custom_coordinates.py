@@ -5,8 +5,8 @@ success = {
     "serialize_coordinates": False,
     "serialize_nodes": False,
     "serialize_arcs": False,
-    "validate_list_coordinates": False,
-    "validate_dict_coordinates": False,
+    "bad_list_coordinates": False,
+    "bad_dict_coordinates": False,
 }
 
 TOLERANCE = 0.1 # Expected coordinates are approximate
@@ -41,12 +41,12 @@ try:
     landscape_coordinates = {
         "x": [0, 72, 288, 396, 432, 504, 252],
         "y": [180, 180, 180, 180, 216, 108, 36],
-        "z": [0, 10, 5, 0, 0, 390.5, 123]
+        "z": [0, 1000, 5, 0, 0, 390.5, 123]
     }
     expected_landscape_location = {
         "latitude": [[0], [0], [0], [0], [21.95], [-41], [-66.5]],
         "longitude": [[-180], [-135], [0], [67.5], [90], [135], [-22.5]],
-        "altitude": [[0], [100], [50], [0], [0], [3905], [1230]]
+        "altitude": [[0], [10000], [50], [0], [0], [3905], [1230]]
     }
     actual_landscape_location = landscape_coordinate_system.serialize_nodes(landscape_coordinates)
 
@@ -77,7 +77,49 @@ except Exception as e:
     # print(f"Error: {e}")
     # raise e
 
-# TODO: validator tests
+coordinate_system = CustomCoordinateSystem(1000, 1000, 1000)
+
+def list_missing_altitude():
+    coordinate_system.__validate_list_coordinates__([[0, 0, 0], [103.5, 99.1, 23], [76.55, 350, 35], [12.01, 12.01]])
+def list_out_of_range():
+    coordinate_system.__validate_list_coordinates__([[0, 0, -1], [1030.5, 99.1, 23]])
+# TODO: add test with path/arc
+bad_list_coordinates_tests = [list_missing_altitude, list_out_of_range]
+
+try:
+    for test in bad_list_coordinates_tests:
+        test()
+except ValueError as e:
+    success["bad_list_coordinates"] = True
+
+def dict_missing_altitude():
+    coordinate_system.__validate_dict_coordinates__({
+    "x": [0, 103.5, 76.55, 12.01],
+    "y": [0, 99.1, 350, 12.01],
+    "z": [0, 1, 0.2]
+    })
+def dict_missing_latitude():
+    coordinate_system.__validate_dict_coordinates__({
+    "x": [0, 103.5, 76.55, 12.01],
+    "y": [0, 99.1, 12.01],
+    "z": [0, 1, 0.2, 36]
+    })
+def dict_out_of_range():
+    coordinate_system.__validate_list_coordinates__({
+    "x": [0, 103.5, 76.55, 12.01],
+    "y": [0, 99.1, 350, 12.01],
+    "z": [0, 120, -0.2, 36]
+    })
+# TODO: add test with path/arc
+bad_dict_coordinates_tests = [dict_missing_altitude, dict_missing_latitude, dict_out_of_range]
+
+try:
+    for test in bad_dict_coordinates_tests:
+        test()
+except ValueError as e:
+    success["bad_dict_coordinates"] = True
+
+
 
 if all(success.values()):
     print("Custom Coordinates Tests: Passed!")
