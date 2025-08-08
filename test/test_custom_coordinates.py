@@ -58,24 +58,64 @@ try:
     success["serialize_nodes"] = True
 
     # Portrait (height > width)
-    # TODO: change to arc example
-    portrait_coordinate_system = CustomCoordinateSystem(100, 200)
+    portrait_coordinate_system = CustomCoordinateSystem(100, 200, 200)
     success["init"] = True
 
-    portrait_coordinates = [[0, 0], [0, 100], [0, 125], [20, 100], [75, 125]]
-    expected_portrait_long_lat = [[-90, -85.05], [-90, 0], [-90, 41], [-54, 0], [45, 41]]
-    actual_portrait_long_lat = portrait_coordinate_system.serialize_coordinates(portrait_coordinates)
+    portrait_coordinates_list = [
+        [
+            [0, 0, 0],
+            [0, 100, 0]
+        ], 
+        [
+            [0, 125, 0],
+            [20, 100, 100],
+            [75, 125, 150]
+        ]
+    ]
+    portrait_coordinate_dict = [
+        {
+            "x": [0, 0],
+            "y": [0, 100],
+            "z": [0, 0]
+        },
+        {
+            "x": [0, 20, 75],
+            "y": [125, 100, 125],
+            "z": [0, 100, 150]
+        }
+    ]
+    expected_portrait_location = {
+        "path": [
+            [
+                [-90, -85.05, 0],
+                [-90, 0, 0]
+            ],
+            [
+                [-90, 41, 0],
+                [-54, 0, 5000],
+                [45, 41, 7500]
+            ]
+        ]
+    }
+    actual_portrait_location_list = portrait_coordinate_system.serialize_arcs(portrait_coordinates_list)
+    actual_portrait_location_dict = portrait_coordinate_system.serialize_arcs(portrait_coordinate_dict)
 
-    for index, actual_coordinate in enumerate(actual_portrait_long_lat):
-        expected_coordinate = expected_portrait_long_lat[index]
-        assert abs(actual_coordinate[0] - expected_coordinate[0]) < TOLERANCE
-        assert abs(actual_coordinate[1] - expected_coordinate[1]) < TOLERANCE
-
+    assert "path" in actual_portrait_location_list and "path" in actual_portrait_location_dict
+    assert len(expected_portrait_location["path"]) == len(actual_portrait_location_list["path"]) == len(actual_portrait_location_dict["path"])
+    for arc_index, arc in enumerate(expected_portrait_location["path"]):
+        assert len(expected_portrait_location["path"][arc_index]) == len(actual_portrait_location_list["path"][arc_index]) == len(actual_portrait_location_dict["path"][arc_index])
+        for coordinate_index, coordinate in enumerate(arc):
+            actual_coordinate_list = actual_portrait_location_list["path"][arc_index][coordinate_index]
+            actual_coordinate_dict = actual_portrait_location_dict["path"][arc_index][coordinate_index]
+            for index, expected_value in enumerate(coordinate):
+                assert abs(actual_coordinate_list[index] - expected_value) < TOLERANCE
+                assert abs(actual_coordinate_dict[index] - expected_value) < TOLERANCE
+    
+    success["serialize_arcs"] = True
 
 except Exception as e:
-    pass
-    # print(f"Error: {e}")
     # raise e
+    pass
 
 coordinate_system = CustomCoordinateSystem(1000, 1000, 1000)
 
@@ -83,15 +123,33 @@ def list_missing_altitude():
     coordinate_system.__validate_list_coordinates__([[0, 0, 0], [103.5, 99.1, 23], [76.55, 350, 35], [12.01, 12.01]])
 def list_out_of_range():
     coordinate_system.__validate_list_coordinates__([[0, 0, -1], [1030.5, 99.1, 23]])
-# TODO: add test with path/arc
-bad_list_coordinates_tests = [list_missing_altitude, list_out_of_range]
+def list_path_missing_altitude_1():
+    coordinate_system.serialize_arcs([[[0, 0, 0], [103.5, 99.1, 23]], [[76.55, 350], [12.01, 12.01, 12.01]]])
+def list_path_missing_altitude_2():
+    coordinate_system.serialize_arcs([[[0, 0, 0], [103.5, 99.1, 23]], [[76.55, 350], [12.01, 12.01]]])
+def list_path_out_of_range():
+    coordinate_system.serialize_arcs([[[0, 0, 0], [103.5, 99.1, 200]], [[76.55, 1000.1, 30], [12.01, 12.01, 30]]])
+bad_list_coordinates_tests = [
+    list_missing_altitude,
+    list_out_of_range,
+    list_path_missing_altitude_1,
+    list_path_missing_altitude_2,
+    list_path_out_of_range
+]
+
+all_list_tests_failed = True
 
 for test in bad_list_coordinates_tests:
     try:
         test()
+        all_list_tests_failed = False
+        # print(f"Test {test.__name__} passed unexpectedly.")
         break
     except ValueError as e:
-        success["bad_list_coordinates"] = True
+        continue
+
+if all_list_tests_failed:
+    success["bad_list_coordinates"] = True
 
 def dict_missing_altitude():
     coordinate_system.__validate_dict_coordinates__({
@@ -105,24 +163,75 @@ def dict_missing_latitude():
     "y": [0, 99.1, 12.01],
     "z": [0, 1, 0.2, 36]
     })
+def dict_missing_longitude():
+    coordinate_system.__validate_dict_coordinates__({
+    "x": [103.5, 76.55, 12.01],
+    "y": [0, 99.1, 350, 12.01],
+    "z": [0, 1, 0.2, 36]
+    })
 def dict_out_of_range():
     coordinate_system.__validate_list_coordinates__({
     "x": [0, 103.5, 76.55, 12.01],
     "y": [0, 99.1, 350, 12.01],
     "z": [0, 120, -0.2, 36]
     })
-# TODO: add test with path/arc
-bad_dict_coordinates_tests = [dict_missing_altitude, dict_missing_latitude, dict_out_of_range]
+def dict_path_missing_altitude_1():
+    coordinate_system.serialize_arcs([{
+        "x": [0, 103.5],
+        "y": [0, 99.1],
+        "z": [0, 23]
+    }, {
+        "x": [76.55, 12.01],
+        "y": [350, 12.01],
+        "z": [12.01]
+    }])
+def dict_path_missing_altitude_2():
+    coordinate_system.serialize_arcs([{
+        "x": [0, 103.5],
+        "y": [0, 99.1],
+        "z": [0, 23]
+    }, {
+        "x": [76.55, 12.01],
+        "y": [350, 12.01]
+    }])
+def dict_path_out_of_range():
+    coordinate_system.serialize_arcs([{
+        "x": [0, 103.5],
+        "y": [0, 99.1],
+        "z": [0, 200]
+    }, {
+        "x": [76.55, 12.01],
+        "y": [1000.1, 12.01],
+        "z": [30, 30]
+    }])
+bad_dict_coordinates_tests = [
+    dict_missing_altitude,
+    dict_missing_latitude,
+    dict_missing_longitude,
+    dict_out_of_range,
+    dict_path_missing_altitude_1,
+    dict_path_missing_altitude_2,
+    dict_path_out_of_range
+]
+all_dict_tests_failed = True
 
 for test in bad_dict_coordinates_tests:
     try:
         test()
+        all_dict_tests_failed = False
+        # print(f"Test {test.__name__} passed unexpectedly.")
         break
     except ValueError as e:
-        success["bad_dict_coordinates"] = True
+        continue
+
+if all_dict_tests_failed:
+    success["bad_dict_coordinates"] = True
 
 if all(success.values()):
     print("Custom Coordinates Tests: Passed!")
 else:
     print("Custom Coordinates Tests: Failed!")
     print(success)
+    raise Exception(
+            "Custom coordinates tests failed for one or more examples. Uncomment the print statements in test/custom_coordinates.py to see the errors."
+    )

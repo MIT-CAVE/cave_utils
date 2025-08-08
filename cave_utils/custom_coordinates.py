@@ -118,6 +118,16 @@ class CustomCoordinateSystem():
 
         * `[dict]` &rarr; The serialized location structure.    
         """
+        # Additional validation for paths
+        if isinstance(path[0], list):
+            flattened_path = [coordinate for arc in path for coordinate in arc]
+            self.__validate_list_coordinates__(flattened_path)
+        elif isinstance(path[0], dict):
+            if not all(len(arc) == len(path[0]) for arc in path):
+                raise ValueError("All arcs must have either two or three coordinate values.")
+        else:
+            raise ValueError("Path must be a list of arcs, where each arc is either a list of coordinates or a dictionary with 'x', 'y', and optional 'z' keys.")
+
         converted_path = []
         for arc in path:
             if isinstance(arc, list):
@@ -149,7 +159,7 @@ class CustomCoordinateSystem():
         * **`ValueError`** &rarr; If the coordinate data is not in the proper format.
         """
         if not (all(len(coord) == 2 for coord in coordinates) or all(len(coord) == 3 for coord in coordinates)):
-            raise ValueError("Coordinates must be a list of lists that all have either two elements or three elements.")
+            raise ValueError("Coordinates must all have either two elements or three elements.")
         for coordinate in coordinates:
             if not (0 <= coordinate[0] <= self.length and 0 <= coordinate[1] <= self.width):
                 raise ValueError("The given x and y coordinates are out of range.")
