@@ -2,6 +2,7 @@ from cave_utils import CustomCoordinateSystem
 
 success = {
     "init": False,
+    "bad_init": False,
     "serialize_coordinates": False,
     "serialize_nodes": False,
     "serialize_arcs": False,
@@ -116,6 +117,35 @@ try:
 except Exception as e:
     # raise e
     pass
+
+def bad_init_length():
+    CustomCoordinateSystem(0, 100)
+def bad_init_width():
+    CustomCoordinateSystem(250.05, -10)
+def bad_init_height():
+    CustomCoordinateSystem(100, 1, 0)
+def bad_init_multiple():
+    CustomCoordinateSystem(250, 0, -5)
+bad_init_tests = [
+    bad_init_length,
+    bad_init_width,
+    bad_init_height,
+    bad_init_multiple
+]
+
+all_bad_init_tests_failed = True
+
+for test in bad_init_tests:
+    try:
+        test()
+        all_bad_init_tests_failed = False
+        # print(f"Test {test.__name__} passed unexpectedly.")
+        break
+    except ValueError as e:
+        continue
+
+if all_bad_init_tests_failed:
+    success["bad_init"] = True
 
 coordinate_system = CustomCoordinateSystem(1000, 1000, 1000)
 
