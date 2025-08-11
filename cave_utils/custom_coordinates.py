@@ -11,9 +11,9 @@ class CustomCoordinateSystem():
 
         Arguments:
 
-        * **`length`**: `[float | int]` &rarr; The maximum x value of this coordinate system.
-        * **`width`**: `[float | int]` &rarr; The maximum y value of this coordinate system.
-        * **`height`**: `[float | int]` = `10000` &rarr; The maximum z value of this coordinate system.
+        * **`length`**: `[float | int]` &rarr; The maximum x value of this coordinate system. Must be greater than 0.
+        * **`width`**: `[float | int]` &rarr; The maximum y value of this coordinate system. Must be greater than 0.
+        * **`height`**: `[float | int]` = `10000` &rarr; The maximum z value of this coordinate system. Must be greater than 0.
 
         Returns:
 
@@ -24,6 +24,7 @@ class CustomCoordinateSystem():
         self.height = height
         self.radius = max(length, width) / (2 * math.pi)
         self.margin = abs(length - width) / 2
+        self.__validate_coordinate_system__()
 
     def serialize_coordinates(self, coordinates: list[list[float | int]]):
         """
@@ -145,6 +146,17 @@ class CustomCoordinateSystem():
         return {
             "path": converted_path,
         }
+    
+    def __validate_coordinate_system__(self):
+        """
+        Validates that the coordinate system has been initialized with valid dimensions (>0).
+
+        Raises:
+
+        * **`ValueError`** &rarr; If the coordinate system dimensions are invalid.
+        """
+        if self.length <= 0 or self.width <= 0 or self.height <= 0:
+            raise ValueError("Length, width, and height must be positive.")
 
     def __validate_list_coordinates__(self, coordinates: list[list[float | int]]):
         """
