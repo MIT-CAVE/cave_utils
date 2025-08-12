@@ -11,6 +11,7 @@ echo "from .socket import Socket" >> cave_utils/__init__.py
 echo "from .api_utils.validator import Validator" >> cave_utils/__init__.py
 echo "from .arguments import Arguments" >> cave_utils/__init__.py
 echo "from .geo_utils import GeoUtils" >> cave_utils/__init__.py
+echo "from .custom_coordinates import CustomCoordinateSystem" >> cave_utils/__init__.py
 
 
 # Specify versions for documentation purposes
