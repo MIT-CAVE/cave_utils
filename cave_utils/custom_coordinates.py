@@ -117,7 +117,7 @@ class CustomCoordinateSystem():
 
         Returns:
 
-        * `[dict]` &rarr; The serialized location structure.    
+        * `[dict]` &rarr; The serialized location structure.
         """
         # Additional validation for paths
         if isinstance(path[0], list):
@@ -146,6 +146,22 @@ class CustomCoordinateSystem():
         return {
             "path": converted_path,
         }
+
+    def serialize_geojson(self, shapes: list[list[list[float | int]]] | list[dict[str, list[float | int]]]):
+        """
+        Serializes the given GeoJSON shapes in this coordinate system to a dictionary of the proper format.
+
+        Arguments:
+
+        * **`shape`**: `[list[list[list[float | int]]] | list[dict[str, list[float | int]]]]` &rarr; The shape coordinates to be serialized in this coordinate system in the format `[[[x1,y1],[x2,y2]],...]` or a list of dictionaries with "x", "y", and an optional "z" key with lists of values for all coordinates of a shape.
+            * ** Example List Type **: `[[[0,0],[0,100],[100,100],[100,0],[0,0]],[[150,0],[160,0],[157.5,10],[150,0]]]]`
+            * ** Example Dictionary Type with Altitude **: `[{"x": [0,0,100,100,0], "y": [0,100,100,0,0], "z": [0,100,100,0,0]}, {"x": [150,160,157.5,150], "y": [0,0,10,0], "z": [0,0,0,0]}]`
+
+        Returns:
+
+        * `[dict]` &rarr; The serialized location structure.
+        """
+        return self.serialize_arcs(shapes)
     
     def __validate_coordinate_system__(self):
         """
