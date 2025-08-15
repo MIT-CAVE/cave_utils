@@ -70,7 +70,7 @@ class CustomCoordinateSystem():
 
     def serialize_nodes(self, coordinates: list[list[float | int]] | dict[str, list[float | int]]):
         """
-        Serialize the given node coordinates in this coordinate system to a dictionary of the proper format.
+        Serialize the given node coordinates in this coordinate system to a dictionary of the proper format to be used under `mapFeatures.data.*.data.location`.
 
         Arguments:
 
@@ -107,7 +107,7 @@ class CustomCoordinateSystem():
     
     def serialize_arcs(self, path: list[list[list[float | int]]] | list[dict[str, list[float | int]]]):
         """
-        Serializes the given path in this coordinate system to a dictionary of the proper format.
+        Serializes the given path in this coordinate system to a dictionary of the proper format to be used under `mapFeatures.data.*.data.location`.
 
         Arguments:
 
@@ -147,21 +147,23 @@ class CustomCoordinateSystem():
             "path": converted_path,
         }
 
-    def serialize_geojson(self, shapes: list[list[list[float | int]]] | list[dict[str, list[float | int]]]):
+    def serialize_geojson(self, geoJsonLayer: str, geoJsonProp: str, geoJsonValue: list[str]):
         """
-        Serializes the given GeoJSON shapes in this coordinate system to a dictionary of the proper format.
+        Serializes the given GeoJSON object in this coordinate system to a dictionary of the proper format to be used under `mapFeatures.data.*.data.location`.
 
         Arguments:
 
-        * **`shape`**: `[list[list[list[float | int]]] | list[dict[str, list[float | int]]]]` &rarr; The shape coordinates to be serialized in this coordinate system in the format `[[[x1,y1],[x2,y2]],...]` or a list of dictionaries with "x", "y", and an optional "z" key with lists of values for all coordinates of a shape.
-            * ** Example List Type **: `[[[0,0],[0,100],[100,100],[100,0],[0,0]],[[150,0],[160,0],[157.5,10],[150,0]]]]`
-            * ** Example Dictionary Type with Altitude **: `[{"x": [0,0,100,100,0], "y": [0,100,100,0,0], "z": [0,100,100,0,0]}, {"x": [150,160,157.5,150], "y": [0,0,10,0], "z": [0,0,0,0]}]`
+        * **`geoJsonLayer`**: `[str]` &rarr; The URL of the GeoJSON layer to use.
+            * ** Note **: Must be a FeatureCollection
+        * **`geoJsonProp`**: `[str]` &rarr;
+            * The `properties` key (from the object fetched from the `geoJsonLayer` URL) to match with `geoJsonValue`.
+        * **`geoJsonValue`**: `list[str]` &rarr; A list of geoJsonValue keys that correspond to `geoJsonProp`.
 
         Returns:
 
         * `[dict]` &rarr; The serialized location structure.
         """
-        return self.serialize_arcs(shapes)
+        pass
     
     def __validate_coordinate_system__(self):
         """
