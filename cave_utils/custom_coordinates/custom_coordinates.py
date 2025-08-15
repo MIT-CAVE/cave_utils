@@ -159,6 +159,10 @@ class CustomCoordinateSystem():
         * **`geoJsonProp`**: `[str]` &rarr;
             * The `properties` key (from the object fetched from the `geoJsonLayer` URL) to match with `geoJsonValue`.
         * **`geoJsonValue`**: `list[str]` &rarr; A list of geoJsonValue keys that correspond to `geoJsonProp`.        
+            * ** Note **: All corresponding geometries must be of similar type:
+                * `Point` and `MultiPoint`
+                * `LineString` and `MultiLineString`
+                * `Polygon` and `MultiPolygon`
 
         Returns:
 
@@ -168,12 +172,30 @@ class CustomCoordinateSystem():
         if geojson_object["type"] != "FeatureCollection":
             raise ValueError("geoJsonLayer must be a FeatureCollection.")
         
-        requested_geometries = set()
+        requested_geometries = []
         for feature in geojson_object["features"]:
             if geoJsonProp in feature["properties"] and feature["properties"][geoJsonProp] in geoJsonValue:
-                pass
+                requested_geometries.append(feature["geometry"])
+        
+        requested_geometry_types = { geometry["type"] for geometry in requested_geometries }
+        if requested_geometry_types.issubset({ "Point", "MultiPoint" }):
+            return self.serialize_geojson_points(requested_geometries)
+        elif requested_geometry_types.issubset({ "LineString", "MultiLineString" }):
+            return self.serialize_geojson_lines(requested_geometries)
+        elif requested_geometry_types.issubset({ "Polygon", "MultiPolygon" }):
+            return self.serialize_geojson_polygons(requested_geometries)
+        else:
+            raise ValueError(f"Requested geometries must be of similar type but got {requested_geometry_types}.")
+
+    def serialize_geojson_points(self, geometries: list[dict[str]]):
         pass
-    
+
+    def serialize_geojson_lines(self, geometries: list[dict[str]]):
+        pass
+
+    def serialize_geojson_polygons(self, geometries: list[dict[str]]):
+        pass
+
     def __validate_coordinate_system__(self):
         """
         Validates that the coordinate system has been initialized with valid dimensions (>0).
@@ -228,3 +250,15 @@ class CustomCoordinateSystem():
                 raise ValueError("The number of z values must match x and y.")
             if not all(0 <= z <= self.height for z in coordinates["z"]):
                 raise ValueError("The given z coordinates are out of range.")
+
+s = [
+    {
+        "type": "Polygon"
+    },
+    {
+        "type": "Polygon"
+    }
+]
+
+types = { geometry["type"] for geometry in s }
+print(types)
