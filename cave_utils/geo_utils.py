@@ -81,6 +81,7 @@ class GeoUtils:
                     "longitude": item["destination_longitudes"],
                 },
                 output_coordinate_path="list_of_lists_long_first",
+                cache=True,
                 **kwargs,
             )
             # Append the calculated path to the features list in GeoJSON format
