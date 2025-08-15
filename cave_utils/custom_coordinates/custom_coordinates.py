@@ -188,12 +188,34 @@ class CustomCoordinateSystem():
             raise ValueError(f"Requested geometries must be of similar type but got {requested_geometry_types}.")
 
     def serialize_geojson_points(self, geometries: list[dict[str]]):
-        pass
+        """
+        Serializes the given GeoJSON-format geometries in this coordinate system to a dictionary of the proper format to be used under `mapFeatures.data.*.data.location`.
+
+        Arguments:
+
+        * **`geometries`**: `list[dict[str]]` &rarr; The point GeoJSON geometries to serialize.
+
+        Returns:
+
+        * `[dict]` &rarr; The serialized location structure.
+        """
+        point_coordinates = []
+        for geometry in geometries:
+            if geometry["type"] == "Point":
+                point_coordinates.append(geometry["coordinates"])
+            elif geometry["type"] == "MultiPoint":
+                for coordinate in geometry["coordinates"]:
+                    point_coordinates.append(coordinate)
+            else:
+                raise ValueError("Geometries must all have type Point or MultiPoint.")
+        return self.serialize_nodes(point_coordinates)
 
     def serialize_geojson_lines(self, geometries: list[dict[str]]):
+        # validate coords
         pass
 
     def serialize_geojson_polygons(self, geometries: list[dict[str]]):
+        # validate coords
         pass
 
     def __validate_coordinate_system__(self):
@@ -250,15 +272,3 @@ class CustomCoordinateSystem():
                 raise ValueError("The number of z values must match x and y.")
             if not all(0 <= z <= self.height for z in coordinates["z"]):
                 raise ValueError("The given z coordinates are out of range.")
-
-s = [
-    {
-        "type": "Polygon"
-    },
-    {
-        "type": "Polygon"
-    }
-]
-
-types = { geometry["type"] for geometry in s }
-print(types)
