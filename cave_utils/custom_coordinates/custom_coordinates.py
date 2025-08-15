@@ -1,5 +1,6 @@
 import math
 import type_enforced
+import requests
 
 class CustomCoordinateSystem():
     @type_enforced.Enforcer
@@ -157,12 +158,20 @@ class CustomCoordinateSystem():
             * ** Note **: Must be a FeatureCollection
         * **`geoJsonProp`**: `[str]` &rarr;
             * The `properties` key (from the object fetched from the `geoJsonLayer` URL) to match with `geoJsonValue`.
-        * **`geoJsonValue`**: `list[str]` &rarr; A list of geoJsonValue keys that correspond to `geoJsonProp`.
+        * **`geoJsonValue`**: `list[str]` &rarr; A list of geoJsonValue keys that correspond to `geoJsonProp`.        
 
         Returns:
 
         * `[dict]` &rarr; The serialized location structure.
         """
+        geojson_object = requests.get(geoJsonLayer)
+        if geojson_object["type"] != "FeatureCollection":
+            raise ValueError("geoJsonLayer must be a FeatureCollection.")
+        
+        requested_geometries = set()
+        for feature in geojson_object["features"]:
+            if geoJsonProp in feature["properties"] and feature["properties"][geoJsonProp] in geoJsonValue:
+                pass
         pass
     
     def __validate_coordinate_system__(self):
