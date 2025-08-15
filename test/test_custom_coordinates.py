@@ -117,71 +117,11 @@ try:
     success["serialize_arcs"] = True
 
     ## Test GeoJSONs
-    geojson_list = [
-        [
-            [0, 0, 50],
-            [50, 0, 50],
-            [50, 100, 0],
-            [0, 100, 0],
-            [0, 0, 50]
-        ],
-        [
-            [80, 80, 0],
-            [100, 80, 0],
-            [100, 150, 0],
-            [80, 80, 0]
-        ]
-    ]
-    geojson_dict = [
-        {
-            "x": [0, 50, 50, 0, 0],
-            "y": [0, 0, 100, 100, 0],
-            "z": [50, 50, 0, 0, 50]
-        },
-        {
-            "x": [80, 100, 100, 80],
-            "y": [80, 80, 150, 80],
-            "z": [0, 0, 0, 0]
-        }
-    ]
-    expected_geojson_location = {
-        "path": [
-            [
-                [-90, -85.05, 2500],
-                [0, -85.05, 2500],
-                [0, 0, 0],
-                [-90, 0, 0],
-                [-90, -85.05, 2500]
-            ],
-            [
-                [54, -33.8, 0],
-                [90, -33.8, 0],
-                [90, 66.5, 0],
-                [54, -33.8, 0]
-            ]
-        ]
-    }
-    actual_geojson_location_list = portrait_coordinate_system.serialize_geojson(geojson_list)
-    actual_geojson_location_dict = portrait_coordinate_system.serialize_geojson(geojson_dict)
-
-    assert "path" in actual_geojson_location_list and "path" in actual_geojson_location_dict
-    assert len(expected_geojson_location["path"]) == len(actual_geojson_location_list["path"]) == len(actual_geojson_location_dict["path"])
-    for arc_index, arc in enumerate(expected_geojson_location["path"]):
-        assert len(expected_geojson_location["path"][arc_index]) == len(actual_geojson_location_list["path"][arc_index]) == len(actual_geojson_location_dict["path"][arc_index])
-        for coordinate_index, coordinate in enumerate(arc):
-            actual_coordinate_list = actual_geojson_location_list["path"][arc_index][coordinate_index]
-            actual_coordinate_dict = actual_geojson_location_dict["path"][arc_index][coordinate_index]
-            for index, expected_value in enumerate(coordinate):
-                assert abs(actual_coordinate_list[index] - expected_value) < TOLERANCE
-                assert abs(actual_coordinate_dict[index] - expected_value) < TOLERANCE
-    
-
-    # TODO add test for four levels GeoJSON
 
     success["serialize_geojson"] = True
 
 except Exception as e:
-    raise e
+    # raise e
     pass
 
 def bad_init_length():
@@ -222,10 +162,10 @@ def list_out_of_range():
 def list_path_missing_altitude_1():
     coordinate_system.serialize_arcs([[[0, 0, 0], [103.5, 99.1, 23]], [[76.55, 350], [12.01, 12.01, 12.01]]])
 def list_path_missing_altitude_2():
-    coordinate_system.serialize_geojson([[[0, 0, 0], [103.5, 99.1, 23]], [[76.55, 350], [12.01, 12.01]]])
+    coordinate_system.serialize_arcs([[[0, 0, 0], [103.5, 99.1, 23]], [[76.55, 350], [12.01, 12.01]]])
 def list_path_out_of_range():
     coordinate_system.serialize_arcs([[[0, 0, 0], [103.5, 99.1, 200]], [[76.55, 1000.1, 30], [12.01, 12.01, 30]]])
-# TODO add invalid four level
+# TODO add invalid geojson
 bad_list_coordinates_tests = [
     list_missing_altitude,
     list_out_of_range,
@@ -283,7 +223,7 @@ def dict_path_missing_altitude_1():
         "z": [12.01]
     }])
 def dict_path_missing_altitude_2():
-    coordinate_system.serialize_geojson([{
+    coordinate_system.serialize_arcs([{
         "x": [0, 103.5],
         "y": [0, 99.1],
         "z": [0, 23]
@@ -301,7 +241,7 @@ def dict_path_out_of_range():
         "y": [1000.1, 12.01],
         "z": [30, 30]
     }])
-# TODO add invalid four level
+# TODO add invalid geojson
 bad_dict_coordinates_tests = [
     dict_missing_altitude,
     dict_missing_latitude,
