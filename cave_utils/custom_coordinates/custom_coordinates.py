@@ -193,7 +193,8 @@ class CustomCoordinateSystem():
 
         Arguments:
 
-        * **`geometries`**: `list[dict[str]]` &rarr; The point GeoJSON geometries to serialize.
+        * **`geometries`**: `list[dict[str]]` &rarr; The GeoJSON geometries to serialize.
+            * ** Note **: Geometry types must be either `Point` or `MultiPoint`
 
         Returns:
 
@@ -211,11 +212,33 @@ class CustomCoordinateSystem():
         return self.serialize_nodes(point_coordinates)
 
     def serialize_geojson_lines(self, geometries: list[dict[str]]):
-        # validate coords
+        """
+        Serializes the given GeoJSON-format geometries in this coordinate system to a dictionary of the proper format to be used under `mapFeatures.data.*.data.location`.
+
+        Arguments:
+
+        * **`geometries`**: `list[dict[str]]` &rarr; The GeoJSON geometries to serialize.
+            * ** Note **: Geometry types must be either `LineString` or `MultiLineString`
+
+        Returns:
+
+        * `[dict]` &rarr; The serialized location structure.
+        """
         pass
 
     def serialize_geojson_polygons(self, geometries: list[dict[str]]):
-        # validate coords
+        """
+        Serializes the given GeoJSON-format geometries in this coordinate system to a dictionary of the proper format to be used under `mapFeatures.data.*.data.location`.
+
+        Arguments:
+
+        * **`geometries`**: `list[dict[str]]` &rarr; The GeoJSON geometries to serialize.
+            * ** Note **: Geometry types must be either `Polygon` or `MultiPolygon`
+
+        Returns:
+
+        * `[dict]` &rarr; The serialized location structure.
+        """
         pass
 
     def __validate_coordinate_system__(self):
