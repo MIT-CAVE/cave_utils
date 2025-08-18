@@ -117,6 +117,82 @@ try:
     success["serialize_arcs"] = True
 
     ## Test GeoJSONs
+    geojson_coordinate_system = CustomCoordinateSystem(200, 100, 100)
+    point_geojson_url = "https://raw.githubusercontent.com/MIT-CAVE/cave_app_extras/refs/heads/main/example_data/custom_coordinates_test_geojsons/points.geojson"
+    line_geojson_url = "https://raw.githubusercontent.com/MIT-CAVE/cave_app_extras/refs/heads/main/example_data/custom_coordinates_test_geojsons/lines.geojson"
+    all_geojson_url = "https://raw.githubusercontent.com/MIT-CAVE/cave_app_extras/refs/heads/main/example_data/custom_coordinates_test_geojsons/all.geojson"
+    expected_point_geojson_location = {
+        "latitude": [[-12.15], [-65], [0], [-66.5], [-47.4], [-17.7]],
+        "longitude": [[-90], [-12.2], [-155.7], [-180], [90], [0]]
+    }
+    expected_line_geojson_location = {
+        "path": [
+            [
+                [-152.1, -66.5], [-144, -41], [-135, -47.4]
+            ],
+            [
+                [-180, 53.2], [-162, 0]
+            ],
+            [
+                [-180, 0], [-162, -53.2]
+            ]
+        ]
+    }
+    expected_all_geojson_location = {
+        "path": [
+            [
+                [-72, -17.7, 0],
+                [-18, 47.4, 0],
+                [-144, 47.4, 0],
+                [-72, -17.7, 0]
+            ],
+            [
+                [0, 0, 5000],
+                [-108, -58.2, 5000],
+                [-162, -47.4, 5000],
+                [-171, 66.5, 5000],
+                [0, 0, 5000]
+            ]
+        ]
+    }
+    actual_point_geojson_location = geojson_coordinate_system.serialize_geojson(
+        point_geojson_url,
+        "id",
+        ["multi1", "single", "multi2"]
+        )
+    actual_line_geojson_location = geojson_coordinate_system.serialize_geojson(
+        line_geojson_url,
+        "length",
+        ["short", "long"]
+    )
+    actual_all_geojson_location = geojson_coordinate_system.serialize_geojson(
+        all_geojson_url,
+        "id",
+        ["multipolygon"]
+    )
+
+    for key in expected_point_geojson_location:
+        assert key in actual_point_geojson_location
+        for index, value in enumerate(expected_point_geojson_location[key]):
+            assert abs(actual_point_geojson_location[key][index][0] - value[0]) < TOLERANCE
+
+    assert "path" in actual_line_geojson_location
+    assert len(expected_line_geojson_location["path"]) == len(actual_line_geojson_location["path"])
+    for arc_index, arc in enumerate(expected_line_geojson_location["path"]):
+        assert len(expected_line_geojson_location["path"][arc_index]) == len(actual_line_geojson_location["path"][arc_index])
+        for coordinate_index, coordinate in enumerate(arc):
+            actual_coordinate = actual_line_geojson_location["path"][arc_index][coordinate_index]
+            for index, expected_value in enumerate(coordinate):
+                assert abs(actual_coordinate[index] - expected_value) < TOLERANCE
+
+    assert "path" in actual_all_geojson_location
+    assert len(expected_all_geojson_location["path"]) == len(actual_all_geojson_location["path"])
+    for arc_index, arc in enumerate(expected_all_geojson_location["path"]):
+        assert len(expected_all_geojson_location["path"][arc_index]) == len(actual_all_geojson_location["path"][arc_index])
+        for coordinate_index, coordinate in enumerate(arc):
+            actual_coordinate = actual_all_geojson_location["path"][arc_index][coordinate_index]
+            for index, expected_value in enumerate(coordinate):
+                assert abs(actual_coordinate[index] - expected_value) < TOLERANCE
 
     success["serialize_geojson"] = True
 
@@ -153,25 +229,28 @@ for test in bad_init_tests:
 if all_bad_init_tests_failed:
     success["bad_init"] = True
 
-coordinate_system = CustomCoordinateSystem(1000, 1000, 1000)
+coordinate_system = CustomCoordinateSystem(100, 1000, 1000)
 
 def list_missing_altitude():
-    coordinate_system.__validate_list_coordinates__([[0, 0, 0], [103.5, 99.1, 23], [76.55, 350, 35], [12.01, 12.01]])
+    coordinate_system.__validate_list_coordinates__([[0, 0, 0], [93.5, 99.1, 23], [76.55, 350, 35], [12.01, 12.01]])
 def list_out_of_range():
-    coordinate_system.__validate_list_coordinates__([[0, 0, -1], [1030.5, 99.1, 23]])
+    coordinate_system.__validate_list_coordinates__([[0, 0, -1], [930.5, 99.1, 23]])
 def list_path_missing_altitude_1():
-    coordinate_system.serialize_arcs([[[0, 0, 0], [103.5, 99.1, 23]], [[76.55, 350], [12.01, 12.01, 12.01]]])
+    coordinate_system.serialize_arcs([[[0, 0, 0], [93.5, 99.1, 23]], [[76.55, 350], [12.01, 12.01, 12.01]]])
 def list_path_missing_altitude_2():
-    coordinate_system.serialize_arcs([[[0, 0, 0], [103.5, 99.1, 23]], [[76.55, 350], [12.01, 12.01]]])
+    coordinate_system.serialize_arcs([[[0, 0, 0], [93.5, 99.1, 23]], [[76.55, 350], [12.01, 12.01]]])
 def list_path_out_of_range():
-    coordinate_system.serialize_arcs([[[0, 0, 0], [103.5, 99.1, 200]], [[76.55, 1000.1, 30], [12.01, 12.01, 30]]])
+    coordinate_system.serialize_arcs([[[0, 0, 0], [93.5, 99.1, 200]], [[76.55, 1000.1, 30], [12.01, 12.01, 30]]])
+def list_invalid_geojson():
+    coordinate_system.serialize_geojson(all_geojson_url, "id", ["bad"])
 # TODO add invalid geojson
 bad_list_coordinates_tests = [
     list_missing_altitude,
     list_out_of_range,
     list_path_missing_altitude_1,
     list_path_missing_altitude_2,
-    list_path_out_of_range
+    list_path_out_of_range,
+    list_invalid_geojson
 ]
 
 all_list_tests_failed = True
@@ -207,7 +286,7 @@ def dict_missing_longitude():
     "z": [0, 1, 0.2, 36]
     })
 def dict_out_of_range():
-    coordinate_system.__validate_list_coordinates__({
+    coordinate_system.__validate_dict_coordinates__({
     "x": [0, 103.5, 76.55, 12.01],
     "y": [0, 99.1, 350, 12.01],
     "z": [0, 120, -0.2, 36]
