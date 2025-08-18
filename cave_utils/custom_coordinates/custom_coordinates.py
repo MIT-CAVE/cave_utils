@@ -205,8 +205,8 @@ class CustomCoordinateSystem():
             if geometry["type"] == "Point":
                 point_coordinates.append(geometry["coordinates"])
             elif geometry["type"] == "MultiPoint":
-                for coordinate in geometry["coordinates"]:
-                    point_coordinates.append(coordinate)
+                for point_coordinate in geometry["coordinates"]:
+                    point_coordinates.append(point_coordinate)
             else:
                 raise ValueError("Geometries must all have type Point or MultiPoint.")
         return self.serialize_nodes(point_coordinates)
@@ -229,8 +229,8 @@ class CustomCoordinateSystem():
             if geometry["type"] == "LineString":
                 line_coordinates.append(geometry["coordinates"])
             elif geometry["type"] == "MultiLineString":
-                for coordinate in geometry["coordinates"]:
-                    line_coordinates.append(coordinate)
+                for line_coordinate in geometry["coordinates"]:
+                    line_coordinates.append(line_coordinate)
             else:
                 raise ValueError("Geometries must all have type LineString or MultiLineString.")
         return self.serialize_arcs(line_coordinates)
@@ -242,13 +242,24 @@ class CustomCoordinateSystem():
         Arguments:
 
         * **`geometries`**: `list[dict[str]]` &rarr; The GeoJSON geometries to serialize.
-            * ** Note **: Geometry types must be either `Polygon` or `MultiPolygon`
+            * ** Notes **:
+                * Geometry types must be either `Polygon` or `MultiPolygon`
+                * Polygon holes are not fully supported; two separate polygons will be displayed instead.
 
         Returns:
 
         * `[dict]` &rarr; The serialized location structure.
         """
-        pass
+        polygon_coordinates = []
+        for geometry in geometries:
+            if geometry["type"] == "Polygon":
+                polygon_coordinates.extend(geometry["coordinates"])
+            elif geometry["type"] == "MultiPolygon":
+                for polygon_coordinate in geometry["coordinates"]:
+                    polygon_coordinates.extend(polygon_coordinate)
+            else:
+                raise ValueError("Geometries must all have type Polygon or MultiPolygon.")
+        return self.serialize_arcs(polygon_coordinates)
 
     def __validate_coordinate_system__(self):
         """
