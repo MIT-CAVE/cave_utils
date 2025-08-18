@@ -224,7 +224,16 @@ class CustomCoordinateSystem():
 
         * `[dict]` &rarr; The serialized location structure.
         """
-        pass
+        line_coordinates = []
+        for geometry in geometries:
+            if geometry["type"] == "LineString":
+                line_coordinates.append(geometry["coordinates"])
+            elif geometry["type"] == "MultiLineString":
+                for coordinate in geometry["coordinates"]:
+                    line_coordinates.append(coordinate)
+            else:
+                raise ValueError("Geometries must all have type LineString or MultiLineString.")
+        return self.serialize_arcs(line_coordinates)
 
     def serialize_geojson_polygons(self, geometries: list[dict[str]]):
         """
