@@ -2,8 +2,8 @@ import math
 import type_enforced
 import requests
 
+@type_enforced.Enforcer
 class CustomCoordinateSystem():
-    @type_enforced.Enforcer
     def __init__(self, length: float | int, width: float | int, height: float | int = 10000):
         """
         Creates a custom 2D or 3D Cartesian coordinate system with the origin (0, 0) located at the bottom-left
