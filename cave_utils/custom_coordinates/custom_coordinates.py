@@ -168,7 +168,7 @@ class CustomCoordinateSystem():
 
         * `[dict]` &rarr; The serialized location structure.
         """
-        geojson_object = requests.get(geoJsonLayer)
+        geojson_object = requests.get(geoJsonLayer).json()
         if geojson_object["type"] != "FeatureCollection":
             raise ValueError("geoJsonLayer must be a FeatureCollection.")
         
