@@ -224,7 +224,7 @@ class CustomCoordinateSystem():
         else:
             raise ValueError(f"Requested geometries must be of similar type but got {requested_geometry_types}.")
 
-    def serialize_geojson_points(self, geometries: list[dict[str, str | list[float | int] | list[list[float | int]]]]):
+    def __serialize_geojson_points__(self, geometries: list[dict[str, str | list[float | int] | list[list[float | int]]]]):
         """
         Serializes the given GeoJSON-format geometries in this coordinate system to a dictionary of the proper format to be used under `mapFeatures.data.*.data.location`.
 
@@ -248,7 +248,7 @@ class CustomCoordinateSystem():
                 raise ValueError("Geometries must all have type Point or MultiPoint.")
         return self.serialize_nodes(point_coordinates)
 
-    def serialize_geojson_lines(self, geometries: list[dict[str, str | list[list[float | int]] | list[list[list[float | int]]]]]):
+    def __serialize_geojson_lines__(self, geometries: list[dict[str, str | list[list[float | int]] | list[list[list[float | int]]]]]):
         """
         Serializes the given GeoJSON-format geometries in this coordinate system to a dictionary of the proper format to be used under `mapFeatures.data.*.data.location`.
 
@@ -272,7 +272,7 @@ class CustomCoordinateSystem():
                 raise ValueError("Geometries must all have type LineString or MultiLineString.")
         return self.serialize_arcs(line_coordinates)
 
-    def serialize_geojson_polygons(self, geometries: list[dict[str, str | list[list[list[float | int]]] | list[list[list[list[float | int]]]]]]):
+    def __serialize_geojson_polygons__(self, geometries: list[dict[str, str | list[list[list[float | int]]] | list[list[list[list[float | int]]]]]]):
         """
         Serializes the given GeoJSON-format geometries in this coordinate system to a dictionary of the proper format to be used under `mapFeatures.data.*.data.location`.
 
