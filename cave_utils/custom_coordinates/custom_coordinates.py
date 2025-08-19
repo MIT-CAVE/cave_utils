@@ -1,6 +1,4 @@
-import math
-import type_enforced
-import requests
+import type_enforced, math, requests, re, json
 
 @type_enforced.Enforcer
 class CustomCoordinateSystem():
@@ -147,8 +145,47 @@ class CustomCoordinateSystem():
         return {
             "path": converted_path,
         }
+    
+    def convert_geojson(self, geoJsonLayer: str):
+        """
+        Converts the coordinates of the given GeoJSON object using this coordinate system to a longitude-latitdue-altitude system and writes the new object to a file.
 
-    def serialize_geojson(self, geoJsonLayer: str, geoJsonProp: str, geoJsonValue: list[str]):
+        Arguments:
+        * **`geoJsonLayer`**: `[str]` &rarr; The URL or file of the GeoJSON layer to use.
+
+        Returns:
+
+        * `[None]`
+        """
+        url_regex = r"^https?:\/\/.*"
+        if re.search(url_regex, geoJsonLayer):
+            geojson_object = requests.get(geoJsonLayer).json()
+        else:
+            with open(geoJsonLayer, "r") as f:
+                geojson_object = json.load(f)
+
+        if geojson_object["type"] == "FeatureCollection":
+            for feature in geojson_object["features"]:
+                self.convert_coordinates(feature["geometry"]["coordinates"])
+        elif geojson_object["type"] == "Feature":
+            self.convert_coordinates(geojson_object["geometry"]["coordinates"])
+        else:
+            self.convert_coordinates(geojson_object["coordinates"])
+
+    def convert_coordinates(self, coordinates: list):
+        """
+        Converts the coordinates in this coordinate system to a longitude-latitude-altitude system. Directly mutates the input.
+
+        Arguments:
+        * **`coordinates`**: `[list]` &rarr; The coordinates. No limit to nesting.
+
+        Returns:
+
+        * `[None]`
+        """
+        pass
+
+    def __serialize_geojson__(self, geoJsonLayer: str, geoJsonProp: str, geoJsonValue: list[str]):
         """
         Serializes the given GeoJSON object in this coordinate system to a dictionary of the proper format to be used under `mapFeatures.data.*.data.location`.
 
