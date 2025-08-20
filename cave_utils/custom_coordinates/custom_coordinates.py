@@ -25,6 +25,20 @@ class CustomCoordinateSystem():
         self.margin = abs(length - width) / 2
         self.__validate_coordinate_system__()
 
+    def convert_coordinate(self, coordinate: list[float | int]):
+        """
+        Converts the given coordinate in this coordinate system to a longitude-latitude-altitude system. Directly mutates the input.
+
+        Arguments:
+
+        * **`coordinate`**: `list[float | int]` &rarr; The coordinate to be converted in this coordinate system in the format `[x,y,(optional z)]`.
+
+        Returns:
+
+        * `[None]`
+        """
+        pass
+
     def serialize_coordinates(self, coordinates: list[list[float | int]]):
         """
         Serializes (x, y, z) coordinates in this coordinate system to a longitude-latitude-altitude system.
@@ -39,7 +53,7 @@ class CustomCoordinateSystem():
 
         Returns:
 
-        * `[list[list[float | int]]]` &rarr; The converted coordinates in the format `[[long1,lat1,(possible alt1)],[long2,lat2,(possible alt2)],...]` .
+        * `[list[list[float | int]]]` &rarr; The converted coordinates in the format `[[long1,lat1,(possible alt1)],[long2,lat2,(possible alt2)],...]`.
         """
         self.__validate_list_coordinates__(coordinates)
         long_lat_coordinates = []
@@ -48,6 +62,7 @@ class CustomCoordinateSystem():
             scale = 10000 / self.height
 
         for coordinate in coordinates:
+            # TODO incorporate convert_coordinate
             x = coordinate[0]
             y = coordinate[1] - self.width / 2
             if has_altitude: 
@@ -181,16 +196,21 @@ class CustomCoordinateSystem():
 
         * **`coordinates`**: `[list]` &rarr; A nested list of (x, y) or (x, y, z) coordinates.
             * ** Examples **:
-                * `[100, 50]`
-                * `[100, 50, 0]`
-                * `[[100, 50, 0], [20, 20, 20]]`
-                * `[[[100, 50], [100, 100]], [[0, 0], [0, 100]]]`
+                * `[100,50]`
+                * `[100,50,0]`
+                * `[[100,50,0], [20,20,20]]`
+                * `[[[100,50], [100,100]], [[0,0], [0,100]]]`
 
         Returns:
 
         * `[None]`
         """
-        pass
+        if isinstance(coordinates[0], (float, int)):
+            self.convert_coordinate(coordinates)
+        else:
+            if not isinstance(coordinates, list[list]):
+                raise ValueError("Input must be either a list of two or three numbers or lists.")
+            self.convert_coordinates(sublist for sublist in coordinates)
 
     def __serialize_geojson__(self, geoJsonLayer: str, geoJsonProp: str, geoJsonValue: list[str]):
         """
