@@ -151,7 +151,7 @@ class CustomCoordinateSystem():
         Converts the coordinates of the given GeoJSON object using this coordinate system to a longitude-latitdue-altitude system and writes the new object to a file.
 
         Arguments:
-        
+
         * **`geoJsonLayer`**: `[str]` &rarr; The URL or file of the GeoJSON layer to use.
 
         Returns:
@@ -179,7 +179,12 @@ class CustomCoordinateSystem():
 
         Arguments:
 
-        * **`coordinates`**: `[list]` &rarr; A recursive list of coordinate numbers or nested lists.
+        * **`coordinates`**: `[list]` &rarr; A nested list of (x, y) or (x, y, z) coordinates.
+            * ** Examples **:
+                * `[100, 50]`
+                * `[100, 50, 0]`
+                * `[[100, 50, 0], [20, 20, 20]]`
+                * `[[[100, 50], [100, 100]], [[0, 0], [0, 100]]]`
 
         Returns:
 
