@@ -37,7 +37,25 @@ class CustomCoordinateSystem():
 
         * `[None]`
         """
-        pass
+        x = coordinate[0]
+        y = coordinate[1] - self.width / 2
+        if len(coordinate) == 3:
+            z = coordinate[2]
+            scale = 10000 / self.height
+            altitude = z * scale
+            coordinate[2] = altitude
+
+        if self.width > self.length:
+            x += self.margin
+
+        longitude = (x / self.radius) * (180 / math.pi)
+        latitude = (360 / math.pi) * (math.atan(math.exp(y / self.radius)) - math.pi / 4)
+
+        # Y values close to 0 will not display on map 
+        if latitude < -85.05 and coordinate[1] >= 0:
+            latitude = -85.05
+        coordinate[0] = longitude - 180
+        coordinate[1] = latitude
 
     def serialize_coordinates(self, coordinates: list[list[float | int]]):
         """
@@ -57,28 +75,11 @@ class CustomCoordinateSystem():
         """
         self.__validate_list_coordinates__(coordinates)
         long_lat_coordinates = []
-        has_altitude = len(coordinates[0]) == 3
-        if has_altitude:
-            scale = 10000 / self.height
 
         for coordinate in coordinates:
-            # TODO incorporate convert_coordinate
-            x = coordinate[0]
-            y = coordinate[1] - self.width / 2
-            if has_altitude: 
-                z = coordinate[2]
-                altitude = z * scale
-
-            if self.width > self.length:
-                x += self.margin
-
-            longitude = (x / self.radius) * (180 / math.pi)
-            latitude = (360 / math.pi) * (math.atan(math.exp(y / self.radius)) - math.pi / 4)
-
-            # Y values close to 0 will not display on map 
-            if latitude < -85.05 and coordinate[1] >= 0:
-                latitude = -85.05
-            long_lat_coordinates.append([longitude - 180, latitude, altitude] if has_altitude else [longitude - 180, latitude])
+            coordinate_copy = [coord for coord in coordinate]
+            self.convert_coordinate(coordinate_copy)
+            long_lat_coordinates.append(coordinate_copy)
 
         return long_lat_coordinates
 
@@ -208,9 +209,10 @@ class CustomCoordinateSystem():
         if isinstance(coordinates[0], (float, int)):
             self.convert_coordinate(coordinates)
         else:
-            if not isinstance(coordinates, list[list]):
+            if not all(isinstance(sublist, list) for sublist in coordinates):
                 raise ValueError("Input must be either a list of two or three numbers or lists.")
-            self.convert_coordinates(sublist for sublist in coordinates)
+            for sublist in coordinates:
+                self.convert_coordinates(sublist)
 
     def __serialize_geojson__(self, geoJsonLayer: str, geoJsonProp: str, geoJsonValue: list[str]):
         """
