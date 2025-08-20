@@ -37,6 +37,7 @@ class CustomCoordinateSystem():
 
         * `[None]`
         """
+        self.__validate_list_coordinates__([coordinate])
         x = coordinate[0]
         y = coordinate[1] - self.width / 2
         if len(coordinate) == 3:
@@ -188,6 +189,8 @@ class CustomCoordinateSystem():
             self.convert_coordinates(geojson_object["geometry"]["coordinates"])
         else:
             self.convert_coordinates(geojson_object["coordinates"])
+        return geojson_object
+        # TODO write to new file
 
     def convert_coordinates(self, coordinates: list):
         """
@@ -245,11 +248,11 @@ class CustomCoordinateSystem():
         
         requested_geometry_types = { geometry["type"] for geometry in requested_geometries }
         if requested_geometry_types.issubset({ "Point", "MultiPoint" }):
-            return self.serialize_geojson_points(requested_geometries)
+            return self.__serialize_geojson_points__(requested_geometries)
         elif requested_geometry_types.issubset({ "LineString", "MultiLineString" }):
-            return self.serialize_geojson_lines(requested_geometries)
+            return self.__serialize_geojson_lines__(requested_geometries)
         elif requested_geometry_types.issubset({ "Polygon", "MultiPolygon" }):
-            return self.serialize_geojson_polygons(requested_geometries)
+            return self.__serialize_geojson_polygons__(requested_geometries)
         else:
             raise ValueError(f"Requested geometries must be of similar type but got {requested_geometry_types}.")
 
