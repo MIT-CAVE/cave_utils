@@ -192,7 +192,7 @@ class CustomCoordinateSystem():
             self.convert_coordinates(geojson_object["coordinates"])
         with open(write_path, "w") as f:
             json.dump(geojson_object, f)
-        print(f"Converted geojson saved to {write_path}.")
+        print(f"GeoJSON converted and saved to {write_path}.")
 
     def convert_coordinates(self, coordinates: list):
         """
