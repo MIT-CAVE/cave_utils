@@ -163,23 +163,24 @@ class CustomCoordinateSystem():
             "path": converted_path,
         }
     
-    def convert_geojson(self, geoJsonLayer: str):
+    def convert_geojson(self, geojson_object: str, write_path: str):
         """
         Converts the coordinates of the given GeoJSON object using this coordinate system to a longitude-latitdue-altitude system and writes the new object to a file.
 
         Arguments:
 
-        * **`geoJsonLayer`**: `[str]` &rarr; The URL or file of the GeoJSON layer to use.
+        * **`geojson_object`**: `[str]` &rarr; The URL or file of the GeoJSON object to use.
+        * **`write_path`**: `[str]` &rarr; The file path to write the converted GeoJSON object to.
 
         Returns:
 
         * `[None]`
         """
         url_regex = r"^https?:\/\/.*"
-        if re.search(url_regex, geoJsonLayer):
-            geojson_object = requests.get(geoJsonLayer).json()
+        if re.search(url_regex, geojson_object):
+            geojson_object = requests.get(geojson_object).json()
         else:
-            with open(geoJsonLayer, "r") as f:
+            with open(geojson_object, "r") as f:
                 geojson_object = json.load(f)
 
         if geojson_object["type"] == "FeatureCollection":
@@ -189,8 +190,9 @@ class CustomCoordinateSystem():
             self.convert_coordinates(geojson_object["geometry"]["coordinates"])
         else:
             self.convert_coordinates(geojson_object["coordinates"])
-        return geojson_object
-        # TODO write to new file
+        with open(write_path, "w") as f:
+            json.dump(geojson_object, f)
+        print(f"Converted geojson saved to {write_path}.")
 
     def convert_coordinates(self, coordinates: list):
         """
