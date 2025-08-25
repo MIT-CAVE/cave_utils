@@ -6,7 +6,6 @@ success = {
     "serialize_coordinates": False,
     "serialize_nodes": False,
     "serialize_arcs": False,
-    # "serialize_geojson": False,
     "bad_list_coordinates": False,
     "bad_dict_coordinates": False,
 }
