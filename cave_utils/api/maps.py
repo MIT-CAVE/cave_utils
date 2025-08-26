@@ -118,6 +118,7 @@ class maps_data_star(ApiValidator):
         name: str,
         currentStyle: str | None = None,
         currentProjection: str | None = None,
+        lockProjection: bool | None = None,
         defaultViewport: dict | None = None,
         optionalViewports: dict | None = None,
         legendGroups: dict | None = None,
@@ -136,6 +137,7 @@ class maps_data_star(ApiValidator):
             * **Accepted Values**:
                 * `"mercator"`: The [Mercator projection][]
                 * `"globe"`: The map is displayed as a 3D globe
+        * **`lockProjection`**: `[bool]` = `None` &rarr; Whether the map's projection should lock to `currentProjection`. Ideal for custom raster tile maps.
         * **`defaultViewport`**: `[dict]` = `None` &rarr; The default viewport to use.
             * **Note**: The value of this attribute should match the structure of a viewport object.
             * **See**: `cave_utils.api.maps.viewport`
