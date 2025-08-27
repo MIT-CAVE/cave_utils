@@ -117,6 +117,7 @@ class maps_data_star(ApiValidator):
     def spec(
         name: str,
         currentStyle: str | None = None,
+        lockStyle: bool | None = None,
         currentProjection: str | None = None,
         lockProjection: bool | None = None,
         defaultViewport: dict | None = None,
@@ -133,6 +134,8 @@ class maps_data_star(ApiValidator):
 
         * **`name`**: `[str]` &rarr; The name of the map.
         * **`currentStyle`**: `[str]` = `None` &rarr; The map's style id applied when the map is first loaded.
+        * **`lockStyle`**: `[bool]` = `None` &rarr; Whether the map's style should lock to `currentStyle`. Ideal for custom raster tile maps.
+            * **Note**: If left unspecified (i.e., `None`), it will default to `False`.
         * **`currentProjection`**: `[str]` = `None` &rarr; The map's projection id applied when the map is first loaded.
             * **Accepted Values**:
                 * `"mercator"`: The [Mercator projection][]
