@@ -229,7 +229,7 @@ class CustomCoordinateSystem():
             * ** Note **: Must be a FeatureCollection
         * **`geoJsonProp`**: `[str]` &rarr;
             * The `properties` key (from the object fetched from the `geoJsonLayer` URL) to match with `geoJsonValue`.
-        * **`geoJsonValue`**: `list[str]` &rarr; A list of geoJsonValue keys that correspond to `geoJsonProp`.        
+        * **`geoJsonValue`**: `[list[str]]` &rarr; A list of geoJsonValue keys that correspond to `geoJsonProp`.        
             * ** Note **: All corresponding geometries must be of similar type:
                 * `Point` and `MultiPoint`
                 * `LineString` and `MultiLineString`
