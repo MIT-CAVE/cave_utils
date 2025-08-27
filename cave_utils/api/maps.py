@@ -138,6 +138,7 @@ class maps_data_star(ApiValidator):
                 * `"mercator"`: The [Mercator projection][]
                 * `"globe"`: The map is displayed as a 3D globe
         * **`lockProjection`**: `[bool]` = `None` &rarr; Whether the map's projection should lock to `currentProjection`. Ideal for custom raster tile maps.
+            * **Note**: If left unspecified (i.e., `None`), it will default to `False`.
         * **`defaultViewport`**: `[dict]` = `None` &rarr; The default viewport to use.
             * **Note**: The value of this attribute should match the structure of a viewport object.
             * **See**: `cave_utils.api.maps.viewport`
@@ -146,7 +147,7 @@ class maps_data_star(ApiValidator):
             * **See**: `cave_utils.api.maps.viewport`
         * **`legendGroups`**: `[dict]` = `None` &rarr; The legend groups to show in the map selection menu.
         * **`legendView`**: `[str]` = `None` &rarr; The view to show in the map selection menu.
-            * ** Accepted Values**:
+            * **Accepted Values**:
                 * `"compact"`: Display the legend in a compact format.
                 * `"full"`: Display the full legend.
         * **`showLegendGroupNames`**: `[bool]` = `None` &rarr; Whether or not to show the legend group names in the map selection menu.

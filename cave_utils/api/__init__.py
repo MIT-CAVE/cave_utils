@@ -54,7 +54,7 @@ class Root(ApiValidator):
             * **See**: `cave_utils.api.settings`
         * **`appBar`**: `[dict]` = `None` &rarr; Configure actions for your app bar(s).
             * **Notes**:
-                * If left unspecified, there will be no action elements on the app bar.
+                * If left unspecified (i.e., `None`), there will be no action elements on the app bar.
                 * Otherwise, `appBar.data` is required and should have at least one item in it.
             * **See**: `cave_utils.api.appBar`
         * **`panes`**: `[dict]` = `{}` &rarr; Configure panes for your application.
