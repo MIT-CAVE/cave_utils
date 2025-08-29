@@ -190,7 +190,7 @@ class mapFeatures_data_star_data_location(ApiValidator):
             * ** Example **: `[[[0,0],[1,1]],[[2,2],[3,3],[4,4],[5,5]]]`
             * ** Example with Altitude **: `[[[0,0,0],[1,1,1000]],[[2,2,2000],[3,3,3000],[4,4,4000],[5,5,5000]]]`
             * ** Note **: Used for `arc` layers
-        * **`geoJsonValue`**: `list[str]` = `None` &rarr; A list of geoJsonValue keys that correspond to the `properties` key specified as geoJsonProp in `mapFeatures.data.*.geoJson`.
+        * **`geoJsonValue`**: `[list[str]]` = `None` &rarr; A list of geoJsonValue keys that correspond to the `properties` key specified as geoJsonProp in `mapFeatures.data.*.geoJson`.
             * ** Note **: Used for `arc`, `node`, and `geo` layers
         """
         return {
