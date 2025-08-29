@@ -62,6 +62,7 @@ try:
     portrait_coordinate_system = CustomCoordinateSystem(100, 200, 200)
     success["init"] = True
 
+    ## Test arcs
     portrait_coordinates_list = [
         [
             [0, 0, 0],
@@ -73,7 +74,7 @@ try:
             [75, 125, 150]
         ]
     ]
-    portrait_coordinate_dict = [
+    portrait_coordinates_dict = [
         {
             "x": [0, 0],
             "y": [0, 100],
@@ -99,7 +100,7 @@ try:
         ]
     }
     actual_portrait_location_list = portrait_coordinate_system.serialize_arcs(portrait_coordinates_list)
-    actual_portrait_location_dict = portrait_coordinate_system.serialize_arcs(portrait_coordinate_dict)
+    actual_portrait_location_dict = portrait_coordinate_system.serialize_arcs(portrait_coordinates_dict)
 
     assert "path" in actual_portrait_location_list and "path" in actual_portrait_location_dict
     assert len(expected_portrait_location["path"]) == len(actual_portrait_location_list["path"]) == len(actual_portrait_location_dict["path"])
@@ -147,18 +148,19 @@ for test in bad_init_tests:
 if all_bad_init_tests_failed:
     success["bad_init"] = True
 
-coordinate_system = CustomCoordinateSystem(1000, 1000, 1000)
+coordinate_system = CustomCoordinateSystem(100, 1000, 1000)
 
 def list_missing_altitude():
-    coordinate_system.__validate_list_coordinates__([[0, 0, 0], [103.5, 99.1, 23], [76.55, 350, 35], [12.01, 12.01]])
+    coordinate_system.__validate_list_coordinates__([[0, 0, 0], [93.5, 99.1, 23], [76.55, 350, 35], [12.01, 12.01]])
 def list_out_of_range():
-    coordinate_system.__validate_list_coordinates__([[0, 0, -1], [1030.5, 99.1, 23]])
+    coordinate_system.__validate_list_coordinates__([[0, 0, -1], [930.5, 99.1, 23]])
 def list_path_missing_altitude_1():
-    coordinate_system.serialize_arcs([[[0, 0, 0], [103.5, 99.1, 23]], [[76.55, 350], [12.01, 12.01, 12.01]]])
+    coordinate_system.serialize_arcs([[[0, 0, 0], [93.5, 99.1, 23]], [[76.55, 350], [12.01, 12.01, 12.01]]])
 def list_path_missing_altitude_2():
-    coordinate_system.serialize_arcs([[[0, 0, 0], [103.5, 99.1, 23]], [[76.55, 350], [12.01, 12.01]]])
+    coordinate_system.serialize_arcs([[[0, 0, 0], [93.5, 99.1, 23]], [[76.55, 350], [12.01, 12.01]]])
 def list_path_out_of_range():
-    coordinate_system.serialize_arcs([[[0, 0, 0], [103.5, 99.1, 200]], [[76.55, 1000.1, 30], [12.01, 12.01, 30]]])
+    coordinate_system.serialize_arcs([[[0, 0, 0], [93.5, 99.1, 200]], [[76.55, 1000.1, 30], [12.01, 12.01, 30]]])
+
 bad_list_coordinates_tests = [
     list_missing_altitude,
     list_out_of_range,
@@ -200,7 +202,7 @@ def dict_missing_longitude():
     "z": [0, 1, 0.2, 36]
     })
 def dict_out_of_range():
-    coordinate_system.__validate_list_coordinates__({
+    coordinate_system.__validate_dict_coordinates__({
     "x": [0, 103.5, 76.55, 12.01],
     "y": [0, 99.1, 350, 12.01],
     "z": [0, 120, -0.2, 36]
@@ -234,6 +236,7 @@ def dict_path_out_of_range():
         "y": [1000.1, 12.01],
         "z": [30, 30]
     }])
+
 bad_dict_coordinates_tests = [
     dict_missing_altitude,
     dict_missing_latitude,
