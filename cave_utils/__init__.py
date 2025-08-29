@@ -108,4 +108,4 @@ from .socket import Socket
 from .api_utils.validator import Validator
 from .arguments import Arguments
 from .geo_utils import GeoUtils
-from .custom_coordinates.custom_coordinates import CustomCoordinateSystem
+from .custom_coordinates import CustomCoordinateSystem
