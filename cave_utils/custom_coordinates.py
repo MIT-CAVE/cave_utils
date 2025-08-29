@@ -1,7 +1,8 @@
 import type_enforced, math, requests, re, json
 
+
 @type_enforced.Enforcer
-class CustomCoordinateSystem():
+class CustomCoordinateSystem:
     def __init__(self, length: float | int, width: float | int, height: float | int = 10000):
         """
         Creates a custom 2D or 3D Cartesian coordinate system with the origin (0, 0) located at the bottom-left
@@ -77,7 +78,7 @@ class CustomCoordinateSystem():
         longitude = (x / self.radius) * (180 / math.pi)
         latitude = (360 / math.pi) * (math.atan(math.exp(y / self.radius)) - math.pi / 4)
 
-        # Y values close to 0 will not display on map 
+        # Y values close to 0 will not display on map
         if latitude < -85.05 and coordinate[1] >= 0:
             latitude = -85.05
         coordinate[0] = longitude - 180
@@ -128,25 +129,35 @@ class CustomCoordinateSystem():
         elif isinstance(coordinates, dict):
             self.__validate_dict_coordinates__(coordinates)
             if "z" in coordinates:
-                list_coordinates = [list(coordinate_list) for coordinate_list in zip(coordinates["x"], coordinates["y"], coordinates["z"])]
+                list_coordinates = [
+                    list(coordinate_list)
+                    for coordinate_list in zip(coordinates["x"], coordinates["y"], coordinates["z"])
+                ]
             else:
-                list_coordinates = [list(coordinate_list) for coordinate_list in zip(coordinates["x"], coordinates["y"])]
+                list_coordinates = [
+                    list(coordinate_list)
+                    for coordinate_list in zip(coordinates["x"], coordinates["y"])
+                ]
             converted_coordinates = self.serialize_coordinates(list_coordinates)
         else:
-            raise ValueError("Coordiates must be a list of coordinate values or a dictionary with 'x', 'y', and optional 'z' keys.")
+            raise ValueError(
+                "Coordiates must be a list of coordinate values or a dictionary with 'x', 'y', and optional 'z' keys."
+            )
 
         if len(converted_coordinates[0]) == 2:
             return {
                 "latitude": [[coordinate[1]] for coordinate in converted_coordinates],
                 "longitude": [[coordinate[0]] for coordinate in converted_coordinates],
-                }
+            }
         return {
             "latitude": [[coordinate[1]] for coordinate in converted_coordinates],
             "longitude": [[coordinate[0]] for coordinate in converted_coordinates],
             "altitude": [[coordinate[2]] for coordinate in converted_coordinates],
-            }
-    
-    def serialize_arcs(self, path: list[list[list[float | int]]] | list[dict[str, list[float | int]]]):
+        }
+
+    def serialize_arcs(
+        self, path: list[list[list[float | int]]] | list[dict[str, list[float | int]]]
+    ):
         """
         Serializes the given path in this coordinate system to a dictionary of the proper format to be used under `mapFeatures.data.*.data.location`.
 
@@ -168,7 +179,9 @@ class CustomCoordinateSystem():
             if not all(len(arc) == len(path[0]) for arc in path):
                 raise ValueError("All arcs must have either two or three coordinate values.")
         else:
-            raise ValueError("Path must be a list of arcs, where each arc is either a list of coordinates or a dictionary with 'x', 'y', and optional 'z' keys.")
+            raise ValueError(
+                "Path must be a list of arcs, where each arc is either a list of coordinates or a dictionary with 'x', 'y', and optional 'z' keys."
+            )
 
         converted_path = []
         for arc in path:
@@ -177,17 +190,24 @@ class CustomCoordinateSystem():
             elif isinstance(arc, dict):
                 self.__validate_dict_coordinates__(arc)
                 if "z" in arc:
-                    list_coordinates = [list(coordinate_list) for coordinate_list in zip(arc["x"], arc["y"], arc["z"])]
+                    list_coordinates = [
+                        list(coordinate_list)
+                        for coordinate_list in zip(arc["x"], arc["y"], arc["z"])
+                    ]
                 else:
-                    list_coordinates = [list(coordinate_list) for coordinate_list in zip(arc["x"], arc["y"])]
+                    list_coordinates = [
+                        list(coordinate_list) for coordinate_list in zip(arc["x"], arc["y"])
+                    ]
                 converted_arc = self.serialize_coordinates(list_coordinates)
             else:
-                raise ValueError("Arc must be a list of coordinates or a dictionary with 'x', 'y', and optional 'z' keys.")
+                raise ValueError(
+                    "Arc must be a list of coordinates or a dictionary with 'x', 'y', and optional 'z' keys."
+                )
             converted_path.append(converted_arc)
         return {
             "path": converted_path,
         }
-    
+
     def convert_geojson(self, geojson_object: str, write_path: str):
         """
         Converts the coordinates of the given GeoJSON object using this coordinate system to a longitude-latitdue-altitude system and writes the new object to a file.
@@ -229,7 +249,7 @@ class CustomCoordinateSystem():
             * ** Note **: Must be a FeatureCollection
         * **`geoJsonProp`**: `[str]` &rarr;
             * The `properties` key (from the object fetched from the `geoJsonLayer` URL) to match with `geoJsonValue`.
-        * **`geoJsonValue`**: `[list[str]]` &rarr; A list of geoJsonValue keys that correspond to `geoJsonProp`.        
+        * **`geoJsonValue`**: `[list[str]]` &rarr; A list of geoJsonValue keys that correspond to `geoJsonProp`.
             * ** Note **: All corresponding geometries must be of similar type:
                 * `Point` and `MultiPoint`
                 * `LineString` and `MultiLineString`
@@ -242,23 +262,30 @@ class CustomCoordinateSystem():
         geojson_object = requests.get(geoJsonLayer).json()
         if geojson_object["type"] != "FeatureCollection":
             raise ValueError("geoJsonLayer must be a FeatureCollection.")
-        
+
         requested_geometries = []
         for feature in geojson_object["features"]:
-            if geoJsonProp in feature["properties"] and feature["properties"][geoJsonProp] in geoJsonValue:
+            if (
+                geoJsonProp in feature["properties"]
+                and feature["properties"][geoJsonProp] in geoJsonValue
+            ):
                 requested_geometries.append(feature["geometry"])
-        
-        requested_geometry_types = { geometry["type"] for geometry in requested_geometries }
-        if requested_geometry_types.issubset({ "Point", "MultiPoint" }):
+
+        requested_geometry_types = {geometry["type"] for geometry in requested_geometries}
+        if requested_geometry_types.issubset({"Point", "MultiPoint"}):
             return self.__serialize_geojson_points__(requested_geometries)
-        elif requested_geometry_types.issubset({ "LineString", "MultiLineString" }):
+        elif requested_geometry_types.issubset({"LineString", "MultiLineString"}):
             return self.__serialize_geojson_lines__(requested_geometries)
-        elif requested_geometry_types.issubset({ "Polygon", "MultiPolygon" }):
+        elif requested_geometry_types.issubset({"Polygon", "MultiPolygon"}):
             return self.__serialize_geojson_polygons__(requested_geometries)
         else:
-            raise ValueError(f"Requested geometries must be of similar type but got {requested_geometry_types}.")
+            raise ValueError(
+                f"Requested geometries must be of similar type but got {requested_geometry_types}."
+            )
 
-    def __serialize_geojson_points__(self, geometries: list[dict[str, str | list[float | int] | list[list[float | int]]]]):
+    def __serialize_geojson_points__(
+        self, geometries: list[dict[str, str | list[float | int] | list[list[float | int]]]]
+    ):
         """
         Serializes the given GeoJSON-format geometries in this coordinate system to a dictionary of the proper format to be used under `mapFeatures.data.*.data.location`.
 
@@ -282,7 +309,10 @@ class CustomCoordinateSystem():
                 raise ValueError("Geometries must all have type Point or MultiPoint.")
         return self.serialize_nodes(point_coordinates)
 
-    def __serialize_geojson_lines__(self, geometries: list[dict[str, str | list[list[float | int]] | list[list[list[float | int]]]]]):
+    def __serialize_geojson_lines__(
+        self,
+        geometries: list[dict[str, str | list[list[float | int]] | list[list[list[float | int]]]]],
+    ):
         """
         Serializes the given GeoJSON-format geometries in this coordinate system to a dictionary of the proper format to be used under `mapFeatures.data.*.data.location`.
 
@@ -306,7 +336,12 @@ class CustomCoordinateSystem():
                 raise ValueError("Geometries must all have type LineString or MultiLineString.")
         return self.serialize_arcs(line_coordinates)
 
-    def __serialize_geojson_polygons__(self, geometries: list[dict[str, str | list[list[list[float | int]]] | list[list[list[list[float | int]]]]]]):
+    def __serialize_geojson_polygons__(
+        self,
+        geometries: list[
+            dict[str, str | list[list[list[float | int]]] | list[list[list[list[float | int]]]]]
+        ],
+    ):
         """
         Serializes the given GeoJSON-format geometries in this coordinate system to a dictionary of the proper format to be used under `mapFeatures.data.*.data.location`.
 
@@ -355,7 +390,10 @@ class CustomCoordinateSystem():
 
         * **`ValueError`** &rarr; If the coordinate data is not in the proper format.
         """
-        if not (all(len(coord) == 2 for coord in coordinates) or all(len(coord) == 3 for coord in coordinates)):
+        if not (
+            all(len(coord) == 2 for coord in coordinates)
+            or all(len(coord) == 3 for coord in coordinates)
+        ):
             raise ValueError("Coordinates must all have either two elements or three elements.")
         for coordinate in coordinates:
             if not (0 <= coordinate[0] <= self.length and 0 <= coordinate[1] <= self.width):
@@ -379,7 +417,10 @@ class CustomCoordinateSystem():
             raise ValueError("Coordinates must contain 'x' and 'y' keys.")
         if len(coordinates["x"]) != len(coordinates["y"]):
             raise ValueError("The number of x and y values must match.")
-        if not (all(0 <= x <= self.length for x in coordinates["x"]) and all(0 <= y <= self.width for y in coordinates["y"])):
+        if not (
+            all(0 <= x <= self.length for x in coordinates["x"])
+            and all(0 <= y <= self.width for y in coordinates["y"])
+        ):
             raise ValueError("The given x and y coordinates are out of range.")
         if "z" in coordinates:
             if len(coordinates["x"]) != len(coordinates["z"]):

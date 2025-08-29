@@ -16,9 +16,12 @@ try:
     latitude_increment = abs(bounding_box[1][0] - bounding_box[0][0]) / grid_size[0]
     longitude_increment = abs(bounding_box[1][1] - bounding_box[0][1]) / grid_size[1]
 
-    latitude_options = [round(min_latitude + i * latitude_increment,2) for i in range(grid_size[0])]
-    longitude_options = [round(min_longitude + i * longitude_increment,2) for i in range(grid_size[1])]
-
+    latitude_options = [
+        round(min_latitude + i * latitude_increment, 2) for i in range(grid_size[0])
+    ]
+    longitude_options = [
+        round(min_longitude + i * longitude_increment, 2) for i in range(grid_size[1])
+    ]
 
     origin_latitudes = []
     origin_longitudes = []
