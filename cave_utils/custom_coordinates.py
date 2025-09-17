@@ -1,4 +1,4 @@
-import type_enforced, math, requests, re, json
+import type_enforced, math, json
 
 
 @type_enforced.Enforcer
@@ -208,164 +208,32 @@ class CustomCoordinateSystem:
             "path": converted_path,
         }
 
-    def convert_geojson(self, geojson_object: str, write_path: str):
+    def convert_geojson(self, geojson_filepath: str, output_filepath: str):
         """
         Converts the coordinates of the given GeoJSON object using this coordinate system to a longitude-latitdue-altitude system and writes the new object to a file.
 
         Arguments:
 
-        * **`geojson_object`**: `[str]` &rarr; The URL or file of the GeoJSON object to use.
-        * **`write_path`**: `[str]` &rarr; The file path to write the converted GeoJSON object to.
+        * **`geojson_filepath`**: `[str]` &rarr; The URL or file of the GeoJSON object to use.
+        * **`output_filepath`**: `[str]` &rarr; The file path to write the converted GeoJSON object to.
 
         Returns:
 
         * `[None]`
         """
-        url_regex = r"^https?:\/\/.*"
-        if re.search(url_regex, geojson_object):
-            geojson_object = requests.get(geojson_object).json()
-        else:
-            with open(geojson_object, "r") as f:
-                geojson_object = json.load(f)
+        with open(geojson_filepath, "r") as f:
+            geojson_filepath = json.load(f)
 
-        if geojson_object["type"] == "FeatureCollection":
-            for feature in geojson_object["features"]:
+        if geojson_filepath["type"] == "FeatureCollection":
+            for feature in geojson_filepath["features"]:
                 self.convert_coordinates(feature["geometry"]["coordinates"])
-        elif geojson_object["type"] == "Feature":
-            self.convert_coordinates(geojson_object["geometry"]["coordinates"])
+        elif geojson_filepath["type"] == "Feature":
+            self.convert_coordinates(geojson_filepath["geometry"]["coordinates"])
         else:
-            self.convert_coordinates(geojson_object["coordinates"])
-        with open(write_path, "w") as f:
-            json.dump(geojson_object, f)
-        print(f"GeoJSON converted and saved to {write_path}.")
-
-    def __serialize_geojson__(self, geoJsonLayer: str, geoJsonProp: str, geoJsonValue: list[str]):
-        """
-        Serializes the given GeoJSON object in this coordinate system to a dictionary of the proper format to be used under `mapFeatures.data.*.data.location`.
-
-        Arguments:
-
-        * **`geoJsonLayer`**: `[str]` &rarr; The URL of the GeoJSON layer to use.
-            * ** Note **: Must be a FeatureCollection
-        * **`geoJsonProp`**: `[str]` &rarr;
-            * The `properties` key (from the object fetched from the `geoJsonLayer` URL) to match with `geoJsonValue`.
-        * **`geoJsonValue`**: `[list[str]]` &rarr; A list of geoJsonValue keys that correspond to `geoJsonProp`.
-            * ** Note **: All corresponding geometries must be of similar type:
-                * `Point` and `MultiPoint`
-                * `LineString` and `MultiLineString`
-                * `Polygon` and `MultiPolygon`
-
-        Returns:
-
-        * `[dict]` &rarr; The serialized location structure.
-        """
-        geojson_object = requests.get(geoJsonLayer).json()
-        if geojson_object["type"] != "FeatureCollection":
-            raise ValueError("geoJsonLayer must be a FeatureCollection.")
-
-        requested_geometries = []
-        for feature in geojson_object["features"]:
-            if (
-                geoJsonProp in feature["properties"]
-                and feature["properties"][geoJsonProp] in geoJsonValue
-            ):
-                requested_geometries.append(feature["geometry"])
-
-        requested_geometry_types = {geometry["type"] for geometry in requested_geometries}
-        if requested_geometry_types.issubset({"Point", "MultiPoint"}):
-            return self.__serialize_geojson_points__(requested_geometries)
-        elif requested_geometry_types.issubset({"LineString", "MultiLineString"}):
-            return self.__serialize_geojson_lines__(requested_geometries)
-        elif requested_geometry_types.issubset({"Polygon", "MultiPolygon"}):
-            return self.__serialize_geojson_polygons__(requested_geometries)
-        else:
-            raise ValueError(
-                f"Requested geometries must be of similar type but got {requested_geometry_types}."
-            )
-
-    def __serialize_geojson_points__(
-        self, geometries: list[dict[str, str | list[float | int] | list[list[float | int]]]]
-    ):
-        """
-        Serializes the given GeoJSON-format geometries in this coordinate system to a dictionary of the proper format to be used under `mapFeatures.data.*.data.location`.
-
-        Arguments:
-
-        * **`geometries`**: `list[dict[str]]` &rarr; The GeoJSON geometries to serialize.
-            * ** Note **: Geometry types must be either `Point` or `MultiPoint`
-
-        Returns:
-
-        * `[dict]` &rarr; The serialized location structure.
-        """
-        point_coordinates = []
-        for geometry in geometries:
-            if geometry["type"] == "Point":
-                point_coordinates.append(geometry["coordinates"])
-            elif geometry["type"] == "MultiPoint":
-                for point_coordinate in geometry["coordinates"]:
-                    point_coordinates.append(point_coordinate)
-            else:
-                raise ValueError("Geometries must all have type Point or MultiPoint.")
-        return self.serialize_nodes(point_coordinates)
-
-    def __serialize_geojson_lines__(
-        self,
-        geometries: list[dict[str, str | list[list[float | int]] | list[list[list[float | int]]]]],
-    ):
-        """
-        Serializes the given GeoJSON-format geometries in this coordinate system to a dictionary of the proper format to be used under `mapFeatures.data.*.data.location`.
-
-        Arguments:
-
-        * **`geometries`**: `list[dict[str]]` &rarr; The GeoJSON geometries to serialize.
-            * ** Note **: Geometry types must be either `LineString` or `MultiLineString`
-
-        Returns:
-
-        * `[dict]` &rarr; The serialized location structure.
-        """
-        line_coordinates = []
-        for geometry in geometries:
-            if geometry["type"] == "LineString":
-                line_coordinates.append(geometry["coordinates"])
-            elif geometry["type"] == "MultiLineString":
-                for line_coordinate in geometry["coordinates"]:
-                    line_coordinates.append(line_coordinate)
-            else:
-                raise ValueError("Geometries must all have type LineString or MultiLineString.")
-        return self.serialize_arcs(line_coordinates)
-
-    def __serialize_geojson_polygons__(
-        self,
-        geometries: list[
-            dict[str, str | list[list[list[float | int]]] | list[list[list[list[float | int]]]]]
-        ],
-    ):
-        """
-        Serializes the given GeoJSON-format geometries in this coordinate system to a dictionary of the proper format to be used under `mapFeatures.data.*.data.location`.
-
-        Arguments:
-
-        * **`geometries`**: `list[dict[str]]` &rarr; The GeoJSON geometries to serialize.
-            * ** Notes **:
-                * Geometry types must be either `Polygon` or `MultiPolygon`
-                * Polygon holes are not fully supported; two separate polygons will be displayed instead.
-
-        Returns:
-
-        * `[dict]` &rarr; The serialized location structure.
-        """
-        polygon_coordinates = []
-        for geometry in geometries:
-            if geometry["type"] == "Polygon":
-                polygon_coordinates.extend(geometry["coordinates"])
-            elif geometry["type"] == "MultiPolygon":
-                for polygon_coordinate in geometry["coordinates"]:
-                    polygon_coordinates.extend(polygon_coordinate)
-            else:
-                raise ValueError("Geometries must all have type Polygon or MultiPolygon.")
-        return self.serialize_arcs(polygon_coordinates)
+            self.convert_coordinates(geojson_filepath["coordinates"])
+        with open(output_filepath, "w") as f:
+            json.dump(geojson_filepath, f)
+        print(f"GeoJSON converted and saved to {output_filepath}.")
 
     def __validate_coordinate_system__(self):
         """
