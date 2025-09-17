@@ -214,7 +214,7 @@ class CustomCoordinateSystem:
 
         Arguments:
 
-        * **`geojson_filepath`**: `[str]` &rarr; The URL or file of the GeoJSON object to use.
+        * **`geojson_filepath`**: `[str]` &rarr; The file path to the GeoJSON object.
         * **`output_filepath`**: `[str]` &rarr; The file path to write the converted GeoJSON object to.
 
         Returns:
