@@ -11,11 +11,12 @@ echo "from .socket import Socket" >> cave_utils/__init__.py
 echo "from .api_utils.validator import Validator" >> cave_utils/__init__.py
 echo "from .arguments import Arguments" >> cave_utils/__init__.py
 echo "from .geo_utils import GeoUtils" >> cave_utils/__init__.py
+echo "from .custom_coordinates import CustomCoordinateSystem" >> cave_utils/__init__.py
 
 
 # Specify versions for documentation purposes
-VERSION="3.3.0"
-OLD_DOC_VERSIONS="3.2.0 3.1.0 3.0.0 2.3.0 2.2.1 2.1.2 2.0.5 1.6.1"
+VERSION="3.4.0"
+OLD_DOC_VERSIONS="3.3.0 3.2.0 3.1.0 3.0.0 2.3.0 2.2.1 2.1.2 2.0.5 1.6.1"
 export version_options="$VERSION $OLD_DOC_VERSIONS"
 
 # generate the docs for a version function:
