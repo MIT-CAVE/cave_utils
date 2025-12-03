@@ -66,7 +66,9 @@ class appBar_data_star(ApiValidator):
         * **`type`**: `[str]` &rarr; The type of object displayed when the action is triggered.
             * **Accepted Values**:
                 * `"session"`: The Session Pane
+                    * If you use this type, your field id must be `"session"`.
                 * `"settings"`: The Application Settings Pane
+                    * If you use this type, your field id must be `"settings"`.
                 * `"button"`: A button that allows you to send a command to the CAVE API
                 * `"pane"`: A [custom pane][]
                 * `"page"`: A [page][]
@@ -76,6 +78,8 @@ class appBar_data_star(ApiValidator):
                 * `"lowerLeft"`: Lower section of the left-side bar
                 * `"upperRight"`: Upper section of the right-side bar
                 * `"lowerRight"`: Lower section of the right-side bar
+                * `"none"`: Do not display the action element in the app bar
+                    - This is useful to hide predefined appBar buttions like the `session` or `settings` panes.
         * **`variant`**: `[str]` = `None` &rarr; The variant of the button.
             * **Accepted Values**:
                 * When **`type`** == `"pane"`:
@@ -105,7 +109,7 @@ class appBar_data_star(ApiValidator):
             "accepted_values": {
                 "type": ["session", "settings", "button", "pane", "page"],
                 "variant": ["modal", "wall"] if type == "pane" else [],
-                "bar": ["upperLeft", "lowerLeft", "upperRight", "lowerRight"],
+                "bar": ["upperLeft", "lowerLeft", "upperRight", "lowerRight", "none"],
             },
         }
 
@@ -127,3 +131,15 @@ class appBar_data_star(ApiValidator):
                 valid_values=kwargs.get("pane_validPaneIds", []),
                 prepend_path=[],
             )
+        if bar_type == "session":
+            if kwargs.get("CustomKeyValidatorFieldId") != "session":
+                self.__error__(
+                    msg=f"When `type` is 'session', the only valid id for this `appBar.data` item is 'session'. Received: '{kwargs.get('CustomKeyValidatorFieldId')}'",
+                    path=[],
+                )
+        if bar_type == "settings":
+            if kwargs.get("CustomKeyValidatorFieldId") != "settings":
+                self.__error__(
+                    msg=f"When `type` is 'settings', the only valid id for this `appBar.data` item is 'settings'. Received: '{kwargs.get('CustomKeyValidatorFieldId')}'",
+                    path=[],
+                )

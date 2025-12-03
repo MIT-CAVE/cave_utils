@@ -155,7 +155,7 @@ class ApiValidator:
     # Error and Warning Helpers
     def __error__(self, msg: str, path: list[str] = list()):
         """
-        Raise an error for the log the log
+        Raise an error for the log
         """
         self.log.add(path=path, msg=msg)
 
