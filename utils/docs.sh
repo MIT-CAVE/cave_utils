@@ -15,7 +15,7 @@ echo "from .custom_coordinates import CustomCoordinateSystem" >> cave_utils/__in
 
 
 # Specify versions for documentation purposes
-VERSION="3.4.0"
+VERSION="3.4.1"
 OLD_DOC_VERSIONS="3.3.0 3.2.0 3.1.0 3.0.0 2.3.0 2.2.1 2.1.2 2.0.5 1.6.1"
 export version_options="$VERSION $OLD_DOC_VERSIONS"
 
