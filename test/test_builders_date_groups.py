@@ -1,5 +1,4 @@
 from cave_utils.builders.groups import DateGroupsBuilder
-from datetime import datetime
 
 date_data = ["2023-01-01", "2023-02-01"]
 
@@ -43,7 +42,7 @@ assert serialized_names["levels"]["month"]["ordering"] == ["January", "February"
 assert "Sunday" in serialized_names["data"]["week_day"]
 assert "Monday" in serialized_names["data"]["week_day"]
 # Ordering should be Sunday, Monday, Tuesday...
-expected_ordering = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+expected_ordering = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
 assert serialized_names["levels"]["week_day"]["ordering"] == expected_ordering
 
 # Test 3: All Features
@@ -64,8 +63,15 @@ serialized_all = builder_all.serialize()
 
 # Check keys exist
 expected_keys = [
-    "year", "year_month", "year_month_day", "year_week", "year_day",
-    "month", "month_week", "month_day", "week_day"
+    "year",
+    "year_month",
+    "year_month_day",
+    "year_week",
+    "year_day",
+    "month",
+    "month_week",
+    "month_day",
+    "week_day",
 ]
 for key in expected_keys:
     assert key in serialized_all["data"]
