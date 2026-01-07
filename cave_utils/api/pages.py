@@ -173,6 +173,7 @@ class pages_data_star_charts(ApiValidator):
         distributionVariant: str | None = None,
         xAxisOrder: str | None = None,
         showNA: bool = False,
+        filters: list[dict] | None = None,
         **kwargs,
     ):
         """
@@ -259,6 +260,7 @@ class pages_data_star_charts(ApiValidator):
                 * `"alpha_descending"`: Orders the x-axis in reverse alphabetical order.
             * **Note**: If left unspecified (i.e., `None`), it will default to `"default"`.
         * **`showNA`**: `[bool]` = `False` &rarr; Whether to display missing or filtered values in both the chart tooltip and the axis.
+        * **`filters`**: `[dict]` = `None` &rarr; A list of filter dictionaries to apply to the chart data.
 
         [area chart]: https://en.wikipedia.org/wiki/Area_chart
         [bar chart]: https://en.wikipedia.org/wiki/Bar_chart
@@ -277,6 +279,7 @@ class pages_data_star_charts(ApiValidator):
         [waterfall chart]: https://en.wikipedia.org/wiki/Waterfall_chart
         [distribution chart]: https://en.wikipedia.org/wiki/Probability_distribution
         """
+        # TODO: Document and validate filters
         if type == "globalOutput":
             chartType_options = ["bar", "line", "table", "overview"]
         elif type == "groupedOutput":
