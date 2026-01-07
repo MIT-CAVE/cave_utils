@@ -209,6 +209,8 @@ class DateGroupsBuilder(GroupsUtils):
         include_month_week: bool = False,
         include_month_day: bool = False,
         include_week_day: bool = True,
+        month_as_name: bool = False,
+        week_day_as_name: bool = False,
     ) -> None:
         """
         Initialize a date group builder.
@@ -228,6 +230,8 @@ class DateGroupsBuilder(GroupsUtils):
         * **`include_month_week`**: `[bool]` = `False` &rarr; Whether or not to include the month and week in the group.
         * **`include_month_day`**: `[bool]` = `False` &rarr; Whether or not to include the month and day in the group.
         * **`include_week_day`**: `[bool]` = `True` &rarr; Whether or not to include the week day in the group.
+        * **`month_as_name`**: `[bool]` = `False` &rarr; Whether or not to use the month name instead of the month number.
+        * **`week_day_as_name`**: `[bool]` = `False` &rarr; Whether or not to use the week day name instead of the week day number.
 
         Returns:
 
@@ -245,6 +249,8 @@ class DateGroupsBuilder(GroupsUtils):
         self.include_month_week = include_month_week
         self.include_month_day = include_month_day
         self.include_week_day = include_week_day
+        self.month_as_name = month_as_name
+        self.week_day_as_name = week_day_as_name
         self.date_objects = self.__get_date_objects__(date_data=date_data)
         self.__gen_structures__()
 
@@ -323,11 +329,23 @@ class DateGroupsBuilder(GroupsUtils):
             self.data_structure["year_day"] = [i.strftime("%Y-%j") for i in self.date_objects]
             self.group_keys.append("year_day")
         if self.include_month:
-            self.levels_structure["month"] = {
-                "name": "Month",
-                "ordering": sorted(list(set([i.strftime("%m") for i in self.date_objects]))),
-            }
-            self.data_structure["month"] = [i.strftime("%m") for i in self.date_objects]
+            if self.month_as_name:
+                self.levels_structure["month"] = {
+                    "name": "Month",
+                    "ordering": [
+                        i[1]
+                        for i in sorted(
+                            list(set([(i.month, i.strftime("%B")) for i in self.date_objects]))
+                        )
+                    ],
+                }
+                self.data_structure["month"] = [i.strftime("%B") for i in self.date_objects]
+            else:
+                self.levels_structure["month"] = {
+                    "name": "Month",
+                    "ordering": sorted(list(set([i.strftime("%m") for i in self.date_objects]))),
+                }
+                self.data_structure["month"] = [i.strftime("%m") for i in self.date_objects]
             self.group_keys.append("month")
         if self.include_month_week:
             self.levels_structure["month_week"] = {
@@ -344,11 +362,30 @@ class DateGroupsBuilder(GroupsUtils):
             self.data_structure["month_day"] = [i.strftime("%m-%d") for i in self.date_objects]
             self.group_keys.append("month_day")
         if self.include_week_day:
-            self.levels_structure["week_day"] = {
-                "name": "Week Day",
-                "ordering": sorted(list(set([i.strftime("%w") for i in self.date_objects]))),
-            }
-            self.data_structure["week_day"] = [i.strftime("%w") for i in self.date_objects]
+            if self.week_day_as_name:
+                self.levels_structure["week_day"] = {
+                    "name": "Week Day",
+                    "ordering": [
+                        i[1]
+                        for i in sorted(
+                            list(
+                                set(
+                                    [
+                                        (int(i.strftime("%w")), i.strftime("%A"))
+                                        for i in self.date_objects
+                                    ]
+                                )
+                            )
+                        )
+                    ],
+                }
+                self.data_structure["week_day"] = [i.strftime("%A") for i in self.date_objects]
+            else:
+                self.levels_structure["week_day"] = {
+                    "name": "Week Day",
+                    "ordering": sorted(list(set([i.strftime("%w") for i in self.date_objects]))),
+                }
+                self.data_structure["week_day"] = [i.strftime("%w") for i in self.date_objects]
             self.group_keys.append("week_day")
 
     def get_id(self, *args, **kwargs):
