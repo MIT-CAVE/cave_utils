@@ -80,6 +80,9 @@ class ApiValidator:
     def __genericKeyValidation__(self, **kwargs):
         # Remove `timeValues` out prior to each level validation
         data_timeValues = self.data.pop("timeValues", None)
+        # Remove 'ignore_keys' from data to avoid validation issues
+        for key in self.ignore_keys:
+            self.data.pop(key, None)
         # Remove `order` out prior to each level validation
         data_order = self.data.pop("order", None)
         if data_timeValues is not None:
