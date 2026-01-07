@@ -20,7 +20,7 @@ assert serialized["levels"]["month"]["ordering"] == ["01", "02"]
 
 # Check week day is numbers
 # We have all days of week in that range.
-assert serialized["levels"]["week_day"]["ordering"] == ["00", "01", "02", "03", "04", "05", "06"]
+assert serialized["levels"]["week_day"]["ordering"] == ["0", "1", "2", "3", "4", "5", "6"]
 
 # Test 2: Names
 builder_names = DateGroupsBuilder(
