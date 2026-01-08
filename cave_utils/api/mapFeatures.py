@@ -170,19 +170,20 @@ class mapFeatures_data_star_data_location(ApiValidator):
         altitude: list[list[float | int]] | None = None,
         path: list[list[list[float | int]]] | None = None,
         geoJsonValue: list[str] | None = None,
+        animationTime: list[list[float | int]] | None = None,
         **kwargs,
     ):
         """
         Arguments:
 
-        * **`latitude`**: `list[list[float | int]]` = `None` &rarr; A list of latitudes for each node.
-            * ** Example **: `[45.34, 46.27, 47.34, 48.34]`
+        * **`latitude`**: `list[list[float | int]]` = `None` &rarr; A list of latitudes for each node. If a node has a single position, it is stationary. Else, it is animated through the list of latitudes.
+            * ** Example **: `[[45.34], [46.27], [47.34], [48.34]]`
             * ** Notes **: Used for `node` layers
-        * **`longitude`**: `list[list[float | int]]` = `None` &rarr; A list of longitudes for each node.
-            * ** Example **: `[120.34, 121.27, 122.34, 123.34]`
+        * **`longitude`**: `list[list[float | int]]` = `None` &rarr; A list of longitudes for each node. If a node has a single position, it is stationary. Else, it is animated through the list of longitudes.
+            * ** Example **: `[[120.34], [121.27], [122.34], [123.34]]`
             * ** Note **: Used for `node` layers
         * **`altitude`**: `list[list[float | int]]` = `None` &rarr; The altitude for each node / geo in kilometers.
-            * ** Example **: `[0, 1000, 2000, 3000]`
+            * ** Example **: `[[0], [1000], [2000], [3000]]`
             * ** Notes **:
                 * Used for `node` and `geo` layers
                 * This is currently ignored but is planned to be supported in the future.
@@ -192,12 +193,18 @@ class mapFeatures_data_star_data_location(ApiValidator):
             * ** Note **: Used for `arc` layers
         * **`geoJsonValue`**: `[list[str]]` = `None` &rarr; A list of geoJsonValue keys that correspond to the `properties` key specified as geoJsonProp in `mapFeatures.data.*.geoJson`.
             * ** Note **: Used for `arc`, `node`, and `geo` layers
+        * **`animationTime`**: `list[list[float | int]]` = `None` &rarr; If animating, the time (in seconds) a node will be at a particular location.
+            * ** Example **: `[[0, 1, 5], [0, 10]]`
+            * ** Notes **: 
+                * Used for `node` layers
+                * Must start from 0 and strongly increase
         """
         return {
             "kwargs": {},
             "accepted_values": {},
         }
 
+    #TODO check animationTime same length as lat/lon and increasing
     def __extend_spec__(self, **kwargs):
         layer_type = kwargs.get("layer_type")
         layer_geoJson = kwargs.get("layer_geoJson")
@@ -210,7 +217,7 @@ class mapFeatures_data_star_data_location(ApiValidator):
                 required_keys = ["path"]
         else:
             required_keys = ["latitude", "longitude"]
-            optional_keys += ["altitude"]
+            optional_keys += ["altitude", "animationTime"]
         missing_keys = pamda.difference(required_keys, list(passed_keys.keys()))
         if len(missing_keys) > 0:
             self.__error__(msg=f"Missing required keys: {missing_keys}", path=[])
@@ -248,11 +255,11 @@ class mapFeatures_data_star_data_location(ApiValidator):
                     )
                     continue
             elif "latitude" in key.lower():
-                latitudes = [i[0] for i in value_list]
+                latitudes = [j for i in value_list for j in i]
             elif "longitude" in key.lower():
-                longitudes = [i[0] for i in value_list]
+                longitudes = [j for i in value_list for j in i]
             elif "altitude" in key.lower():
-                altitudes = [i[0] for i in value_list]
+                altitudes = [j for i in value_list for j in i]
 
             if latitudes is not None:
                 if max(latitudes) > 90 or min(latitudes) < -90:
