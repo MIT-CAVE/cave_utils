@@ -204,7 +204,6 @@ class mapFeatures_data_star_data_location(ApiValidator):
             "accepted_values": {},
         }
 
-    #TODO support altitudes
     def __extend_spec__(self, **kwargs):
         layer_type = kwargs.get("layer_type")
         layer_geoJson = kwargs.get("layer_geoJson")
@@ -301,6 +300,11 @@ class mapFeatures_data_star_data_location(ApiValidator):
                         if not(len(time_list) == len(passed_keys["latitude"][i]) == len(passed_keys["longitude"][i])):
                             self.__error__(
                                 msg=f"`{key}`, latitudes, and longitudes for each animated node must have the same length.",
+                                path=[key],
+                            )
+                        if "altitude" in passed_keys and not(len(time_list) == len(passed_keys["altitude"][i])):
+                            self.__error__(
+                                msg=f"`{key}` and altitudes for each animated node must have the same length.",
                                 path=[key],
                             )
 
