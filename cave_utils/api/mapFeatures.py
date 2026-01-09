@@ -193,9 +193,9 @@ class mapFeatures_data_star_data_location(ApiValidator):
             * ** Note **: Used for `arc` layers
         * **`geoJsonValue`**: `[list[str]]` = `None` &rarr; A list of geoJsonValue keys that correspond to the `properties` key specified as geoJsonProp in `mapFeatures.data.*.geoJson`.
             * ** Note **: Used for `arc`, `node`, and `geo` layers
-        * **`animationTime`**: `list[list[float | int]]` = `None` &rarr; If animating, the time (in seconds) a node will be at a particular location.
+        * **`animationTime`**: `list[list[float | int | None]]` = `None` &rarr; If animating, the time (in seconds) a node will be at a particular location. If a node is stationary, use `[None]`.
             * ** Example **: `[[0, 1, 5], [0, 10]]`
-            * ** Notes **: 
+            * ** Notes **:
                 * Used for `node` layers
                 * Must start from 0 and strongly increase
         """
