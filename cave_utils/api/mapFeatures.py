@@ -170,7 +170,7 @@ class mapFeatures_data_star_data_location(ApiValidator):
         altitude: list[list[float | int]] | None = None,
         path: list[list[list[float | int]]] | None = None,
         geoJsonValue: list[str] | None = None,
-        animationTime: list[list[float | int]] | None = None,
+        animationTime: list[list[float | int | None]] | None = None,
         **kwargs,
     ):
         """
@@ -204,7 +204,7 @@ class mapFeatures_data_star_data_location(ApiValidator):
             "accepted_values": {},
         }
 
-    #TODO check animationTime same length as lat/lon and increasing
+    #TODO support altitudes
     def __extend_spec__(self, **kwargs):
         layer_type = kwargs.get("layer_type")
         layer_geoJson = kwargs.get("layer_geoJson")
@@ -276,9 +276,33 @@ class mapFeatures_data_star_data_location(ApiValidator):
             if altitudes is not None:
                 if max(altitudes) > 10000 or min(altitudes) < 0:
                     self.__error__(
-                        msg=f"`{key}` has an altitude that is greater than 10000 or less than 0",
+                        msg=f"`{key}` has an altitude that is greater than 10000 or less than 0.",
                         path=[key],
                     )
+            if "animationtime" in key.lower():
+                for i, time_list in enumerate(value_list):
+                    if None in time_list:
+                        if time_list != [None]:
+                            self.__error__(
+                                msg=f"`{key}` values for stationary nodes must equal [None] exactly.",
+                                path=[key],
+                            )
+                    else:
+                        if time_list != sorted(time_list):
+                            self.__error__(
+                                msg=f"`{key}` has defined times that are not in increasing order.",
+                                path=[key],
+                            )
+                        if time_list[0] != 0:
+                            self.__error__(
+                                msg=f"`{key}` has defined times that do not start from 0.",
+                                path=[key],
+                            )         
+                        if not(len(time_list) == len(passed_keys["latitude"][i]) == len(passed_keys["longitude"][i])):
+                            self.__error__(
+                                msg=f"`{key}`, latitudes, and longitudes for each animated node must have the same length.",
+                                path=[key],
+                            )
 
 
 @type_enforced.Enforcer
