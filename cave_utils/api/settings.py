@@ -18,6 +18,7 @@ class settings(ApiValidator):
         demo: dict = dict(),
         sync: dict = dict(),
         time: dict = dict(),
+        animation: dict = dict(),
         defaults: dict = dict(),
         debug: bool = False,
         **kwargs,
@@ -39,6 +40,8 @@ class settings(ApiValidator):
             * **See**: `settings_sync_star`.
         * **`time`**: `[dict]` = `{}` &rarr; Settings for the time display.
             * **See**: `settings_time`.
+        * **`animation`**: `[dict]` = `{}` &rarr; Settings for map node animations in your application.
+            * **See**: `settings_animation`.
         * **`defaults`**: `[dict]` = `{}` &rarr; Default settings for your application.
             * **See**: `settings_defaults`.
         * **`debug`**: `[dict]` = `{}` &rarr; If `True`, the CAVE App client will show additional information for debugging purposes.
@@ -73,6 +76,12 @@ class settings(ApiValidator):
                 prepend_path=["time"],
                 **kwargs,
             )
+        settings_animation(
+            data=self.data.get("animation", {}),
+            log=self.log,
+            prepend_path=["animation"],
+            **kwargs,
+        )
         settings_defaults(
             data=self.data.get("defaults", {}),
             log=self.log,
@@ -352,3 +361,22 @@ class settings_time(ApiValidator):
                 f"speed must be one of the following values: {accepted_speed_values}.",
                 path=["speed"],
             )
+
+class settings_animation(ApiValidator):
+    """
+    The animation settings are located under the path **`settings.animation`**.
+    """
+
+    @staticmethod
+    def spec(timeLength: int, **kwargs):
+        """
+        Arguments:
+
+        * **`timeLength`**: `[int]` &rarr; The duration of the animation in seconds.
+        """
+        return {"kwargs": kwargs, "accepted_values": {}}
+    
+    def __extend_spec__(self, **kwargs):
+        timeLength = self.data.get("timeLength")
+        if timeLength < 1:
+            self.__error__(f"Animation time length must be greater than 0.", path=["timeLength"])
