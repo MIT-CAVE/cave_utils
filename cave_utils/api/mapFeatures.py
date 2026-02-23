@@ -171,6 +171,8 @@ class mapFeatures_data_star_data_location(ApiValidator):
         path: list[list[list[float | int]]] | None = None,
         geoJsonValue: list[str] | None = None,
         animationTime: list[list[float | int | None]] | None = None,
+        visibilityIndex: list[list[float | int]] | None = None,
+        visibilityTime: list[list[float | int]] | None = None,
         **kwargs,
     ):
         """
@@ -198,6 +200,15 @@ class mapFeatures_data_star_data_location(ApiValidator):
             * ** Notes **:
                 * Used for `node` layers
                 * Must start from 0 and strongly increase
+        * **`visibilityIndex`**: `list[list[float | int]]` = `None` & rarr; The indices of nodes with visibility logic.
+            * ** Example **: `[[0], [2]]`
+            * ** Notes **:
+                * Used for `node` layers
+        * **`visibilityTime`**: `list[list[float | int]]` = `None` & rarr; The times (in seconds) at which each nodes' visibility toggles. The times at `visibilityTime[i]` corresponds to node with index `visibilityIndex[i][0]`.
+            * ** Example **: `[[3.4, 6], [2, 10, 12]]`
+            * ** Notes **:
+                * Used for `node` layers
+                * Must be in increasing order
         """
         return {
             "kwargs": {},
@@ -216,7 +227,7 @@ class mapFeatures_data_star_data_location(ApiValidator):
                 required_keys = ["path"]
         else:
             required_keys = ["latitude", "longitude"]
-            optional_keys += ["altitude", "animationTime"]
+            optional_keys += ["altitude", "animationTime", "visibilityIndex", "visibilityTime"]
         missing_keys = pamda.difference(required_keys, list(passed_keys.keys()))
         if len(missing_keys) > 0:
             self.__error__(msg=f"Missing required keys: {missing_keys}", path=[])
@@ -307,6 +318,9 @@ class mapFeatures_data_star_data_location(ApiValidator):
                                 msg=f"`{key}` and altitudes for each animated node must have the same length.",
                                 path=[key],
                             )
+            if "visibilityTime" in key.lower():
+                # TODO: validate
+                pass
 
 
 @type_enforced.Enforcer
