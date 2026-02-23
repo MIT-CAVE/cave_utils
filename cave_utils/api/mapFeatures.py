@@ -318,9 +318,13 @@ class mapFeatures_data_star_data_location(ApiValidator):
                                 msg=f"`{key}` and altitudes for each animated node must have the same length.",
                                 path=[key],
                             )
-            if "visibilityTime" in key.lower():
-                # TODO: validate
-                pass
+            if "visibilitytime" in key.lower():
+                for i, time_list in enumerate(value_list):
+                    if time_list != sorted(time_list):
+                        self.__error__(
+                            msg=f"`{key}` has defined times that are not in increasing order.",
+                            path=[key],
+                        )
 
 
 @type_enforced.Enforcer
