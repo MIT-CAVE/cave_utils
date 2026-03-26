@@ -307,13 +307,19 @@ class mapFeatures_data_star_data_location(ApiValidator):
                             self.__error__(
                                 msg=f"`{key}` has defined times that do not start from 0.",
                                 path=[key],
-                            )         
-                        if not(len(time_list) == len(passed_keys["latitude"][i]) == len(passed_keys["longitude"][i])):
+                            )
+                        if not (
+                            len(time_list)
+                            == len(passed_keys["latitude"][i])
+                            == len(passed_keys["longitude"][i])
+                        ):
                             self.__error__(
                                 msg=f"`{key}`, latitudes, and longitudes for each animated node must have the same length.",
                                 path=[key],
                             )
-                        if "altitude" in passed_keys and not(len(time_list) == len(passed_keys["altitude"][i])):
+                        if "altitude" in passed_keys and not (
+                            len(time_list) == len(passed_keys["altitude"][i])
+                        ):
                             self.__error__(
                                 msg=f"`{key}` and altitudes for each animated node must have the same length.",
                                 path=[key],
