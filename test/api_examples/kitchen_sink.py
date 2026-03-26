@@ -99,11 +99,27 @@ def execute_command(session_data, socket, command="init", **kwargs):
                     "value": False,
                     "data": {"ml1": ["maps", "data", "map1", "legendGroups"]},
                 },
+                "chartColors": {
+                    "name": "Chart Colors",
+                    "showToggle": True,
+                    "value": False,
+                    "data": {
+                        "go1": ["groupedOutputs", "groupings"],
+                    },
+                },
                 "modals": {
                     "name": "Open Modal",
                     "showToggle": True,
                     "value": False,
                     "data": {"pn1": ["panes", "paneState", "center"]},
+                },
+                "draggables": {
+                    "name": "Draggables",
+                    "showToggle": True,
+                    "value": True,
+                    "data": {
+                        "dr1": ["draggables", "data"],
+                    },
                 },
                 "pages": {
                     "name": "Dashboards",
@@ -127,6 +143,36 @@ def execute_command(session_data, socket, command="init", **kwargs):
                 "trailingZeros": True,
                 "unitPlacement": "afterWithSpace",
             },
+        },
+        "draggables": {
+            "data": {
+                "session": {
+                    "open": True,
+                    "position": {
+                        "x": 8,  # distance from left app bar
+                        "y": 8,
+                    },
+                },
+                "globalOutputs": {
+                    "open": True,
+                    "position": {
+                        "x": 8,
+                        "y": 68,  # 68 pixels from top edge of screen which is below the session draggable
+                    },
+                },
+                "mapNames": {
+                    "open": True,
+                    "hideCloseOption": True,
+                    "hideDragOption": True,
+                    "position": {
+                        "x": 8,  # distance from left app bar
+                        "y": 8,
+                    },
+                },
+                "time": {
+                    "showDragHandle": True,
+                },
+            }
         },
         "appBar": {
             "order": {
@@ -554,7 +600,7 @@ def execute_command(session_data, socket, command="init", **kwargs):
                         "filledButtonExample": "Press Me!",
                         "outlinedButtonExample": "Press Me to Throw an Error!",
                         "textButtonExample": "Press Me to Show a Warning!",
-                        "pictureExample": "https://ctl.mit.edu/sites/ctl.mit.edu/files/inline-images/MIT_CTL_CAVE_Lab_2.png",
+                        "pictureExample": "https://cave.mit.edu/wp-content/uploads/2019/01/CAVE_CTL_Live.png",
                         "videoExample": "https://www.youtube.com/embed/6q5R1TDmKnU",
                         "textInputExample": "Example Text Here",
                         "textAreaInputExample": "Velit non incididunt velit quis commodo consequat velit nulla. Id sunt sint consequat do in. Et adipisicing aliqua voluptate eu consequat et dolore mollit sit veniam minim nisi tempor. Enim laboris proident ex magna. Duis culpa veniam et officia irure id qui id ad laborum deserunt dolor proident elit.",
