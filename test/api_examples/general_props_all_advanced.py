@@ -80,8 +80,9 @@ def execute_command(
                             "precision": 0,
                             "color": "#66bb6a",
                             "propStyle": {
-                                "& .MuiSlider-track": {
-                                    "background": "linear-gradient(90deg, #f44336 0%, #ffa726 30%, #66bb6a 60%)"
+                                "& .MuiSlider-rail": {
+                                    "height": "6px",
+                                    "background": "linear-gradient(90deg, #f44336 0%, #ffa726 30%, #66bb6a 60%)",
                                 },
                             },
                             "help": "Current electric vehicle battery charge level",
@@ -656,7 +657,7 @@ def execute_command(
                         "filledButtonExample": "Save",
                         "outlinedButtonExample": "Delete",
                         "textButtonExample": "Archive",
-                        "pictureExample": "https://ctl.mit.edu/sites/ctl.mit.edu/files/inline-images/MIT_CTL_CAVE_Lab_2.png",
+                        "pictureExample": "https://cave.mit.edu/wp-content/uploads/2019/01/CAVE_CTL_Live.png",
                         "videoExample": "https://www.youtube.com/embed/6q5R1TDmKnU",
                         "textInputExample": "cave-routing-2025",
                         "textAreaInputExample": "This project aims to optimize last-mile delivery routes using machine learning algorithms. Key features include real-time traffic integration, dynamic route adjustment, and driver mobile app integration. Target completion: Q3 2025.",
