@@ -24,16 +24,17 @@
 
             <h2>Contents</h2>
             <ul>
-  <li><a href="#cave-utilities-for-the-cave-app">Cave Utilities for the Cave App</a>
+  <li><a href="#cave-utilities">Cave Utilities</a>
   <ul>
     <li><a href="#overview">Overview</a></li>
-    <li><a href="#setup">Setup</a></li>
+    <li><a href="#features">Features</a></li>
+    <li><a href="#requirements">Requirements</a></li>
+    <li><a href="#installation">Installation</a></li>
+    <li><a href="#quick-start">Quick Start</a></li>
+    <li><a href="#public-api">Public API</a></li>
+    <li><a href="#development">Development</a></li>
+    <li><a href="#release-process">Release Process</a></li>
   </ul></li>
-  <li><a href="#cave_utils-development">cave_utils development</a>
-  <ul>
-    <li><a href="#running-tests-prettifying-code-and-updating-docs">Running Tests, Prettifying Code, and Updating Docs</a></li>
-  </ul></li>
-  <li><a href="#generate-a-new-release">Generate a New Release</a></li>
 </ul>
 
 
@@ -106,134 +107,218 @@
                     <h1 class="modulename">
 cave_utils    </h1>
 
-                        <div class="docstring"><h1 id="cave-utilities-for-the-cave-app">Cave Utilities for the Cave App</h1>
+                        <div class="docstring"><h1 id="cave-utilities">Cave Utilities</h1>
 
 <p><a href="https://badge.fury.io/py/cave_utils"><img src="https://badge.fury.io/py/cave_utils.svg" alt="PyPI version" /></a>
-<a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT" /></a>
-Basic utilities for the MIT Cave App.
-This package is intended to be used by the Cave App and the Cave API.</p>
+<a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT" /></a></p>
+
+<p>Python utilities for the <a href="https://github.com/MIT-CAVE/cave_app">CAVE App</a> framework: API validation, data builders, and shared helpers.</p>
 
 <h2 id="overview">Overview</h2>
 
-<p>This package is part of the larger <a href="https://github.com/MIT-CAVE/cave_app">Cave App</a> framework. It provides utilities that are commonly used across different Cave applications, such as validation and logging. It is designed to be an easy to integrate library that can be used in any Cave application. It also serves to provide automated documentation and testing.</p>
+<p><code><a href="">cave_utils</a></code> is a foundational library for building CAVE applications. It provides:</p>
 
-<p>You can find the low level documentation for this package <a href="https://mit-cave.github.io/cave_utils/index.html">here</a>.</p>
+<ul>
+<li><strong>API validation</strong>: validate <code>session_data</code> dicts against the full CAVE API spec, with structured error and warning reporting</li>
+<li><strong>Data builders</strong>: helper classes for constructing hierarchical and date-based group structures</li>
+<li><strong>Shared utilities</strong>: logging, geographic calculations, coordinate systems, and argument parsing</li>
+</ul>
 
-<h2 id="setup">Setup</h2>
+<p>It is designed to be embedded in a CAVE API server, but can also be used standalone for testing and data development.</p>
 
-<p>Make sure you have Python 3.11.x (or higher) installed on your system. You can download it <a href="https://www.python.org/downloads/">here</a>.</p>
+<h2 id="features">Features</h2>
 
-<h3 id="installation">Installation</h3>
+<ul>
+<li>Validates all 10 top-level CAVE API keys (<code>settings</code>, <code>appBar</code>, <code>pages</code>, <code>panes</code>, <code>maps</code>, <code>mapFeatures</code>, <code>globalOutputs</code>, <code>groupedOutputs</code>, <code>draggables</code>, <code>extraKwargs</code>)</li>
+<li>Cross-field validation with structured error paths (e.g. <code>maps.data.myMap.currentProjection</code>)</li>
+<li>Time-series (<code>timeValues</code>) and ordering (<code>order</code>) validation built in</li>
+<li><code>GroupsBuilder</code> and <code>DateGroupsBuilder</code> for constructing hierarchical group structures from flat data</li>
+<li><code>GeoUtils</code> for shortest-path calculations over geographic networks</li>
+<li><code>CustomCoordinateSystem</code> for converting Cartesian 2D/3D coordinates to lat/long</li>
+<li>Runtime type enforcement via <a href="https://github.com/connor-makowski/type_enforced"><code>type_enforced</code></a></li>
+</ul>
 
-<pre><code>pip install cave_utils
+<h2 id="requirements">Requirements</h2>
+
+<ul>
+<li>Python ≥ 3.11</li>
+</ul>
+
+<h2 id="installation">Installation</h2>
+
+<div class="pdoc-code codehilite">
+<pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>cave_utils
 </code></pre>
+</div>
 
-<h1 id="cave_utils-development">cave_utils development</h1>
+<h2 id="quick-start">Quick Start</h2>
 
-<h2 id="running-tests-prettifying-code-and-updating-docs">Running Tests, Prettifying Code, and Updating Docs</h2>
+<h3 id="validating-session-data">Validating Session Data</h3>
 
-<p>Make sure Docker is installed and running.</p>
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">cave_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">Validator</span>
 
-<ul>
-<li>Create a docker container and drop into a shell
-<ul>
-<li><code>./run.sh</code></li>
-</ul></li>
-<li>Run all tests (see ./utils/test.sh)
-<ul>
-<li><code>./run.sh test</code></li>
-</ul></li>
-<li>Prettify the code (see ./utils/prettify.sh)
-<ul>
-<li><code>./run.sh prettify</code></li>
-</ul></li>
-<li><p>Update the docs (see ./utils/docs.sh)</p>
+<span class="n">session_data</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;settings&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;iconUrl&quot;</span><span class="p">:</span> <span class="s2">&quot;https://example.com/icon.png&quot;</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="s2">&quot;appBar&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;btn_home&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;icon&quot;</span><span class="p">:</span> <span class="s2">&quot;md/MdHome&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;button&quot;</span><span class="p">,</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">},</span>
+<span class="p">}</span>
 
-<ul>
-<li><code>./run.sh docs</code></li>
-</ul></li>
-<li><p>Note: You can and should modify the <code>Dockerfile</code> to test different python versions.</p></li>
-</ul>
+<span class="n">result</span> <span class="o">=</span> <span class="n">Validator</span><span class="p">(</span><span class="n">session_data</span><span class="o">=</span><span class="n">session_data</span><span class="p">)</span>
 
-<h3 id="using-local-hotloading-with-a-cave-app">Using Local Hotloading With a Cave App</h3>
+<span class="c1"># Inspect errors and warnings</span>
+<span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">log</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">entry</span><span class="p">)</span>
+<span class="c1"># Empty list means fully valid</span>
+</code></pre>
+</div>
+
+<h3 id="using-groupsbuilder">Using GroupsBuilder</h3>
+
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn"><a href="cave_utils/builders/groups.html">cave_utils.builders.groups</a></span><span class="w"> </span><span class="kn">import</span> <span class="n">GroupsBuilder</span>
+
+<span class="n">builder</span> <span class="o">=</span> <span class="n">GroupsBuilder</span><span class="p">(</span>
+    <span class="n">data</span><span class="o">=</span><span class="p">[</span>
+        <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;region_east&quot;</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;East&quot;</span><span class="p">,</span> <span class="s2">&quot;parent&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;state_ny&quot;</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;New York&quot;</span><span class="p">,</span> <span class="s2">&quot;parent&quot;</span><span class="p">:</span> <span class="s2">&quot;region_east&quot;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;state_ma&quot;</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Massachusetts&quot;</span><span class="p">,</span> <span class="s2">&quot;parent&quot;</span><span class="p">:</span> <span class="s2">&quot;region_east&quot;</span><span class="p">},</span>
+    <span class="p">],</span>
+    <span class="n">id_field</span><span class="o">=</span><span class="s2">&quot;id&quot;</span><span class="p">,</span>
+    <span class="n">name_field</span><span class="o">=</span><span class="s2">&quot;name&quot;</span><span class="p">,</span>
+    <span class="n">parent_field</span><span class="o">=</span><span class="s2">&quot;parent&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># Serialize to the CAVE API groupedOutputs format</span>
+<span class="n">groups_data</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">serialize</span><span class="p">()</span>
+</code></pre>
+</div>
+
+<h2 id="public-api">Public API</h2>
+
+<table>
+<thead>
+<tr>
+  <th>Class</th>
+  <th>Import</th>
+  <th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><code>Validator</code></td>
+  <td><code>from cave_utils import Validator</code></td>
+  <td>Validates a <code>session_data</code> dict against the full CAVE API spec</td>
+</tr>
+<tr>
+  <td><code>LogObject</code></td>
+  <td><code>from cave_utils import LogObject</code></td>
+  <td>Structured log container for errors and warnings</td>
+</tr>
+<tr>
+  <td><code>Socket</code></td>
+  <td><code>from cave_utils import Socket</code></td>
+  <td>No-op WebSocket stub for use in tests</td>
+</tr>
+<tr>
+  <td><code>Arguments</code></td>
+  <td><code>from cave_utils import Arguments</code></td>
+  <td>Parses kwargs, flags, and positional args from raw argument lists</td>
+</tr>
+<tr>
+  <td><code>GeoUtils</code></td>
+  <td><code>from cave_utils import GeoUtils</code></td>
+  <td>Geographic utilities including shortest-path via <code>scgraph</code></td>
+</tr>
+<tr>
+  <td><code>CustomCoordinateSystem</code></td>
+  <td><code>from cave_utils import CustomCoordinateSystem</code></td>
+  <td>Converts 2D/3D Cartesian coordinates to lat/long</td>
+</tr>
+</tbody>
+</table>
+
+<p>Full API reference: <a href="https://mit-cave.github.io/cave_utils/index.html">mit-cave.github.io/cave_utils</a></p>
+
+<h2 id="development">Development</h2>
+
+<p>All development tasks run inside Docker. Make sure Docker is installed and running.</p>
+
+<table>
+<thead>
+<tr>
+  <th>Command</th>
+  <th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><code>./run.sh</code></td>
+  <td>Drop into an interactive Docker shell</td>
+</tr>
+<tr>
+  <td><code>./run.sh test</code></td>
+  <td>Run all tests</td>
+</tr>
+<tr>
+  <td><code>./run.sh prettify</code></td>
+  <td>Format code with autoflake + black</td>
+</tr>
+<tr>
+  <td><code>./run.sh docs</code></td>
+  <td>Regenerate pdoc documentation</td>
+</tr>
+</tbody>
+</table>
+
+<blockquote>
+  <p><code>./run.sh</code> requires a TTY. Run it directly in your terminal, not from a non-interactive CI environment.</p>
+</blockquote>
+
+<h3 id="running-tests">Running Tests</h3>
+
+<p>Tests live in <code>test/</code>. The main test file (<code>test_validator.py</code>) imports every example in <code>test/api_examples/</code>, runs it through <code>Validator</code>, and asserts no errors or warnings are produced. Unit tests exist for each module.</p>
+
+<div class="pdoc-code codehilite">
+<pre><span></span><code>./run.sh<span class="w"> </span><span class="nb">test</span>
+</code></pre>
+</div>
+
+<h3 id="hot-reload-with-a-cave-app">Hot-Reload with a Cave App</h3>
+
+<p>To develop <code><a href="">cave_utils</a></code> against a running Cave App, mount the local source as a Docker volume:</p>
+
+<div class="pdoc-code codehilite">
+<pre><span></span><code>cave<span class="w"> </span>run<span class="w"> </span>--docker-args<span class="w"> </span><span class="s2">&quot;--volume {local_path_to_cave_utils}/cave_utils:/cave_utils&quot;</span>
+</code></pre>
+</div>
+
+<p>Then in the Cave App's <code>utils/run_server.sh</code>, add <code>pip install -e /cave_utils</code> before the server starts. Changes to <code><a href="">cave_utils</a></code> source will be reflected on the next API call without rebuilding the container.</p>
+
+<p>Set <code>LIVE_API_VALIDATION_PRINT=True</code> in the Cave App's <code>.env</code> to see validation output on every API command.</p>
+
+<h2 id="release-process">Release Process</h2>
 
 <ol>
-<li><p>In your <code>cave_app</code>, update the following file:</p>
+<li>Ensure all tests pass (<code>./run.sh test</code>) and code is formatted (<code>./run.sh prettify</code>)</li>
+<li>Update <code>version</code> in both <code>pyproject.toml</code> and <code>setup.cfg</code></li>
+<li>Update the version in <code>utils/docs.sh</code> and regenerate docs (<code>./run.sh docs</code>)</li>
+<li><p>Build and publish:</p>
 
-<p><code>utils/run_server.sh</code></p>
-
-<pre><code>#!/bin/bash
-
-SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &amp;&gt; /dev/null &amp;&amp; pwd )
-APP_DIR=$(dirname "$SCRIPT_DIR")
-
-pip install -e /cave_utils
-
-source ./utils/helpers/shell_functions.sh
-source ./utils/helpers/ensure_postgres_running.sh
-# Check if the app is functional before proceeding
-if [ "$(python ./manage.py check --deployment_type development | grep "System check identified no issues" | wc -l)" -eq "0" ]; then
-printf "Unable to start the app due to an error in the code. See the stacktrace above." 2&gt;&amp;1 | pipe_log "ERROR"
-rm -r "./tmp"
-exit 1
-fi
-source ./utils/helpers/ensure_db_setup.sh
-
-python "$APP_DIR/manage.py" runserver 0.0.0.0:8000 2&gt;&amp;1 | pipe_log "INFO"
-</code></pre></li>
-<li><p>Remove <code><a href="">cave_utils</a></code> from the root <code>requirements.txt</code> file</p></li>
-<li><p>In your <code>cave_app</code>, set <code>LIVE_API_VALIDATION_PRINT=True</code> in the <code>.env</code> file</p>
-
-<ul>
-<li>This will validate your data every time an API command is called for each session</li>
-</ul></li>
-<li><p>Use the following command to run your <code>cave_app</code>:
-<code>cave run --docker-args "--volume {local_path_to_cave_utils}/cave_utils:/cave_utils"</code></p>
-
-<ul>
-<li>As you edit <code><a href="">cave_utils</a></code>, any changes will be hotloaded into your running <code>cave_app</code></li>
-</ul></li>
-</ol>
-
-<h3 id="using-interactive-mode-in-your-cave-app-and-running-tests">Using interactive mode in your Cave App and running tests</h3>
-
-<ul>
-<li>Note: This is for very specific use cases, such as running tests or debugging in an interactive shell.</li>
-<li>Note: In general, we copy all included examples from the cave_app to the <code>cave_utils/test/api_examples</code> directory, so you can run tests against them without needing to run the cave_app.
-<ul>
-<li>These copied examples can be tested by running <code>./run.sh test</code> in the cave_utils directory, which will run all tests in the <code>cave_utils/test</code>.
-<ul>
-<li>This includes <code>test_validator.py</code> which runs all examples in the <code>cave_utils/test/api_examples</code> directory</li>
-</ul></li>
-</ul></li>
-</ul>
-
-<ol>
-<li>Run cave_app in interactive mode mounting cave_utils as a volume:
-<code>cave run --docker-args "--volume {local_path_to_cave_utils}/cave_utils:/cave_utils" -it</code></li>
-<li>Then install cave utils in the docker container:
-<code>pip install -e /cave_utils</code></li>
-<li>Then run some tests (eg <code>validate_all_examples.py</code>):
-<code>python cave_api/tests/validate_all_examples.py</code></li>
-</ol>
-
-<h1 id="generate-a-new-release">Generate a New Release</h1>
-
-<ol>
-<li>Make sure all tests are passing and the code is prettified.</li>
-<li>Make sure the documentation is up to date.</li>
-<li>Make sure the version number is updated in <code>setup.cfg</code> and <code>pyproject.toml</code>.</li>
-<li>Set up your virtual environment
-<ul>
-<li><code>python3 -m virtualenv venv</code></li>
-<li><code>source venv/bin/activate</code></li>
-<li><code>pip install -r requirements.txt</code></li>
-</ul></li>
-<li>Update the release
-<ul>
-<li><code>source venv/bin/activate</code></li>
-<li><code>./publish.sh</code></li>
-</ul></li>
+<div class="pdoc-code codehilite">
+<pre><span></span><code>python3<span class="w"> </span>-m<span class="w"> </span>virtualenv<span class="w"> </span>venv
+<span class="nb">source</span><span class="w"> </span>venv/bin/activate
+pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements.txt
+</code></pre>
+</div></li>
 </ol>
 </div>
 
@@ -242,116 +327,156 @@ python "$APP_DIR/manage.py" runserver 0.0.0.0:8000 2&gt;&amp;1 | pipe_log "INFO"
                         <label class="view-source-button" for="mod-cave_utils-view-source"><span>View Source</span></label>
 
                         <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos">  1</span></a><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-2"><a href="#L-2"><span class="linenos">  2</span></a><span class="sd"># Cave Utilities for the Cave App</span>
-</span><span id="L-3"><a href="#L-3"><span class="linenos">  3</span></a><span class="sd">[![PyPI version](https://badge.fury.io/py/cave_utils.svg)](https://badge.fury.io/py/cave_utils)</span>
-</span><span id="L-4"><a href="#L-4"><span class="linenos">  4</span></a><span class="sd">[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)</span>
-</span><span id="L-5"><a href="#L-5"><span class="linenos">  5</span></a><span class="sd">Basic utilities for the MIT Cave App.</span>
-</span><span id="L-6"><a href="#L-6"><span class="linenos">  6</span></a><span class="sd">This package is intended to be used by the Cave App and the Cave API.</span>
-</span><span id="L-7"><a href="#L-7"><span class="linenos">  7</span></a>
-</span><span id="L-8"><a href="#L-8"><span class="linenos">  8</span></a><span class="sd">## Overview</span>
-</span><span id="L-9"><a href="#L-9"><span class="linenos">  9</span></a>
-</span><span id="L-10"><a href="#L-10"><span class="linenos"> 10</span></a><span class="sd">This package is part of the larger [Cave App](https://github.com/MIT-CAVE/cave_app) framework. It provides utilities that are commonly used across different Cave applications, such as validation and logging. It is designed to be an easy to integrate library that can be used in any Cave application. It also serves to provide automated documentation and testing.</span>
-</span><span id="L-11"><a href="#L-11"><span class="linenos"> 11</span></a>
-</span><span id="L-12"><a href="#L-12"><span class="linenos"> 12</span></a><span class="sd">You can find the low level documentation for this package [here](https://mit-cave.github.io/cave_utils/index.html).</span>
-</span><span id="L-13"><a href="#L-13"><span class="linenos"> 13</span></a>
-</span><span id="L-14"><a href="#L-14"><span class="linenos"> 14</span></a>
-</span><span id="L-15"><a href="#L-15"><span class="linenos"> 15</span></a>
-</span><span id="L-16"><a href="#L-16"><span class="linenos"> 16</span></a><span class="sd">## Setup</span>
-</span><span id="L-17"><a href="#L-17"><span class="linenos"> 17</span></a>
-</span><span id="L-18"><a href="#L-18"><span class="linenos"> 18</span></a><span class="sd">Make sure you have Python 3.11.x (or higher) installed on your system. You can download it [here](https://www.python.org/downloads/).</span>
-</span><span id="L-19"><a href="#L-19"><span class="linenos"> 19</span></a>
-</span><span id="L-20"><a href="#L-20"><span class="linenos"> 20</span></a><span class="sd">### Installation</span>
-</span><span id="L-21"><a href="#L-21"><span class="linenos"> 21</span></a>
-</span><span id="L-22"><a href="#L-22"><span class="linenos"> 22</span></a><span class="sd">```</span>
-</span><span id="L-23"><a href="#L-23"><span class="linenos"> 23</span></a><span class="sd">pip install cave_utils</span>
-</span><span id="L-24"><a href="#L-24"><span class="linenos"> 24</span></a><span class="sd">```</span>
-</span><span id="L-25"><a href="#L-25"><span class="linenos"> 25</span></a>
-</span><span id="L-26"><a href="#L-26"><span class="linenos"> 26</span></a><span class="sd"># cave_utils development</span>
-</span><span id="L-27"><a href="#L-27"><span class="linenos"> 27</span></a>
-</span><span id="L-28"><a href="#L-28"><span class="linenos"> 28</span></a><span class="sd">## Running Tests, Prettifying Code, and Updating Docs</span>
-</span><span id="L-29"><a href="#L-29"><span class="linenos"> 29</span></a>
-</span><span id="L-30"><a href="#L-30"><span class="linenos"> 30</span></a><span class="sd">Make sure Docker is installed and running.</span>
-</span><span id="L-31"><a href="#L-31"><span class="linenos"> 31</span></a>
-</span><span id="L-32"><a href="#L-32"><span class="linenos"> 32</span></a><span class="sd">- Create a docker container and drop into a shell</span>
-</span><span id="L-33"><a href="#L-33"><span class="linenos"> 33</span></a><span class="sd">    - `./run.sh`</span>
-</span><span id="L-34"><a href="#L-34"><span class="linenos"> 34</span></a><span class="sd">- Run all tests (see ./utils/test.sh)</span>
-</span><span id="L-35"><a href="#L-35"><span class="linenos"> 35</span></a><span class="sd">    - `./run.sh test`</span>
-</span><span id="L-36"><a href="#L-36"><span class="linenos"> 36</span></a><span class="sd">- Prettify the code (see ./utils/prettify.sh)</span>
-</span><span id="L-37"><a href="#L-37"><span class="linenos"> 37</span></a><span class="sd">    - `./run.sh prettify`</span>
-</span><span id="L-38"><a href="#L-38"><span class="linenos"> 38</span></a><span class="sd">- Update the docs (see ./utils/docs.sh)</span>
-</span><span id="L-39"><a href="#L-39"><span class="linenos"> 39</span></a><span class="sd">    - `./run.sh docs`</span>
+</span><span id="L-2"><a href="#L-2"><span class="linenos">  2</span></a><span class="sd"># Cave Utilities</span>
+</span><span id="L-3"><a href="#L-3"><span class="linenos">  3</span></a>
+</span><span id="L-4"><a href="#L-4"><span class="linenos">  4</span></a><span class="sd">[![PyPI version](https://badge.fury.io/py/cave_utils.svg)](https://badge.fury.io/py/cave_utils)</span>
+</span><span id="L-5"><a href="#L-5"><span class="linenos">  5</span></a><span class="sd">[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)</span>
+</span><span id="L-6"><a href="#L-6"><span class="linenos">  6</span></a>
+</span><span id="L-7"><a href="#L-7"><span class="linenos">  7</span></a><span class="sd">Python utilities for the [CAVE App](https://github.com/MIT-CAVE/cave_app) framework: API validation, data builders, and shared helpers.</span>
+</span><span id="L-8"><a href="#L-8"><span class="linenos">  8</span></a>
+</span><span id="L-9"><a href="#L-9"><span class="linenos">  9</span></a><span class="sd">## Overview</span>
+</span><span id="L-10"><a href="#L-10"><span class="linenos"> 10</span></a>
+</span><span id="L-11"><a href="#L-11"><span class="linenos"> 11</span></a><span class="sd">`cave_utils` is a foundational library for building CAVE applications. It provides:</span>
+</span><span id="L-12"><a href="#L-12"><span class="linenos"> 12</span></a>
+</span><span id="L-13"><a href="#L-13"><span class="linenos"> 13</span></a><span class="sd">- **API validation**: validate `session_data` dicts against the full CAVE API spec, with structured error and warning reporting</span>
+</span><span id="L-14"><a href="#L-14"><span class="linenos"> 14</span></a><span class="sd">- **Data builders**: helper classes for constructing hierarchical and date-based group structures</span>
+</span><span id="L-15"><a href="#L-15"><span class="linenos"> 15</span></a><span class="sd">- **Shared utilities**: logging, geographic calculations, coordinate systems, and argument parsing</span>
+</span><span id="L-16"><a href="#L-16"><span class="linenos"> 16</span></a>
+</span><span id="L-17"><a href="#L-17"><span class="linenos"> 17</span></a><span class="sd">It is designed to be embedded in a CAVE API server, but can also be used standalone for testing and data development.</span>
+</span><span id="L-18"><a href="#L-18"><span class="linenos"> 18</span></a>
+</span><span id="L-19"><a href="#L-19"><span class="linenos"> 19</span></a><span class="sd">## Features</span>
+</span><span id="L-20"><a href="#L-20"><span class="linenos"> 20</span></a>
+</span><span id="L-21"><a href="#L-21"><span class="linenos"> 21</span></a><span class="sd">- Validates all 10 top-level CAVE API keys (`settings`, `appBar`, `pages`, `panes`, `maps`, `mapFeatures`, `globalOutputs`, `groupedOutputs`, `draggables`, `extraKwargs`)</span>
+</span><span id="L-22"><a href="#L-22"><span class="linenos"> 22</span></a><span class="sd">- Cross-field validation with structured error paths (e.g. `maps.data.myMap.currentProjection`)</span>
+</span><span id="L-23"><a href="#L-23"><span class="linenos"> 23</span></a><span class="sd">- Time-series (`timeValues`) and ordering (`order`) validation built in</span>
+</span><span id="L-24"><a href="#L-24"><span class="linenos"> 24</span></a><span class="sd">- `GroupsBuilder` and `DateGroupsBuilder` for constructing hierarchical group structures from flat data</span>
+</span><span id="L-25"><a href="#L-25"><span class="linenos"> 25</span></a><span class="sd">- `GeoUtils` for shortest-path calculations over geographic networks</span>
+</span><span id="L-26"><a href="#L-26"><span class="linenos"> 26</span></a><span class="sd">- `CustomCoordinateSystem` for converting Cartesian 2D/3D coordinates to lat/long</span>
+</span><span id="L-27"><a href="#L-27"><span class="linenos"> 27</span></a><span class="sd">- Runtime type enforcement via [`type_enforced`](https://github.com/connor-makowski/type_enforced)</span>
+</span><span id="L-28"><a href="#L-28"><span class="linenos"> 28</span></a>
+</span><span id="L-29"><a href="#L-29"><span class="linenos"> 29</span></a><span class="sd">## Requirements</span>
+</span><span id="L-30"><a href="#L-30"><span class="linenos"> 30</span></a>
+</span><span id="L-31"><a href="#L-31"><span class="linenos"> 31</span></a><span class="sd">- Python ≥ 3.11</span>
+</span><span id="L-32"><a href="#L-32"><span class="linenos"> 32</span></a>
+</span><span id="L-33"><a href="#L-33"><span class="linenos"> 33</span></a><span class="sd">## Installation</span>
+</span><span id="L-34"><a href="#L-34"><span class="linenos"> 34</span></a>
+</span><span id="L-35"><a href="#L-35"><span class="linenos"> 35</span></a><span class="sd">```sh</span>
+</span><span id="L-36"><a href="#L-36"><span class="linenos"> 36</span></a><span class="sd">pip install cave_utils</span>
+</span><span id="L-37"><a href="#L-37"><span class="linenos"> 37</span></a><span class="sd">```</span>
+</span><span id="L-38"><a href="#L-38"><span class="linenos"> 38</span></a>
+</span><span id="L-39"><a href="#L-39"><span class="linenos"> 39</span></a><span class="sd">## Quick Start</span>
 </span><span id="L-40"><a href="#L-40"><span class="linenos"> 40</span></a>
-</span><span id="L-41"><a href="#L-41"><span class="linenos"> 41</span></a><span class="sd">- Note: You can and should modify the `Dockerfile` to test different python versions.</span>
+</span><span id="L-41"><a href="#L-41"><span class="linenos"> 41</span></a><span class="sd">### Validating Session Data</span>
 </span><span id="L-42"><a href="#L-42"><span class="linenos"> 42</span></a>
-</span><span id="L-43"><a href="#L-43"><span class="linenos"> 43</span></a><span class="sd">### Using Local Hotloading With a Cave App</span>
-</span><span id="L-44"><a href="#L-44"><span class="linenos"> 44</span></a>
-</span><span id="L-45"><a href="#L-45"><span class="linenos"> 45</span></a><span class="sd">1. In your `cave_app`, update the following file:</span>
-</span><span id="L-46"><a href="#L-46"><span class="linenos"> 46</span></a>
-</span><span id="L-47"><a href="#L-47"><span class="linenos"> 47</span></a><span class="sd">    `utils/run_server.sh`</span>
-</span><span id="L-48"><a href="#L-48"><span class="linenos"> 48</span></a><span class="sd">    ```</span>
-</span><span id="L-49"><a href="#L-49"><span class="linenos"> 49</span></a><span class="sd">    #!/bin/bash</span>
-</span><span id="L-50"><a href="#L-50"><span class="linenos"> 50</span></a>
-</span><span id="L-51"><a href="#L-51"><span class="linenos"> 51</span></a><span class="sd">    SCRIPT_DIR=$( cd -- &quot;$( dirname -- &quot;${BASH_SOURCE[0]}&quot; )&quot; &amp;&gt; /dev/null &amp;&amp; pwd )</span>
-</span><span id="L-52"><a href="#L-52"><span class="linenos"> 52</span></a><span class="sd">    APP_DIR=$(dirname &quot;$SCRIPT_DIR&quot;)</span>
-</span><span id="L-53"><a href="#L-53"><span class="linenos"> 53</span></a>
-</span><span id="L-54"><a href="#L-54"><span class="linenos"> 54</span></a><span class="sd">    pip install -e /cave_utils</span>
-</span><span id="L-55"><a href="#L-55"><span class="linenos"> 55</span></a>
-</span><span id="L-56"><a href="#L-56"><span class="linenos"> 56</span></a><span class="sd">    source ./utils/helpers/shell_functions.sh</span>
-</span><span id="L-57"><a href="#L-57"><span class="linenos"> 57</span></a><span class="sd">    source ./utils/helpers/ensure_postgres_running.sh</span>
-</span><span id="L-58"><a href="#L-58"><span class="linenos"> 58</span></a><span class="sd">    # Check if the app is functional before proceeding</span>
-</span><span id="L-59"><a href="#L-59"><span class="linenos"> 59</span></a><span class="sd">    if [ &quot;$(python ./manage.py check --deployment_type development | grep &quot;System check identified no issues&quot; | wc -l)&quot; -eq &quot;0&quot; ]; then</span>
-</span><span id="L-60"><a href="#L-60"><span class="linenos"> 60</span></a><span class="sd">    printf &quot;Unable to start the app due to an error in the code. See the stacktrace above.&quot; 2&gt;&amp;1 | pipe_log &quot;ERROR&quot;</span>
-</span><span id="L-61"><a href="#L-61"><span class="linenos"> 61</span></a><span class="sd">    rm -r &quot;./tmp&quot;</span>
-</span><span id="L-62"><a href="#L-62"><span class="linenos"> 62</span></a><span class="sd">    exit 1</span>
-</span><span id="L-63"><a href="#L-63"><span class="linenos"> 63</span></a><span class="sd">    fi</span>
-</span><span id="L-64"><a href="#L-64"><span class="linenos"> 64</span></a><span class="sd">    source ./utils/helpers/ensure_db_setup.sh</span>
-</span><span id="L-65"><a href="#L-65"><span class="linenos"> 65</span></a>
-</span><span id="L-66"><a href="#L-66"><span class="linenos"> 66</span></a><span class="sd">    python &quot;$APP_DIR/manage.py&quot; runserver 0.0.0.0:8000 2&gt;&amp;1 | pipe_log &quot;INFO&quot;</span>
-</span><span id="L-67"><a href="#L-67"><span class="linenos"> 67</span></a><span class="sd">    ```</span>
-</span><span id="L-68"><a href="#L-68"><span class="linenos"> 68</span></a>
-</span><span id="L-69"><a href="#L-69"><span class="linenos"> 69</span></a><span class="sd">2. Remove `cave_utils` from the root `requirements.txt` file</span>
-</span><span id="L-70"><a href="#L-70"><span class="linenos"> 70</span></a>
-</span><span id="L-71"><a href="#L-71"><span class="linenos"> 71</span></a><span class="sd">3. In your `cave_app`, set `LIVE_API_VALIDATION_PRINT=True` in the `.env` file</span>
-</span><span id="L-72"><a href="#L-72"><span class="linenos"> 72</span></a><span class="sd">    - This will validate your data every time an API command is called for each session</span>
-</span><span id="L-73"><a href="#L-73"><span class="linenos"> 73</span></a>
-</span><span id="L-74"><a href="#L-74"><span class="linenos"> 74</span></a><span class="sd">4. Use the following command to run your `cave_app`:</span>
-</span><span id="L-75"><a href="#L-75"><span class="linenos"> 75</span></a><span class="sd">    `cave run --docker-args &quot;--volume {local_path_to_cave_utils}/cave_utils:/cave_utils&quot;`</span>
-</span><span id="L-76"><a href="#L-76"><span class="linenos"> 76</span></a><span class="sd">    - As you edit `cave_utils`, any changes will be hotloaded into your running `cave_app`</span>
-</span><span id="L-77"><a href="#L-77"><span class="linenos"> 77</span></a>
-</span><span id="L-78"><a href="#L-78"><span class="linenos"> 78</span></a><span class="sd">### Using interactive mode in your Cave App and running tests</span>
-</span><span id="L-79"><a href="#L-79"><span class="linenos"> 79</span></a>
-</span><span id="L-80"><a href="#L-80"><span class="linenos"> 80</span></a><span class="sd">- Note: This is for very specific use cases, such as running tests or debugging in an interactive shell.</span>
-</span><span id="L-81"><a href="#L-81"><span class="linenos"> 81</span></a><span class="sd">- Note: In general, we copy all included examples from the cave_app to the `cave_utils/test/api_examples` directory, so you can run tests against them without needing to run the cave_app.</span>
-</span><span id="L-82"><a href="#L-82"><span class="linenos"> 82</span></a><span class="sd">    - These copied examples can be tested by running `./run.sh test` in the cave_utils directory, which will run all tests in the `cave_utils/test`.</span>
-</span><span id="L-83"><a href="#L-83"><span class="linenos"> 83</span></a><span class="sd">        - This includes `test_validator.py` which runs all examples in the `cave_utils/test/api_examples` directory</span>
-</span><span id="L-84"><a href="#L-84"><span class="linenos"> 84</span></a>
-</span><span id="L-85"><a href="#L-85"><span class="linenos"> 85</span></a>
-</span><span id="L-86"><a href="#L-86"><span class="linenos"> 86</span></a><span class="sd">1. Run cave_app in interactive mode mounting cave_utils as a volume:</span>
-</span><span id="L-87"><a href="#L-87"><span class="linenos"> 87</span></a><span class="sd">    `cave run --docker-args &quot;--volume {local_path_to_cave_utils}/cave_utils:/cave_utils&quot; -it`</span>
-</span><span id="L-88"><a href="#L-88"><span class="linenos"> 88</span></a><span class="sd">2. Then install cave utils in the docker container:</span>
-</span><span id="L-89"><a href="#L-89"><span class="linenos"> 89</span></a><span class="sd">    `pip install -e /cave_utils`</span>
-</span><span id="L-90"><a href="#L-90"><span class="linenos"> 90</span></a><span class="sd">3. Then run some tests (eg `validate_all_examples.py`):</span>
-</span><span id="L-91"><a href="#L-91"><span class="linenos"> 91</span></a><span class="sd">    `python cave_api/tests/validate_all_examples.py`</span>
-</span><span id="L-92"><a href="#L-92"><span class="linenos"> 92</span></a>
-</span><span id="L-93"><a href="#L-93"><span class="linenos"> 93</span></a>
-</span><span id="L-94"><a href="#L-94"><span class="linenos"> 94</span></a><span class="sd"># Generate a New Release</span>
-</span><span id="L-95"><a href="#L-95"><span class="linenos"> 95</span></a>
-</span><span id="L-96"><a href="#L-96"><span class="linenos"> 96</span></a><span class="sd">1. Make sure all tests are passing and the code is prettified.</span>
-</span><span id="L-97"><a href="#L-97"><span class="linenos"> 97</span></a><span class="sd">2. Make sure the documentation is up to date.</span>
-</span><span id="L-98"><a href="#L-98"><span class="linenos"> 98</span></a><span class="sd">3. Make sure the version number is updated in `setup.cfg` and `pyproject.toml`.</span>
-</span><span id="L-99"><a href="#L-99"><span class="linenos"> 99</span></a><span class="sd">4. Set up your virtual environment</span>
-</span><span id="L-100"><a href="#L-100"><span class="linenos">100</span></a><span class="sd">    - `python3 -m virtualenv venv`</span>
-</span><span id="L-101"><a href="#L-101"><span class="linenos">101</span></a><span class="sd">    - `source venv/bin/activate`</span>
-</span><span id="L-102"><a href="#L-102"><span class="linenos">102</span></a><span class="sd">    - `pip install -r requirements.txt`</span>
-</span><span id="L-103"><a href="#L-103"><span class="linenos">103</span></a><span class="sd">5. Update the release</span>
-</span><span id="L-104"><a href="#L-104"><span class="linenos">104</span></a><span class="sd">    - `source venv/bin/activate`</span>
-</span><span id="L-105"><a href="#L-105"><span class="linenos">105</span></a><span class="sd">    - `./publish.sh`&quot;&quot;&quot;</span>
-</span><span id="L-106"><a href="#L-106"><span class="linenos">106</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">.log</span><span class="w"> </span><span class="kn">import</span> <span class="n">LogObject</span><span class="p">,</span> <span class="n">LogHelper</span>
-</span><span id="L-107"><a href="#L-107"><span class="linenos">107</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">.socket</span><span class="w"> </span><span class="kn">import</span> <span class="n">Socket</span>
-</span><span id="L-108"><a href="#L-108"><span class="linenos">108</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">.api_utils.validator</span><span class="w"> </span><span class="kn">import</span> <span class="n">Validator</span>
-</span><span id="L-109"><a href="#L-109"><span class="linenos">109</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">.arguments</span><span class="w"> </span><span class="kn">import</span> <span class="n">Arguments</span>
-</span><span id="L-110"><a href="#L-110"><span class="linenos">110</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">.geo_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">GeoUtils</span>
-</span><span id="L-111"><a href="#L-111"><span class="linenos">111</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">.custom_coordinates</span><span class="w"> </span><span class="kn">import</span> <span class="n">CustomCoordinateSystem</span>
+</span><span id="L-43"><a href="#L-43"><span class="linenos"> 43</span></a><span class="sd">```python</span>
+</span><span id="L-44"><a href="#L-44"><span class="linenos"> 44</span></a><span class="sd">from cave_utils import Validator</span>
+</span><span id="L-45"><a href="#L-45"><span class="linenos"> 45</span></a>
+</span><span id="L-46"><a href="#L-46"><span class="linenos"> 46</span></a><span class="sd">session_data = {</span>
+</span><span id="L-47"><a href="#L-47"><span class="linenos"> 47</span></a><span class="sd">    &quot;settings&quot;: {</span>
+</span><span id="L-48"><a href="#L-48"><span class="linenos"> 48</span></a><span class="sd">        &quot;iconUrl&quot;: &quot;https://example.com/icon.png&quot;,</span>
+</span><span id="L-49"><a href="#L-49"><span class="linenos"> 49</span></a><span class="sd">    },</span>
+</span><span id="L-50"><a href="#L-50"><span class="linenos"> 50</span></a><span class="sd">    &quot;appBar&quot;: {</span>
+</span><span id="L-51"><a href="#L-51"><span class="linenos"> 51</span></a><span class="sd">        &quot;data&quot;: {</span>
+</span><span id="L-52"><a href="#L-52"><span class="linenos"> 52</span></a><span class="sd">            &quot;btn_home&quot;: {</span>
+</span><span id="L-53"><a href="#L-53"><span class="linenos"> 53</span></a><span class="sd">                &quot;icon&quot;: &quot;md/MdHome&quot;,</span>
+</span><span id="L-54"><a href="#L-54"><span class="linenos"> 54</span></a><span class="sd">                &quot;type&quot;: &quot;button&quot;,</span>
+</span><span id="L-55"><a href="#L-55"><span class="linenos"> 55</span></a><span class="sd">            }</span>
+</span><span id="L-56"><a href="#L-56"><span class="linenos"> 56</span></a><span class="sd">        }</span>
+</span><span id="L-57"><a href="#L-57"><span class="linenos"> 57</span></a><span class="sd">    },</span>
+</span><span id="L-58"><a href="#L-58"><span class="linenos"> 58</span></a><span class="sd">}</span>
+</span><span id="L-59"><a href="#L-59"><span class="linenos"> 59</span></a>
+</span><span id="L-60"><a href="#L-60"><span class="linenos"> 60</span></a><span class="sd">result = Validator(session_data=session_data)</span>
+</span><span id="L-61"><a href="#L-61"><span class="linenos"> 61</span></a>
+</span><span id="L-62"><a href="#L-62"><span class="linenos"> 62</span></a><span class="sd"># Inspect errors and warnings</span>
+</span><span id="L-63"><a href="#L-63"><span class="linenos"> 63</span></a><span class="sd">for entry in result.log.log:</span>
+</span><span id="L-64"><a href="#L-64"><span class="linenos"> 64</span></a><span class="sd">    print(entry)</span>
+</span><span id="L-65"><a href="#L-65"><span class="linenos"> 65</span></a><span class="sd"># Empty list means fully valid</span>
+</span><span id="L-66"><a href="#L-66"><span class="linenos"> 66</span></a><span class="sd">```</span>
+</span><span id="L-67"><a href="#L-67"><span class="linenos"> 67</span></a>
+</span><span id="L-68"><a href="#L-68"><span class="linenos"> 68</span></a><span class="sd">### Using GroupsBuilder</span>
+</span><span id="L-69"><a href="#L-69"><span class="linenos"> 69</span></a>
+</span><span id="L-70"><a href="#L-70"><span class="linenos"> 70</span></a><span class="sd">```python</span>
+</span><span id="L-71"><a href="#L-71"><span class="linenos"> 71</span></a><span class="sd">from cave_utils.builders.groups import GroupsBuilder</span>
+</span><span id="L-72"><a href="#L-72"><span class="linenos"> 72</span></a>
+</span><span id="L-73"><a href="#L-73"><span class="linenos"> 73</span></a><span class="sd">builder = GroupsBuilder(</span>
+</span><span id="L-74"><a href="#L-74"><span class="linenos"> 74</span></a><span class="sd">    data=[</span>
+</span><span id="L-75"><a href="#L-75"><span class="linenos"> 75</span></a><span class="sd">        {&quot;id&quot;: &quot;region_east&quot;, &quot;name&quot;: &quot;East&quot;, &quot;parent&quot;: None},</span>
+</span><span id="L-76"><a href="#L-76"><span class="linenos"> 76</span></a><span class="sd">        {&quot;id&quot;: &quot;state_ny&quot;, &quot;name&quot;: &quot;New York&quot;, &quot;parent&quot;: &quot;region_east&quot;},</span>
+</span><span id="L-77"><a href="#L-77"><span class="linenos"> 77</span></a><span class="sd">        {&quot;id&quot;: &quot;state_ma&quot;, &quot;name&quot;: &quot;Massachusetts&quot;, &quot;parent&quot;: &quot;region_east&quot;},</span>
+</span><span id="L-78"><a href="#L-78"><span class="linenos"> 78</span></a><span class="sd">    ],</span>
+</span><span id="L-79"><a href="#L-79"><span class="linenos"> 79</span></a><span class="sd">    id_field=&quot;id&quot;,</span>
+</span><span id="L-80"><a href="#L-80"><span class="linenos"> 80</span></a><span class="sd">    name_field=&quot;name&quot;,</span>
+</span><span id="L-81"><a href="#L-81"><span class="linenos"> 81</span></a><span class="sd">    parent_field=&quot;parent&quot;,</span>
+</span><span id="L-82"><a href="#L-82"><span class="linenos"> 82</span></a><span class="sd">)</span>
+</span><span id="L-83"><a href="#L-83"><span class="linenos"> 83</span></a>
+</span><span id="L-84"><a href="#L-84"><span class="linenos"> 84</span></a><span class="sd"># Serialize to the CAVE API groupedOutputs format</span>
+</span><span id="L-85"><a href="#L-85"><span class="linenos"> 85</span></a><span class="sd">groups_data = builder.serialize()</span>
+</span><span id="L-86"><a href="#L-86"><span class="linenos"> 86</span></a><span class="sd">```</span>
+</span><span id="L-87"><a href="#L-87"><span class="linenos"> 87</span></a>
+</span><span id="L-88"><a href="#L-88"><span class="linenos"> 88</span></a><span class="sd">## Public API</span>
+</span><span id="L-89"><a href="#L-89"><span class="linenos"> 89</span></a>
+</span><span id="L-90"><a href="#L-90"><span class="linenos"> 90</span></a><span class="sd">| Class | Import | Description |</span>
+</span><span id="L-91"><a href="#L-91"><span class="linenos"> 91</span></a><span class="sd">|---|---|---|</span>
+</span><span id="L-92"><a href="#L-92"><span class="linenos"> 92</span></a><span class="sd">| `Validator` | `from cave_utils import Validator` | Validates a `session_data` dict against the full CAVE API spec |</span>
+</span><span id="L-93"><a href="#L-93"><span class="linenos"> 93</span></a><span class="sd">| `LogObject` | `from cave_utils import LogObject` | Structured log container for errors and warnings |</span>
+</span><span id="L-94"><a href="#L-94"><span class="linenos"> 94</span></a><span class="sd">| `Socket` | `from cave_utils import Socket` | No-op WebSocket stub for use in tests |</span>
+</span><span id="L-95"><a href="#L-95"><span class="linenos"> 95</span></a><span class="sd">| `Arguments` | `from cave_utils import Arguments` | Parses kwargs, flags, and positional args from raw argument lists |</span>
+</span><span id="L-96"><a href="#L-96"><span class="linenos"> 96</span></a><span class="sd">| `GeoUtils` | `from cave_utils import GeoUtils` | Geographic utilities including shortest-path via `scgraph` |</span>
+</span><span id="L-97"><a href="#L-97"><span class="linenos"> 97</span></a><span class="sd">| `CustomCoordinateSystem` | `from cave_utils import CustomCoordinateSystem` | Converts 2D/3D Cartesian coordinates to lat/long |</span>
+</span><span id="L-98"><a href="#L-98"><span class="linenos"> 98</span></a>
+</span><span id="L-99"><a href="#L-99"><span class="linenos"> 99</span></a><span class="sd">Full API reference: [mit-cave.github.io/cave_utils](https://mit-cave.github.io/cave_utils/index.html)</span>
+</span><span id="L-100"><a href="#L-100"><span class="linenos">100</span></a>
+</span><span id="L-101"><a href="#L-101"><span class="linenos">101</span></a><span class="sd">## Development</span>
+</span><span id="L-102"><a href="#L-102"><span class="linenos">102</span></a>
+</span><span id="L-103"><a href="#L-103"><span class="linenos">103</span></a><span class="sd">All development tasks run inside Docker. Make sure Docker is installed and running.</span>
+</span><span id="L-104"><a href="#L-104"><span class="linenos">104</span></a>
+</span><span id="L-105"><a href="#L-105"><span class="linenos">105</span></a><span class="sd">| Command | Description |</span>
+</span><span id="L-106"><a href="#L-106"><span class="linenos">106</span></a><span class="sd">|---|---|</span>
+</span><span id="L-107"><a href="#L-107"><span class="linenos">107</span></a><span class="sd">| `./run.sh` | Drop into an interactive Docker shell |</span>
+</span><span id="L-108"><a href="#L-108"><span class="linenos">108</span></a><span class="sd">| `./run.sh test` | Run all tests |</span>
+</span><span id="L-109"><a href="#L-109"><span class="linenos">109</span></a><span class="sd">| `./run.sh prettify` | Format code with autoflake + black |</span>
+</span><span id="L-110"><a href="#L-110"><span class="linenos">110</span></a><span class="sd">| `./run.sh docs` | Regenerate pdoc documentation |</span>
+</span><span id="L-111"><a href="#L-111"><span class="linenos">111</span></a>
+</span><span id="L-112"><a href="#L-112"><span class="linenos">112</span></a><span class="sd">&gt; `./run.sh` requires a TTY. Run it directly in your terminal, not from a non-interactive CI environment.</span>
+</span><span id="L-113"><a href="#L-113"><span class="linenos">113</span></a>
+</span><span id="L-114"><a href="#L-114"><span class="linenos">114</span></a><span class="sd">### Running Tests</span>
+</span><span id="L-115"><a href="#L-115"><span class="linenos">115</span></a>
+</span><span id="L-116"><a href="#L-116"><span class="linenos">116</span></a><span class="sd">Tests live in `test/`. The main test file (`test_validator.py`) imports every example in `test/api_examples/`, runs it through `Validator`, and asserts no errors or warnings are produced. Unit tests exist for each module.</span>
+</span><span id="L-117"><a href="#L-117"><span class="linenos">117</span></a>
+</span><span id="L-118"><a href="#L-118"><span class="linenos">118</span></a><span class="sd">```sh</span>
+</span><span id="L-119"><a href="#L-119"><span class="linenos">119</span></a><span class="sd">./run.sh test</span>
+</span><span id="L-120"><a href="#L-120"><span class="linenos">120</span></a><span class="sd">```</span>
+</span><span id="L-121"><a href="#L-121"><span class="linenos">121</span></a>
+</span><span id="L-122"><a href="#L-122"><span class="linenos">122</span></a><span class="sd">### Hot-Reload with a Cave App</span>
+</span><span id="L-123"><a href="#L-123"><span class="linenos">123</span></a>
+</span><span id="L-124"><a href="#L-124"><span class="linenos">124</span></a><span class="sd">To develop `cave_utils` against a running Cave App, mount the local source as a Docker volume:</span>
+</span><span id="L-125"><a href="#L-125"><span class="linenos">125</span></a>
+</span><span id="L-126"><a href="#L-126"><span class="linenos">126</span></a><span class="sd">```sh</span>
+</span><span id="L-127"><a href="#L-127"><span class="linenos">127</span></a><span class="sd">cave run --docker-args &quot;--volume {local_path_to_cave_utils}/cave_utils:/cave_utils&quot;</span>
+</span><span id="L-128"><a href="#L-128"><span class="linenos">128</span></a><span class="sd">```</span>
+</span><span id="L-129"><a href="#L-129"><span class="linenos">129</span></a>
+</span><span id="L-130"><a href="#L-130"><span class="linenos">130</span></a><span class="sd">Then in the Cave App&#39;s `utils/run_server.sh`, add `pip install -e /cave_utils` before the server starts. Changes to `cave_utils` source will be reflected on the next API call without rebuilding the container.</span>
+</span><span id="L-131"><a href="#L-131"><span class="linenos">131</span></a>
+</span><span id="L-132"><a href="#L-132"><span class="linenos">132</span></a><span class="sd">Set `LIVE_API_VALIDATION_PRINT=True` in the Cave App&#39;s `.env` to see validation output on every API command.</span>
+</span><span id="L-133"><a href="#L-133"><span class="linenos">133</span></a>
+</span><span id="L-134"><a href="#L-134"><span class="linenos">134</span></a><span class="sd">## Release Process</span>
+</span><span id="L-135"><a href="#L-135"><span class="linenos">135</span></a>
+</span><span id="L-136"><a href="#L-136"><span class="linenos">136</span></a><span class="sd">1. Ensure all tests pass (`./run.sh test`) and code is formatted (`./run.sh prettify`)</span>
+</span><span id="L-137"><a href="#L-137"><span class="linenos">137</span></a><span class="sd">2. Update `version` in both `pyproject.toml` and `setup.cfg`</span>
+</span><span id="L-138"><a href="#L-138"><span class="linenos">138</span></a><span class="sd">3. Update the version in `utils/docs.sh` and regenerate docs (`./run.sh docs`)</span>
+</span><span id="L-139"><a href="#L-139"><span class="linenos">139</span></a><span class="sd">4. Build and publish:</span>
+</span><span id="L-140"><a href="#L-140"><span class="linenos">140</span></a><span class="sd">    ```sh</span>
+</span><span id="L-141"><a href="#L-141"><span class="linenos">141</span></a><span class="sd">    python3 -m virtualenv venv</span>
+</span><span id="L-142"><a href="#L-142"><span class="linenos">142</span></a><span class="sd">    source venv/bin/activate</span>
+</span><span id="L-143"><a href="#L-143"><span class="linenos">143</span></a><span class="sd">    pip install -r requirements.txt</span>
+</span><span id="L-144"><a href="#L-144"><span class="linenos">144</span></a><span class="sd">    ```</span>
+</span><span id="L-145"><a href="#L-145"><span class="linenos">145</span></a><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-146"><a href="#L-146"><span class="linenos">146</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">.log</span><span class="w"> </span><span class="kn">import</span> <span class="n">LogObject</span><span class="p">,</span> <span class="n">LogHelper</span>
+</span><span id="L-147"><a href="#L-147"><span class="linenos">147</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">.socket</span><span class="w"> </span><span class="kn">import</span> <span class="n">Socket</span>
+</span><span id="L-148"><a href="#L-148"><span class="linenos">148</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">.api_utils.validator</span><span class="w"> </span><span class="kn">import</span> <span class="n">Validator</span>
+</span><span id="L-149"><a href="#L-149"><span class="linenos">149</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">.arguments</span><span class="w"> </span><span class="kn">import</span> <span class="n">Arguments</span>
+</span><span id="L-150"><a href="#L-150"><span class="linenos">150</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">.geo_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">GeoUtils</span>
+</span><span id="L-151"><a href="#L-151"><span class="linenos">151</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">.custom_coordinates</span><span class="w"> </span><span class="kn">import</span> <span class="n">CustomCoordinateSystem</span>
 </span></pre></div>
 
 
