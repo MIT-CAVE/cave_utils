@@ -22,7 +22,7 @@
   <path fill-rule="evenodd" d="M4.146 8.354a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H14.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3z"/>
 </svg>                &nbsp;cave_utils.api</a>
 
-<a href="https://github.com/MIT-CAVE/cave_app">            <img src="https://cave.mit.edu/wp-content/uploads/2022/12/MIT-CTL-CAVE-logo@4x.png" class="logo" alt="project logo"/>
+<a href="https://github.com/MIT-CAVE/cave_app">            <img src="https://bpb-us-e1.wpmucdn.com/sites.mit.edu/dist/e/2085/files/2022/12/MIT-CTL-CAVE-logo@4x-e1702410588429-768x136.png" class="logo" alt="project logo"/>
 </a>
             <input type="search" placeholder="Search..." role="searchbox" aria-label="search"
                    pattern=".+" required>
@@ -82,6 +82,7 @@
 <footer>
 <select id="version-selector">
     <option value="latest">latest</option>
+        <option value="3.5.0">3.5.0</option>
         <option value="3.4.4">3.4.4</option>
         <option value="3.3.0">3.3.0</option>
         <option value="3.2.0">3.2.0</option>
@@ -1015,18 +1016,18 @@
 <ul>
 <li><strong><code>latitude</code></strong>: <code>list[list[float, int]]</code> = <code>None</code> &rarr; A list of latitudes for each node.
 <ul>
-<li><em>* Example <em></em>: <code>[45.34, 46.27, 47.34, 48.34]</code></li>
-<li><em></em> Notes *</em>: Used for <code>node</code> layers</li>
+<li>** Example <strong>: <code>[45.34, 46.27, 47.34, 48.34]</code></li>
+<li></strong> Notes **: Used for <code>node</code> layers</li>
 </ul></li>
 <li><strong><code>longitude</code></strong>: <code>list[list[float, int]]</code> = <code>None</code> &rarr; A list of longitudes for each node.
 <ul>
-<li><em>* Example <em></em>: <code>[120.34, 121.27, 122.34, 123.34]</code></li>
-<li><em></em> Note *</em>: Used for <code>node</code> layers</li>
+<li>** Example <strong>: <code>[120.34, 121.27, 122.34, 123.34]</code></li>
+<li></strong> Note **: Used for <code>node</code> layers</li>
 </ul></li>
 <li><strong><code>altitude</code></strong>: <code>list[list[float, int]]</code> = <code>None</code> &rarr; The altitude for each node / geo in kilometers.
 <ul>
-<li><em>* Example <em></em>: <code>[0, 1000, 2000, 3000]</code></li>
-<li><em></em> Notes *</em>:
+<li>** Example <strong>: <code>[0, 1000, 2000, 3000]</code></li>
+<li></strong> Notes **:
 <ul>
 <li>Used for <code>node</code> and <code>geo</code> layers</li>
 <li>This is currently ignored but is planned to be supported in the future.</li>
@@ -1034,13 +1035,13 @@
 </ul></li>
 <li><strong><code>path</code></strong>: <code>list[list[list[float, int]]]</code> = <code>None</code> &rarr; A path for each arc in the format <code>[[long1,lat1,(optional alt1)],[long2,lat2,(optional alt2)],...]</code>.
 <ul>
-<li><em>* Example <em></em>: <code>[[[0,0],[1,1]],[[2,2],[3,3],[4,4],[5,5]]]</code></li>
-<li><em></em> Example with Altitude <em></em>: <code>[[[0,0,0],[1,1,1000]],[[2,2,2000],[3,3,3000],[4,4,4000],[5,5,5000]]]</code></li>
-<li><em></em> Note *</em>: Used for <code>arc</code> layers</li>
+<li>** Example <strong>: <code>[[[0,0],[1,1]],[[2,2],[3,3],[4,4],[5,5]]]</code></li>
+<li></strong> Example with Altitude <strong>: <code>[[[0,0,0],[1,1,1000]],[[2,2,2000],[3,3,3000],[4,4,4000],[5,5,5000]]]</code></li>
+<li></strong> Note **: Used for <code>arc</code> layers</li>
 </ul></li>
 <li><strong><code>geoJsonValue</code></strong>: <code>list[str]</code> = <code>None</code> &rarr; A list of geoJsonValue keys that correspond to the <code>properties</code> key specified as geoJsonProp in <code>mapFeatures.data.*.geoJson</code>.
 <ul>
-<li><em>* Note *</em>: Used for <code>arc</code>, <code>node</code>, and <code>geo</code> layers</li>
+<li>** Note **: Used for <code>arc</code>, <code>node</code>, and <code>geo</code> layers</li>
 </ul></li>
 </ul>
 </div>

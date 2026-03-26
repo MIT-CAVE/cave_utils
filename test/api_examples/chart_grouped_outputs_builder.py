@@ -196,7 +196,6 @@ def execute_command(session_data, socket, command="init", **kwargs):
                             ],
                             "groupingId": ["product", "location"],
                             "groupingLevel": ["color", "state"],
-                            "filters": [],
                         }
                     },
                     "pageLayout": ["chart", None, None, None],
