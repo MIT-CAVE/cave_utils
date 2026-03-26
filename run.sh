@@ -6,7 +6,7 @@ if [ -z "$1" ]; then
         --volume "$(pwd):/app" \
         "cave_utils"
 else
-    docker run -it --rm \
+    docker run --rm \
         --volume "$(pwd):/app" \
         --entrypoint "/app/utils/$1.sh" \
         "cave_utils"
