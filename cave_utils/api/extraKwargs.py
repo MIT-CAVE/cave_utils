@@ -18,10 +18,10 @@ class extraKwargs(ApiValidator):
         """
         Arguments:
 
-        * **`wipeExisting`**: `[bool]` = `False` &rarr;
+        * **`wipeExisting`**: `[bool]` = `True` &rarr;
             * If set to `True`, all existing data will be deleted just
-            before session data updates are merged. By default (set to
-            `False`), the CAVE API will merge new data with existing
+            before session data updates are merged. If set to
+            `False`, the CAVE API will merge new data with existing
             data.
             * **Note**: The data is merged at the root level. In this
             case, if you update an item in `settings`, the entire
