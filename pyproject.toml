@@ -25,6 +25,9 @@ classifiers = [
 ]
 dependencies = ["pamda>=2.8.0,<3.0.0", "type_enforced>=2.2.0,<3.0.0",]
 
+[project.scripts]
+cave-utils-docs = "cave_utils.generate_docs:_cli"
+
 [project.urls]
 "Homepage" = "https://github.com/mit-cave/cave_utils"
 "Bug Tracker" = "https://github.com/mit-cave/cave_utils/issues"

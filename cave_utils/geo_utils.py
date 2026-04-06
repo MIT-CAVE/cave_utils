@@ -21,6 +21,8 @@ class GeoUtils:
         Creates a geoJson output with the shortest paths between a list of
         origin and destination points.
 
+        This can be used to preprocess arcs for cave apps, however using the geograph.get_shortest_path method directly is typically recommended.
+
         Arguments:
 
         * **`geoGraph`**: `[geoGraph]` &rarr; A geoGraph object from scgraph.
