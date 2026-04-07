@@ -317,6 +317,8 @@ class settings_sync_star(ApiValidator):
     def __extend_spec__(self, **kwargs):
         root_data = kwargs.get("root_data", {})
         for key, path in self.data.get("data", {}).items():
+            if len(path) > 0 and path[0] == "settings":
+                self.__warn__("Cannot desync settings paths.", path=["data", key])
             if not pamda.hasPath(path, root_data):
                 self.__warn__(f"Path {path} does not exist.", path=["data", key])
 
