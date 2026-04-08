@@ -66,8 +66,8 @@ class props(ApiValidator):
         fallbackValue: str | None = None,
         draggable: bool | None = None,
         allowNone: bool | None = None,
-        marqueeLabel: bool | None = None,
-        spinner: str | None = None,
+        marqueeLabel: bool | None = True,
+        spinner: str | bool | None = "right",
         smallStep: float | int | None = None,
         step: float | int | None = None,
         largeStep: float | int | None = None,
@@ -390,15 +390,16 @@ class props(ApiValidator):
                         * For prop purposes: `None` values will be left blank.
                 * If `False`, `None` will not be a valid value for the prop.
                 * This attribute applies to all props except `"head"` props.
-        * **`marqueeLabel`**: `[bool]` = `None` &rarr; Whether to scroll (marquee) a label that overflows its container.
+        * **`marqueeLabel`**: `[bool]` = `True` &rarr; Whether to scroll (marquee) a label that overflows its container.
             * **Notes**:
                 * If `True`, an overflowing label will scroll horizontally instead of being truncated.
                 * This attribute applies exclusively to `"num"` props with the `"field"` variant (or no variant).
-        * **`spinner`**: `[str]` = `None` &rarr; Controls the visibility and placement of increment/decrement spinner buttons.
+        * **`spinner`**: `[str | bool]` = `"right"` &rarr; Controls the visibility and placement of increment/decrement spinner buttons.
             * **Accepted Values**:
                 * `"left"`: Displays a decrement button on the left side of the input.
-                * `"right"`: Displays an increment button on the right side of the input.
+                * `"right"` | `True`: Displays an increment button on the right side of the input.
                 * `"leftAndRight"`: Displays a decrement button on the left and an increment button on the right, centering the input value between them.
+                * `False`: Hides the spinner control entirely.
             * **Notes**:
                 * If `None`, the default spinner behavior is used.
                 * This attribute applies exclusively to `"num"` props with the `"field"` variant (or no variant).
@@ -592,7 +593,7 @@ class props(ApiValidator):
                     "bottomCenter",
                     "bottomRight",
                 ],
-                "spinner": ["left", "right", "leftAndRight"],
+                "spinner": [True, False, "left", "right", "leftAndRight"],
                 "variant": {
                     "head": ["column", "row", "icon", "iconRow"],
                     "text": ["single", "textarea"],
