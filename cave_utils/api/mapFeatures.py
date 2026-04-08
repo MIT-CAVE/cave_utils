@@ -150,7 +150,11 @@ class mapFeatures_data_star_data(ApiValidator):
             **kwargs,
         )
         # Validate that all lengths are the same
-        lengths = [len(v) for k, v in location_data.items() if k not in ["timeValues", "order"]] + [
+        lengths = [
+            len(v)
+            for k, v in location_data.items()
+            if k not in ["timeValues", "order", "visibilityIndex", "visibilityTime"]
+        ] + [
             len(v) for k, v in valueLists_data.items() if k not in ["timeValues", "order"]
         ]
         if len(set(lengths)) > 1:

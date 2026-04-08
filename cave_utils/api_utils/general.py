@@ -66,6 +66,12 @@ class props(ApiValidator):
         fallbackValue: str | None = None,
         draggable: bool | None = None,
         allowNone: bool | None = None,
+        marqueeLabel: bool | None = None,
+        spinner: str | None = None,
+        smallStep: float | int | None = None,
+        step: float | int | None = None,
+        largeStep: float | int | None = None,
+        hideKeyboardToggle: bool | None = None,
         **kwargs,
     ):
         """
@@ -384,6 +390,34 @@ class props(ApiValidator):
                         * For prop purposes: `None` values will be left blank.
                 * If `False`, `None` will not be a valid value for the prop.
                 * This attribute applies to all props except `"head"` props.
+        * **`marqueeLabel`**: `[bool]` = `None` &rarr; Whether to scroll (marquee) a label that overflows its container.
+            * **Notes**:
+                * If `True`, an overflowing label will scroll horizontally instead of being truncated.
+                * This attribute applies exclusively to `"num"` props with the `"field"` variant (or no variant).
+        * **`spinner`**: `[str]` = `None` &rarr; Controls the visibility and placement of increment/decrement spinner buttons.
+            * **Accepted Values**:
+                * `"left"`: Displays a decrement button on the left side of the input.
+                * `"right"`: Displays an increment button on the right side of the input.
+                * `"leftAndRight"`: Displays a decrement button on the left and an increment button on the right, centering the input value between them.
+            * **Notes**:
+                * If `None`, the default spinner behavior is used.
+                * This attribute applies exclusively to `"num"` props with the `"field"` variant (or no variant).
+        * **`smallStep`**: `[float | int]` = `None` &rarr; Defines a finer-grained increment step for precise adjustments (typically triggered via a modifier key such as Alt).
+            * **Notes**:
+                * Default: a decimal value derived from `precision` (i.e. `10^(-precision)`); if unavailable, falls back to `0.1`.
+                    * Example: if `precision` is `3`, the default `smallStep` is `0.001`.
+                * This attribute applies to `"num"` props with the `"field"` or `"slider"` variant.
+        * **`step`**: `[float | int]` = `None` &rarr; Defines the default increment/decrement step when the value changes (e.g. via arrow keys, spinner buttons, or drag interactions).
+            * **Notes**:
+                * Default: `1`.
+                * This attribute applies to `"num"` props with the `"field"` or `"slider"` variant.
+        * **`largeStep`**: `[float | int]` = `None` &rarr; Defines a larger increment step for faster value changes (typically triggered via a modifier key such as Shift).
+            * **Notes**:
+                * Default: `10`.
+                * This attribute applies to `"num"` props with the `"field"` or `"slider"` variant.
+        * **`hideKeyboardToggle`**: `[bool]` = `None` &rarr; Whether to hide the on-screen keyboard toggle button.
+            * **Notes**:
+                * This attribute applies exclusively to `"num"` props with the `"field"` variant (or no variant).
 
         [react-icons]: https://react-icons.github.io/react-icons/search
         [metric prefix]: https://en.wikipedia.org/wiki/Metric_prefix
@@ -426,13 +460,23 @@ class props(ApiValidator):
             optional_fields += ["color"]
             if variant == "slider":
                 required_fields += ["maxValue", "minValue"]
+                optional_fields += ["smallStep", "step", "largeStep"]
             elif variant == "incslider":
                 required_fields += ["valueOptions"]
                 optional_fields += ["marks"]
             else:
                 optional_fields += ["maxValue", "minValue"]
                 if variant is None or variant == "field":
-                    optional_fields += ["label", "placeholder"]
+                    optional_fields += [
+                        "label",
+                        "placeholder",
+                        "marqueeLabel",
+                        "spinner",
+                        "smallStep",
+                        "step",
+                        "largeStep",
+                        "hideKeyboardToggle",
+                    ]
             if variant == "icon" or variant == "iconCompact":
                 required_fields += ["icon"]
                 optional_fields += ["color", "size"]
@@ -548,6 +592,7 @@ class props(ApiValidator):
                     "bottomCenter",
                     "bottomRight",
                 ],
+                "spinner": ["left", "right", "leftAndRight"],
                 "variant": {
                     "head": ["column", "row", "icon", "iconRow"],
                     "text": ["single", "textarea"],
