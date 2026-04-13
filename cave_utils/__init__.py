@@ -115,7 +115,7 @@ cave-utils-docs path/to/output_dir
 
 If no directory is specified, docs are written to `./cave_utils_docs/`.
 
-The output directory will contain one `.txt` file per module plus a `README.txt` index and a `PROJECT_README.md` with this project overview. You can point your AI assistant at this directory or reference individual files in a `CLAUDE.md` / system prompt.
+The output directory will contain one `.txt` file per module plus a `README.txt` index and a `PROJECT_README.md` with this project overview. You can point your AI assistant at this directory or reference individual files in a system prompt.
 
 ## Development
 
@@ -168,4 +168,3 @@ from .api_utils.validator import Validator
 from .arguments import Arguments
 from .geo_utils import GeoUtils
 from .custom_coordinates import CustomCoordinateSystem
-from .generate_docs import generate_docs
