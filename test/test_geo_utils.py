@@ -1,9 +1,10 @@
-from scgraph.geographs.us_freeway import us_freeway_geograph
-
+from scgraph import GeoGraph
 from cave_utils import GeoUtils
 import random
 
 random.seed(42)
+
+us_freeway_geograph = GeoGraph.load_geograph("us_freeway")
 
 try:
     bounding_box = [[33, -117], [42, -79]]

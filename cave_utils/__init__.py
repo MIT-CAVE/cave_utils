@@ -98,6 +98,25 @@ groups_data = builder.serialize()
 
 Full API reference: [mit-cave.github.io/cave_utils](https://mit-cave.github.io/cave_utils/index.html)
 
+## LLM Docs
+
+`cave_utils` can generate plain text documentation for all its modules, suitable for use with AI assistants (Claude, Gemini, etc.).
+
+**From Python:**
+```python
+from cave_utils import generate_docs
+generate_docs("path/to/output_dir")
+```
+
+**From the command line:**
+```sh
+cave-utils-docs path/to/output_dir
+```
+
+If no directory is specified, docs are written to `./cave_utils_docs/`.
+
+The output directory will contain one `.txt` file per module plus a `README.txt` index and a `PROJECT_README.md` with this project overview. You can point your AI assistant at this directory or reference individual files in a system prompt.
+
 ## Development
 
 All development tasks run inside Docker. Make sure Docker is installed and running.
