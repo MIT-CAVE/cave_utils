@@ -45,6 +45,7 @@ class draggables_data_star(ApiValidator):
         hideCloseOption: bool | None = None,
         hideDragOption: bool | None = None,
         showDragHandle: bool | None = None,
+        hideCloseButton: bool | None = None,
         **kwargs,
     ):
         """
@@ -61,6 +62,8 @@ class draggables_data_star(ApiValidator):
             * **Note**: If left unspecified (i.e., `None`), the drag handle is shown by default.
         * **`showDragHandle`**: `[bool]` = `None` &rarr; If `True`, the drag handle will be shown on the draggable.
             * **Note**: If left unspecified (i.e., `None`), the drag handle visibility is determined by the application.
+        * **`hideCloseButton`**: `[bool]` = `None` &rarr; If `True`, the close button will be hidden on the draggable.
+            * **Note**: If left unspecified (i.e., `None`), the close button visibility is determined by the application.
         """
         return {"kwargs": kwargs, "accepted_values": {}}
 
