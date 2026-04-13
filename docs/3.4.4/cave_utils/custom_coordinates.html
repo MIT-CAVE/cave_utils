@@ -22,7 +22,7 @@
   <path fill-rule="evenodd" d="M4.146 8.354a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H14.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3z"/>
 </svg>                &nbsp;cave_utils</a>
 
-<a href="https://github.com/MIT-CAVE/cave_app">            <img src="https://cave.mit.edu/wp-content/uploads/2022/12/MIT-CTL-CAVE-logo@4x.png" class="logo" alt="project logo"/>
+<a href="https://github.com/MIT-CAVE/cave_app">            <img src="https://bpb-us-e1.wpmucdn.com/sites.mit.edu/dist/e/2085/files/2022/12/MIT-CTL-CAVE-logo@4x-e1702410588429-768x136.png" class="logo" alt="project logo"/>
 </a>
             <input type="search" placeholder="Search..." role="searchbox" aria-label="search"
                    pattern=".+" required>
@@ -79,6 +79,7 @@
 <footer>
 <select id="version-selector">
     <option value="latest">latest</option>
+        <option value="3.5.1">3.5.1</option>
         <option value="3.4.4">3.4.4</option>
         <option value="3.3.0">3.3.0</option>
         <option value="3.2.0">3.2.0</option>
@@ -904,7 +905,7 @@ increases whilst moving up along the vertical axis.</p>
 <ul>
 <li><strong><code>coordinates</code></strong>: <code>[list]</code> &rarr; A nested list of (x, y) or (x, y, z) coordinates. The level of nesting must be consistent throughout the list.
 <ul>
-<li><em>* Examples *</em>:
+<li>** Examples **:
 <ul>
 <li><code>[100,50]</code></li>
 <li><code>[100,50,0]</code></li>
@@ -1033,9 +1034,9 @@ Formula adapted from: <a href="https://en.wikipedia.org/wiki/Mercator_projection
 <ul>
 <li><strong><code>coordinates</code></strong>: <code>list[list[float | int]]</code> &rarr; The coordinates to be converted in this coordinate system in the format <code>[[x1,y1,(optional z1)],[x2,y2,(optional z2)],...]</code>.
 <ul>
-<li><em>* Example <em></em>: <code>[[0,0],[103.5,99.1],[76.55,350],[12.01,12.01]]</code></li>
-<li><em></em> Example with Altitude <em></em>: <code>[[0,0,0],[103.5,99.1,1],[76.55,350,0.2],[12.01,12.01,3.41]]</code></li>
-<li><em></em> Note *</em>: All coordinates must have either no altitude or altitude values. There cannot be a mix of both.</li>
+<li>** Example <strong>: <code>[[0,0],[103.5,99.1],[76.55,350],[12.01,12.01]]</code></li>
+<li></strong> Example with Altitude <strong>: <code>[[0,0,0],[103.5,99.1,1],[76.55,350,0.2],[12.01,12.01,3.41]]</code></li>
+<li></strong> Note **: All coordinates must have either no altitude or altitude values. There cannot be a mix of both.</li>
 </ul></li>
 </ul>
 
@@ -1113,8 +1114,8 @@ Formula adapted from: <a href="https://en.wikipedia.org/wiki/Mercator_projection
 <ul>
 <li><strong><code>coordinates</code></strong>: <code>[list[list[float | int]] | dict[str, list[float | int]]]</code> &rarr; The coordinates to be serialized in this coordinate system in the format <code>[[x1,y1],[x2,y2],...]</code> or a dictionary with "x", "y", and an optional "z" key with lists of values for all coordinates.
 <ul>
-<li><em>* Example List Type <em></em>: <code>[[0,0],[103.5,99.1],[76.55,350],[12.01,12.01]]</code></li>
-<li><em></em> Example Dictionary Type with Altitude *</em>: <code>{"x": [0,103.5,76.55,12.01], "y": [0,99.1,350,12.01], "z": [0,1,0.2,3.41]}</code></li>
+<li>** Example List Type <strong>: <code>[[0,0],[103.5,99.1],[76.55,350],[12.01,12.01]]</code></li>
+<li></strong> Example Dictionary Type with Altitude **: <code>{"x": [0,103.5,76.55,12.01], "y": [0,99.1,350,12.01], "z": [0,1,0.2,3.41]}</code></li>
 </ul></li>
 </ul>
 
@@ -1200,8 +1201,8 @@ Formula adapted from: <a href="https://en.wikipedia.org/wiki/Mercator_projection
 <ul>
 <li><strong><code>path</code></strong>: <code>[list[list[list[float | int]]] | list[dict[str, list[float | int]]]]</code> &rarr; The path coordinates to be serialized in this coordinate system in the format <code>[[[x1,y1],[x2,y2]],...]</code> or a list of dictionaries with "x", "y", and an optional "z" key with lists of values for all coordinates of an arc.
 <ul>
-<li><em>* Example List Type <em></em>: <code>[[[0,0],[103.5,99.1]],[[76.55,350],[12.01,12.01]]]</code></li>
-<li><em></em> Example Dictionary Type with Altitude *</em>: <code>[{"x": [0,103.5], "y": [0,99.1], "z": [0,1]}, {"x": [76.55,12.01], "y": [350,12.01], "z": [0.2,3.41]}]</code></li>
+<li>** Example List Type <strong>: <code>[[[0,0],[103.5,99.1]],[[76.55,350],[12.01,12.01]]]</code></li>
+<li></strong> Example Dictionary Type with Altitude **: <code>[{"x": [0,103.5], "y": [0,99.1], "z": [0,1]}, {"x": [76.55,12.01], "y": [350,12.01], "z": [0.2,3.41]}]</code></li>
 </ul></li>
 </ul>
 

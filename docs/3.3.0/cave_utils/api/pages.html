@@ -22,7 +22,7 @@
   <path fill-rule="evenodd" d="M4.146 8.354a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H14.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3z"/>
 </svg>                &nbsp;cave_utils.api</a>
 
-<a href="https://github.com/MIT-CAVE/cave_app">            <img src="https://cave.mit.edu/wp-content/uploads/2022/12/MIT-CTL-CAVE-logo@4x.png" class="logo" alt="project logo"/>
+<a href="https://github.com/MIT-CAVE/cave_app">            <img src="https://bpb-us-e1.wpmucdn.com/sites.mit.edu/dist/e/2085/files/2022/12/MIT-CTL-CAVE-logo@4x-e1702410588429-768x136.png" class="logo" alt="project logo"/>
 </a>
             <input type="search" placeholder="Search..." role="searchbox" aria-label="search"
                    pattern=".+" required>
@@ -82,6 +82,7 @@
 <footer>
 <select id="version-selector">
     <option value="latest">latest</option>
+        <option value="3.5.1">3.5.1</option>
         <option value="3.4.4">3.4.4</option>
         <option value="3.3.0">3.3.0</option>
         <option value="3.2.0">3.2.0</option>
@@ -1813,14 +1814,14 @@
 <li>If left unspecified (i.e., <code>None</code>), it will default to <code>"sum"</code>.</li>
 </ul></li>
 </ul></li>
-<li><em>* <code>aggregationGroupingId</code></em>*: <code>[str]</code> = <code>None</code> &rarr; The id of the grouping to use for aggregation.
+<li>** <code>aggregationGroupingId</code>**: <code>[str]</code> = <code>None</code> &rarr; The id of the grouping to use for aggregation.
 <ul>
 <li><strong>Notes</strong>:
 <ul>
 <li>This is not applicable for the following aggregationTypes ['sum', 'divisor'].</li>
 </ul></li>
 </ul></li>
-<li><em>* <code>aggregationGroupingLevel</code></em>*: <code>[str]</code> = <code>None</code> &rarr; The id of the grouping level to use for aggregation.
+<li>** <code>aggregationGroupingLevel</code>**: <code>[str]</code> = <code>None</code> &rarr; The id of the grouping level to use for aggregation.
 <ul>
 <li><strong>Notes</strong>:
 <ul>
@@ -1945,7 +1946,7 @@
             <div class="docstring"><p>Arguments:</p>
 
 <ul>
-<li><em>* <code>leftChartType</code></em>*: <code>[str]</code> = <code>None</code> &rarr; The chart type to use for the left y-axis.
+<li>** <code>leftChartType</code>**: <code>[str]</code> = <code>None</code> &rarr; The chart type to use for the left y-axis.
 <ul>
 <li><strong>Accepted Values</strong>:
 <ul>
@@ -1954,7 +1955,7 @@
 <li><code>"cumulative_line"</code>: A cumulative line chart</li>
 </ul></li>
 </ul></li>
-<li><em>* <code>rightChartType</code></em>*: <code>[str]</code> = <code>None</code> &rarr; The chart type to use for the right y-axis.
+<li>** <code>rightChartType</code>**: <code>[str]</code> = <code>None</code> &rarr; The chart type to use for the right y-axis.
 <ul>
 <li><strong>Accepted Values</strong>:
 <ul>
@@ -1963,7 +1964,7 @@
 <li><code>"cumulative_line"</code>: A cumulative line chart</li>
 </ul></li>
 </ul></li>
-<li><em>* <code>cumulative</code></em>*: <code>[bool]</code> = <code>False</code> &rarr; Whether or not the chart should be cumulative.</li>
+<li>** <code>cumulative</code>**: <code>[bool]</code> = <code>False</code> &rarr; Whether or not the chart should be cumulative.</li>
 </ul>
 </div>
 

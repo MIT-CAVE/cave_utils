@@ -16,6 +16,7 @@ from cave_utils.api_utils.validator_utils import *
 from cave_utils.api.extraKwargs import extraKwargs
 from cave_utils.api.settings import settings
 from cave_utils.api.appBar import appBar
+from cave_utils.api.draggables import draggables
 from cave_utils.api.panes import panes
 from cave_utils.api.pages import pages
 from cave_utils.api.maps import maps
@@ -37,6 +38,7 @@ class Root(ApiValidator):
     def spec(
         settings: dict,
         appBar: dict = dict(),
+        draggables: dict = dict(),
         panes: dict = dict(),
         pages: dict = dict(),
         maps: dict = dict(),
@@ -57,6 +59,8 @@ class Root(ApiValidator):
                 * If left unspecified (i.e., `None`), there will be no action elements on the app bar.
                 * Otherwise, `appBar.data` is required and should have at least one item in it.
             * **See**: `cave_utils.api.appBar`
+        * **`draggables`**: `[dict]` = `{}` &rarr; Configure the initial state of draggable UI elements.
+            * **See**: `cave_utils.api.draggables`
         * **`panes`**: `[dict]` = `{}` &rarr; Configure panes for your application.
             * **See**: `cave_utils.api.panes`
         * **`pages`**: `[dict]` = `{}` &rarr; Configure pages for your application.
@@ -101,6 +105,15 @@ class Root(ApiValidator):
         # Special logic to add timeLength to kwargs
         # This is used to validate timeValues across the app
         kwargs["timeLength"] = pamda.path(["settings", "time", "timeLength"], self.data)
+        # Validate draggables
+        draggables_data = self.data.get("draggables", dict())
+        if draggables_data != {}:
+            draggables(
+                data=draggables_data,
+                log=self.log,
+                prepend_path=["draggables"],
+                **kwargs,
+            )
         # Validate panes
         panes_data = self.data.get("panes")
         pane_validPaneIds = []

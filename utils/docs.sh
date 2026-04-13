@@ -15,8 +15,8 @@ echo "from .custom_coordinates import CustomCoordinateSystem" >> cave_utils/__in
 
 
 # Specify versions for documentation purposes
-VERSION="3.4.4"
-OLD_DOC_VERSIONS="3.3.0 3.2.0 3.1.0 3.0.0 2.3.0 2.2.1 2.1.2 2.0.5 1.6.1"
+VERSION="3.5.1"
+OLD_DOC_VERSIONS="3.4.4 3.3.0 3.2.0 3.1.0 3.0.0 2.3.0 2.2.1 2.1.2 2.0.5 1.6.1"
 export version_options="$VERSION $OLD_DOC_VERSIONS"
 
 # generate the docs for a version function:
@@ -27,7 +27,7 @@ function generate_docs() {
             pip install "./dist/cave_utils-$INPUT_VERSION.tar.gz"
         fi
     fi
-    pdoc --logo https://cave.mit.edu/wp-content/uploads/2022/12/MIT-CTL-CAVE-logo@4x.png --logo-link https://github.com/MIT-CAVE/cave_app -o ./docs/$INPUT_VERSION -t ./doc_template cave_utils
+    pdoc --logo https://bpb-us-e1.wpmucdn.com/sites.mit.edu/dist/e/2085/files/2022/12/MIT-CTL-CAVE-logo@4x-e1702410588429-768x136.png --logo-link https://github.com/MIT-CAVE/cave_app -o ./docs/$INPUT_VERSION -t ./doc_template cave_utils
 }
 
 # Generate the docs for the current version
