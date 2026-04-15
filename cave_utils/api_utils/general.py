@@ -907,6 +907,7 @@ class layout(ApiValidator):
         column: int | None = None,
         row: int | None = None,
         style: dict | None = None,
+        containerStyle: dict | None = None,
         **kwargs,
     ):
         """
@@ -932,10 +933,11 @@ class layout(ApiValidator):
         * **`row`**: `[int]` = `None` &rarr; The row in which to place the prop in the current grid.
         * **`style`**: `[dict | None]` = `None` &rarr; Provides an escape hatch for specifying CSS rules.
             * **Note**: In `"item"` layouts, the `style` is applied to the root of the prop container, while in `"grid"` layouts, it targets the CSS Grid layout level.
+        * **`containerStyle`**: `[dict | None]` = `None` &rarr; Provides an escape hatch for specifying CSS rules for the container element.
         """
         passed_values = {k: v for k, v in locals().items() if (v is not None) and k != "kwargs"}
         required_fields = ["type"]
-        optional_fields = ["style"]
+        optional_fields = ["style", "containerStyle"]
         if type == "grid":
             required_fields += ["data"]
             optional_fields += ["numColumns", "numRows", "column", "row"]
