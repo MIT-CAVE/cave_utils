@@ -347,8 +347,11 @@ class maps_data_star_legendGroups_star_data_star(ApiValidator):
             * **Notes**:
                 * If `None`, the data layer will not be sized
                 * Does not apply to shape layers
+                * This field is required if the prop is a map feature prop of type `arc` or `node`
         * **`colorBy`**: `[str]` = `None` &rarr; The prop id to use for coloring the data layer.
-            * **Note**: If `None`, the data layer will not be colored
+            * **Notes**:
+                * If `None`, the data layer will not be colored
+                * This field is required if the prop is a map feature prop of type `arc`, `node`, or `geo`
         * **`lineStyle`**: `[str]` = `"solid"` &rarr; The type of line to use for the data layer.
             * **Accepted Values**:
                 * `"solid"`: Represents a single continuous line.
@@ -415,6 +418,7 @@ class maps_data_star_legendGroups_star_data_star(ApiValidator):
             * **Notes**:
                 * If `None`, the data layer will not be colored.
                 * Only props of type `"num"`, `"toggle"`, `"selector"` and `"text"` can be colored.
+                * Only props with an existing `"gradient"` or `"options"` field can be colored.
             * **Example**:
                 ```py
                 "colorByOptions": ["numericPropExample", "selectorPropExample"]
@@ -425,6 +429,7 @@ class maps_data_star_legendGroups_star_data_star(ApiValidator):
                 * If `None`, the data layer will not be sized.
                 * Does not apply to shape layers
                 * Only props of type `"num"`, `"toggle"`, `"selector"` and `"text"` can be sized.
+                * Only props with an existing `"gradient"` or `"options"` field can be sized.
             * **Example**:
                 ```py
                 "sizeByOptions": ["numericPropExample", "selectorPropExample"]

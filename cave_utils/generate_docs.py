@@ -121,7 +121,7 @@ def generate_docs(output_dir: str = "cave_utils_docs"):
     lines.append("")
     (out / "README.txt").write_text("\n".join(lines))
 
-    print(f"Docs written to: {out.resolve()}")
+    # print(f"Docs written to: {out.resolve()}")
 
 
 def _cli():
