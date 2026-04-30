@@ -913,7 +913,7 @@ class layout(ApiValidator):
         """
         Arguments:
 
-        * **`type`**: `[str]` = `None` &rarr; The type of the layout.
+        * **`type`**: `[str]` &rarr; The type of the layout.
             * **Accepted Values**:
                 * `"grid"`: A layout element that can contain other layout elements.
                 * `"item"`: A layout element where a prop is located.
