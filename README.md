@@ -118,23 +118,23 @@ The output directory will contain one `.txt` file per module plus a `README.txt`
 
 ## Development
 
-All development tasks run inside Docker. Make sure Docker is installed and running.
+Dev dependencies are declared in `[project.optional-dependencies] dev` in `pyproject.toml`. Install them with `uv sync --extra dev`.
 
 | Command | Description |
 |---|---|
-| `./run.sh` | Drop into an interactive Docker shell |
-| `./run.sh test` | Run all tests |
-| `./run.sh prettify` | Format code with autoflake + black |
-| `./run.sh docs` | Regenerate pdoc documentation |
-
-> `./run.sh` requires a TTY. Run it directly in your terminal, not from a non-interactive CI environment.
+| `uv run pytest` | Run all tests |
+| `uv run pytest -v` | Run tests with verbose output |
+| `uv run nox` | Run tests across Python 3.11, 3.12, 3.13, 3.14 |
+| `uv run nox -s tests-3.14` | Run tests on a single Python version |
+| `uv run python utils/prettify.py` | Format code with autoflake + black |
+| `uv run python utils/docs.py` | Regenerate pdoc documentation |
 
 ### Running Tests
 
 Tests live in `test/`. The main test file (`test_validator.py`) imports every example in `test/api_examples/`, runs it through `Validator`, and asserts no errors or warnings are produced. Unit tests exist for each module.
 
 ```sh
-./run.sh test
+uv run pytest
 ```
 
 ### Hot-Reload with a Cave App
@@ -151,12 +151,14 @@ Set `LIVE_API_VALIDATION_PRINT=True` in the Cave App's `.env` to see validation 
 
 ## Release Process
 
-1. Ensure all tests pass (`./run.sh test`) and code is formatted (`./run.sh prettify`)
-2. Update `version` in both `pyproject.toml` and `setup.cfg`
-3. Update the version in `utils/docs.sh` and regenerate docs (`./run.sh docs`)
-4. Build and publish:
+1. Ensure all tests pass and code is formatted:
     ```sh
-    python3 -m virtualenv venv
-    source venv/bin/activate
-    pip install -r requirements.txt
+    uv run nox
+    uv run python utils/prettify.py
+    ```
+2. Update `version` in both `pyproject.toml` and `setup.cfg`
+3. Run tests across all supported Python versions: `uv run nox`
+4. Update `VERSION` in `utils/docs.py` and regenerate docs:
+    ```sh
+    uv run python utils/docs.py
     ```
