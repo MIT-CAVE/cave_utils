@@ -32,7 +32,15 @@ def test_builders_date_groups():
     assert serialized_names["levels"]["month"]["ordering"] == ["January", "February"]
     assert "Sunday" in serialized_names["data"]["week_day"]
     assert "Monday" in serialized_names["data"]["week_day"]
-    expected_ordering = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+    expected_ordering = [
+        "Sunday",
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+    ]
     assert serialized_names["levels"]["week_day"]["ordering"] == expected_ordering
 
     builder_all = DateGroupsBuilder(

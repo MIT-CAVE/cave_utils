@@ -5,7 +5,16 @@ from cave_utils import Arguments
 def test_arguments():
     original_argv = sys.argv.copy()
     try:
-        sys.argv = ["script_name.py", "--name", "value", "-v", "-flagonly", "pos1", "--another", "-x"]
+        sys.argv = [
+            "script_name.py",
+            "--name",
+            "value",
+            "-v",
+            "-flagonly",
+            "pos1",
+            "--another",
+            "-x",
+        ]
         args = Arguments()
 
         assert args.get_kwarg("name") == "value", "Failed to retrieve --name=value"
