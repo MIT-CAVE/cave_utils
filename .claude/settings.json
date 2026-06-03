@@ -12,7 +12,8 @@
       "Write(./test/**)",
       "Read(./README.md)",
       "Edit(./README.md)",
-      "Write(./README.md)"
+      "Write(./README.md)",
+      "Bash(uv run *)"
     ],
     "deny": [
       "Read(.env)",

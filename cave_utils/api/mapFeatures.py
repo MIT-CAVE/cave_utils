@@ -154,9 +154,7 @@ class mapFeatures_data_star_data(ApiValidator):
             len(v)
             for k, v in location_data.items()
             if k not in ["timeValues", "order", "visibilityIndex", "visibilityTime"]
-        ] + [
-            len(v) for k, v in valueLists_data.items() if k not in ["timeValues", "order"]
-        ]
+        ] + [len(v) for k, v in valueLists_data.items() if k not in ["timeValues", "order"]]
         if len(set(lengths)) > 1:
             self.__error__(msg=f"location and valueLists keys must have the same length.", path=[])
 
