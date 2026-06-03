@@ -4,3 +4,5 @@
 *.egg-info
 *.pyc
 build
+.nox
+.venv
