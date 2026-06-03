@@ -4,7 +4,7 @@ target-version = ['py311']
 exclude = '/.*(__pycache__).*/'
 
 [tool.setuptools]
-py-modules = ["cave_utils"]
+packages = ["cave_utils"]
 
 [build-system]
 requires = ["setuptools>=61.0"]
@@ -12,7 +12,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "cave_utils"
-version = "3.5.4"
+version = "3.5.5"
 description = "Python wrapper for api use in the cave_app"
 authors = [
     {name="Connor Makowski", email="conmak@mit.edu"}
@@ -25,9 +25,27 @@ classifiers = [
 ]
 dependencies = ["pamda>=2.8.0,<3.0.0", "type_enforced>=2.2.0,<3.0.0",]
 
+[project.optional-dependencies]
+dev = [
+    "pytest>=9.0.3",
+    "autoflake>=2.3.1",
+    "black>=25.1.0",
+    "build>=1.2.2",
+    "nox>=2026.4.10",
+    "nox-uv>=0.8.0",
+    "pdoc>=15.0.1",
+    "twine>=6.1.0",
+    "scgraph>=3.1.0,<4.0.0",
+]
+
 [project.scripts]
 cave-utils-docs = "cave_utils.generate_docs:_cli"
 
 [project.urls]
 "Homepage" = "https://github.com/mit-cave/cave_utils"
 "Bug Tracker" = "https://github.com/mit-cave/cave_utils/issues"
+
+[tool.pytest.ini_options]
+testpaths = ["test"]
+python_files = ["*.py"]
+norecursedirs = ["test/api_examples"]

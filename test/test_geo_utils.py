@@ -1,15 +1,14 @@
+import random
 from scgraph import GeoGraph
 from cave_utils import GeoUtils
-import random
 
 random.seed(42)
 
-us_freeway_geograph = GeoGraph.load_geograph("us_freeway")
 
-try:
+def test_geo_utils():
+    us_freeway_geograph = GeoGraph.load_geograph("us_freeway")
     bounding_box = [[33, -117], [42, -79]]
     grid_size = [100, 100]
-
     num_routes = 100
 
     min_latitude = min(bounding_box[0][0], bounding_box[1][0])
@@ -42,7 +41,7 @@ try:
         destination_longitudes.append(longitude_options[destination_lon_id])
         ids.append(f"{origin_lat_id}_{origin_lon_id}_{destination_lat_id}_{destination_lon_id}")
 
-    out = GeoUtils.create_shortest_paths_geojson(
+    GeoUtils.create_shortest_paths_geojson(
         geoGraph=us_freeway_geograph,
         ids=ids,
         origin_latitudes=origin_latitudes,
@@ -50,10 +49,4 @@ try:
         destination_latitudes=destination_latitudes,
         destination_longitudes=destination_longitudes,
         show_progress=False,
-        # filename="test.geojson"
     )
-    print("GeoUtils Tests: Passed!")
-except Exception as e:
-    print("GeoUtils Tests: Failed!")
-    print(f"Error: {e}")
-    raise e
