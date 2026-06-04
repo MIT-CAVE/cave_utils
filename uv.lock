@@ -103,7 +103,7 @@ wheels = [
 
 [[package]]
 name = "cave-utils"
-version = "3.5.6"
+version = "3.5.7"
 source = { editable = "." }
 dependencies = [
     { name = "pamda" },
@@ -130,10 +130,10 @@ requires-dist = [
     { name = "build", marker = "extra == 'dev'", specifier = ">=1.2.2" },
     { name = "nox", marker = "extra == 'dev'", specifier = ">=2026.4.10" },
     { name = "nox-uv", marker = "extra == 'dev'", specifier = ">=0.8.0" },
-    { name = "pamda", specifier = ">=2.8.0,<3.0.0" },
+    { name = "pamda", specifier = ">=2.10.0,<3.0.0" },
     { name = "pdoc", marker = "extra == 'dev'", specifier = ">=15.0.1" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=9.0.3" },
-    { name = "scgraph", marker = "extra == 'dev'", specifier = ">=3.1.0,<4.0.0" },
+    { name = "scgraph", marker = "extra == 'dev'", specifier = ">=3.3.0,<4.0.0" },
     { name = "twine", marker = "extra == 'dev'", specifier = ">=6.1.0" },
     { name = "type-enforced", specifier = ">=2.6.0,<3.0.0" },
 ]
