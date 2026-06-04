@@ -103,7 +103,7 @@ wheels = [
 
 [[package]]
 name = "cave-utils"
-version = "3.5.6"
+version = "3.5.7"
 source = { editable = "." }
 dependencies = [
     { name = "pamda" },
@@ -130,12 +130,12 @@ requires-dist = [
     { name = "build", marker = "extra == 'dev'", specifier = ">=1.2.2" },
     { name = "nox", marker = "extra == 'dev'", specifier = ">=2026.4.10" },
     { name = "nox-uv", marker = "extra == 'dev'", specifier = ">=0.8.0" },
-    { name = "pamda", specifier = ">=2.8.0,<3.0.0" },
+    { name = "pamda", specifier = ">=2.10.0,<3.0.0" },
     { name = "pdoc", marker = "extra == 'dev'", specifier = ">=15.0.1" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=9.0.3" },
-    { name = "scgraph", marker = "extra == 'dev'", specifier = ">=3.1.0,<4.0.0" },
+    { name = "scgraph", marker = "extra == 'dev'", specifier = ">=3.3.0,<4.0.0" },
     { name = "twine", marker = "extra == 'dev'", specifier = ">=6.1.0" },
-    { name = "type-enforced", specifier = ">=2.2.0,<3.0.0" },
+    { name = "type-enforced", specifier = ">=2.6.0,<3.0.0" },
 ]
 provides-extras = ["dev"]
 
@@ -984,11 +984,11 @@ wheels = [
 
 [[package]]
 name = "type-enforced"
-version = "2.5.0"
+version = "2.6.0"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/4c/f8/5e3497673f3084081c827810989785dbaa4622b997c7d7bd05f177f9c2df/type_enforced-2.5.0.tar.gz", hash = "sha256:fb6d77caf0d681b1968162f85f06b170dc4e678d4c8e9c9ffd8986588e4bd4d4", size = 33926, upload-time = "2026-06-03T19:44:14.631Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/7e/ba/e68f33858c8c9bd19dd3843afb79f197f26db189e274911fb04aa1295fcf/type_enforced-2.6.0.tar.gz", hash = "sha256:6b423841fe93e4032b0c58b726cde146ad589c0f9279b65b7de52863e538565b", size = 34142, upload-time = "2026-06-04T14:22:57.425Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/8d/ff/f5f44e749b7529f03851b25bdccbabcf11f5a93121841512030c591277dd/type_enforced-2.5.0-py3-none-any.whl", hash = "sha256:61fef884b34e0b2673365b66b3d2d5cb2c5efc55b2dff85af166be53e2ba356b", size = 24235, upload-time = "2026-06-03T19:44:09.991Z" },
+    { url = "https://files.pythonhosted.org/packages/79/0a/239c377caa1724b5bcf7b08c1995a3c612c8f938d0eb3ba00e57115d3ed7/type_enforced-2.6.0-py3-none-any.whl", hash = "sha256:80df9904e504192271636514f61338e62c2a5b20fbd91f8f7db3c8e9fa5fa7cc", size = 24400, upload-time = "2026-06-04T14:22:51.829Z" },
 ]
 
 [[package]]
