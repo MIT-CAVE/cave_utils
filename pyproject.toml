@@ -12,7 +12,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "cave_utils"
-version = "3.5.6"
+version = "3.5.7"
 description = "Python wrapper for api use in the cave_app"
 authors = [
     {name="Connor Makowski", email="conmak@mit.edu"}
@@ -23,7 +23,7 @@ classifiers = [
     "Programming Language :: Python :: 3",
     "Operating System :: OS Independent",
 ]
-dependencies = ["pamda>=2.8.0,<3.0.0", "type_enforced>=2.2.0,<3.0.0",]
+dependencies = ["pamda>=2.10.0,<3.0.0", "type_enforced>=2.6.0,<3.0.0",]
 
 [project.optional-dependencies]
 dev = [
@@ -35,7 +35,7 @@ dev = [
     "nox-uv>=0.8.0",
     "pdoc>=15.0.1",
     "twine>=6.1.0",
-    "scgraph>=3.1.0,<4.0.0",
+    "scgraph>=3.3.0,<4.0.0",
 ]
 
 [project.scripts]
