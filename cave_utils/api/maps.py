@@ -337,6 +337,7 @@ class maps_data_star_legendGroups_star_data_star(ApiValidator):
         colorByOptions: list | None = None,
         sizeByOptions: list | None = None,
         icon: str | None = None,
+        zIndex: int | None = None,
         **kwargs,
     ):
         """
@@ -440,6 +441,10 @@ class maps_data_star_legendGroups_star_data_star(ApiValidator):
                 * Arc layer icons are determined by `lineStyle`.
                 * Shape layer icons are always the default icon.
                 * This attribute applies exclusively to `node` layers
+        * **`zIndex`**: `[int]` = `None` &rarr; The z-index of the data layer.
+            * **Notes**:
+                * If `None`, the z-index will be determined by the feature type: `nodes` = 0, `arcs` = -1, `geos` = -2.
+                * Node layers are always on top of arc and geo layers, so only their zIndex relative to other nodes matters.
         """
         return {
             "kwargs": kwargs,
