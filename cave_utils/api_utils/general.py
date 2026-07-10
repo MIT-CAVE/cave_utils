@@ -72,6 +72,8 @@ class props(ApiValidator):
         step: float | int | None = None,
         largeStep: float | int | None = None,
         hideKeyboardToggle: bool | None = None,
+        scale: str | None = None,
+        scaleParams: dict | None = None,
         **kwargs,
     ):
         """
@@ -374,7 +376,7 @@ class props(ApiValidator):
             * **Notes**:
                 - Only applies to `"num"` props with the `"incslider"` variant.
                 - Contains key-value pairs for each mark, where the key is the mark value and the value is a dictionary of properties for the mark (e.g., label, color).
-                - TODO: Add more details and validation for the `marks` dictionary.
+                # TODO: Add more details and validation for the `marks` dictionary.
         * **`draggable`**: `[bool]` = `None` &rarr;
             * If `True`, the prop will be rendered within the draggable global outputs pad.
             * **Notes**:
@@ -419,6 +421,19 @@ class props(ApiValidator):
         * **`hideKeyboardToggle`**: `[bool]` = `None` &rarr; Whether to hide the on-screen keyboard toggle button.
             * **Notes**:
                 * This attribute applies exclusively to `"num"` props with the `"field"` variant (or no variant).
+        * **`scale`**: `[str]` = `None` &rarr; The scale used to display the slider's value.
+            * **Accepted Values**:
+                * `"linear"`: Display the value as-is
+                * `"log"`: Display the logarithm of the value in base `scaleParams.base`
+                * `"pow"`: Display the value raised to the power of `scaleParams.exponent`
+                * `"exp"`: Display `scaleParams.base` raised to the power of the value
+            * **Notes**:
+                * The scale is display-only: the prop's underlying value (and the value sent to the API) remains in its raw, unscaled form.
+                * This attribute applies exclusively to `"num"` props with the `"slider"` variant.
+        * **`scaleParams`**: `[dict]` = `None` &rarr; The parameters for the scale.
+            * **Notes**:
+                * See `props_slider_scaleParams` for more information.
+                * This attribute applies exclusively to `"num"` props with the `"slider"` variant.
 
         [react-icons]: https://react-icons.github.io/react-icons/search
         [metric prefix]: https://en.wikipedia.org/wiki/Metric_prefix
@@ -461,7 +476,7 @@ class props(ApiValidator):
             optional_fields += ["color"]
             if variant == "slider":
                 required_fields += ["maxValue", "minValue"]
-                optional_fields += ["smallStep", "step", "largeStep"]
+                optional_fields += ["smallStep", "step", "largeStep", "scale", "scaleParams"]
             elif variant == "incslider":
                 required_fields += ["valueOptions"]
                 optional_fields += ["marks"]
@@ -594,6 +609,7 @@ class props(ApiValidator):
                     "bottomRight",
                 ],
                 "spinner": [True, False, "left", "right", "leftAndRight"],
+                "scale": ["linear", "log", "pow", "exp"],
                 "variant": {
                     "head": ["column", "row", "icon", "iconRow"],
                     "text": ["single", "textarea"],
@@ -633,6 +649,16 @@ class props(ApiValidator):
             props_gradient(
                 data=self.data.get("gradient"), log=self.log, prepend_path=["gradient"], **kwargs
             )
+        if self.data.get("scale") is not None or self.data.get("scaleParams") is not None:
+            props_slider_scaleParams(
+                data=self.data.get("scaleParams", {}),
+                log=self.log,
+                prepend_path=["scaleParams"],
+                slider_scale_type=self.data.get("scale"),
+            )
+            min_value = self.data.get("minValue")
+            if self.data.get("scale") == "log" and min_value is not None and min_value <= 0:
+                self.__error__(msg="`minValue` must be greater than 0 for a logarithmic scale")
         if self.data.get("fallback"):
             props_fallback(
                 data=self.data.get("fallback"), log=self.log, prepend_path=["fallback"], **kwargs
@@ -893,6 +919,49 @@ class props_gradient_data(ApiValidator):
             self.__check_color_string_valid__(color_string=self.data.get("color"))
         if self.data.get("size"):
             self.__check_pixel_string_valid__(pixel_string=self.data.get("size"))
+
+
+@type_enforced.Enforcer
+class props_slider_scaleParams(ApiValidator):
+    @staticmethod
+    def spec(
+        exponent: float | int | None = None,
+        base: float | int | None = None,
+        **kwargs,
+    ):
+        """
+        Arguments:
+
+        * **`exponent`**: `[float | int]` = `None` &rarr; The exponent for a power (`"pow"`) scale.
+            * **Note**: Required when using a power scale.
+        * **`base`**: `[float | int]` = `None` &rarr; The base for a logarithmic (`"log"`) or exponential (`"exp"`) scale.
+            * **Notes**:
+                * Required when using an exponential scale.
+                * If omitted for a logarithmic scale, it defaults to `10`.
+        """
+        return {
+            "kwargs": kwargs,
+            "accepted_values": {},
+        }
+
+    def __extend_spec__(self, **kwargs):
+        scale = kwargs.get("slider_scale_type") or "linear"
+        exponent = self.data.get("exponent")
+        base = self.data.get("base")
+        if exponent is not None:
+            if exponent <= 0:
+                self.__error__(msg="`exponent` must be greater than 0 for a power scale")
+            if scale != "pow":
+                self.__warn__(msg=f"`exponent` has no effect on a `{scale}` scale")
+        if base is not None:
+            if base <= 0 or base == 1:
+                self.__error__(msg="`base` must be greater than 0 and not equal to 1")
+            if scale not in ["log", "exp"]:
+                self.__warn__(msg=f"`base` has no effect on a `{scale}` scale")
+        if scale == "pow" and exponent is None:
+            self.__error__(msg="`exponent` must be specified for a power scale")
+        if scale == "exp" and base is None:
+            self.__error__(msg="`base` must be specified for an exponential scale")
 
 
 @type_enforced.Enforcer
