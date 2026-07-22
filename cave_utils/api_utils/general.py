@@ -421,15 +421,16 @@ class props(ApiValidator):
         * **`hideKeyboardToggle`**: `[bool]` = `None` &rarr; Whether to hide the on-screen keyboard toggle button.
             * **Notes**:
                 * This attribute applies exclusively to `"num"` props with the `"field"` variant (or no variant).
-        * **`scale`**: `[str]` = `None` &rarr; The scale used to display the slider's value.
+        * **`scale`**: `[str]` = `None` &rarr; The scale used for the slider's non-linear thumb-position mapping.
             * **Accepted Values**:
-                * `"linear"`: Display the value as-is
-                * `"log"`: Display the logarithm of the value in base `scaleParams.base`
-                * `"pow"`: Display the value raised to the power of `scaleParams.exponent`
-                * `"exp"`: Display `scaleParams.base` raised to the power of the value
+                * `"linear"`: Position the thumb linearly across `[minValue, maxValue]`
+                * `"log"`: Position the thumb logarithmically, giving finer control near `minValue`
+                * `"pow"`: Position the thumb using `scaleParams.exponent` as the power
+                * `"exp"`: Position the thumb exponentially, giving finer control near `maxValue`
             * **Notes**:
-                * The scale is display-only: the prop's underlying value (and the value sent to the API) remains in its raw, unscaled form.
+                * `scale`/`scaleParams` only reshape how drag distance maps to the thumb's position; `minValue`, `maxValue`, and the prop's value remain the same real-world quantity regardless of scale.
                 * This attribute applies exclusively to `"num"` props with the `"slider"` variant.
+                * `minValue` and `maxValue` must both be greater than `0` when using an exponential scale.
         * **`scaleParams`**: `[dict]` = `None` &rarr; The parameters for the scale.
             * **Notes**:
                 * See `props_slider_scaleParams` for more information.
@@ -657,8 +658,12 @@ class props(ApiValidator):
                 slider_scale_type=self.data.get("scale"),
             )
             min_value = self.data.get("minValue")
-            if self.data.get("scale") == "log" and min_value is not None and min_value <= 0:
-                self.__error__(msg="`minValue` must be greater than 0 for a logarithmic scale")
+            max_value = self.data.get("maxValue")
+            if self.data.get("scale") == "exp":
+                if min_value is not None and min_value <= 0:
+                    self.__error__(msg="`minValue` must be greater than 0 for an exponential scale")
+                if max_value is not None and max_value <= 0:
+                    self.__error__(msg="`maxValue` must be greater than 0 for an exponential scale")
         if self.data.get("fallback"):
             props_fallback(
                 data=self.data.get("fallback"), log=self.log, prepend_path=["fallback"], **kwargs
