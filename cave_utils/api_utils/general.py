@@ -57,6 +57,7 @@ class props(ApiValidator):
         placement: str | None = None,
         fullWidth: bool | None = None,
         url: str | None = None,
+        suppressCommand: bool | None = None,
         scaleMode: str | None = None,
         propStyle: dict | None = None,
         readOnly: bool | None = None,
@@ -361,6 +362,11 @@ class props(ApiValidator):
         * **`fullWidth`**: `[bool]` = `None` &rarr; Whether or not the prop should take the full width of the container.
         * **`url`**: `[str]` = `None` &rarr; The URL to navigate to when the button is clicked.
             * **Notes**: Applies to `button` props.
+        * **`suppressCommand`**: `[bool]` = `False` &rarr;
+            * If `True` and `url` is also set, clicking the button only navigates to `url`; the paired `apiCommand` (if any) is not triggered.
+            * **Notes**:
+                * Applies to `button` props.
+                * Has no effect unless both `url` and `apiCommand` are set. Otherwise, `apiCommand` (if any) always triggers on click.
         * **`scaleMode`**: `[str]` = `None` &rarr; The scale mode to use for the prop.
             * **Accepted Values**: ['fitWidth', 'fitHeight', 'fitContainer']
             * **Notes**: Applies only to `media` props with a `variant` of `video`.
@@ -530,7 +536,15 @@ class props(ApiValidator):
                 "activeIcon",
             ]
         elif type == "button":
-            optional_fields += ["icon", "color", "size", "startIcon", "endIcon", "url"]
+            optional_fields += [
+                "icon",
+                "color",
+                "size",
+                "startIcon",
+                "endIcon",
+                "url",
+                "suppressCommand",
+            ]
         elif type == "media":
             required_fields += ["variant"]
             optional_fields = [i for i in optional_fields if i != "variant"]
