@@ -28,6 +28,7 @@ class props(ApiValidator):
         labelPlacement: str | None = None,
         activeLabel: str | None = None,
         placeholder: str | None = None,
+        numVisibleTags: int | None = None,
         maxValue: float | int | None = None,
         minValue: float | int | None = None,
         gradient: dict | None = None,
