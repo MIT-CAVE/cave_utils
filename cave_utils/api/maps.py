@@ -337,6 +337,7 @@ class maps_data_star_legendGroups_star_data_star(ApiValidator):
         colorByOptions: list | None = None,
         sizeByOptions: list | None = None,
         icon: str | None = None,
+        filters: list[dict] | None = None,
         **kwargs,
     ):
         """
@@ -440,6 +441,9 @@ class maps_data_star_legendGroups_star_data_star(ApiValidator):
                 * Arc layer icons are determined by `lineStyle`.
                 * Shape layer icons are always the default icon.
                 * This attribute applies exclusively to `node` layers
+        * **`filters`**: `[list[dict]]` = `None` &rarr; A list of filter dictionaries to apply to the data layer.
+            * **Note**: The contents of each filter dictionary are not yet validated. See the
+              matching TODO in `cave_utils.api.pages.pages_data_star`.
         """
         return {
             "kwargs": kwargs,
