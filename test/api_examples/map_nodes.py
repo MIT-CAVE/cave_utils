@@ -57,6 +57,24 @@ def execute_command(session_data, socket, command="init", **kwargs):
                                     "sizeBy": "capacity",
                                     "sizeByOptions": ["capacity"],
                                     "icon": "fa6/FaWarehouse",
+                                    # Only show warehouses with a capacity greater than 90
+                                    "filters": [
+                                        {
+                                            "id": 0,
+                                            "type": "group",
+                                            "groupId": 0,
+                                            "logic": "and",
+                                            "edit": False,
+                                        },
+                                        {
+                                            "id": 1,
+                                            "type": "rule",
+                                            "parentGroupId": 0,
+                                            "prop": "capacity",
+                                            "option": "gt",
+                                            "value": "90",
+                                        },
+                                    ],
                                 },
                             },
                         },
