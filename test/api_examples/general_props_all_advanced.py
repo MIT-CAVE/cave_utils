@@ -105,6 +105,34 @@ def execute_command(
                             },
                             "help": "Current electric vehicle battery charge level",
                         },
+                        "numericSliderLogScaleExample": {
+                            "name": "Signal Strength",
+                            "subtitle": "This example uses the `num`'s `slider` variant with logarithmic scaling",
+                            "type": "num",
+                            "variant": "slider",
+                            "maxValue": 3,
+                            "minValue": 0,
+                            "unit": "dBm",
+                            "precision": 3,
+                            "scale": "log",
+                            "scaleParams": {"base": 10},
+                            "color": "#42a5f5",
+                            "help": "Adjust the radio signal strength using a logarithmic slider to better reflect perceived power changes",
+                        },
+                        "numericSliderExpScaleExample": {
+                            "name": "CPU Budget",
+                            "subtitle": "This example uses the `num`'s `slider` variant with exponential scaling",
+                            "type": "num",
+                            "variant": "slider",
+                            "maxValue": 256,
+                            "minValue": 1,
+                            "unit": "cores",
+                            "precision": 0,
+                            "scale": "exp",
+                            "scaleParams": {"base": 2},
+                            "color": "#ef5350",
+                            "help": "Allocate compute resources with an exponential scale so each additional core has a larger impact on total capacity",
+                        },
                         "incrementalSliderExample": {
                             "name": "Delivery Speed",
                             "subtitle": "This example uses the `num`'s `incslider` variant",
@@ -251,6 +279,13 @@ def execute_command(
                             "placement": "topCenter",
                             # "container": "minimal",  # Unstyled container that will keep the prop in its layout position
                             "url": "https://github.com/MIT-CAVE",
+                            # `apiCommand` fires alongside `url` by default. Set
+                            # `suppressCommand` to `True` so a button with both
+                            # attributes only navigates, without also triggering
+                            # the paired API command (eg. for analytics logging).
+                            "apiCommand": "logGithubVisit",
+                            "suppressCommand": True,
+                            "help": "Open the MIT CAVE Lab GitHub page in a new tab. The `logGithubVisit` command is suppressed since `suppressCommand` is `True`, so only navigation occurs on click",
                         },
                         "mediaHeader": {
                             "name": "Media Props",
@@ -311,6 +346,38 @@ def execute_command(
                             "help": "Select the primary programming language for your development stack",
                         },
                         "checkboxItemExample": {
+                            "name": "Alert Notification Channels",
+                            "subtitle": "This example uses the `selector`'s `checkbox` variant",
+                            "type": "selector",
+                            "variant": "checkbox",
+                            "options": {
+                                "email": {
+                                    "icon": "hi/HiMail",
+                                    "name": "Email",
+                                    "activeIcon": "hi/HiMailOpen",
+                                    "activeColor": "#66bb6a",
+                                },
+                                "sms": {
+                                    "icon": "hi/HiDeviceMobile",
+                                    "name": "SMS",
+                                    "activeIcon": "hi/HiChatAlt2",
+                                    "activeColor": "#42a5f5",
+                                },
+                                "slack": {
+                                    "icon": "fa/FaSlack",
+                                    "name": "Slack",
+                                    "activeColor": "#9c27b0",
+                                },
+                                "webhook": {
+                                    "icon": "hi/HiLightningBolt",
+                                    "name": "Webhook",
+                                    "activeColor": "#ffa726",
+                                },
+                            },
+                            "helperText": "Select which channels should receive critical alert notifications.",
+                            "help": "Configure how your team is notified when critical alerts are triggered",
+                        },
+                        "hcheckboxItemExample": {
                             "name": "Message Actions",
                             "subtitle": "This example uses the `selector`'s `hcheckbox` variant",
                             "type": "selector",
@@ -338,7 +405,6 @@ def execute_command(
                                 },
                             },
                             "fullWidth": True,
-                            "propStyle": {"justifyContent": "space-evenly"},
                             "help": "Manage message visibility and importance in your inbox workflow",
                             "helperText": "Toggle multiple actions to highlight this message in your inbox.",
                             "propStyle": {
@@ -368,23 +434,23 @@ def execute_command(
                                 "quick": {
                                     "name": "Quick Sort",
                                     "icon": "md/MdFlashOn",
-                                    "activeColor": "#66bb6a",
-                                    "activeIcon": "bi/BiSolidCheckCircle",
-                                    "helperText": "Correct! Quick Sort uses O(1) auxiliary space.",
+                                    "activeColor": "#ffa726",
+                                    "activeIcon": "bs/BsFillQuestionCircleFill",
+                                    "helperText": "Not quite! Quick Sort partitions in-place, but its recursion uses O(log n) stack space (not O(1)), and its O(n log n) runtime only holds on average, not worst case.",
                                 },
                                 "heap": {
                                     "name": "Heap Sort",
                                     "icon": "md/MdOutlineLayers",
-                                    "activeColor": "#ffa726",
-                                    "activeIcon": "bs/BsFillQuestionCircleFill",
-                                    "helperText": "Not quite! Though Heap Sort is in-place, Quick Sort is the standard answer.",
+                                    "activeColor": "#66bb6a",
+                                    "activeIcon": "bi/BiSolidCheckCircle",
+                                    "helperText": "Correct! Heap Sort's standard iterative implementation uses O(1) auxiliary space and guarantees O(n log n) time, even in the worst case.",
                                 },
                                 "bubble": {
                                     "name": "Bubble Sort",
                                     "icon": "md/MdOutlineBubbleChart",
                                     "activeColor": "#ce93d8",
                                     "activeIcon": "bi/BiSolidXCircle",
-                                    "helperText": "Wrong! Bubble Sort may be simple, but that's not the answer.",
+                                    "helperText": "Wrong! Bubble Sort is O(1) space, but its O(n²) time complexity makes it an inefficient choice.",
                                 },
                             },
                             "propStyle": {
@@ -405,6 +471,7 @@ def execute_command(
                             "size": "24px",
                             "activeIcon": "fc/FcAssistant",
                             "activeSize": "48px",
+                            "labelPlacement": "bottom",
                             "options": {
                                 "alice": {
                                     "name": "Alice",
@@ -526,6 +593,7 @@ def execute_command(
                             "type": "selector",
                             "variant": "comboboxMulti",
                             "placeholder": "Choose features to enable",
+                            "numVisibleTags": 1,
                             "options": {
                                 "auth": {
                                     "name": "Authentication",
@@ -669,6 +737,8 @@ def execute_command(
                         "numericInputExample": 750.50,
                         "numericInputExampleAlt": 1000,
                         "numericSliderExample": 75,
+                        "numericSliderLogScaleExample": 1,
+                        "numericSliderExpScaleExample": 16,
                         "incrementalSliderExample": 3,
                         "toggleSwitchExample": True,
                         "toggleButtonExample": False,
@@ -681,8 +751,9 @@ def execute_command(
                         "textInputExample": "cave-routing-2025",
                         "textAreaInputExample": "This project aims to optimize last-mile delivery routes using machine learning algorithms. Key features include real-time traffic integration, dynamic route adjustment, and driver mobile app integration. Target completion: Q3 2025.",
                         "dropdownItemExample": ["python"],
-                        "checkboxItemExample": ["flag", "pin"],
-                        "radioItemExample": ["bubble"],
+                        "checkboxItemExample": ["email", "slack"],
+                        "hcheckboxItemExample": ["flag", "pin"],
+                        "radioItemExample": [],
                         "hstepperItemExample": ["requirements"],
                         "vstepperItemExample": ["submit"],
                         "hradioItemExample": ["alice"],
@@ -740,6 +811,18 @@ def execute_command(
                                 "type": "item",
                                 "column": 1,
                                 "row": 5,
+                                "itemId": "numericSliderLogScaleExample",
+                            },
+                            "col1Row6": {
+                                "type": "item",
+                                "column": 1,
+                                "row": 6,
+                                "itemId": "numericSliderExpScaleExample",
+                            },
+                            "col1Row7": {
+                                "type": "item",
+                                "column": 1,
+                                "row": 7,
                                 "itemId": "incrementalSliderExample",
                             },
                             "col2Row1": {
@@ -854,42 +937,48 @@ def execute_command(
                                 "type": "item",
                                 "column": 6,
                                 "row": 4,
-                                "itemId": "radioItemExample",
+                                "itemId": "hcheckboxItemExample",
                             },
                             "col6Row5": {
                                 "type": "item",
                                 "column": 6,
                                 "row": 5,
-                                "itemId": "hradioItemExample",
+                                "itemId": "radioItemExample",
                             },
                             "col6Row6": {
                                 "type": "item",
                                 "column": 6,
                                 "row": 6,
-                                "itemId": "comboBoxItemExample",
+                                "itemId": "hradioItemExample",
                             },
                             "col6Row7": {
                                 "type": "item",
                                 "column": 6,
                                 "row": 7,
-                                "itemId": "comboBoxMultiExample",
+                                "itemId": "comboBoxItemExample",
                             },
                             "col6Row8": {
                                 "type": "item",
                                 "column": 6,
                                 "row": 8,
-                                "itemId": "hstepperItemExample",
+                                "itemId": "comboBoxMultiExample",
                             },
                             "col6Row9": {
                                 "type": "item",
                                 "column": 6,
                                 "row": 9,
-                                "itemId": "vstepperItemExample",
+                                "itemId": "hstepperItemExample",
                             },
                             "col6Row10": {
                                 "type": "item",
                                 "column": 6,
                                 "row": 10,
+                                "itemId": "vstepperItemExample",
+                            },
+                            "col6Row11": {
+                                "type": "item",
+                                "column": 6,
+                                "row": 11,
                                 "itemId": "nestedItemExample",
                             },
                             "col7Row1": {
