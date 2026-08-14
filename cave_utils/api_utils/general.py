@@ -196,6 +196,7 @@ class props(ApiValidator):
             * **Note**: See the `props_gradient` function for more information.
         * **`fallback`**: `[dict]` = `None` &rarr; The fallback dict for color and sizing props with missing or invalid values.
             * **Note**: See the `props_fallback` function for more information.
+            * **Note**: This attribute applies exclusively to `"selector"` props.
         * **`maxRows`**: `[int]` = `None` &rarr;
             * The maximum number of rows to show for a `"textarea"` variant.
             * **Note**: This attribute applies exclusively to `"text"` props.
@@ -533,6 +534,7 @@ class props(ApiValidator):
                 "activeSize",
                 "icon",
                 "activeIcon",
+                "fallback",
             ]
             if variant == "comboboxMulti":
                 optional_fields += ["numVisibleTags"]
