@@ -196,7 +196,7 @@ class props(ApiValidator):
             * **Note**: See the `props_gradient` function for more information.
         * **`fallback`**: `[dict]` = `None` &rarr; The fallback dict for color and sizing props with missing or invalid values.
             * **Note**: See the `props_fallback` function for more information.
-            * **Note**: This attribute applies exclusively to `"selector"` props.
+            * **Note**: This attribute applies to `"selector"`, `"num"`, `"text"`, and `"toggle"` props.
         * **`maxRows`**: `[int]` = `None` &rarr;
             * The maximum number of rows to show for a `"textarea"` variant.
             * **Note**: This attribute applies exclusively to `"text"` props.
@@ -480,6 +480,7 @@ class props(ApiValidator):
                 "placeholder",
                 "options",
                 "readOnly",
+                "fallback",
             ]
         elif type == "num":
             optional_fields += ["color"]
@@ -523,6 +524,7 @@ class props(ApiValidator):
                 "unitPlacement",
                 "draggable",
                 "gradient",
+                "fallback",
             ]
         elif type == "selector":
             required_fields += ["options"]
@@ -553,6 +555,7 @@ class props(ApiValidator):
                 "activeSize",
                 "activeLabel",
                 "activeIcon",
+                "fallback",
             ]
         elif type == "button":
             optional_fields += [
