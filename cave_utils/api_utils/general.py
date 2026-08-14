@@ -567,8 +567,6 @@ class props(ApiValidator):
             optional_fields = [i for i in optional_fields if i != "variant"]
             if variant == "video":
                 optional_fields += ["scaleMode"]
-        if type in ["selector", "num", "toggle", "text"]:
-            optional_fields += ["fallback"]
 
         missing_required = pamda.difference(required_fields, list(passed_values.keys()))
         if len(missing_required) > 0:
