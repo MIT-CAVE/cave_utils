@@ -217,7 +217,7 @@ class pages_data_star_charts(ApiValidator):
         * **`stats`**: `[list]` = `None` &rarr; A list of stats to use.
             * **See**: `cave_utils.api.pages.pages_data_star_charts_stats`.
         * **`chartOptions`**: `[dict]` = `None` &rarr; The options to pass to the chart.
-            * TODO: Validate chart options
+            # TODO: Validate chart options
         * **`sessions`**: `[list]` = `None` &rarr; The ids of the sessions to use.
         * **`globalOutput`**: `[list]` = `None` &rarr; The ids of the global outputs to use.
         * **`lockedLayout`**: `[bool]` = `False` &rarr; Whether or not the layout should be locked.

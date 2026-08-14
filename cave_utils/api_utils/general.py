@@ -28,6 +28,7 @@ class props(ApiValidator):
         labelPlacement: str | None = None,
         activeLabel: str | None = None,
         placeholder: str | None = None,
+        numVisibleTags: int | None = None,
         maxValue: float | int | None = None,
         minValue: float | int | None = None,
         gradient: dict | None = None,
@@ -57,6 +58,7 @@ class props(ApiValidator):
         placement: str | None = None,
         fullWidth: bool | None = None,
         url: str | None = None,
+        suppressCommand: bool | None = None,
         scaleMode: str | None = None,
         propStyle: dict | None = None,
         readOnly: bool | None = None,
@@ -72,6 +74,8 @@ class props(ApiValidator):
         step: float | int | None = None,
         largeStep: float | int | None = None,
         hideKeyboardToggle: bool | None = None,
+        scale: str | None = None,
+        scaleParams: dict | None = None,
         **kwargs,
     ):
         """
@@ -192,6 +196,7 @@ class props(ApiValidator):
             * **Note**: See the `props_gradient` function for more information.
         * **`fallback`**: `[dict]` = `None` &rarr; The fallback dict for color and sizing props with missing or invalid values.
             * **Note**: See the `props_fallback` function for more information.
+            * **Note**: This attribute applies to `"selector"`, `"num"`, `"text"`, and `"toggle"` props.
         * **`maxRows`**: `[int]` = `None` &rarr;
             * The maximum number of rows to show for a `"textarea"` variant.
             * **Note**: This attribute applies exclusively to `"text"` props.
@@ -361,6 +366,11 @@ class props(ApiValidator):
         * **`fullWidth`**: `[bool]` = `None` &rarr; Whether or not the prop should take the full width of the container.
         * **`url`**: `[str]` = `None` &rarr; The URL to navigate to when the button is clicked.
             * **Notes**: Applies to `button` props.
+        * **`suppressCommand`**: `[bool]` = `False` &rarr;
+            * If `True` and `url` is also set, clicking the button only navigates to `url`; the paired `apiCommand` (if any) is not triggered.
+            * **Notes**:
+                * Applies to `button` props.
+                * Has no effect unless both `url` and `apiCommand` are set. Otherwise, `apiCommand` (if any) always triggers on click.
         * **`scaleMode`**: `[str]` = `None` &rarr; The scale mode to use for the prop.
             * **Accepted Values**: ['fitWidth', 'fitHeight', 'fitContainer']
             * **Notes**: Applies only to `media` props with a `variant` of `video`.
@@ -374,7 +384,7 @@ class props(ApiValidator):
             * **Notes**:
                 - Only applies to `"num"` props with the `"incslider"` variant.
                 - Contains key-value pairs for each mark, where the key is the mark value and the value is a dictionary of properties for the mark (e.g., label, color).
-                - TODO: Add more details and validation for the `marks` dictionary.
+                # TODO: Add more details and validation for the `marks` dictionary.
         * **`draggable`**: `[bool]` = `None` &rarr;
             * If `True`, the prop will be rendered within the draggable global outputs pad.
             * **Notes**:
@@ -419,6 +429,20 @@ class props(ApiValidator):
         * **`hideKeyboardToggle`**: `[bool]` = `None` &rarr; Whether to hide the on-screen keyboard toggle button.
             * **Notes**:
                 * This attribute applies exclusively to `"num"` props with the `"field"` variant (or no variant).
+        * **`scale`**: `[str]` = `None` &rarr; The scale used for the slider's non-linear thumb-position mapping.
+            * **Accepted Values**:
+                * `"linear"`: Position the thumb linearly across `[minValue, maxValue]`
+                * `"log"`: Position the thumb logarithmically, giving finer control near `minValue`
+                * `"pow"`: Position the thumb using `scaleParams.exponent` as the power
+                * `"exp"`: Position the thumb exponentially, giving finer control near `maxValue`
+            * **Notes**:
+                * `scale`/`scaleParams` only reshape how drag distance maps to the thumb's position; `minValue`, `maxValue`, and the prop's value remain the same real-world quantity regardless of scale.
+                * This attribute applies exclusively to `"num"` props with the `"slider"` variant.
+                * `minValue` and `maxValue` must both be greater than `0` when using an exponential scale.
+        * **`scaleParams`**: `[dict]` = `None` &rarr; The parameters for the scale.
+            * **Notes**:
+                * See `props_slider_scaleParams` for more information.
+                * This attribute applies exclusively to `"num"` props with the `"slider"` variant.
 
         [react-icons]: https://react-icons.github.io/react-icons/search
         [metric prefix]: https://en.wikipedia.org/wiki/Metric_prefix
@@ -456,12 +480,13 @@ class props(ApiValidator):
                 "placeholder",
                 "options",
                 "readOnly",
+                "fallback",
             ]
         elif type == "num":
             optional_fields += ["color"]
             if variant == "slider":
                 required_fields += ["maxValue", "minValue"]
-                optional_fields += ["smallStep", "step", "largeStep"]
+                optional_fields += ["smallStep", "step", "largeStep", "scale", "scaleParams"]
             elif variant == "incslider":
                 required_fields += ["valueOptions"]
                 optional_fields += ["marks"]
@@ -499,6 +524,7 @@ class props(ApiValidator):
                 "unitPlacement",
                 "draggable",
                 "gradient",
+                "fallback",
             ]
         elif type == "selector":
             required_fields += ["options"]
@@ -510,6 +536,7 @@ class props(ApiValidator):
                 "activeSize",
                 "icon",
                 "activeIcon",
+                "fallback",
             ]
             if variant == "comboboxMulti":
                 optional_fields += ["numVisibleTags"]
@@ -528,16 +555,23 @@ class props(ApiValidator):
                 "activeSize",
                 "activeLabel",
                 "activeIcon",
+                "fallback",
             ]
         elif type == "button":
-            optional_fields += ["icon", "color", "size", "startIcon", "endIcon", "url"]
+            optional_fields += [
+                "icon",
+                "color",
+                "size",
+                "startIcon",
+                "endIcon",
+                "url",
+                "suppressCommand",
+            ]
         elif type == "media":
             required_fields += ["variant"]
             optional_fields = [i for i in optional_fields if i != "variant"]
             if variant == "video":
                 optional_fields += ["scaleMode"]
-        if type in ["selector", "num", "toggle", "text"]:
-            optional_fields += ["fallback"]
 
         missing_required = pamda.difference(required_fields, list(passed_values.keys()))
         if len(missing_required) > 0:
@@ -594,6 +628,7 @@ class props(ApiValidator):
                     "bottomRight",
                 ],
                 "spinner": [True, False, "left", "right", "leftAndRight"],
+                "scale": ["linear", "log", "pow", "exp"],
                 "variant": {
                     "head": ["column", "row", "icon", "iconRow"],
                     "text": ["single", "textarea"],
@@ -633,6 +668,20 @@ class props(ApiValidator):
             props_gradient(
                 data=self.data.get("gradient"), log=self.log, prepend_path=["gradient"], **kwargs
             )
+        if self.data.get("scale") is not None or self.data.get("scaleParams") is not None:
+            props_slider_scaleParams(
+                data=self.data.get("scaleParams", {}),
+                log=self.log,
+                prepend_path=["scaleParams"],
+                slider_scale_type=self.data.get("scale"),
+            )
+            min_value = self.data.get("minValue")
+            max_value = self.data.get("maxValue")
+            if self.data.get("scale") == "exp":
+                if min_value is not None and min_value <= 0:
+                    self.__error__(msg="`minValue` must be greater than 0 for an exponential scale")
+                if max_value is not None and max_value <= 0:
+                    self.__error__(msg="`maxValue` must be greater than 0 for an exponential scale")
         if self.data.get("fallback"):
             props_fallback(
                 data=self.data.get("fallback"), log=self.log, prepend_path=["fallback"], **kwargs
@@ -893,6 +942,49 @@ class props_gradient_data(ApiValidator):
             self.__check_color_string_valid__(color_string=self.data.get("color"))
         if self.data.get("size"):
             self.__check_pixel_string_valid__(pixel_string=self.data.get("size"))
+
+
+@type_enforced.Enforcer
+class props_slider_scaleParams(ApiValidator):
+    @staticmethod
+    def spec(
+        exponent: float | int | None = None,
+        base: float | int | None = None,
+        **kwargs,
+    ):
+        """
+        Arguments:
+
+        * **`exponent`**: `[float | int]` = `None` &rarr; The exponent for a power (`"pow"`) scale.
+            * **Note**: Required when using a power scale.
+        * **`base`**: `[float | int]` = `None` &rarr; The base for a logarithmic (`"log"`) or exponential (`"exp"`) scale.
+            * **Notes**:
+                * Required when using an exponential scale.
+                * If omitted for a logarithmic scale, it defaults to `10`.
+        """
+        return {
+            "kwargs": kwargs,
+            "accepted_values": {},
+        }
+
+    def __extend_spec__(self, **kwargs):
+        scale = kwargs.get("slider_scale_type") or "linear"
+        exponent = self.data.get("exponent")
+        base = self.data.get("base")
+        if exponent is not None:
+            if exponent <= 0:
+                self.__error__(msg="`exponent` must be greater than 0 for a power scale")
+            if scale != "pow":
+                self.__warn__(msg=f"`exponent` has no effect on a `{scale}` scale")
+        if base is not None:
+            if base <= 0 or base == 1:
+                self.__error__(msg="`base` must be greater than 0 and not equal to 1")
+            if scale not in ["log", "exp"]:
+                self.__warn__(msg=f"`base` has no effect on a `{scale}` scale")
+        if scale == "pow" and exponent is None:
+            self.__error__(msg="`exponent` must be specified for a power scale")
+        if scale == "exp" and base is None:
+            self.__error__(msg="`base` must be specified for an exponential scale")
 
 
 @type_enforced.Enforcer

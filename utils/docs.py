@@ -6,8 +6,8 @@ from pathlib import Path
 root = Path(__file__).parent.parent
 cave_utils = root / "cave_utils" / "__init__.py"
 
-VERSION = "3.5.7"
-OLD_DOC_VERSIONS = ["3.4.4", "3.3.0", "3.2.0", "3.1.0", "3.0.0", "2.3.0", "2.2.1", "2.1.2", "2.0.5", "1.6.1"]
+VERSION = "3.6.0"
+OLD_DOC_VERSIONS = ["3.5.7", "3.4.4", "3.3.0", "3.2.0", "3.1.0", "3.0.0", "2.3.0", "2.2.1", "2.1.2", "2.0.5", "1.6.1"]
 
 env = {
     **os.environ,
