@@ -106,8 +106,8 @@ class props(ApiValidator):
                 * When **`type`** == `"head"`:
                     * `"column"`: A header for a column of related prop items
                     * `"row"`: A header for a row of related prop items
-                    * `"icon"`: **Deprecated**, will be removed in `4.0.0`. Alias of `"column"`; set the `icon` attribute instead.
-                    * `"iconRow"`: **Deprecated**, will be removed in `4.0.0`. Alias of `"row"`; set the `icon` attribute instead.
+                    * `"icon"`: **Deprecated**, will be removed in `4.0.0`, in favor of `"column"`.
+                    * `"iconRow"`: **Deprecated**, will be removed in `4.0.0`, in favor of `"row"`.
                 * When **`type`** == `"text"`:
                     * `"single"`: A single-line text input field
                     * `"textarea"`: A multi-line text input field
