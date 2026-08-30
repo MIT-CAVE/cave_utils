@@ -1,6 +1,14 @@
 import sys
 
 
+def is_number(value):
+    try:
+        float(value)
+        return True
+    except ValueError:
+        return False
+
+
 class Arguments:
     def __init__(self):
         self.passed_args = list(sys.argv)
@@ -20,7 +28,8 @@ class Arguments:
                     self.flags.append(i[2:])
                     continue
                 else:
-                    if self.passed_args[idx + 1].lower().startswith("-"):
+                    next_arg = self.passed_args[idx + 1]
+                    if next_arg.lower().startswith("-") and not is_number(next_arg):
                         self.flags.append(i[2:])
                         continue
                 self.kwargs[i[2:]] = self.passed_args[idx + 1]
