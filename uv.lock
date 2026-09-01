@@ -80,11 +80,11 @@ wheels = [
 
 [[package]]
 name = "bmsspy"
-version = "2.2.0"
+version = "2.2.2"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/5f/ac/16d5910fe82f174092aa9c3d4c1d3f8bb2e2d683ec8c2d0421f7c5534542/bmsspy-2.2.0.tar.gz", hash = "sha256:eb1feda70f8c75399324ee79733654d52777c903678ccf34d91ec712bcda5b08", size = 41783, upload-time = "2025-12-17T15:33:19.723Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/2d/96/cbc6bb913b5d2b19b8c83556ff677378e33e9e636d46cc6d6da1163f6796/bmsspy-2.2.2.tar.gz", hash = "sha256:c884aa4a29746de9b03f7a771c87230ea5fc4a2269cb1407c6837d39ee58cf4c", size = 42010, upload-time = "2026-08-03T20:19:20.998Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/10/81/b517bcae89902945695fba0ab9c46b45c56fc056ee84881936a194bca038/bmsspy-2.2.0-py3-none-any.whl", hash = "sha256:e0d0fd44db3ddbba9832f4e05fc338bfe189539a44f1334d6d0008b06a145d3f", size = 50253, upload-time = "2025-12-17T15:33:18.028Z" },
+    { url = "https://files.pythonhosted.org/packages/ad/dd/dcc38091c034074974dfd62dff5ec93f43335a73704408a349a0f0c56b03/bmsspy-2.2.2-py3-none-any.whl", hash = "sha256:a419ada1374aff8b929397ea11591ab4401cfc9a19144520bbc7b6545a8515c3", size = 37080, upload-time = "2026-08-03T20:19:19.209Z" },
 ]
 
 [[package]]
@@ -133,9 +133,9 @@ requires-dist = [
     { name = "pamda", specifier = ">=2.10.0,<3.0.0" },
     { name = "pdoc", marker = "extra == 'dev'", specifier = ">=15.0.1" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=9.0.3" },
-    { name = "scgraph", marker = "extra == 'dev'", specifier = ">=3.3.0,<4.0.0" },
+    { name = "scgraph", marker = "extra == 'dev'", specifier = ">=3.5.0,<4.0.0" },
     { name = "twine", marker = "extra == 'dev'", specifier = ">=6.1.0" },
-    { name = "type-enforced", specifier = ">=2.6.0,<3.0.0" },
+    { name = "type-enforced", specifier = ">=2.10.0,<3.0.0" },
 ]
 provides-extras = ["dev"]
 
@@ -388,9 +388,9 @@ wheels = [
 
 [[package]]
 name = "geokdtree"
-version = "1.2.3"
+version = "1.2.4"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/da/d5/9ffb34f3aead2129c7131db4f356f77070ca91d38e1ec4b61b48d5d91e89/geokdtree-1.2.3.tar.gz", hash = "sha256:1eeefd31eb4d4df1427735a2697d2842d2ef8af2cb6239a7dbfd93ec776dc7b9", size = 19174202, upload-time = "2026-05-07T20:56:38.917Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/3a/a2/8075730dcb1c3c6f383ce34d36be3a5c7dcffe1cf8a69bd826191b67865e/geokdtree-1.2.4.tar.gz", hash = "sha256:dc10c9d4dd6164210f6fbaf8b81aac3cf912edcb512108954a5983947ad5ade2", size = 10992, upload-time = "2026-07-20T17:53:03.516Z" }
 
 [[package]]
 name = "humanize"
@@ -940,14 +940,14 @@ wheels = [
 
 [[package]]
 name = "scgraph"
-version = "3.3.0"
+version = "3.5.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "bmsspy" },
     { name = "geokdtree" },
     { name = "requests" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/99/6f/abb91cf377d57fecca3d19b51b39ad4288c307035215d24656af3e7550ef/scgraph-3.3.0.tar.gz", hash = "sha256:c42d10fc160a633eb7e63a4185b4da98ea3da564411a3d0ddfcc15f267a09e21", size = 111025, upload-time = "2026-05-20T16:21:35.918Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/1a/eb/f0108d3f52b3621e0727af77ffe158c2a6ae2e6b0f64506fb06b312c4249/scgraph-3.5.0.tar.gz", hash = "sha256:dcdf73cb83047d533da800c72a5621bb1859d4f2606690f3938c0d7f21d65d6e", size = 136285, upload-time = "2026-09-01T15:29:16.261Z" }
 
 [[package]]
 name = "secretstorage"
@@ -984,12 +984,9 @@ wheels = [
 
 [[package]]
 name = "type-enforced"
-version = "2.6.0"
+version = "2.10.0"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/7e/ba/e68f33858c8c9bd19dd3843afb79f197f26db189e274911fb04aa1295fcf/type_enforced-2.6.0.tar.gz", hash = "sha256:6b423841fe93e4032b0c58b726cde146ad589c0f9279b65b7de52863e538565b", size = 34142, upload-time = "2026-06-04T14:22:57.425Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/79/0a/239c377caa1724b5bcf7b08c1995a3c612c8f938d0eb3ba00e57115d3ed7/type_enforced-2.6.0-py3-none-any.whl", hash = "sha256:80df9904e504192271636514f61338e62c2a5b20fbd91f8f7db3c8e9fa5fa7cc", size = 24400, upload-time = "2026-06-04T14:22:51.829Z" },
-]
+sdist = { url = "https://files.pythonhosted.org/packages/46/5e/c3825fff72addaf816b2082164af3f8a30479c4a5a7b539a7689919726fa/type_enforced-2.10.0.tar.gz", hash = "sha256:4ef83fbf13dbf5a95ba7084568a601c3547d2b9f2934c27f62abaeb0ebfd8f09", size = 47955, upload-time = "2026-09-01T14:20:08.849Z" }
 
 [[package]]
 name = "urllib3"
