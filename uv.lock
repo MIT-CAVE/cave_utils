@@ -103,7 +103,7 @@ wheels = [
 
 [[package]]
 name = "cave-utils"
-version = "3.6.0"
+version = "3.7.0b1"
 source = { editable = "." }
 dependencies = [
     { name = "pamda" },
@@ -135,7 +135,7 @@ requires-dist = [
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=9.0.3" },
     { name = "scgraph", marker = "extra == 'dev'", specifier = ">=3.5.0,<4.0.0" },
     { name = "twine", marker = "extra == 'dev'", specifier = ">=6.1.0" },
-    { name = "type-enforced", specifier = ">=2.10.0,<3.0.0" },
+    { name = "type-enforced", specifier = ">=2.12.0,<3.0.0" },
 ]
 provides-extras = ["dev"]
 
@@ -984,9 +984,9 @@ wheels = [
 
 [[package]]
 name = "type-enforced"
-version = "2.10.0"
+version = "2.12.0"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/46/5e/c3825fff72addaf816b2082164af3f8a30479c4a5a7b539a7689919726fa/type_enforced-2.10.0.tar.gz", hash = "sha256:4ef83fbf13dbf5a95ba7084568a601c3547d2b9f2934c27f62abaeb0ebfd8f09", size = 47955, upload-time = "2026-09-01T14:20:08.849Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/63/4e/edf2c135a22b9ed2dbcda6383f7ede6afd56730983ed6347666999e4880c/type_enforced-2.12.0.tar.gz", hash = "sha256:f2bfd9a35616da7ebdbc43e315f138621adf8fd999f0d216aba22404bb9e0758", size = 57577, upload-time = "2026-09-14T19:55:27.282Z" }
 
 [[package]]
 name = "urllib3"
