@@ -106,8 +106,8 @@ class props(ApiValidator):
                 * When **`type`** == `"head"`:
                     * `"column"`: A header for a column of related prop items
                     * `"row"`: A header for a row of related prop items
-                    * `"icon"`: Same as `"column"`, accompanied by a related icon.
-                    * `"iconRow"`: Same as `"row"`, accompanied by a related icon.
+                    * `"icon"`: **Deprecated**, will be removed in `4.0.0`, in favor of `"column"`.
+                    * `"iconRow"`: **Deprecated**, will be removed in `4.0.0`, in favor of `"row"`.
                 * When **`type`** == `"text"`:
                     * `"single"`: A single-line text input field
                     * `"textarea"`: A multi-line text input field
@@ -162,10 +162,6 @@ class props(ApiValidator):
             * The root API keys to pass to your `execute_command` function if an `apiCommand` is provided.
             * **Note**: If `None`, all API keys are passed to your `execute_command`.
             * **Note**: This attribute applies to all props except `"head"` props.
-        * **`icon`**: `[str]` = `None` &rarr; The icon to use for the prop.
-            * **Notes**:
-                * It must be a valid icon name from the [react-icons][] bundle, preceded by the abbreviated name of the icon library source.
-                * This attribute applies exclusively to `"head"` props.
         * **`options`**: `[dict]` = `None` &rarr;
             * The options to be displayed on the UI element mapped to their display properties.
             * **Notes**:
@@ -183,7 +179,11 @@ class props(ApiValidator):
         * **`label`**: `[str]` = `None` &rarr; The label to display above the input field when the prop is focused.
             * **Note**: This attribute applies to `"num"`, `"text"`, and `"coordinate"` props.
         * **`labelPlacement`**: `[str]` = `None` &rarr; The placement of the label relative to the input field.
-            * **Accepted Values**: ['start', 'end', "top", "bottom"]
+            * **Accepted Values**:
+                * `"start"`: The label is placed at the start of the input field.
+                * `"end"`: The label is placed at the end of the input field.
+                * `"top"`: The label is placed above the input field.
+                * `"bottom"`: The label is placed below the input field.
         * **`activeLabel`**: `[str]` = `None` &rarr; The label to display when the prop value is True.
             * **Notes**: This attribute applies exclusively to `"toggle"` props.
         * **`placeholder`**: `[str]` = `None` &rarr; The placeholder text to display.
@@ -341,7 +341,9 @@ class props(ApiValidator):
                 * If left unspecified (i.e., `None`), it will default to `settings.defaults.legendMaxLabel`.
                 * This attribute applies exclusively to `"num"` props.
         * **`icon`**: `[str]` = `None` &rarr; The icon to use for the prop.
-            * **Notes**: Applies to the `icon` variants of various props and also `toggle` and `button` props.
+            * **Notes**:
+                * It must be a valid icon name from the [react-icons][] bundle, preceded by the abbreviated name of the icon library source.
+                * Applies to `"head"` props (all variants), the `icon` variants of various other props, and also `toggle` and `button` props.
         * **`activeIcon`**: `[str]` = `None` &rarr; The icon to use for the prop when it is active.
             * **Notes**: Applies to the `toggle` and `selector` props.
         * **`startIcon`**: `[str]` = `None` &rarr; The icon to display at the start of the prop.
@@ -349,11 +351,11 @@ class props(ApiValidator):
         * **`endIcon`**: `[str]` = `None` &rarr; The icon to display at the end of the prop.
             * **Notes**: Applies to the `button` prop and offers a way to add an icon to the right side of the button.
         * **`color`**: `[str]` = `None` &rarr; The color to use for the prop.
-            * **Notes**: Applies to the `icon` variants of various props and also `toggle` and `button` props.
+            * **Notes**: Applies to `"head"` props (all variants), the `icon` variants of various other props, and also `toggle` and `button` props.
         * **`activeColor`**: `[str]` = `None` &rarr; The color to use for the prop when it is active.
             * **Notes**: Applies to the `toggle` and `selector` props.
         * **`size`**: `[str]` = `None` &rarr; The size of the icon in the prop.
-            * **Notes**: Applies to the `icon` variants of various props and also `toggle` and `button` props.
+            * **Notes**: Applies to `"head"` props (all variants), the `icon` variants of various other props, and also `toggle` and `button` props.
         * **`activeSize`**: `[str]` = `None` &rarr; The size of the icon in the prop when it is active.
             * **Notes**: Applies to the `toggle` and `selector` props.
         * **`placement`**: `[str]` = `None` &rarr; The placement of the prop.
@@ -365,20 +367,23 @@ class props(ApiValidator):
                 * `"center"`: The prop is placed at the center of the container.
         * **`fullWidth`**: `[bool]` = `None` &rarr; Whether or not the prop should take the full width of the container.
         * **`url`**: `[str]` = `None` &rarr; The URL to navigate to when the button is clicked.
-            * **Notes**: Applies to `button` props.
+            * **Notes**: Applies to `"button"` props.
         * **`suppressCommand`**: `[bool]` = `False` &rarr;
             * If `True` and `url` is also set, clicking the button only navigates to `url`; the paired `apiCommand` (if any) is not triggered.
             * **Notes**:
-                * Applies to `button` props.
+                * Applies to `"button"` props.
                 * Has no effect unless both `url` and `apiCommand` are set. Otherwise, `apiCommand` (if any) always triggers on click.
         * **`scaleMode`**: `[str]` = `None` &rarr; The scale mode to use for the prop.
-            * **Accepted Values**: ['fitWidth', 'fitHeight', 'fitContainer']
+            * **Accepted Values**:
+                * `"fitWidth"`: The prop will scale to fit the width of its container.
+                * `"fitHeight"`: The prop will scale to fit the height of its container.
+                * `"fitContainer"`: The prop will scale to fit the width and height of its container.
             * **Notes**: Applies only to `media` props with a `variant` of `video`.
         * **`propStyle`**: `[dict]` = `None` &rarr; A dictionary of css styles to apply to the prop.
             * **Note**: This will not be validated as part of the API spec, so use with caution.
         * **`readOnly`**: `[bool]` = `False` &rarr; Whether or not the prop is read-only.
             * **Notes**:
-                - Only applies to 'text' props.
+                - Only applies to `"text"` props.
                 - Essentially operates an enabled without making the prop darkened.
         * **`marks`**: `[dict[str, dict[str, str]]]` = `None` &rarr; A dictionary of marks to display on the slider.
             * **Notes**:
@@ -388,7 +393,7 @@ class props(ApiValidator):
         * **`draggable`**: `[bool]` = `None` &rarr;
             * If `True`, the prop will be rendered within the draggable global outputs pad.
             * **Notes**:
-                * The prop's `variant` is enforced to `iconCompact` to accommodate it within the draggable pad.
+                * The prop's `variant` is enforced to `"iconCompact"` to accommodate it within the draggable pad.
                 * This attribute applies exclusively to `"num"` props defined within `cave_utils.api.globalOutputs`.
         * **`allowNone`**: `[bool]` = `False` &rarr;
             * Whether or not to allow `None` as a valid value for the prop. This is primarily used to help when validating `values` and `valueLists`.
@@ -465,9 +470,9 @@ class props(ApiValidator):
             "labelPlacement",
         ]
         if type == "head":
-            if variant == "icon" or variant == "iconRow":
-                required_fields += ["icon"]
-                optional_fields += ["color", "size"]
+            # `icon`/`color`/`size` apply to all `head` variants (`column`, `row`, and the
+            # deprecated `icon`/`iconRow` aliases), which all render identically.
+            optional_fields += ["icon", "color", "size"]
         else:
             optional_fields += ["enabled", "apiCommand", "apiCommandKeys", "allowNone"]
 
