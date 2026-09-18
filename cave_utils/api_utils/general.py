@@ -67,6 +67,7 @@ class props(ApiValidator):
         locale: str | None = None,
         fallbackValue: str | None = None,
         draggable: bool | None = None,
+        quickView: bool | None = None,
         allowNone: bool | None = None,
         marqueeLabel: bool | None = None,
         spinner: str | bool | None = None,
@@ -116,6 +117,7 @@ class props(ApiValidator):
                     * `"slider"`: A range of values along a bar, from which users may select a single value
                     * `"icon"`: A fixed numerical value presented alongside a corresponding icon.
                     * `"iconCompact"`: Similar to `"icon"`, but designed in a compact format for appropriate rendering within a draggable pad.
+                    * `"iconCompactAlt"`: Similar to `"iconCompact"`, but designed for rendering within a horizontally scrollable carousel (e.g. a global output docked to the persistent status bar).
                     * `"incslider"`: A range of values along a bar, from which users may select a single value, with a predefined set of options.
                 * When **`type`** == `"selector"`:
                     * `"checkbox"`: Select one or more items from a set of checkboxes
@@ -390,11 +392,17 @@ class props(ApiValidator):
                 - Only applies to `"num"` props with the `"incslider"` variant.
                 - Contains key-value pairs for each mark, where the key is the mark value and the value is a dictionary of properties for the mark (e.g., label, color).
                 # TODO: Add more details and validation for the `marks` dictionary.
-        * **`draggable`**: `[bool]` = `None` &rarr;
+        * **`draggable`**: `[bool]` = `None` &rarr; **Deprecated**, will be removed in `4.0.0`, in favor of `quickView`.
             * If `True`, the prop will be rendered within the draggable global outputs pad.
             * **Notes**:
                 * The prop's `variant` is enforced to `"iconCompact"` to accommodate it within the draggable pad.
                 * This attribute applies exclusively to `"num"` props defined within `cave_utils.api.globalOutputs`.
+        * **`quickView`**: `[bool]` = `None` &rarr;
+            * If `True`, the prop will be rendered within the global outputs quick-view display: the draggable pad, or, if the user has docked global outputs, a card within the persistent status bar carousel.
+            * **Notes**:
+                * The prop's `variant` is enforced to `"iconCompact"` or `"iconCompactAlt"` (depending on whether global outputs are docked) to accommodate it within either display.
+                * This attribute applies exclusively to `"num"` props defined within `cave_utils.api.globalOutputs`.
+                * `draggable` is still accepted as a deprecated alias of this attribute.
         * **`allowNone`**: `[bool]` = `False` &rarr;
             * Whether or not to allow `None` as a valid value for the prop. This is primarily used to help when validating `values` and `valueLists`.
             * **Notes**:
@@ -508,7 +516,7 @@ class props(ApiValidator):
                         "largeStep",
                         "hideKeyboardToggle",
                     ]
-            if variant == "icon" or variant == "iconCompact":
+            if variant == "icon" or variant == "iconCompact" or variant == "iconCompactAlt":
                 required_fields += ["icon"]
                 optional_fields += ["color", "size"]
             if notationDisplay:
@@ -528,6 +536,7 @@ class props(ApiValidator):
                 "trailingZeros",
                 "unitPlacement",
                 "draggable",
+                "quickView",
                 "gradient",
                 "fallback",
             ]
@@ -637,7 +646,14 @@ class props(ApiValidator):
                 "variant": {
                     "head": ["column", "row", "icon", "iconRow"],
                     "text": ["single", "textarea"],
-                    "num": ["field", "slider", "icon", "iconCompact", "incslider"],
+                    "num": [
+                        "field",
+                        "slider",
+                        "icon",
+                        "iconCompact",
+                        "iconCompactAlt",
+                        "incslider",
+                    ],
                     "selector": [
                         "dropdown",
                         "checkbox",
