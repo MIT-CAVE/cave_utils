@@ -121,6 +121,7 @@ class props(ApiValidator):
                     * `"incslider"`: A range of values along a bar, from which users may select a single value, with a predefined set of options.
                 * When **`type`** == `"selector"`:
                     * `"checkbox"`: Select one or more items from a set of checkboxes
+                    * `"hcheckbox"`: A set of `"checkbox"`s placed horizontally
                     * `"combobox"`: A dropdown with a search bar allowing users to filter and select a single option by typing
                     * `"comboboxMulti"`: A dropdown with a search bar, enabling users to filter and select multiple options. Selected items are displayed as tags within the input field.
                     * `"dropdown"`: Show multiple options that appear when the element is clicked
@@ -189,7 +190,7 @@ class props(ApiValidator):
         * **`activeLabel`**: `[str]` = `None` &rarr; The label to display when the prop value is True.
             * **Notes**: This attribute applies exclusively to `"toggle"` props.
         * **`placeholder`**: `[str]` = `None` &rarr; The placeholder text to display.
-            * **Note**: This attribute applies exclusively to `"text"` props.
+            * **Note**: This attribute applies to `"text"`, `"selector"` (all variants), and `"coordinate"` props.
         * **`maxValue`**: `[float | int]` = `None` &rarr; The maximum value for the prop.
             * **Note**: This attribute applies exclusively to `"num"` props.
         * **`minValue`**: `[float | int]` = `None` &rarr; The minimum value for the prop.
@@ -345,7 +346,7 @@ class props(ApiValidator):
         * **`icon`**: `[str]` = `None` &rarr; The icon to use for the prop.
             * **Notes**:
                 * It must be a valid icon name from the [react-icons][] bundle, preceded by the abbreviated name of the icon library source.
-                * Applies to `"head"` props (all variants), the `icon` variants of various other props, and also `toggle` and `button` props.
+                * Applies to `"head"` props (all variants), the `icon` variants of various other props, and also `toggle`, `button`, and `selector` props.
         * **`activeIcon`**: `[str]` = `None` &rarr; The icon to use for the prop when it is active.
             * **Notes**: Applies to the `toggle` and `selector` props.
         * **`startIcon`**: `[str]` = `None` &rarr; The icon to display at the start of the prop.
@@ -353,11 +354,11 @@ class props(ApiValidator):
         * **`endIcon`**: `[str]` = `None` &rarr; The icon to display at the end of the prop.
             * **Notes**: Applies to the `button` prop and offers a way to add an icon to the right side of the button.
         * **`color`**: `[str]` = `None` &rarr; The color to use for the prop.
-            * **Notes**: Applies to `"head"` props (all variants), the `icon` variants of various other props, and also `toggle` and `button` props.
+            * **Notes**: Applies to `"head"` props (all variants), the `icon` variants of various other props, and also `toggle`, `button`, and `selector` props.
         * **`activeColor`**: `[str]` = `None` &rarr; The color to use for the prop when it is active.
             * **Notes**: Applies to the `toggle` and `selector` props.
         * **`size`**: `[str]` = `None` &rarr; The size of the icon in the prop.
-            * **Notes**: Applies to `"head"` props (all variants), the `icon` variants of various other props, and also `toggle` and `button` props.
+            * **Notes**: Applies to `"head"` props (all variants), the `icon` variants of various other props, and also `toggle`, `button`, and `selector` props.
         * **`activeSize`**: `[str]` = `None` &rarr; The size of the icon in the prop when it is active.
             * **Notes**: Applies to the `toggle` and `selector` props.
         * **`placement`**: `[str]` = `None` &rarr; The placement of the prop.
