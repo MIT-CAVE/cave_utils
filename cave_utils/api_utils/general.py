@@ -29,6 +29,9 @@ class props(ApiValidator):
         activeLabel: str | None = None,
         placeholder: str | None = None,
         numVisibleTags: int | None = None,
+        availableTitle: str | None = None,
+        selectedTitle: str | None = None,
+        height: int | float | str | None = None,
         maxValue: float | int | None = None,
         minValue: float | int | None = None,
         gradient: dict | None = None,
@@ -125,6 +128,7 @@ class props(ApiValidator):
                     * `"combobox"`: A dropdown with a search bar allowing users to filter and select a single option by typing
                     * `"comboboxMulti"`: A dropdown with a search bar, enabling users to filter and select multiple options. Selected items are displayed as tags within the input field.
                     * `"dropdown"`: Show multiple options that appear when the element is clicked
+                    * `"dualList"`: Select one or more options by moving them between two side-by-side lists: "available" and "selected"
                     * `"nested"`: Select one or more options from a set of nested checkboxes
                     * `"radio"`: Select one option from a set of mutually exclusive options
                     * `"hradio"`: A set of `"radio"`s placed horizontally
@@ -175,6 +179,19 @@ class props(ApiValidator):
             * **Notes**:
                 * If `None`, all tags will be displayed
                 * This attribute applies exclusively to `"selector"` props using the `"comboboxMulti"` variant
+        * **`availableTitle`**: `[str]` = `None` &rarr; The title displayed above the list of options that are not selected.
+            * **Notes**:
+                * If `None`, `"Available"` will be used
+                * This attribute applies exclusively to `"selector"` props using the `"dualList"` variant
+        * **`selectedTitle`**: `[str]` = `None` &rarr; The title displayed above the list of selected options.
+            * **Notes**:
+                * If `None`, `"Selected"` will be used
+                * This attribute applies exclusively to `"selector"` props using the `"dualList"` variant
+        * **`height`**: `[int | float | str]` = `None` &rarr; The height of the lists.
+            * **Notes**:
+                * A number is interpreted as pixels; a string can be any valid CSS height (e.g. `"20rem"`)
+                * If `None`, `240` will be used
+                * This attribute applies exclusively to `"selector"` props using the `"dualList"` variant
         * **`valueOptions`**: `[list[int|float]]` = `None` &rarr;
             * **Notes**:
                 * Only valueOptions provided here can be selected for the prop value
@@ -555,6 +572,8 @@ class props(ApiValidator):
             ]
             if variant == "comboboxMulti":
                 optional_fields += ["numVisibleTags"]
+            if variant == "dualList":
+                optional_fields += ["availableTitle", "selectedTitle", "height"]
         elif type == "date":
             optional_fields += ["views"]
         elif type == "coordinate":
@@ -657,6 +676,7 @@ class props(ApiValidator):
                     ],
                     "selector": [
                         "dropdown",
+                        "dualList",
                         "checkbox",
                         "radio",
                         "combobox",
