@@ -177,7 +177,7 @@ class props(ApiValidator):
         * **`numVisibleTags`**: `[int]` = `None` &rarr;
             * The maximum number of tags visible in a `"comboboxMulti"` variant of a `"selector"` prop when it is not focused.
             * **Notes**:
-                * If `None`, all tags will be displayed
+                * If `None`, `1` tag will be displayed and any remaining selections are summarized in a `+N more` chip
                 * This attribute applies exclusively to `"selector"` props using the `"comboboxMulti"` variant
         * **`availableTitle`**: `[str]` = `None` &rarr; The title displayed above the list of options that are not selected.
             * **Notes**:
