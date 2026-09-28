@@ -207,7 +207,7 @@ class props(ApiValidator):
         * **`activeLabel`**: `[str]` = `None` &rarr; The label to display when the prop value is True.
             * **Notes**: This attribute applies exclusively to `"toggle"` props.
         * **`placeholder`**: `[str]` = `None` &rarr; The placeholder text to display.
-            * **Note**: This attribute applies to `"text"`, `"selector"` (all variants), and `"coordinate"` props.
+            * **Note**: This attribute applies to `"text"`, `"num"` (`"field"` variant), `"coordinate"` and `"selector"` props (only the `"dropdown"`, `"combobox"` and `"comboboxMulti"` variants). It is shown while nothing is selected, except for `"combobox"`, where it is used as the label of the input field.
         * **`maxValue`**: `[float | int]` = `None` &rarr; The maximum value for the prop.
             * **Note**: This attribute applies exclusively to `"num"` props.
         * **`minValue`**: `[float | int]` = `None` &rarr; The minimum value for the prop.
@@ -561,7 +561,6 @@ class props(ApiValidator):
         elif type == "selector":
             required_fields += ["options"]
             optional_fields += [
-                "placeholder",
                 "color",
                 "activeColor",
                 "size",
@@ -570,6 +569,9 @@ class props(ApiValidator):
                 "activeIcon",
                 "fallback",
             ]
+            # `dropdown` is the default `variant` for `selector` props
+            if variant in (None, "dropdown", "combobox", "comboboxMulti"):
+                optional_fields += ["placeholder"]
             if variant == "comboboxMulti":
                 optional_fields += ["numVisibleTags"]
             if variant == "dualList":
