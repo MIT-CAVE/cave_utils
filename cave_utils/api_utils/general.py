@@ -29,6 +29,9 @@ class props(ApiValidator):
         activeLabel: str | None = None,
         placeholder: str | None = None,
         numVisibleTags: int | None = None,
+        availableTitle: str | None = None,
+        selectedTitle: str | None = None,
+        height: int | float | str | None = None,
         maxValue: float | int | None = None,
         minValue: float | int | None = None,
         gradient: dict | None = None,
@@ -121,9 +124,11 @@ class props(ApiValidator):
                     * `"incslider"`: A range of values along a bar, from which users may select a single value, with a predefined set of options.
                 * When **`type`** == `"selector"`:
                     * `"checkbox"`: Select one or more items from a set of checkboxes
+                    * `"hcheckbox"`: A set of `"checkbox"`s placed horizontally
                     * `"combobox"`: A dropdown with a search bar allowing users to filter and select a single option by typing
                     * `"comboboxMulti"`: A dropdown with a search bar, enabling users to filter and select multiple options. Selected items are displayed as tags within the input field.
                     * `"dropdown"`: Show multiple options that appear when the element is clicked
+                    * `"dualList"`: Select one or more options by moving them between two side-by-side lists: "available" and "selected"
                     * `"nested"`: Select one or more options from a set of nested checkboxes
                     * `"radio"`: Select one option from a set of mutually exclusive options
                     * `"hradio"`: A set of `"radio"`s placed horizontally
@@ -172,8 +177,21 @@ class props(ApiValidator):
         * **`numVisibleTags`**: `[int]` = `None` &rarr;
             * The maximum number of tags visible in a `"comboboxMulti"` variant of a `"selector"` prop when it is not focused.
             * **Notes**:
-                * If `None`, all tags will be displayed
+                * If `None`, `1` tag will be displayed and any remaining selections are summarized in a `+N more` chip
                 * This attribute applies exclusively to `"selector"` props using the `"comboboxMulti"` variant
+        * **`availableTitle`**: `[str]` = `None` &rarr; The title displayed above the list of options that are not selected.
+            * **Notes**:
+                * If `None`, `"Available"` will be used
+                * This attribute applies exclusively to `"selector"` props using the `"dualList"` variant
+        * **`selectedTitle`**: `[str]` = `None` &rarr; The title displayed above the list of selected options.
+            * **Notes**:
+                * If `None`, `"Selected"` will be used
+                * This attribute applies exclusively to `"selector"` props using the `"dualList"` variant
+        * **`height`**: `[int | float | str]` = `None` &rarr; The height of the lists.
+            * **Notes**:
+                * A number is interpreted as pixels; a string can be any valid CSS height (e.g. `"20rem"`)
+                * If `None`, `240` will be used
+                * This attribute applies exclusively to `"selector"` props using the `"dualList"` variant
         * **`valueOptions`**: `[list[int|float]]` = `None` &rarr;
             * **Notes**:
                 * Only valueOptions provided here can be selected for the prop value
@@ -189,7 +207,7 @@ class props(ApiValidator):
         * **`activeLabel`**: `[str]` = `None` &rarr; The label to display when the prop value is True.
             * **Notes**: This attribute applies exclusively to `"toggle"` props.
         * **`placeholder`**: `[str]` = `None` &rarr; The placeholder text to display.
-            * **Note**: This attribute applies exclusively to `"text"` props.
+            * **Note**: This attribute applies to `"text"`, `"num"` (`"field"` variant), `"coordinate"` and `"selector"` props (only the `"dropdown"`, `"combobox"` and `"comboboxMulti"` variants). It is shown while nothing is selected, except for `"combobox"`, where it is used as the label of the input field.
         * **`maxValue`**: `[float | int]` = `None` &rarr; The maximum value for the prop.
             * **Note**: This attribute applies exclusively to `"num"` props.
         * **`minValue`**: `[float | int]` = `None` &rarr; The minimum value for the prop.
@@ -345,7 +363,7 @@ class props(ApiValidator):
         * **`icon`**: `[str]` = `None` &rarr; The icon to use for the prop.
             * **Notes**:
                 * It must be a valid icon name from the [react-icons][] bundle, preceded by the abbreviated name of the icon library source.
-                * Applies to `"head"` props (all variants), the `icon` variants of various other props, and also `toggle` and `button` props.
+                * Applies to `"head"` props (all variants), the `icon` variants of various other props, and also `toggle`, `button`, and `selector` props.
         * **`activeIcon`**: `[str]` = `None` &rarr; The icon to use for the prop when it is active.
             * **Notes**: Applies to the `toggle` and `selector` props.
         * **`startIcon`**: `[str]` = `None` &rarr; The icon to display at the start of the prop.
@@ -353,11 +371,11 @@ class props(ApiValidator):
         * **`endIcon`**: `[str]` = `None` &rarr; The icon to display at the end of the prop.
             * **Notes**: Applies to the `button` prop and offers a way to add an icon to the right side of the button.
         * **`color`**: `[str]` = `None` &rarr; The color to use for the prop.
-            * **Notes**: Applies to `"head"` props (all variants), the `icon` variants of various other props, and also `toggle` and `button` props.
+            * **Notes**: Applies to `"head"` props (all variants), the `icon` variants of various other props, and also `toggle`, `button`, and `selector` props.
         * **`activeColor`**: `[str]` = `None` &rarr; The color to use for the prop when it is active.
             * **Notes**: Applies to the `toggle` and `selector` props.
         * **`size`**: `[str]` = `None` &rarr; The size of the icon in the prop.
-            * **Notes**: Applies to `"head"` props (all variants), the `icon` variants of various other props, and also `toggle` and `button` props.
+            * **Notes**: Applies to `"head"` props (all variants), the `icon` variants of various other props, and also `toggle`, `button`, and `selector` props.
         * **`activeSize`**: `[str]` = `None` &rarr; The size of the icon in the prop when it is active.
             * **Notes**: Applies to the `toggle` and `selector` props.
         * **`placement`**: `[str]` = `None` &rarr; The placement of the prop.
@@ -543,7 +561,6 @@ class props(ApiValidator):
         elif type == "selector":
             required_fields += ["options"]
             optional_fields += [
-                "placeholder",
                 "color",
                 "activeColor",
                 "size",
@@ -552,8 +569,13 @@ class props(ApiValidator):
                 "activeIcon",
                 "fallback",
             ]
+            # `dropdown` is the default `variant` for `selector` props
+            if variant in (None, "dropdown", "combobox", "comboboxMulti"):
+                optional_fields += ["placeholder"]
             if variant == "comboboxMulti":
                 optional_fields += ["numVisibleTags"]
+            if variant == "dualList":
+                optional_fields += ["availableTitle", "selectedTitle", "height"]
         elif type == "date":
             optional_fields += ["views"]
         elif type == "coordinate":
@@ -656,6 +678,7 @@ class props(ApiValidator):
                     ],
                     "selector": [
                         "dropdown",
+                        "dualList",
                         "checkbox",
                         "radio",
                         "combobox",
