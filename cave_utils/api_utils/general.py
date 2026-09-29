@@ -189,7 +189,7 @@ class props(ApiValidator):
         * **`activeLabel`**: `[str]` = `None` &rarr; The label to display when the prop value is True.
             * **Notes**: This attribute applies exclusively to `"toggle"` props.
         * **`placeholder`**: `[str]` = `None` &rarr; The placeholder text to display.
-            * **Note**: This attribute applies exclusively to `"text"` props.
+            * **Note**: This attribute applies to `"text"` and `"coordinate"` props.
         * **`maxValue`**: `[float | int]` = `None` &rarr; The maximum value for the prop.
             * **Note**: This attribute applies exclusively to `"num"` props.
         * **`minValue`**: `[float | int]` = `None` &rarr; The minimum value for the prop.
@@ -242,13 +242,17 @@ class props(ApiValidator):
         * **`precision`**: `[int]` = `None` &rarr; The number of decimal places to display.
             * **Notes**:
                 * Set the precision to `0` to attach an integer constraint.
-                * If left unspecified (i.e., `None`), it will default to `settings.defaults.precision`.
-                * This attribute applies exclusively to `"num"` props.
+                * If left unspecified (i.e., `None`):
+                    * For `"num"` props, it will default to `settings.defaults.precision`.
+                    * For `"coordinate"` props, it will default to `6` decimal places instead of `settings.defaults.precision`.
+                * This attribute applies to `"num"` and `"coordinate"` props.
         * **`trailingZeros`**: `[bool]` = `None` &rarr; If `True`, trailing zeros will be displayed.
             * **Notes**:
                 * This ensures that all precision digits are shown. For example: `1.5` &rarr; `1.500` when precision is `3`.
-                * If left unspecified (i.e., `None`), it will default to `settings.defaults.trailingZeros`.
-                * This attribute applies exclusively to `"num"` props.
+                * If left unspecified (i.e., `None`):
+                    * For `"num"` props, it will default to `settings.defaults.trailingZeros`.
+                    * For `"coordinate"` props, it will default to `True` instead of `settings.defaults.trailingZeros`.
+                * This attribute applies to `"num"` and `"coordinate"` props.
         * **`fallbackValue`**: [str] = `None` &rarr; A value to show when the value is missing or invalid.
             * **Notes**:
                 * This is only for display purposes as related to number formatting. It does not affect the actual value or any computations.
@@ -257,8 +261,10 @@ class props(ApiValidator):
                 * This attribute applies exclusively to `"num"` props.
         * **`unit`**: `[str]` = `None` &rarr; The unit to use for the prop.
             * **Notes**:
-                * If left unspecified (i.e., `None`), it will default to `settings.defaults.unit`.
-                * This attribute applies exclusively to `"num"` props.
+                * If left unspecified (i.e., `None`):
+                    * For `"num"` props, it will default to `settings.defaults.unit`.
+                    * For `"coordinate"` props, no unit is shown (there is no coordinate-specific default, and `settings.defaults.unit` does not apply).
+                * This attribute applies to `"num"` and `"coordinate"` props.
         * **`unitPlacement`**: `[str]` = `None` &rarr; The position of the `unit` symbol relative to the value.
             * **Accepted Values**:
                 * `"after"`: The `unit` appears after the value.
@@ -266,8 +272,11 @@ class props(ApiValidator):
                 * `"before"`: The `unit` appears before the value.
                 * `"beforeWithSpace"`: The unit is placed before the value, with a space in between.
             * **Notes**:
-                * If left unspecified (i.e., `None`), it will default to `settings.defaults.unitPlacement`.
-                * This attribute applies exclusively to `"num"` props.
+                * Only relevant when `unit` is also set.
+                * If left unspecified (i.e., `None`):
+                    * For `"num"` props, it will default to `settings.defaults.unitPlacement`.
+                    * For `"coordinate"` props, it will default to `"after"` instead of `settings.defaults.unitPlacement`, since degree symbols are conventionally typeset directly against the number.
+                * This attribute applies to `"num"` and `"coordinate"` props.
         * **`notation`**: `[str]` = `"standard"` &rarr; The formatting style of a numeric value.
             * **Accepted Values**:
                 * `"standard"`: Plain number formatting
@@ -557,7 +566,14 @@ class props(ApiValidator):
         elif type == "date":
             optional_fields += ["views"]
         elif type == "coordinate":
-            optional_fields += ["label", "placeholder", "precision"]
+            optional_fields += [
+                "label",
+                "placeholder",
+                "precision",
+                "trailingZeros",
+                "unit",
+                "unitPlacement",
+            ]
         elif type == "toggle":
             optional_fields += [
                 "options",
