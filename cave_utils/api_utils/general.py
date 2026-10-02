@@ -28,6 +28,7 @@ class props(ApiValidator):
         labelPlacement: str | None = None,
         activeLabel: str | None = None,
         placeholder: str | None = None,
+        direction: str | None = None,
         numVisibleTags: int | None = None,
         maxValue: float | int | None = None,
         minValue: float | int | None = None,
@@ -190,6 +191,13 @@ class props(ApiValidator):
             * **Notes**: This attribute applies exclusively to `"toggle"` props.
         * **`placeholder`**: `[str]` = `None` &rarr; The placeholder text to display.
             * **Note**: This attribute applies to `"text"` and `"coordinate"` props.
+        * **`direction`**: `[str]` = `"row"` &rarr; The layout direction of a coordinate prop's latitude/longitude fields.
+            * **Accepted Values**:
+                * `"row"`: The latitude and longitude fields are placed side by side.
+                * `"column"`: The latitude and longitude fields are stacked vertically.
+            * **Notes**:
+                * This attribute applies exclusively to `"coordinate"` props.
+                * For the `"latLngMap"` and `"latLngPath"` variants, only the latitude/longitude fields are affected; the map-toggle button always stays beside them.
         * **`maxValue`**: `[float | int]` = `None` &rarr; The maximum value for the prop.
             * **Note**: This attribute applies exclusively to `"num"` props.
         * **`minValue`**: `[float | int]` = `None` &rarr; The minimum value for the prop.
@@ -573,6 +581,7 @@ class props(ApiValidator):
                 "trailingZeros",
                 "unit",
                 "unitPlacement",
+                "direction",
             ]
         elif type == "toggle":
             optional_fields += [
@@ -640,6 +649,7 @@ class props(ApiValidator):
                     "coordinate",
                 ],
                 "container": ["vertical", "horizontal", "titled", "untitled", "none"],
+                "direction": ["row", "column"],
                 "views": view_options_dict.get(variant, []),
                 "unitPlacement": ["after", "afterWithSpace", "before", "beforeWithSpace"],
                 "notation": ["standard", "compact", "scientific", "engineering", "precision"],
@@ -1218,6 +1228,7 @@ class valueLists(ApiValidator):
                 "selector": (list,),
                 "date": (str,),
                 "media": (str,),
+                "coordinate": (list,),
             }.get(prop_type, tuple())
             # Add None to acceptable types if allowed
             if prop_spec.get("allowNone", False):
@@ -1264,4 +1275,11 @@ class valueLists(ApiValidator):
             elif prop_type == "media":
                 for prop_value in prop_value_list:
                     if not self.__check_url_valid__(prop_value, prepend_path=[prop_key]):
+                        continue
+            elif prop_type == "coordinate":
+                coord_variant = prop_spec.get("variant", "latLngInput")
+                for prop_value in prop_value_list:
+                    if not self.__check_coord_path_valid__(
+                        prop_value, coord_variant, prepend_path=[prop_key]
+                    ):
                         continue
