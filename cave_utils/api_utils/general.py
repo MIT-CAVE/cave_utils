@@ -29,6 +29,11 @@ class props(ApiValidator):
         activeLabel: str | None = None,
         placeholder: str | None = None,
         direction: str | None = None,
+        defaultZoom: int | float | None = None,
+        minZoom: int | float | None = None,
+        maxZoom: int | float | None = None,
+        pathColor: str | None = None,
+        pathWeight: int | float | None = None,
         numVisibleTags: int | None = None,
         maxValue: float | int | None = None,
         minValue: float | int | None = None,
@@ -198,6 +203,29 @@ class props(ApiValidator):
             * **Notes**:
                 * This attribute applies exclusively to `"coordinate"` props.
                 * For the `"latLngMap"` and `"latLngPath"` variants, only the latitude/longitude fields are affected; the map-toggle button always stays beside them.
+        * **`defaultZoom`**: `[int | float]` = `None` &rarr; The initial zoom level of the popup map.
+            * **Notes**:
+                * Must be between `0` and `22`.
+                * If left unspecified (i.e., `None`), a sensible default zoom level is used.
+                * This attribute applies to the `"latLngMap"` and `"latLngPath"` variants of `"coordinate"` props.
+        * **`minZoom`**: `[int | float]` = `None` &rarr; The minimum zoom level a user can zoom out to on the popup map.
+            * **Notes**:
+                * Must be between `0` and `22`.
+                * This attribute applies to the `"latLngMap"` and `"latLngPath"` variants of `"coordinate"` props.
+        * **`maxZoom`**: `[int | float]` = `None` &rarr; The maximum zoom level a user can zoom in to on the popup map.
+            * **Notes**:
+                * Must be between `0` and `22`.
+                * This attribute applies to the `"latLngMap"` and `"latLngPath"` variants of `"coordinate"` props.
+        * **`pathColor`**: `[str]` = `None` &rarr; The color of the drawn path line.
+            * **Notes**:
+                * A valid color string (EG: "rgba(3, 170, 238, 0.5)")
+                * If left unspecified (i.e., `None`), a default blue is used.
+                * This attribute applies exclusively to the `"latLngPath"` variant of `"coordinate"` props.
+        * **`pathWeight`**: `[int | float]` = `None` &rarr; The width of the drawn path line.
+            * **Notes**:
+                * Must be between `1` and `100`.
+                * If left unspecified (i.e., `None`), a default width is used.
+                * This attribute applies exclusively to the `"latLngPath"` variant of `"coordinate"` props.
         * **`maxValue`**: `[float | int]` = `None` &rarr; The maximum value for the prop.
             * **Note**: This attribute applies exclusively to `"num"` props.
         * **`minValue`**: `[float | int]` = `None` &rarr; The minimum value for the prop.
@@ -583,6 +611,10 @@ class props(ApiValidator):
                 "unitPlacement",
                 "direction",
             ]
+            if variant in ("latLngMap", "latLngPath"):
+                optional_fields += ["defaultZoom", "minZoom", "maxZoom"]
+            if variant == "latLngPath":
+                optional_fields += ["pathColor", "pathWeight"]
         elif type == "toggle":
             optional_fields += [
                 "options",
@@ -741,6 +773,21 @@ class props(ApiValidator):
             self.__check_pixel_string_valid__(pixel_string=self.data.get("size"))
         if self.data.get("activeSize"):
             self.__check_pixel_string_valid__(pixel_string=self.data.get("activeSize"))
+        if self.data.get("type") == "coordinate":
+            variant = self.data.get("variant", "latLngInput")
+            if variant in ("latLngMap", "latLngPath"):
+                for field in ("defaultZoom", "minZoom", "maxZoom"):
+                    value = self.data.get(field)
+                    if value is not None and (value < 0 or value > 22):
+                        self.__error__(msg=f"`{field} = {value}` but it should be between 0 and 22")
+            if variant == "latLngPath":
+                if self.data.get("pathColor"):
+                    self.__check_color_string_valid__(color_string=self.data.get("pathColor"))
+                path_weight = self.data.get("pathWeight")
+                if path_weight is not None and (path_weight < 1 or path_weight > 100):
+                    self.__error__(
+                        msg=f"`pathWeight = {path_weight}` but it should be between 1 and 100"
+                    )
 
 
 @type_enforced.Enforcer
