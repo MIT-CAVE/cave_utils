@@ -146,7 +146,7 @@ class props(ApiValidator):
                     * `"picture"`: Show a PNG or JPG image
                     * `"video"`: Display a YouTube, Vimeo, or Dailymotion video clip
                 * When **`type`** == `"coordinate"`:
-                    * `"latLngInput"`: A latitude and longitude input field
+                    * `"latLngInput"`: A latitude and longitude input field. **Deprecated**, will be removed in `4.0.0`, in favor of `"latLngMap"`.
                     * `"latLngMap"`: A clickable map to select a latitude and longitude
                     * `"latLngPath"`: A clickable map to select a path of latitude and longitude points
         * **`container`**: `[str]` = `"vertical"` | `"none"` &rarr;
