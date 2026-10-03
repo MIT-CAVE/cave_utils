@@ -185,7 +185,7 @@ class props(ApiValidator):
                 * Only valueOptions provided here can be selected for the prop value
                 * This attribute applies to `"num"` props with the `"incslider"` variant.
         * **`label`**: `[str]` = `None` &rarr; The label to display above the input field when the prop is focused.
-            * **Note**: This attribute applies to `"num"`, `"text"`, and `"coordinate"` props.
+            * **Note**: This attribute applies to `"num"` and `"text"` props.
         * **`labelPlacement`**: `[str]` = `None` &rarr; The placement of the label relative to the input field.
             * **Accepted Values**:
                 * `"start"`: The label is placed at the start of the input field.
@@ -603,7 +603,6 @@ class props(ApiValidator):
             optional_fields += ["views"]
         elif type == "coordinate":
             optional_fields += [
-                "label",
                 "placeholder",
                 "precision",
                 "trailingZeros",
