@@ -28,6 +28,13 @@ class props(ApiValidator):
         labelPlacement: str | None = None,
         activeLabel: str | None = None,
         placeholder: str | None = None,
+        direction: str | None = None,
+        defaultZoom: int | float | None = None,
+        minZoom: int | float | None = None,
+        maxZoom: int | float | None = None,
+        maxBounds: list[list[int | float]] | None = None,
+        pathColor: str | None = None,
+        pathWeight: int | float | None = None,
         numVisibleTags: int | None = None,
         maxValue: float | int | None = None,
         minValue: float | int | None = None,
@@ -140,9 +147,9 @@ class props(ApiValidator):
                     * `"picture"`: Show a PNG or JPG image
                     * `"video"`: Display a YouTube, Vimeo, or Dailymotion video clip
                 * When **`type`** == `"coordinate"`:
-                    * `"latLngInput"`: A latitude and longitude input field
-                    * `"latLngMap"`: A clickable map to select a latitude and longitude
-                    * `"latLngPath"`: A clickable map to select a path of latitude and longitude points
+                    * `"latLngInput"`: **Deprecated** alias of `"latLngMap"`, will be removed in `4.0.0`.
+                    * `"latLngMap"`: A map popup to select a latitude and longitude by dragging its marker
+                    * `"latLngPath"`: A map popup to build a path of latitude and longitude points by dragging its marker or entering coordinates manually
         * **`container`**: `[str]` = `"vertical"` | `"none"` &rarr;
             * Specifies the type of prop container by selecting from predefined styles.
             * **Accepted Values**:
@@ -179,7 +186,7 @@ class props(ApiValidator):
                 * Only valueOptions provided here can be selected for the prop value
                 * This attribute applies to `"num"` props with the `"incslider"` variant.
         * **`label`**: `[str]` = `None` &rarr; The label to display above the input field when the prop is focused.
-            * **Note**: This attribute applies to `"num"`, `"text"`, and `"coordinate"` props.
+            * **Note**: This attribute applies to `"num"` and `"text"` props.
         * **`labelPlacement`**: `[str]` = `None` &rarr; The placement of the label relative to the input field.
             * **Accepted Values**:
                 * `"start"`: The label is placed at the start of the input field.
@@ -189,7 +196,43 @@ class props(ApiValidator):
         * **`activeLabel`**: `[str]` = `None` &rarr; The label to display when the prop value is True.
             * **Notes**: This attribute applies exclusively to `"toggle"` props.
         * **`placeholder`**: `[str]` = `None` &rarr; The placeholder text to display.
-            * **Note**: This attribute applies exclusively to `"text"` props.
+            * **Note**: This attribute applies to `"text"` and `"coordinate"` props.
+        * **`direction`**: `[str]` = `"row"` &rarr; The layout direction of a coordinate prop's latitude/longitude fields.
+            * **Accepted Values**:
+                * `"row"`: The latitude and longitude fields are placed side by side.
+                * `"column"`: The latitude and longitude fields are stacked vertically.
+            * **Notes**:
+                * This attribute applies exclusively to `"coordinate"` props.
+                * For the `"latLngMap"` and `"latLngPath"` variants, only the latitude/longitude fields are affected; the map-toggle button always stays beside them.
+        * **`defaultZoom`**: `[int | float]` = `None` &rarr; The initial zoom level of the popup map.
+            * **Notes**:
+                * Must be between `0` and `22`.
+                * If left unspecified (i.e., `None`), a sensible default zoom level is used.
+                * This attribute applies to the `"latLngMap"` and `"latLngPath"` variants of `"coordinate"` props.
+        * **`minZoom`**: `[int | float]` = `None` &rarr; The minimum zoom level a user can zoom out to on the popup map.
+            * **Notes**:
+                * Must be between `0` and `22`.
+                * This attribute applies to the `"latLngMap"` and `"latLngPath"` variants of `"coordinate"` props.
+        * **`maxZoom`**: `[int | float]` = `None` &rarr; The maximum zoom level a user can zoom in to on the popup map.
+            * **Notes**:
+                * Must be between `0` and `22`.
+                * This attribute applies to the `"latLngMap"` and `"latLngPath"` variants of `"coordinate"` props.
+        * **`maxBounds`**: `[list[int | float]]` = `None` &rarr; The bounds the popup map can be panned within, as `[[west, south], [east, north]]`.
+            * **Notes**:
+                * Each corner is a `[longitude, latitude]` pair, where longitude is between `-180` and `180` and latitude is between `-90` and `90`.
+                * `west` must be less than `east`, and `south` must be less than `north`.
+                * If left unspecified (i.e., `None`), the popup map can be panned anywhere.
+                * This attribute applies to the `"latLngMap"` and `"latLngPath"` variants of `"coordinate"` props.
+        * **`pathColor`**: `[str]` = `None` &rarr; The color of the drawn path line.
+            * **Notes**:
+                * A valid color string (EG: "rgba(3, 170, 238, 0.5)")
+                * If left unspecified (i.e., `None`), a default blue is used.
+                * This attribute applies exclusively to the `"latLngPath"` variant of `"coordinate"` props.
+        * **`pathWeight`**: `[int | float]` = `None` &rarr; The width of the drawn path line.
+            * **Notes**:
+                * Must be between `1` and `100`.
+                * If left unspecified (i.e., `None`), a default width is used.
+                * This attribute applies exclusively to the `"latLngPath"` variant of `"coordinate"` props.
         * **`maxValue`**: `[float | int]` = `None` &rarr; The maximum value for the prop.
             * **Note**: This attribute applies exclusively to `"num"` props.
         * **`minValue`**: `[float | int]` = `None` &rarr; The minimum value for the prop.
@@ -242,13 +285,17 @@ class props(ApiValidator):
         * **`precision`**: `[int]` = `None` &rarr; The number of decimal places to display.
             * **Notes**:
                 * Set the precision to `0` to attach an integer constraint.
-                * If left unspecified (i.e., `None`), it will default to `settings.defaults.precision`.
-                * This attribute applies exclusively to `"num"` props.
+                * If left unspecified (i.e., `None`):
+                    * For `"num"` props, it will default to `settings.defaults.precision`.
+                    * For `"coordinate"` props, it will default to `6` decimal places instead of `settings.defaults.precision`.
+                * This attribute applies to `"num"` and `"coordinate"` props.
         * **`trailingZeros`**: `[bool]` = `None` &rarr; If `True`, trailing zeros will be displayed.
             * **Notes**:
                 * This ensures that all precision digits are shown. For example: `1.5` &rarr; `1.500` when precision is `3`.
-                * If left unspecified (i.e., `None`), it will default to `settings.defaults.trailingZeros`.
-                * This attribute applies exclusively to `"num"` props.
+                * If left unspecified (i.e., `None`):
+                    * For `"num"` props, it will default to `settings.defaults.trailingZeros`.
+                    * For `"coordinate"` props, it will default to `True` instead of `settings.defaults.trailingZeros`.
+                * This attribute applies to `"num"` and `"coordinate"` props.
         * **`fallbackValue`**: [str] = `None` &rarr; A value to show when the value is missing or invalid.
             * **Notes**:
                 * This is only for display purposes as related to number formatting. It does not affect the actual value or any computations.
@@ -257,8 +304,10 @@ class props(ApiValidator):
                 * This attribute applies exclusively to `"num"` props.
         * **`unit`**: `[str]` = `None` &rarr; The unit to use for the prop.
             * **Notes**:
-                * If left unspecified (i.e., `None`), it will default to `settings.defaults.unit`.
-                * This attribute applies exclusively to `"num"` props.
+                * If left unspecified (i.e., `None`):
+                    * For `"num"` props, it will default to `settings.defaults.unit`.
+                    * For `"coordinate"` props, no unit is shown (there is no coordinate-specific default, and `settings.defaults.unit` does not apply).
+                * This attribute applies to `"num"` and `"coordinate"` props.
         * **`unitPlacement`**: `[str]` = `None` &rarr; The position of the `unit` symbol relative to the value.
             * **Accepted Values**:
                 * `"after"`: The `unit` appears after the value.
@@ -266,8 +315,11 @@ class props(ApiValidator):
                 * `"before"`: The `unit` appears before the value.
                 * `"beforeWithSpace"`: The unit is placed before the value, with a space in between.
             * **Notes**:
-                * If left unspecified (i.e., `None`), it will default to `settings.defaults.unitPlacement`.
-                * This attribute applies exclusively to `"num"` props.
+                * Only relevant when `unit` is also set.
+                * If left unspecified (i.e., `None`):
+                    * For `"num"` props, it will default to `settings.defaults.unitPlacement`.
+                    * For `"coordinate"` props, it will default to `"after"` instead of `settings.defaults.unitPlacement`, since degree symbols are conventionally typeset directly against the number.
+                * This attribute applies to `"num"` and `"coordinate"` props.
         * **`notation`**: `[str]` = `"standard"` &rarr; The formatting style of a numeric value.
             * **Accepted Values**:
                 * `"standard"`: Plain number formatting
@@ -557,7 +609,18 @@ class props(ApiValidator):
         elif type == "date":
             optional_fields += ["views"]
         elif type == "coordinate":
-            optional_fields += ["label", "placeholder", "precision"]
+            optional_fields += [
+                "placeholder",
+                "precision",
+                "trailingZeros",
+                "unit",
+                "unitPlacement",
+                "direction",
+            ]
+            if variant in ("latLngInput", "latLngMap", "latLngPath"):
+                optional_fields += ["defaultZoom", "minZoom", "maxZoom", "maxBounds"]
+            if variant == "latLngPath":
+                optional_fields += ["pathColor", "pathWeight"]
         elif type == "toggle":
             optional_fields += [
                 "options",
@@ -624,6 +687,7 @@ class props(ApiValidator):
                     "coordinate",
                 ],
                 "container": ["vertical", "horizontal", "titled", "untitled", "none"],
+                "direction": ["row", "column"],
                 "views": view_options_dict.get(variant, []),
                 "unitPlacement": ["after", "afterWithSpace", "before", "beforeWithSpace"],
                 "notation": ["standard", "compact", "scientific", "engineering", "precision"],
@@ -715,6 +779,60 @@ class props(ApiValidator):
             self.__check_pixel_string_valid__(pixel_string=self.data.get("size"))
         if self.data.get("activeSize"):
             self.__check_pixel_string_valid__(pixel_string=self.data.get("activeSize"))
+        if self.data.get("type") == "coordinate":
+            variant = self.data.get("variant", "latLngInput")
+            if variant in ("latLngInput", "latLngMap", "latLngPath"):
+                for field in ("defaultZoom", "minZoom", "maxZoom"):
+                    value = self.data.get(field)
+                    if value is not None and (value < 0 or value > 22):
+                        self.__error__(msg=f"`{field} = {value}` but it should be between 0 and 22")
+                max_bounds = self.data.get("maxBounds")
+                if max_bounds is not None:
+                    is_bounds_shape = (
+                        isinstance(max_bounds, list)
+                        and len(max_bounds) == 2
+                        and all(
+                            isinstance(corner, list)
+                            and len(corner) == 2
+                            and all(
+                                isinstance(num, (int, float)) and not isinstance(num, bool)
+                                for num in corner
+                            )
+                            for corner in max_bounds
+                        )
+                    )
+                    if not is_bounds_shape:
+                        self.__error__(
+                            msg=f"`maxBounds = {max_bounds}` but it should be `[[west, south], [east, north]]`"
+                        )
+                    else:
+                        (west, south), (east, north) = max_bounds
+                        for lng in (west, east):
+                            if lng < -180 or lng > 180:
+                                self.__error__(
+                                    msg=f"`maxBounds` longitude `{lng}` but it should be between -180 and 180"
+                                )
+                        for lat in (south, north):
+                            if lat < -90 or lat > 90:
+                                self.__error__(
+                                    msg=f"`maxBounds` latitude `{lat}` but it should be between -90 and 90"
+                                )
+                        if west >= east:
+                            self.__error__(
+                                msg=f"`maxBounds` west `{west}` must be less than east `{east}`"
+                            )
+                        if south >= north:
+                            self.__error__(
+                                msg=f"`maxBounds` south `{south}` must be less than north `{north}`"
+                            )
+            if variant == "latLngPath":
+                if self.data.get("pathColor"):
+                    self.__check_color_string_valid__(color_string=self.data.get("pathColor"))
+                path_weight = self.data.get("pathWeight")
+                if path_weight is not None and (path_weight < 1 or path_weight > 100):
+                    self.__error__(
+                        msg=f"`pathWeight = {path_weight}` but it should be between 1 and 100"
+                    )
 
 
 @type_enforced.Enforcer
@@ -1202,6 +1320,7 @@ class valueLists(ApiValidator):
                 "selector": (list,),
                 "date": (str,),
                 "media": (str,),
+                "coordinate": (list,),
             }.get(prop_type, tuple())
             # Add None to acceptable types if allowed
             if prop_spec.get("allowNone", False):
@@ -1248,4 +1367,11 @@ class valueLists(ApiValidator):
             elif prop_type == "media":
                 for prop_value in prop_value_list:
                     if not self.__check_url_valid__(prop_value, prepend_path=[prop_key]):
+                        continue
+            elif prop_type == "coordinate":
+                coord_variant = prop_spec.get("variant", "latLngInput")
+                for prop_value in prop_value_list:
+                    if not self.__check_coord_path_valid__(
+                        prop_value, coord_variant, prepend_path=[prop_key]
+                    ):
                         continue
