@@ -146,7 +146,7 @@ class props(ApiValidator):
                     * `"picture"`: Show a PNG or JPG image
                     * `"video"`: Display a YouTube, Vimeo, or Dailymotion video clip
                 * When **`type`** == `"coordinate"`:
-                    * `"latLngInput"`: A latitude and longitude input field. **Deprecated**, will be removed in `4.0.0`, in favor of `"latLngMap"`.
+                    * `"latLngInput"`: **Deprecated** alias of `"latLngMap"`, will be removed in `4.0.0`.
                     * `"latLngMap"`: A map popup to select a latitude and longitude by dragging its marker
                     * `"latLngPath"`: A map popup to build a path of latitude and longitude points by dragging its marker or entering coordinates manually
         * **`container`**: `[str]` = `"vertical"` | `"none"` &rarr;
@@ -610,7 +610,7 @@ class props(ApiValidator):
                 "unitPlacement",
                 "direction",
             ]
-            if variant in ("latLngMap", "latLngPath"):
+            if variant in ("latLngInput", "latLngMap", "latLngPath"):
                 optional_fields += ["defaultZoom", "minZoom", "maxZoom"]
             if variant == "latLngPath":
                 optional_fields += ["pathColor", "pathWeight"]
@@ -774,7 +774,7 @@ class props(ApiValidator):
             self.__check_pixel_string_valid__(pixel_string=self.data.get("activeSize"))
         if self.data.get("type") == "coordinate":
             variant = self.data.get("variant", "latLngInput")
-            if variant in ("latLngMap", "latLngPath"):
+            if variant in ("latLngInput", "latLngMap", "latLngPath"):
                 for field in ("defaultZoom", "minZoom", "maxZoom"):
                     value = self.data.get(field)
                     if value is not None and (value < 0 or value > 22):
