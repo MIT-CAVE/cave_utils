@@ -32,6 +32,7 @@ class props(ApiValidator):
         defaultZoom: int | float | None = None,
         minZoom: int | float | None = None,
         maxZoom: int | float | None = None,
+        maxBounds: list[list[int | float]] | None = None,
         pathColor: str | None = None,
         pathWeight: int | float | None = None,
         numVisibleTags: int | None = None,
@@ -215,6 +216,12 @@ class props(ApiValidator):
         * **`maxZoom`**: `[int | float]` = `None` &rarr; The maximum zoom level a user can zoom in to on the popup map.
             * **Notes**:
                 * Must be between `0` and `22`.
+                * This attribute applies to the `"latLngMap"` and `"latLngPath"` variants of `"coordinate"` props.
+        * **`maxBounds`**: `[list[int | float]]` = `None` &rarr; The bounds the popup map can be panned within, as `[[west, south], [east, north]]`.
+            * **Notes**:
+                * Each corner is a `[longitude, latitude]` pair, where longitude is between `-180` and `180` and latitude is between `-90` and `90`.
+                * `west` must be less than `east`, and `south` must be less than `north`.
+                * If left unspecified (i.e., `None`), the popup map can be panned anywhere.
                 * This attribute applies to the `"latLngMap"` and `"latLngPath"` variants of `"coordinate"` props.
         * **`pathColor`**: `[str]` = `None` &rarr; The color of the drawn path line.
             * **Notes**:
@@ -611,7 +618,7 @@ class props(ApiValidator):
                 "direction",
             ]
             if variant in ("latLngInput", "latLngMap", "latLngPath"):
-                optional_fields += ["defaultZoom", "minZoom", "maxZoom"]
+                optional_fields += ["defaultZoom", "minZoom", "maxZoom", "maxBounds"]
             if variant == "latLngPath":
                 optional_fields += ["pathColor", "pathWeight"]
         elif type == "toggle":
@@ -779,6 +786,45 @@ class props(ApiValidator):
                     value = self.data.get(field)
                     if value is not None and (value < 0 or value > 22):
                         self.__error__(msg=f"`{field} = {value}` but it should be between 0 and 22")
+                max_bounds = self.data.get("maxBounds")
+                if max_bounds is not None:
+                    is_bounds_shape = (
+                        isinstance(max_bounds, list)
+                        and len(max_bounds) == 2
+                        and all(
+                            isinstance(corner, list)
+                            and len(corner) == 2
+                            and all(
+                                isinstance(num, (int, float)) and not isinstance(num, bool)
+                                for num in corner
+                            )
+                            for corner in max_bounds
+                        )
+                    )
+                    if not is_bounds_shape:
+                        self.__error__(
+                            msg=f"`maxBounds = {max_bounds}` but it should be `[[west, south], [east, north]]`"
+                        )
+                    else:
+                        (west, south), (east, north) = max_bounds
+                        for lng in (west, east):
+                            if lng < -180 or lng > 180:
+                                self.__error__(
+                                    msg=f"`maxBounds` longitude `{lng}` but it should be between -180 and 180"
+                                )
+                        for lat in (south, north):
+                            if lat < -90 or lat > 90:
+                                self.__error__(
+                                    msg=f"`maxBounds` latitude `{lat}` but it should be between -90 and 90"
+                                )
+                        if west >= east:
+                            self.__error__(
+                                msg=f"`maxBounds` west `{west}` must be less than east `{east}`"
+                            )
+                        if south >= north:
+                            self.__error__(
+                                msg=f"`maxBounds` south `{south}` must be less than north `{north}`"
+                            )
             if variant == "latLngPath":
                 if self.data.get("pathColor"):
                     self.__check_color_string_valid__(color_string=self.data.get("pathColor"))
