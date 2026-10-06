@@ -806,7 +806,7 @@ def execute_command(
                             "type": "head",
                             "icon": "md/MdLocalShipping",
                             "color": "#42a5f5",
-                            "size": "28px",
+                            "size": "32px",
                             # No dedicated attribute exists for title alignment: `textAlign`
                             # is inherited by the title from this root `propStyle`.
                             "propStyle": {"textAlign": "center"},
@@ -818,7 +818,7 @@ def execute_command(
                             "variant": "row",
                             "icon": "md/MdAltRoute",
                             "color": "#66bb6a",
-                            "size": "48px",
+                            "size": "32px",
                             "propStyle": {"borderColor": "#66bb6a"},
                             "help": "This example uses the `head`'s `row` variant, with a custom icon color/size, displayed in a bordered row",
                         },

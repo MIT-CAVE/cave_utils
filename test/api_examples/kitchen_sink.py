@@ -81,7 +81,7 @@ def execute_command(session_data, socket, command="init", **kwargs):
                 "panes": {
                     "name": "Open Pane",
                     "showToggle": True,
-                    "value": False,
+                    "value": True,
                     "data": {
                         "ab1": ["panes", "paneState", "left"],
                         "ab2": ["panes", "paneState", "right"],
@@ -96,13 +96,13 @@ def execute_command(session_data, socket, command="init", **kwargs):
                 "mapLayers": {
                     "name": "Map Layers",
                     "showToggle": True,
-                    "value": False,
+                    "value": True,
                     "data": {"ml1": ["maps", "data", "map1", "legendGroups"]},
                 },
                 "chartColors": {
                     "name": "Chart Colors",
                     "showToggle": True,
-                    "value": False,
+                    "value": True,
                     "data": {
                         "go1": ["groupedOutputs", "groupings"],
                     },
@@ -110,7 +110,7 @@ def execute_command(session_data, socket, command="init", **kwargs):
                 "modals": {
                     "name": "Open Modal",
                     "showToggle": True,
-                    "value": False,
+                    "value": True,
                     "data": {"pn1": ["panes", "paneState", "center"]},
                 },
                 "draggables": {
@@ -124,7 +124,7 @@ def execute_command(session_data, socket, command="init", **kwargs):
                 "pages": {
                     "name": "Dashboards",
                     "showToggle": True,
-                    "value": False,
+                    "value": True,
                     "data": {"db1": ["pages", "data"]},
                 },
             },
@@ -148,6 +148,7 @@ def execute_command(session_data, socket, command="init", **kwargs):
             "data": {
                 "session": {
                     "open": True,
+                    "docked": True,  # Rendered in a persistent top bar instead of floating
                     "position": {
                         "x": 8,  # distance from left app bar
                         "y": 8,
@@ -155,6 +156,7 @@ def execute_command(session_data, socket, command="init", **kwargs):
                 },
                 "globalOutputs": {
                     "open": True,
+                    "docked": True,
                     "position": {
                         "x": 8,
                         "y": 68,  # 68 pixels from top edge of screen which is below the session draggable
@@ -170,7 +172,9 @@ def execute_command(session_data, socket, command="init", **kwargs):
                     },
                 },
                 "time": {
+                    "open": True,
                     "showDragHandle": True,
+                    "docked": True,
                 },
             }
         },
@@ -1093,24 +1097,12 @@ def execute_command(session_data, socket, command="init", **kwargs):
         },
         "maps": {
             "order": {
-                "additionalMapStyles": ["smoothLight", "smoothDark"],
+                "additionalMapStyles": ["osmRasterTiles", "satellite_streets"],
             },
             "additionalMapStyles": {
-                "smoothLight": {
-                    "name": "Smooth Light",
-                    "icon": "fi/FiSun",
-                    "spec": "https://tiles.stadiamaps.com/styles/alidade_smooth.json",
-                    # "light": True,  # Enforces a light theme for map properties, root styling, and controls to improve viz on light maps.
-                },
-                "smoothDark": {
-                    "name": "Smooth Dark",
-                    "icon": "fi/FiMoon",
-                    "spec": "https://tiles.stadiamaps.com/styles/alidade_smooth_dark.json",
-                },
                 "osmRasterTiles": {
-                    "name": "OSM Raster Tiles",
+                    "name": "Custom OSM Raster Tiles",
                     "icon": "md/MdBrush",
-                    "mapbox": True,  # Enforces Mapbox rendering engine for this map style, even if using non-Mapbox tile sources.
                     "spec": {
                         "version": 8,
                         "sources": {
@@ -1166,23 +1158,8 @@ def execute_command(session_data, socket, command="init", **kwargs):
                         ],
                     },
                 },
-                "streets": {
-                    "name": "Streets",
-                    "icon": "md/MdStreetview",
-                    "spec": "mapbox://styles/mapbox/streets-v12",
-                },
-                "outdoors": {
-                    "name": "Outdoors",
-                    "icon": "md/MdForest",
-                    "spec": "mapbox://styles/mapbox/outdoors-v12",
-                },
-                "satellite": {
-                    "name": "Satellite",
-                    "icon": "md/MdSatelliteAlt",
-                    "spec": "mapbox://styles/mapbox/satellite-v9",
-                },
                 "satellite_streets": {
-                    "name": "Satellite Streets",
+                    "name": "Custom Mapbox Satellite Streets",
                     "icon": "md/MdSatellite",
                     "spec": "mapbox://styles/mapbox/satellite-streets-v12",
                 },
@@ -2306,7 +2283,8 @@ def execute_command(session_data, socket, command="init", **kwargs):
                     "unit": "frowns",
                     "type": "num",
                     "variant": "icon",
-                    "draggable": True,
+                    "quickView": True,  # `draggable` also still works, but is deprecated
+                    "color": "#ee4b2b",
                 },
                 "key2": {
                     "name": "KPI Example 2",
@@ -2315,7 +2293,8 @@ def execute_command(session_data, socket, command="init", **kwargs):
                     "unit": "smiles",
                     "type": "num",
                     "variant": "icon",
-                    "draggable": True,
+                    "quickView": True,
+                    "color": "#ffff00",
                 },
                 "key3": {
                     "name": "KPI Example 3",
