@@ -803,7 +803,7 @@ class props(ApiValidator):
         if self.data.get("activeSize"):
             self.__check_pixel_string_valid__(pixel_string=self.data.get("activeSize"))
         if self.data.get("type") == "coordinate":
-            variant = self.data.get("variant", "latLngInput")
+            variant = self.data.get("variant", "latLngMap")
             if variant in ("latLngInput", "latLngMap", "latLngPath"):
                 for field in ("defaultZoom", "minZoom", "maxZoom"):
                     value = self.data.get(field)
@@ -1297,7 +1297,7 @@ class values(ApiValidator):
             elif prop_type == "media":
                 self.__check_url_valid__(prop_value, prepend_path=[prop_key])
             elif prop_type == "coordinate":
-                coord_variant = prop_spec.get("variant", "latLngInput")
+                coord_variant = prop_spec.get("variant", "latLngMap")
                 self.__check_coord_path_valid__(prop_value, coord_variant, prepend_path=[prop_key])
 
 
@@ -1392,7 +1392,7 @@ class valueLists(ApiValidator):
                     if not self.__check_url_valid__(prop_value, prepend_path=[prop_key]):
                         continue
             elif prop_type == "coordinate":
-                coord_variant = prop_spec.get("variant", "latLngInput")
+                coord_variant = prop_spec.get("variant", "latLngMap")
                 for prop_value in prop_value_list:
                     if not self.__check_coord_path_valid__(
                         prop_value, coord_variant, prepend_path=[prop_key]
