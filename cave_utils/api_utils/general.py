@@ -151,6 +151,7 @@ class props(ApiValidator):
                 * When **`type`** == `"media"`:
                     * `"picture"`: Show a PNG or JPG image
                     * `"video"`: Display a YouTube, Vimeo, or Dailymotion video clip
+                    * `"audio"`: Play an audio clip (e.g. MP3, WAV, or OGG) with the browser's native audio player
                 * When **`type`** == `"coordinate"`:
                     * `"latLngInput"`: **Deprecated** alias of `"latLngMap"`, will be removed in `4.0.0`.
                     * `"latLngMap"`: A map popup to select a latitude and longitude by dragging its marker
@@ -438,6 +439,10 @@ class props(ApiValidator):
                 * `"bottom"`: The prop is placed at the bottom of the container.
                 * `"center"`: The prop is placed at the center of the container.
         * **`fullWidth`**: `[bool]` = `None` &rarr; Whether or not the prop should take the full width of the container.
+            * **Notes**:
+                * For `media` props, `fullWidth: True` expresses the same as `scaleMode: "fitWidth"`.
+                * If both `fullWidth` and `scaleMode` are used, `scaleMode` takes precedence and a warning is logged.
+                * `"audio"` props only support `fullWidth`: they have a fixed height, so `scaleMode` does not apply.
         * **`url`**: `[str]` = `None` &rarr; The URL to navigate to when the button is clicked.
             * **Notes**: Applies to `"button"` props.
         * **`suppressCommand`**: `[bool]` = `False` &rarr;
@@ -447,10 +452,12 @@ class props(ApiValidator):
                 * Has no effect unless both `url` and `apiCommand` are set. Otherwise, `apiCommand` (if any) always triggers on click.
         * **`scaleMode`**: `[str]` = `None` &rarr; The scale mode to use for the prop.
             * **Accepted Values**:
-                * `"fitWidth"`: The prop will scale to fit the width of its container.
-                * `"fitHeight"`: The prop will scale to fit the height of its container.
-                * `"fitContainer"`: The prop will scale to fit the width and height of its container.
-            * **Notes**: Applies only to `media` props with a `variant` of `video`.
+                * `"fitWidth"`: The prop will scale to fit the width of its container. Its height follows the media's aspect ratio.
+                * `"fitHeight"`: The prop will scale to fit the height of its container. Its width follows the media's aspect ratio.
+                * `"fitContainer"`: The prop will scale to cover the width and height of its container without cropping. The side that does not bind expands.
+            * **Notes**:
+                * Applies only to `media` props with a `variant` of `picture` or `video`.
+                * `scaleMode` takes precedence over `fullWidth`.
         * **`propStyle`**: `[dict]` = `None` &rarr; A dictionary of css styles to apply to the prop.
             * **Note**: This will not be validated as part of the API spec, so use with caution.
         * **`readOnly`**: `[bool]` = `False` &rarr; Whether or not the prop is read-only.
@@ -669,7 +676,7 @@ class props(ApiValidator):
         elif type == "media":
             required_fields += ["variant"]
             optional_fields = [i for i in optional_fields if i != "variant"]
-            if variant == "video":
+            if variant in ["picture", "video"]:
                 optional_fields += ["scaleMode"]
 
         missing_required = pamda.difference(required_fields, list(passed_values.keys()))
@@ -754,7 +761,7 @@ class props(ApiValidator):
                         "nested",
                     ],
                     "date": ["date", "time", "datetime"],
-                    "media": ["picture", "video"],
+                    "media": ["picture", "video", "audio"],
                     "coordinate": ["latLngInput", "latLngMap", "latLngPath"],
                     "toggle": ["switch", "button", "checkbox"],
                     "button": ["outlined", "text", "icon", "filled"],
@@ -763,6 +770,15 @@ class props(ApiValidator):
         }
 
     def __extend_spec__(self, **kwargs):
+        if (
+            self.data.get("type") == "media"
+            and self.data.get("fullWidth") is True
+            and self.data.get("scaleMode") is not None
+        ):
+            self.__warn__(
+                msg="`scaleMode` takes precedence over `fullWidth` for `media` props, so `fullWidth` has no effect when both are used",
+                path=["fullWidth"],
+            )
         if self.data.get("type") == "selector":
             CustomKeyValidator(
                 data=self.data.get("options", {}),
@@ -1295,7 +1311,10 @@ class values(ApiValidator):
                     prepend_path=[prop_key],
                 )
             elif prop_type == "media":
-                self.__check_url_valid__(prop_value, prepend_path=[prop_key])
+                if self.__check_url_valid__(prop_value, prepend_path=[prop_key]):
+                    self.__check_media_url_variant__(
+                        prop_value, variant=prop_spec.get("variant"), prepend_path=[prop_key]
+                    )
             elif prop_type == "coordinate":
                 coord_variant = prop_spec.get("variant", "latLngMap")
                 self.__check_coord_path_valid__(prop_value, coord_variant, prepend_path=[prop_key])
@@ -1391,6 +1410,9 @@ class valueLists(ApiValidator):
                 for prop_value in prop_value_list:
                     if not self.__check_url_valid__(prop_value, prepend_path=[prop_key]):
                         continue
+                    self.__check_media_url_variant__(
+                        prop_value, variant=prop_spec.get("variant"), prepend_path=[prop_key]
+                    )
             elif prop_type == "coordinate":
                 coord_variant = prop_spec.get("variant", "latLngMap")
                 for prop_value in prop_value_list:

@@ -4,8 +4,23 @@ Special utility functions to help in validating your data against the CAVE API. 
 
 from pamda import pamda
 import type_enforced
-import re, datetime
+import re, datetime, os
+from urllib.parse import urlparse
 from cave_utils.log import LogHelper, LogObject
+
+
+# Clear (non-ambiguous) media extensions and hosts used to flag `media` url/variant mismatches
+MEDIA_IMAGE_EXTENSIONS = {".png", ".jpg", ".jpeg", ".gif", ".webp", ".svg", ".bmp", ".avif"}
+MEDIA_VIDEO_EXTENSIONS = {".mp4", ".m4v", ".mov", ".avi", ".mkv", ".mpg", ".mpeg", ".ogv"}
+MEDIA_AUDIO_EXTENSIONS = {".mp3", ".wav", ".flac", ".m4a", ".aac", ".oga", ".opus"}
+MEDIA_VIDEO_HOSTS = {
+    "youtube.com",
+    "youtu.be",
+    "youtube-nocookie.com",
+    "vimeo.com",
+    "dailymotion.com",
+    "dai.ly",
+}
 
 
 class ApiValidator:
@@ -238,6 +253,37 @@ class ApiValidator:
             self.__error__(path=prepend_path, msg="Invalid url")
             return False
         return True
+
+    def __check_media_url_variant__(
+        self, url: str, variant: str | None, prepend_path: list[str] = list()
+    ):
+        """
+        Validate that a (well formed) media url does not clearly belong to another media variant
+        and if an issue is present, log a warning.
+
+        Only clear mismatches are flagged: unknown hosts and extensionless urls (e.g. CDN or signed
+        urls) are accepted. Ambiguous containers such as `.webm` or `.ogg` are never flagged.
+        """
+        parsed = urlparse(url)
+        host = (parsed.hostname or "").lower()
+        extension = os.path.splitext(parsed.path)[1].lower()
+        kinds = set()
+        if extension in MEDIA_IMAGE_EXTENSIONS:
+            kinds.add("image")
+        if extension in MEDIA_VIDEO_EXTENSIONS or any(
+            host == d or host.endswith("." + d) for d in MEDIA_VIDEO_HOSTS
+        ):
+            kinds.add("video")
+        if extension in MEDIA_AUDIO_EXTENSIONS:
+            kinds.add("audio")
+        expected = {"picture": "image", "video": "video", "audio": "audio"}.get(variant)
+        if expected is None or not kinds or expected in kinds:
+            return True
+        self.__warn__(
+            path=prepend_path,
+            msg=f"The url looks like {'/'.join(sorted(kinds))} media, but the prop's `variant` is `{variant}`",
+        )
+        return False
 
     def __check_date_valid__(self, input: str, date_variant: str, prepend_path: list[str] = list()):
         """
