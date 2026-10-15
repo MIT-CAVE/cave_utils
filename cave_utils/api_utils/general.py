@@ -540,7 +540,7 @@ class props(ApiValidator):
             * **Note**: This will not be validated as part of the API spec, so use with caution.
         * **`readOnly`**: `[bool]` = `False` &rarr; Whether or not the prop is read-only.
             * **Notes**:
-                - Only applies to `"text"`, `"date"` and `"num"` props (`"field"` variant, or no variant), and to `"selector"` props with the `"combobox"`, `"comboboxMulti"` and `"dualList"` variants.
+                - Only applies to `"text"`, `"date"` and `"num"` props (`"field"` variant), and to `"selector"` props `"selector"` props (only the `"combobox"`, `"comboboxMulti"` and `"dualList"` variants).
                 - Essentially operates an enabled without making the prop darkened.
         * **`marks`**: `[dict[str, dict[str, str]]]` = `None` &rarr; A dictionary of marks to display on the slider.
             * **Notes**:
