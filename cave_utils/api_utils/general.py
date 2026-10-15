@@ -540,7 +540,7 @@ class props(ApiValidator):
             * **Note**: This will not be validated as part of the API spec, so use with caution.
         * **`readOnly`**: `[bool]` = `False` &rarr; Whether or not the prop is read-only.
             * **Notes**:
-                - Only applies to `"text"` props.
+                - Only applies to `"text"`, `"date"` and `"num"` props (`"field"` variant, or no variant), and to `"selector"` props with the `"combobox"`, `"comboboxMulti"` and `"dualList"` variants.
                 - Essentially operates an enabled without making the prop darkened.
         * **`marks`**: `[dict[str, dict[str, str]]]` = `None` &rarr; A dictionary of marks to display on the slider.
             * **Notes**:
@@ -671,6 +671,7 @@ class props(ApiValidator):
                         "step",
                         "largeStep",
                         "hideKeyboardToggle",
+                        "readOnly",
                     ]
             if variant == "icon" or variant == "iconCompact" or variant == "iconCompactAlt":
                 required_fields += ["icon"]
@@ -712,10 +713,19 @@ class props(ApiValidator):
                 optional_fields += ["placeholder"]
             if variant == "comboboxMulti":
                 optional_fields += ["numVisibleTags"]
+            if variant in ("combobox", "comboboxMulti", "dualList"):
+                optional_fields += ["readOnly"]
             if variant == "dualList":
                 optional_fields += ["availableTitle", "selectedTitle", "height"]
         elif type == "date":
-            optional_fields += ["views", "label", "timezone", "disablePast", "disableFuture"]
+            optional_fields += [
+                "views",
+                "label",
+                "readOnly",
+                "timezone",
+                "disablePast",
+                "disableFuture",
+            ]
             if variant in (None, "date", "datetime"):
                 optional_fields += ["minDate", "maxDate"]
             if variant in ("time", "datetime"):
