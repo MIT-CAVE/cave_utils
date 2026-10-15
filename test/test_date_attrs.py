@@ -1,7 +1,7 @@
 """
 Dedicated coverage for the `"date"` prop's attributes added in
 MIT-CAVE/cave_static#718: `label`, `minDate`/`maxDate`, `minTime`/`maxTime`,
-`minDateTime`/`maxDateTime` and `disablePast`/`disableFuture`.
+`minDateTime`/`maxDateTime`, `timezone` and `disablePast`/`disableFuture`.
 
 Bounds accept several formats, while the prop's value stays strict. A value
 outside of its bounds is reported as a warning.
@@ -150,3 +150,14 @@ def test_datetime_bound_differs_from_date_and_time_window():
     # ... but after a single `minDateTime` cutoff
     cutoff = {"minDateTime": "2026-07-05T09:00:00"}
     assert validate_date(cutoff, "datetime", value="2026-07-06T08:00:00") == []
+
+
+@pytest.mark.parametrize("variant", ["date", "datetime", "time"])
+@pytest.mark.parametrize("timezone", ["system", "UTC", "America/New_York", "Pacific/Kiritimati"])
+def test_timezone_accepts_system_utc_and_iana_names(variant, timezone):
+    assert validate_date({"timezone": timezone}, variant) == []
+
+
+@pytest.mark.parametrize("timezone", ["Mars/Olympus_Mons", "EST+5", "", "../etc/passwd"])
+def test_timezone_rejects_unknown_names(timezone):
+    assert validate_date({"timezone": timezone}) != []

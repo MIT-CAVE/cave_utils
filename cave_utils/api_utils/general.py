@@ -65,6 +65,7 @@ class props(ApiValidator):
         maxTime: str | None = None,
         minDateTime: str | None = None,
         maxDateTime: str | None = None,
+        timezone: str | None = None,
         disablePast: bool | None = None,
         disableFuture: bool | None = None,
         legendNotation: str | None = None,
@@ -346,6 +347,18 @@ class props(ApiValidator):
                 * A time part is required, so a date-only string is rejected.
                 * Must not be earlier than `minDateTime`.
                 * This attribute applies exclusively to `"date"` props with the `"datetime"` variant.
+        * **`timezone`**: `[str]` = `None` &rarr; The timezone that the date and/or time of the prop belongs to.
+            * **Accepted Values**:
+                * `"system"`: The timezone of the user's browser
+                * `"UTC"`: Coordinated Universal Time
+                * Any [IANA timezone name], such as `"America/New_York"`
+            * **Notes**:
+                * Values are never converted between timezones. A value is the wall-clock date and/or time in this timezone, and it is displayed as it is stored.
+                * The timezone defines what the present is, so it affects `disablePast` and `disableFuture` and the day highlighted as today.
+                * The `minDate`, `maxDate`, `minTime`, `maxTime`, `minDateTime` and `maxDateTime` bounds are also read in this timezone.
+                * A date and/or time that doesn't exist in this timezone, such as the hour skipped when clocks move forward, is displayed as the next valid one until a new value is selected.
+                * If not provided (or `"system"`), the timezone of the user's browser is used.
+                * This attribute applies exclusively to `"date"` props.
         * **`disablePast`**: `[bool]` = `False` &rarr; Whether to prevent selecting values before the present.
             * **Notes**:
                 * With the `"date"` variant, dates before today are disabled.
@@ -603,6 +616,7 @@ class props(ApiValidator):
         [metric prefix]: https://en.wikipedia.org/wiki/Metric_prefix
         [Scientific notation]: https://en.wikipedia.org/wiki/Scientific_notation
         [Engineering notation]: https://en.wikipedia.org/wiki/Engineering_notation
+        [IANA timezone name]: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
         [Number.prototype.toPrecision]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toPrecision
         """
         passed_values = {k: v for k, v in locals().items() if (v is not None) and k != "kwargs"}
@@ -701,7 +715,7 @@ class props(ApiValidator):
             if variant == "dualList":
                 optional_fields += ["availableTitle", "selectedTitle", "height"]
         elif type == "date":
-            optional_fields += ["views", "label", "disablePast", "disableFuture"]
+            optional_fields += ["views", "label", "timezone", "disablePast", "disableFuture"]
             if variant in (None, "date", "datetime"):
                 optional_fields += ["minDate", "maxDate"]
             if variant in ("time", "datetime"):
@@ -890,6 +904,8 @@ class props(ApiValidator):
         if self.data.get("activeSize"):
             self.__check_pixel_string_valid__(pixel_string=self.data.get("activeSize"))
         if self.data.get("type") == "date":
+            if self.data.get("timezone") is not None:
+                self.__check_timezone_valid__(self.data.get("timezone"), prepend_path=["timezone"])
             for lower, upper, part, formats, format_names in (
                 ("minDate", "maxDate", "date", DATE_BOUND_FORMATS, DATE_BOUND_FORMAT_NAMES),
                 ("minTime", "maxTime", "time", DATE_BOUND_FORMATS, DATE_BOUND_FORMAT_NAMES),

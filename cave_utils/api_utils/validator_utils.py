@@ -4,7 +4,7 @@ Special utility functions to help in validating your data against the CAVE API. 
 
 from pamda import pamda
 import type_enforced
-import re, datetime, os, operator
+import re, datetime, os, operator, zoneinfo
 from urllib.parse import urlparse
 from cave_utils.log import LogHelper, LogObject
 
@@ -306,6 +306,26 @@ class ApiValidator:
             msg=f"The url looks like {'/'.join(sorted(kinds))} media, but the prop's `variant` is `{variant}`",
         )
         return False
+
+    def __check_timezone_valid__(self, input: str, prepend_path: list[str] = list()):
+        """
+        Validate a timezone, which is `"system"`, `"UTC"` or an IANA name, and if an issue is
+        present, log an error.
+
+        Note that IANA names are looked up with `zoneinfo`, which needs the system's timezone
+        data or the `tzdata` package (e.g. on Windows).
+        """
+        if input == "system":
+            return True
+        try:
+            zoneinfo.ZoneInfo(input)
+        except (zoneinfo.ZoneInfoNotFoundError, ValueError, OSError):
+            self.__error__(
+                path=prepend_path,
+                msg=f"`{input}` is not a valid timezone. Must be `system`, `UTC` or an IANA timezone name such as `America/New_York`",
+            )
+            return False
+        return True
 
     def __parse_date_bound__(self, input: str, formats: list[str] = DATE_BOUND_FORMATS):
         """
