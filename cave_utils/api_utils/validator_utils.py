@@ -4,10 +4,32 @@ Special utility functions to help in validating your data against the CAVE API. 
 
 from pamda import pamda
 import type_enforced
-import re, datetime, os
+import re, datetime, os, operator
 from urllib.parse import urlparse
 from cave_utils.log import LogHelper, LogObject
 
+
+# Formats accepted for the `minDate`, `maxDate`, `minTime` and `maxTime` of `date` props
+DATE_BOUND_FORMATS = ["%Y-%m-%d", "%Y-%m-%dT%H:%M:%S", "%Y-%m-%d %H:%M:%S", "%H:%M:%S", "%H:%M"]
+DATE_BOUND_FORMAT_NAMES = [
+    "YYYY-MM-DD",
+    "YYYY-MM-DDTHH:MM:SS",
+    "YYYY-MM-DD HH:MM:SS",
+    "HH:MM:SS",
+    "HH:MM",
+]
+# Formats accepted for the `minDateTime` and `maxDateTime` of `date` props, which require a time part
+DATETIME_BOUND_FORMATS = ["%Y-%m-%dT%H:%M:%S", "%Y-%m-%d %H:%M:%S"]
+DATETIME_BOUND_FORMAT_NAMES = ["YYYY-MM-DDTHH:MM:SS", "YYYY-MM-DD HH:MM:SS"]
+# The bound attributes of `date` props, the part of the value they limit, and when it is a violation
+DATE_BOUND_CHECKS = (
+    ("minDate", datetime.datetime.date, operator.lt),
+    ("maxDate", datetime.datetime.date, operator.gt),
+    ("minTime", datetime.datetime.time, operator.lt),
+    ("maxTime", datetime.datetime.time, operator.gt),
+    ("minDateTime", lambda value: value, operator.lt),
+    ("maxDateTime", lambda value: value, operator.gt),
+)
 
 # Clear (non-ambiguous) media extensions and hosts used to flag `media` url/variant mismatches
 MEDIA_IMAGE_EXTENSIONS = {".png", ".jpg", ".jpeg", ".gif", ".webp", ".svg", ".bmp", ".avif"}
@@ -284,6 +306,46 @@ class ApiValidator:
             msg=f"The url looks like {'/'.join(sorted(kinds))} media, but the prop's `variant` is `{variant}`",
         )
         return False
+
+    def __parse_date_bound__(self, input: str, formats: list[str] = DATE_BOUND_FORMATS):
+        """
+        Parse a date bound string (e.g. `minDate` or `maxDateTime`), returning a `datetime`
+        or `None` if the string is not in any of the accepted `formats`.
+        """
+        for date_format in formats:
+            try:
+                return datetime.datetime.strptime(input, date_format)
+            except ValueError:
+                continue
+        return None
+
+    def __check_date_in_bounds__(
+        self, input: str, prop_spec: dict, date_variant: str, prepend_path: list[str] = list()
+    ):
+        """
+        Check that a valid date string is inside the bounds of its prop and if not, log a warning.
+
+        Bounds that are themselves invalid are skipped, as they are reported with the spec.
+        """
+        value_format = {
+            "date": "%Y-%m-%d",
+            "datetime": "%Y-%m-%dT%H:%M:%S",
+            "time": "%H:%M:%S",
+        }.get(date_variant)
+        if value_format is None:
+            return
+        value = datetime.datetime.strptime(input, value_format)
+        for key, part, is_violation in DATE_BOUND_CHECKS:
+            bound = prop_spec.get(key)
+            if bound is None:
+                continue
+            formats = DATETIME_BOUND_FORMATS if key.endswith("DateTime") else DATE_BOUND_FORMATS
+            parsed = self.__parse_date_bound__(bound, formats)
+            if parsed is not None and is_violation(part(value), part(parsed)):
+                self.__warn__(
+                    path=prepend_path,
+                    msg=f"The value `{input}` is outside of the `{key}` of `{bound}`",
+                )
 
     def __check_date_valid__(self, input: str, date_variant: str, prepend_path: list[str] = list()):
         """

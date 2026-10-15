@@ -4,7 +4,14 @@ General API Spec items that are found in multiple places. This is not a key that
 
 from pamda import pamda
 import type_enforced
-from cave_utils.api_utils.validator_utils import ApiValidator, CustomKeyValidator
+from cave_utils.api_utils.validator_utils import (
+    ApiValidator,
+    CustomKeyValidator,
+    DATE_BOUND_FORMATS,
+    DATE_BOUND_FORMAT_NAMES,
+    DATETIME_BOUND_FORMATS,
+    DATETIME_BOUND_FORMAT_NAMES,
+)
 
 
 @type_enforced.Enforcer
@@ -52,6 +59,14 @@ class props(ApiValidator):
         unit: str | None = None,
         unitPlacement: str | None = None,
         views: list[str] | None = None,
+        minDate: str | None = None,
+        maxDate: str | None = None,
+        minTime: str | None = None,
+        maxTime: str | None = None,
+        minDateTime: str | None = None,
+        maxDateTime: str | None = None,
+        disablePast: bool | None = None,
+        disableFuture: bool | None = None,
         legendNotation: str | None = None,
         legendPrecision: int | None = None,
         legendNotationDisplay: str | None = None,
@@ -205,7 +220,7 @@ class props(ApiValidator):
                 * Only valueOptions provided here can be selected for the prop value
                 * This attribute applies to `"num"` props with the `"incslider"` variant.
         * **`label`**: `[str]` = `None` &rarr; The label to display above the input field when the prop is focused.
-            * **Note**: This attribute applies to `"num"` and `"text"` props.
+            * **Note**: This attribute applies to `"num"`, `"text"` and `"date"` props.
         * **`labelPlacement`**: `[str]` = `None` &rarr; The placement of the label relative to the input field.
             * **Accepted Values**:
                 * `"start"`: The label is placed at the start of the input field.
@@ -294,6 +309,56 @@ class props(ApiValidator):
                     * `"seconds"`: The seconds view
             * **Notes**:
                 * The views will be presented in the order specified in the `views` array.
+                * This attribute applies exclusively to `"date"` props.
+        * **`minDate`**: `[str]` = `None` &rarr; The earliest date that can be selected.
+            * **Accepted Formats**: `YYYY-MM-DD`, `YYYY-MM-DDTHH:MM:SS` or `YYYY-MM-DD HH:MM:SS`
+            * **Notes**:
+                * Only the date part is used, so any time part is ignored.
+                * This attribute applies exclusively to `"date"` props with the `"date"` and `"datetime"` variants.
+        * **`maxDate`**: `[str]` = `None` &rarr; The latest date that can be selected.
+            * **Accepted Formats**: `YYYY-MM-DD`, `YYYY-MM-DDTHH:MM:SS` or `YYYY-MM-DD HH:MM:SS`
+            * **Notes**:
+                * Only the date part is used, so any time part is ignored.
+                * Must not be earlier than `minDate`.
+                * This attribute applies exclusively to `"date"` props with the `"date"` and `"datetime"` variants.
+        * **`minTime`**: `[str]` = `None` &rarr; The earliest time of day that can be selected.
+            * **Accepted Formats**: `HH:MM:SS`, `HH:MM`, `YYYY-MM-DDTHH:MM:SS` or `YYYY-MM-DD HH:MM:SS`
+            * **Notes**:
+                * Only the time part is used, so any date part is ignored.
+                * This attribute applies exclusively to `"date"` props with the `"time"` and `"datetime"` variants.
+        * **`maxTime`**: `[str]` = `None` &rarr; The latest time of day that can be selected.
+            * **Accepted Formats**: `HH:MM:SS`, `HH:MM`, `YYYY-MM-DDTHH:MM:SS` or `YYYY-MM-DD HH:MM:SS`
+            * **Notes**:
+                * Only the time part is used, so any date part is ignored.
+                * Must not be earlier than `minTime`.
+                * This attribute applies exclusively to `"date"` props with the `"time"` and `"datetime"` variants.
+        * **`minDateTime`**: `[str]` = `None` &rarr; The earliest moment that can be selected, bound to a specific date.
+            * **Accepted Formats**: `YYYY-MM-DDTHH:MM:SS` or `YYYY-MM-DD HH:MM:SS`
+            * **Notes**:
+                * Unlike `minDate` and `minTime`, which limit the day and the time of day independently, this is a single cutoff. For example, with `"minDateTime": "2026-07-05T09:00:00"`, `08:00` on `2026-07-06` can be selected, whereas with `"minDate": "2026-07-05"` and `"minTime": "09:00"` it can not.
+                * A time part is required, so a date-only string is rejected.
+                * It combines with `minDate`, `maxDate`, `minTime` and `maxTime`, and only values that satisfy all of them can be selected.
+                * This attribute applies exclusively to `"date"` props with the `"datetime"` variant.
+        * **`maxDateTime`**: `[str]` = `None` &rarr; The latest moment that can be selected, bound to a specific date.
+            * **Accepted Formats**: `YYYY-MM-DDTHH:MM:SS` or `YYYY-MM-DD HH:MM:SS`
+            * **Notes**:
+                * See `minDateTime` for how this differs from `maxDate` and `maxTime`.
+                * A time part is required, so a date-only string is rejected.
+                * Must not be earlier than `minDateTime`.
+                * This attribute applies exclusively to `"date"` props with the `"datetime"` variant.
+        * **`disablePast`**: `[bool]` = `False` &rarr; Whether to prevent selecting values before the present.
+            * **Notes**:
+                * With the `"date"` variant, dates before today are disabled.
+                * With the `"time"` variant, times before the current time of day are disabled.
+                * With the `"datetime"` variant, moments before now are disabled.
+                * The present is taken from the user's browser.
+                * This attribute applies exclusively to `"date"` props.
+        * **`disableFuture`**: `[bool]` = `False` &rarr; Whether to prevent selecting values after the present.
+            * **Notes**:
+                * With the `"date"` variant, dates after today are disabled.
+                * With the `"time"` variant, times after the current time of day are disabled.
+                * With the `"datetime"` variant, moments after now are disabled.
+                * The present is taken from the user's browser.
                 * This attribute applies exclusively to `"date"` props.
         * **`locale`**: `[str]` = `None` &rarr;
             * Format numeric values based on language and regional conventions.
@@ -636,7 +701,13 @@ class props(ApiValidator):
             if variant == "dualList":
                 optional_fields += ["availableTitle", "selectedTitle", "height"]
         elif type == "date":
-            optional_fields += ["views"]
+            optional_fields += ["views", "label", "disablePast", "disableFuture"]
+            if variant in (None, "date", "datetime"):
+                optional_fields += ["minDate", "maxDate"]
+            if variant in ("time", "datetime"):
+                optional_fields += ["minTime", "maxTime"]
+            if variant == "datetime":
+                optional_fields += ["minDateTime", "maxDateTime"]
         elif type == "coordinate":
             optional_fields += [
                 "placeholder",
@@ -818,6 +889,38 @@ class props(ApiValidator):
             self.__check_pixel_string_valid__(pixel_string=self.data.get("size"))
         if self.data.get("activeSize"):
             self.__check_pixel_string_valid__(pixel_string=self.data.get("activeSize"))
+        if self.data.get("type") == "date":
+            for lower, upper, part, formats, format_names in (
+                ("minDate", "maxDate", "date", DATE_BOUND_FORMATS, DATE_BOUND_FORMAT_NAMES),
+                ("minTime", "maxTime", "time", DATE_BOUND_FORMATS, DATE_BOUND_FORMAT_NAMES),
+                (
+                    "minDateTime",
+                    "maxDateTime",
+                    None,
+                    DATETIME_BOUND_FORMATS,
+                    DATETIME_BOUND_FORMAT_NAMES,
+                ),
+            ):
+                parsed = {}
+                for key in (lower, upper):
+                    bound = self.data.get(key)
+                    if bound is None:
+                        continue
+                    parsed[key] = self.__parse_date_bound__(bound, formats)
+                    if parsed[key] is None:
+                        self.__error__(
+                            msg=f"`{key} = {bound}` but it should be in one of the accepted formats: {', '.join(format_names)}",
+                            path=[key],
+                        )
+                if len(parsed) == 2 and None not in parsed.values():
+                    low, high = (
+                        (getattr(parsed[k], part)() if part else parsed[k]) for k in (lower, upper)
+                    )
+                    if low > high:
+                        self.__error__(
+                            msg=f"`{lower}` must not be later than `{upper}`",
+                            path=[lower],
+                        )
         if self.data.get("type") == "coordinate":
             variant = self.data.get("variant", "latLngMap")
             if variant in ("latLngInput", "latLngMap", "latLngPath"):
@@ -1305,11 +1408,13 @@ class values(ApiValidator):
                 options = list(prop_spec.get("options", {}).keys())
                 self.__check_subset_valid__(prop_value, options, prepend_path=[prop_key])
             elif prop_type == "date":
-                self.__check_date_valid__(
-                    prop_value,
-                    date_variant=prop_spec.get("variant", "date"),
-                    prepend_path=[prop_key],
-                )
+                date_variant = prop_spec.get("variant", "date")
+                if self.__check_date_valid__(
+                    prop_value, date_variant=date_variant, prepend_path=[prop_key]
+                ):
+                    self.__check_date_in_bounds__(
+                        prop_value, prop_spec, date_variant, prepend_path=[prop_key]
+                    )
             elif prop_type == "media":
                 if self.__check_url_valid__(prop_value, prepend_path=[prop_key]):
                     self.__check_media_url_variant__(
@@ -1406,6 +1511,9 @@ class valueLists(ApiValidator):
                         prop_value, date_variant=date_variant, prepend_path=[prop_key]
                     ):
                         continue
+                    self.__check_date_in_bounds__(
+                        prop_value, prop_spec, date_variant, prepend_path=[prop_key]
+                    )
             elif prop_type == "media":
                 for prop_value in prop_value_list:
                     if not self.__check_url_valid__(prop_value, prepend_path=[prop_key]):
