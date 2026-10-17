@@ -161,3 +161,43 @@ def test_timezone_accepts_system_utc_and_iana_names(variant, timezone):
 @pytest.mark.parametrize("timezone", ["Mars/Olympus_Mons", "EST+5", "", "../etc/passwd"])
 def test_timezone_rejects_unknown_names(timezone):
     assert validate_date({"timezone": timezone}) != []
+
+
+@pytest.mark.parametrize(
+    "variant, view",
+    [
+        ("date", "year"),
+        ("date", "day"),
+        ("time", "minutes"),
+        ("datetime", "hours"),
+    ],
+)
+def test_default_view_is_accepted_among_the_default_views(variant, view):
+    assert validate_date({"defaultView": view}, variant) == []
+
+
+def test_default_view_is_accepted_among_the_provided_views():
+    prop = {"views": ["year", "month", "day"], "defaultView": "month"}
+    assert validate_date(prop) == []
+
+
+@pytest.mark.parametrize(
+    "variant, view",
+    [
+        ("date", "month"),  # Valid view name, but not in the default views
+        ("time", "seconds"),
+        ("datetime", "month"),
+    ],
+)
+def test_default_view_must_be_among_the_available_views(variant, view):
+    assert validate_date({"defaultView": view}, variant) != []
+
+
+def test_default_view_must_be_among_the_provided_views():
+    prop = {"views": ["year", "month", "day"], "defaultView": "hours"}
+    assert validate_date(prop) != []
+
+
+@pytest.mark.parametrize("variant, view", [("date", "hours"), ("time", "day"), ("date", "decade")])
+def test_default_view_must_be_a_view_of_the_variant(variant, view):
+    assert validate_date({"defaultView": view}, variant) != []

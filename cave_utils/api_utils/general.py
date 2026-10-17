@@ -11,6 +11,8 @@ from cave_utils.api_utils.validator_utils import (
     DATE_BOUND_FORMAT_NAMES,
     DATETIME_BOUND_FORMATS,
     DATETIME_BOUND_FORMAT_NAMES,
+    DATE_DEFAULT_VIEWS,
+    DATE_VIEW_NAMES,
 )
 
 
@@ -59,6 +61,7 @@ class props(ApiValidator):
         unit: str | None = None,
         unitPlacement: str | None = None,
         views: list[str] | None = None,
+        defaultView: str | None = None,
         minDate: str | None = None,
         maxDate: str | None = None,
         minTime: str | None = None,
@@ -310,6 +313,12 @@ class props(ApiValidator):
                     * `"seconds"`: The seconds view
             * **Notes**:
                 * The views will be presented in the order specified in the `views` array.
+                * This attribute applies exclusively to `"date"` props.
+        * **`defaultView`**: `[str]` = `None` &rarr; The view that the picker opens to.
+            * **Accepted Values**: The same as the accepted values of **`views`** for the **`variant`**.
+            * **Notes**:
+                * Must be one of the available `views`, which are the default `views` of the **`variant`** if **`views`** is not provided.
+                * If not provided, the picker opens to its default view, which is the `"day"` view for the `"date"` and `"datetime"` variants and the `"hours"` view for the `"time"` variant.
                 * This attribute applies exclusively to `"date"` props.
         * **`minDate`**: `[str]` = `None` &rarr; The earliest date that can be selected.
             * **Accepted Formats**: `YYYY-MM-DD`, `YYYY-MM-DDTHH:MM:SS` or `YYYY-MM-DD HH:MM:SS`
@@ -720,6 +729,7 @@ class props(ApiValidator):
         elif type == "date":
             optional_fields += [
                 "views",
+                "defaultView",
                 "label",
                 "readOnly",
                 "timezone",
@@ -813,6 +823,7 @@ class props(ApiValidator):
                 "container": ["vertical", "horizontal", "titled", "untitled", "none"],
                 "direction": ["row", "column"],
                 "views": view_options_dict.get(variant, []),
+                "defaultView": view_options_dict.get(variant, []),
                 "unitPlacement": ["after", "afterWithSpace", "before", "beforeWithSpace"],
                 "notation": ["standard", "compact", "scientific", "engineering", "precision"],
                 "notationDisplay": notationDisplay_options_dict.get(notation, []),
@@ -916,6 +927,17 @@ class props(ApiValidator):
         if self.data.get("type") == "date":
             if self.data.get("timezone") is not None:
                 self.__check_timezone_valid__(self.data.get("timezone"), prepend_path=["timezone"])
+            default_view = self.data.get("defaultView")
+            if default_view is not None:
+                available_views = self.data.get("views") or DATE_DEFAULT_VIEWS.get(
+                    self.data.get("variant", "date"), []
+                )
+                # Only checked when valid, as an unaccepted value is already reported
+                if default_view in DATE_VIEW_NAMES and default_view not in available_views:
+                    self.__error__(
+                        msg=f"`defaultView = {default_view}` but it should be one of the available `views`: {available_views}",
+                        path=["defaultView"],
+                    )
             for lower, upper, part, formats, format_names in (
                 ("minDate", "maxDate", "date", DATE_BOUND_FORMATS, DATE_BOUND_FORMAT_NAMES),
                 ("minTime", "maxTime", "time", DATE_BOUND_FORMATS, DATE_BOUND_FORMAT_NAMES),

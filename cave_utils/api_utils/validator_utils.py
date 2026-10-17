@@ -9,6 +9,14 @@ from urllib.parse import urlparse
 from cave_utils.log import LogHelper, LogObject
 
 
+# The `views` that `date` props have per `variant` when none are provided, and all view names
+DATE_DEFAULT_VIEWS = {
+    "date": ["year", "day"],
+    "time": ["hours", "minutes"],
+    "datetime": ["year", "day", "hours", "minutes"],
+}
+DATE_VIEW_NAMES = ["year", "month", "day", "hours", "minutes", "seconds"]
+
 # Formats accepted for the `minDate`, `maxDate`, `minTime` and `maxTime` of `date` props
 DATE_BOUND_FORMATS = ["%Y-%m-%d", "%Y-%m-%dT%H:%M:%S", "%Y-%m-%d %H:%M:%S", "%H:%M:%S", "%H:%M"]
 DATE_BOUND_FORMAT_NAMES = [
