@@ -84,6 +84,8 @@ class props(ApiValidator):
         disabledWeekdays: list[int | str] | None = None,
         disabledMonths: list[int | str] | None = None,
         disabledYears: list[int] | None = None,
+        dateOrder: str | None = None,
+        hour24: bool | None = None,
         disablePast: bool | None = None,
         disableFuture: bool | None = None,
         legendNotation: str | None = None,
@@ -335,6 +337,19 @@ class props(ApiValidator):
                 * Must be one of the available `views`, which are the default `views` of the **`variant`** if **`views`** is not provided.
                 * If not provided, the picker opens to its default view, which is the `"day"` view for the `"date"` and `"datetime"` variants and the `"hours"` view for the `"time"` variant.
                 * This attribute applies exclusively to `"date"` props.
+        * **`dateOrder`**: `[str]` = `"mdy"` &rarr; The order of the month, day and year in which the date is displayed.
+            * **Accepted Values**:
+                * `"mdy"`: Month first, e.g. `07-09-2026`
+                * `"dmy"`: Day first, e.g. `09-07-2026`
+                * `"ymd"`: Year first, e.g. `2026-07-09`
+            * **Notes**:
+                * This only changes how the value is displayed. The value is always passed as described in **`variant`**.
+                * This attribute applies exclusively to `"date"` props with the `"date"` and `"datetime"` variants.
+        * **`hour24`**: `[bool]` = `False` &rarr; Whether to display the time in a 24-hour clock. If `False`, a 12-hour clock with `AM`/`PM` is used.
+            * **Notes**:
+                * This only changes how the value is displayed and which hours the clock offers. The value is always passed as described in **`variant`**.
+                * The seconds are only displayed if `"seconds"` is one of the available `views`.
+                * This attribute applies exclusively to `"date"` props with the `"time"` and `"datetime"` variants.
         * **`minDate`**: `[str]` = `None` &rarr; The earliest date that can be selected.
             * **Accepted Formats**: `YYYY-MM-DD`, `YYYY-MM-DDTHH:MM:SS` or `YYYY-MM-DD HH:MM:SS`
             * **Notes**:
@@ -802,6 +817,7 @@ class props(ApiValidator):
             ]
             if variant in (None, "date", "datetime"):
                 optional_fields += [
+                    "dateOrder",
                     "minDate",
                     "maxDate",
                     "disabledDates",
@@ -811,6 +827,7 @@ class props(ApiValidator):
                 ]
             if variant in ("time", "datetime"):
                 optional_fields += [
+                    "hour24",
                     "minTime",
                     "maxTime",
                     "disabledTimes",
@@ -904,6 +921,7 @@ class props(ApiValidator):
                 "direction": ["row", "column"],
                 "views": view_options_dict.get(date_variant, []),
                 "defaultView": view_options_dict.get(date_variant, []),
+                "dateOrder": ["mdy", "dmy", "ymd"],
                 "unitPlacement": ["after", "afterWithSpace", "before", "beforeWithSpace"],
                 "notation": ["standard", "compact", "scientific", "engineering", "precision"],
                 "notationDisplay": notationDisplay_options_dict.get(notation, []),

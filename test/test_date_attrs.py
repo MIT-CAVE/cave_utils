@@ -515,3 +515,32 @@ def test_date_attrs_are_accepted_without_a_variant(prop):
 )
 def test_time_attrs_are_rejected_without_a_variant(prop):
     assert validate_date(prop, None) != []
+
+
+@pytest.mark.parametrize("variant", [None, "date", "datetime"])
+@pytest.mark.parametrize("order", ["mdy", "dmy", "ymd"])
+def test_date_order_is_accepted(variant, order):
+    assert validate_date({"dateOrder": order}, variant) == []
+
+
+@pytest.mark.parametrize("order", ["MDY", "ydm", "iso", "", "YYYY-MM-DD"])
+def test_unknown_date_order_is_rejected(order):
+    assert validate_date({"dateOrder": order}, "date") != []
+
+
+@pytest.mark.parametrize("variant", ["time", "datetime"])
+@pytest.mark.parametrize("hour24", [True, False])
+def test_hour24_is_accepted(variant, hour24):
+    assert validate_date({"hour24": hour24}, variant) == []
+
+
+def test_hour24_must_be_a_bool():
+    assert validate_date({"hour24": "yes"}, "time") != []
+
+
+@pytest.mark.parametrize(
+    "variant, key, value",
+    [("time", "dateOrder", "ymd"), ("date", "hour24", True), (None, "hour24", True)],
+)
+def test_display_attrs_are_rejected_on_variants_without_that_part(variant, key, value):
+    assert validate_date({key: value}, variant) != []
