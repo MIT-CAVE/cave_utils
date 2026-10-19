@@ -201,3 +201,80 @@ def test_default_view_must_be_among_the_provided_views():
 @pytest.mark.parametrize("variant, view", [("date", "hours"), ("time", "day"), ("date", "decade")])
 def test_default_view_must_be_a_view_of_the_variant(variant, view):
     assert validate_date({"defaultView": view}, variant) != []
+
+
+TIME_VIEWS = ["hours", "minutes", "seconds"]
+
+
+@pytest.mark.parametrize("variant", ["time", "datetime"])
+@pytest.mark.parametrize(
+    "steps",
+    [
+        {"minutesStep": 15},
+        {"hoursStep": 2, "minutesStep": 15},
+        {"hoursStep": 1, "minutesStep": 1},
+        {"hoursStep": 24, "minutesStep": 60},
+    ],
+)
+def test_step_attrs_are_accepted(variant, steps):
+    value = "2026-07-09T00:00:00" if variant == "datetime" else "00:00:00"
+    assert validate_date(steps, variant, value=value) == []
+
+
+def test_step_attrs_with_every_unit_are_accepted():
+    prop = {"views": TIME_VIEWS, "hoursStep": 2, "minutesStep": 15, "secondsStep": 30}
+    assert validate_date(prop, "time", value="10:30:30") == []
+
+
+@pytest.mark.parametrize(
+    "steps",
+    [
+        {"hoursStep": 5},
+        {"minutesStep": 7},
+        {"secondsStep": 0},
+        {"minutesStep": -15},
+        {"hoursStep": 48},
+        {"secondsStep": 90},
+    ],
+)
+def test_step_attrs_must_divide_their_unit(steps):
+    prop = {"views": TIME_VIEWS, **steps}
+    log = validate_date(prop, "time", value="00:00:00")
+    assert "error" in [entry["level"] for entry in log]
+
+
+@pytest.mark.parametrize(
+    "steps",
+    [{"minutesStep": 15.5}, {"minutesStep": "15"}, {"daysStep": 2}, {"timeSteps": {"minutes": 15}}],
+)
+def test_step_attrs_reject_malformed_entries(steps):
+    assert validate_date(steps, "time", value="00:00:00") != []
+
+
+def test_step_attrs_are_rejected_on_date_variant():
+    assert validate_date({"minutesStep": 15}, "date") != []
+
+
+@pytest.mark.parametrize(
+    "steps, value",
+    [
+        ({"minutesStep": 15}, "10:07:00"),
+        ({"hoursStep": 3}, "10:30:00"),
+    ],
+)
+def test_value_off_step_warns(steps, value):
+    log = validate_date(steps, "time", value=value)
+    assert [entry["level"] for entry in log] == ["warning"]
+    assert "Step" in log[0]["msg"]
+
+
+def test_value_on_step_does_not_warn():
+    prop = {"views": TIME_VIEWS, "hoursStep": 3, "minutesStep": 15, "secondsStep": 30}
+    assert validate_date(prop, "time", value="09:45:30") == []
+
+
+def test_step_of_unavailable_view_warns_without_checking_the_value():
+    # `seconds` is not one of the default views, so the step can't be used
+    log = validate_date({"secondsStep": 30}, "time", value="10:30:15")
+    assert [entry["level"] for entry in log] == ["warning"]
+    assert "no effect" in log[0]["msg"]

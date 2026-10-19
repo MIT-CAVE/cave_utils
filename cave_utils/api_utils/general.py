@@ -12,6 +12,7 @@ from cave_utils.api_utils.validator_utils import (
     DATETIME_BOUND_FORMATS,
     DATETIME_BOUND_FORMAT_NAMES,
     DATE_DEFAULT_VIEWS,
+    DATE_TIME_STEP_LIMITS,
     DATE_VIEW_NAMES,
 )
 
@@ -69,6 +70,9 @@ class props(ApiValidator):
         minDateTime: str | None = None,
         maxDateTime: str | None = None,
         timezone: str | None = None,
+        hoursStep: int | None = None,
+        minutesStep: int | None = None,
+        secondsStep: int | None = None,
         disablePast: bool | None = None,
         disableFuture: bool | None = None,
         legendNotation: str | None = None,
@@ -368,6 +372,24 @@ class props(ApiValidator):
                 * A date and/or time that doesn't exist in this timezone, such as the hour skipped when clocks move forward, is displayed as the next valid one until a new value is selected.
                 * If not provided (or `"system"`), the timezone of the user's browser is used.
                 * This attribute applies exclusively to `"date"` props.
+        * **`hoursStep`**: `[int]` = `None` &rarr; The step between the hours, e.g. `2` only allows even hours.
+            * **Notes**:
+                * Must divide `24` evenly (`1`, `2`, `3`, `4`, `6`, `8`, `12` or `24`).
+                * A step only applies if the `"hours"` view is one of the available `views`.
+                * Values that aren't a multiple of the step can't be selected.
+                * This attribute applies exclusively to `"date"` props with the `"time"` and `"datetime"` variants.
+        * **`minutesStep`**: `[int]` = `None` &rarr; The step between the minutes, e.g. `15` only allows `00`, `15`, `30` and `45`.
+            * **Notes**:
+                * Must divide `60` evenly (`1`, `2`, `3`, `4`, `5`, `6`, `10`, `12`, `15`, `20`, `30` or `60`).
+                * A step only applies if the `"minutes"` view is one of the available `views`.
+                * Values that aren't a multiple of the step can't be selected.
+                * This attribute applies exclusively to `"date"` props with the `"time"` and `"datetime"` variants.
+        * **`secondsStep`**: `[int]` = `None` &rarr; The step between the seconds, e.g. `30` only allows `00` and `30`.
+            * **Notes**:
+                * Must divide `60` evenly (`1`, `2`, `3`, `4`, `5`, `6`, `10`, `12`, `15`, `20`, `30` or `60`).
+                * A step only applies if the `"seconds"` view is one of the available `views`.
+                * Values that aren't a multiple of the step can't be selected.
+                * This attribute applies exclusively to `"date"` props with the `"time"` and `"datetime"` variants.
         * **`disablePast`**: `[bool]` = `False` &rarr; Whether to prevent selecting values before the present.
             * **Notes**:
                 * With the `"date"` variant, dates before today are disabled.
@@ -739,7 +761,7 @@ class props(ApiValidator):
             if variant in (None, "date", "datetime"):
                 optional_fields += ["minDate", "maxDate"]
             if variant in ("time", "datetime"):
-                optional_fields += ["minTime", "maxTime"]
+                optional_fields += ["minTime", "maxTime", "hoursStep", "minutesStep", "secondsStep"]
             if variant == "datetime":
                 optional_fields += ["minDateTime", "maxDateTime"]
         elif type == "coordinate":
@@ -927,16 +949,30 @@ class props(ApiValidator):
         if self.data.get("type") == "date":
             if self.data.get("timezone") is not None:
                 self.__check_timezone_valid__(self.data.get("timezone"), prepend_path=["timezone"])
+            available_views = self.data.get("views") or DATE_DEFAULT_VIEWS.get(
+                self.data.get("variant", "date"), []
+            )
             default_view = self.data.get("defaultView")
             if default_view is not None:
-                available_views = self.data.get("views") or DATE_DEFAULT_VIEWS.get(
-                    self.data.get("variant", "date"), []
-                )
                 # Only checked when valid, as an unaccepted value is already reported
                 if default_view in DATE_VIEW_NAMES and default_view not in available_views:
                     self.__error__(
                         msg=f"`defaultView = {default_view}` but it should be one of the available `views`: {available_views}",
                         path=["defaultView"],
+                    )
+            for unit, limit in DATE_TIME_STEP_LIMITS.items():
+                step = self.data.get(f"{unit}Step")
+                if step is None:
+                    continue
+                if step < 1 or limit % step != 0:
+                    self.__error__(
+                        msg=f"`{unit}Step = {step}` but it should be a positive integer that divides {limit} evenly",
+                        path=[f"{unit}Step"],
+                    )
+                elif step > 1 and unit not in available_views:
+                    self.__warn__(
+                        msg=f"`{unit}Step` has no effect as the `{unit}` view is not one of the available `views`",
+                        path=[f"{unit}Step"],
                     )
             for lower, upper, part, formats, format_names in (
                 ("minDate", "maxDate", "date", DATE_BOUND_FORMATS, DATE_BOUND_FORMAT_NAMES),
@@ -1460,7 +1496,7 @@ class values(ApiValidator):
                 if self.__check_date_valid__(
                     prop_value, date_variant=date_variant, prepend_path=[prop_key]
                 ):
-                    self.__check_date_in_bounds__(
+                    self.__check_date_constraints__(
                         prop_value, prop_spec, date_variant, prepend_path=[prop_key]
                     )
             elif prop_type == "media":
@@ -1559,7 +1595,7 @@ class valueLists(ApiValidator):
                         prop_value, date_variant=date_variant, prepend_path=[prop_key]
                     ):
                         continue
-                    self.__check_date_in_bounds__(
+                    self.__check_date_constraints__(
                         prop_value, prop_spec, date_variant, prepend_path=[prop_key]
                     )
             elif prop_type == "media":

@@ -8,7 +8,6 @@ import re, datetime, os, operator, zoneinfo
 from urllib.parse import urlparse
 from cave_utils.log import LogHelper, LogObject
 
-
 # The `views` that `date` props have per `variant` when none are provided, and all view names
 DATE_DEFAULT_VIEWS = {
     "date": ["year", "day"],
@@ -16,6 +15,8 @@ DATE_DEFAULT_VIEWS = {
     "datetime": ["year", "day", "hours", "minutes"],
 }
 DATE_VIEW_NAMES = ["year", "month", "day", "hours", "minutes", "seconds"]
+# The units of the `hoursStep`, `minutesStep` and `secondsStep`, with how many of each fit in the next one, which a step must divide
+DATE_TIME_STEP_LIMITS = {"hours": 24, "minutes": 60, "seconds": 60}
 
 # Formats accepted for the `minDate`, `maxDate`, `minTime` and `maxTime` of `date` props
 DATE_BOUND_FORMATS = ["%Y-%m-%d", "%Y-%m-%dT%H:%M:%S", "%Y-%m-%d %H:%M:%S", "%H:%M:%S", "%H:%M"]
@@ -347,13 +348,14 @@ class ApiValidator:
                 continue
         return None
 
-    def __check_date_in_bounds__(
+    def __check_date_constraints__(
         self, input: str, prop_spec: dict, date_variant: str, prepend_path: list[str] = list()
     ):
         """
-        Check that a valid date string is inside the bounds of its prop and if not, log a warning.
+        Check that a valid date string satisfies the constraints of its prop (its bounds and
+        time steps) and if not, log a warning.
 
-        Bounds that are themselves invalid are skipped, as they are reported with the spec.
+        Constraints that are themselves invalid are skipped, as they are reported with the spec.
         """
         value_format = {
             "date": "%Y-%m-%d",
@@ -374,6 +376,20 @@ class ApiValidator:
                     path=prepend_path,
                     msg=f"The value `{input}` is outside of the `{key}` of `{bound}`",
                 )
+        available_views = prop_spec.get("views") or DATE_DEFAULT_VIEWS.get(date_variant, [])
+        for unit, unit_value in (
+            ("hours", value.hour),
+            ("minutes", value.minute),
+            ("seconds", value.second),
+        ):
+            step = prop_spec.get(f"{unit}Step")
+            # Steps of views that aren't available can't be selected, so they aren't checked
+            if unit in available_views and isinstance(step, int) and step > 1:
+                if unit_value % step != 0:
+                    self.__warn__(
+                        path=prepend_path,
+                        msg=f"The value `{input}` is not a multiple of the `{unit}Step` of `{step}`",
+                    )
 
     def __check_date_valid__(self, input: str, date_variant: str, prepend_path: list[str] = list()):
         """
