@@ -15,6 +15,8 @@ VALUES = {"date": "2026-07-09", "datetime": "2026-07-09T09:00:00", "time": "09:3
 
 
 def validate_date(prop, variant="date", value=None):
+    # A `variant` of `None` is omitted, which defaults to `"date"`
+    variant_field = {} if variant is None else {"variant": variant}
     session_data = {
         "settings": SETTINGS,
         "panes": {
@@ -22,8 +24,8 @@ def validate_date(prop, variant="date", value=None):
             "data": {
                 "p": {
                     "name": "P",
-                    "props": {"d": {"name": "D", "type": "date", "variant": variant, **prop}},
-                    "values": {"d": value or VALUES[variant]},
+                    "props": {"d": {"name": "D", "type": "date", **variant_field, **prop}},
+                    "values": {"d": value or VALUES[variant or "date"]},
                 }
             },
         },
@@ -483,3 +485,33 @@ def test_datetime_value_inside_a_disabled_window_warns():
 
 def test_disabled_times_are_rejected_on_date_variant():
     assert validate_date({"disabledTimes": [["12:00", "13:00"]]}, "date") != []
+
+
+def test_date_is_the_default_variant():
+    assert validate_date({}, None) == []
+    assert validate_date({}, None, value="2026-07-09T09:00:00") != []
+
+
+@pytest.mark.parametrize(
+    "prop",
+    [
+        {"views": ["year", "month", "day"], "defaultView": "month"},
+        {"minDate": "2026-07-01", "maxDate": "2026-07-31"},
+        {"disabledWeekdays": ["sat"], "disabledDates": ["2026-07-10"]},
+    ],
+)
+def test_date_attrs_are_accepted_without_a_variant(prop):
+    assert validate_date(prop, None) == []
+
+
+@pytest.mark.parametrize(
+    "prop",
+    [
+        {"views": ["hours"]},
+        {"minTime": "08:00"},
+        {"disabledTimes": [["12:00", "13:00"]]},
+        {"hoursStep": 2},
+    ],
+)
+def test_time_attrs_are_rejected_without_a_variant(prop):
+    assert validate_date(prop, None) != []

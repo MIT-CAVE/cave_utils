@@ -884,6 +884,8 @@ class props(ApiValidator):
             "datetime": ["year", "month", "day", "hours", "minutes", "seconds"],
         }
         variant = passed_values.get("variant", None)
+        # `date` is the default `variant` of `date` props
+        date_variant = variant or "date"
         return {
             "kwargs": kwargs,
             "accepted_values": {
@@ -900,8 +902,8 @@ class props(ApiValidator):
                 ],
                 "container": ["vertical", "horizontal", "titled", "untitled", "none"],
                 "direction": ["row", "column"],
-                "views": view_options_dict.get(variant, []),
-                "defaultView": view_options_dict.get(variant, []),
+                "views": view_options_dict.get(date_variant, []),
+                "defaultView": view_options_dict.get(date_variant, []),
                 "unitPlacement": ["after", "afterWithSpace", "before", "beforeWithSpace"],
                 "notation": ["standard", "compact", "scientific", "engineering", "precision"],
                 "notationDisplay": notationDisplay_options_dict.get(notation, []),
