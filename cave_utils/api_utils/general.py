@@ -15,9 +15,11 @@ from cave_utils.api_utils.validator_utils import (
     DATE_DISABLED_DATE_FORMATS,
     DATE_DISABLED_DATE_FORMAT_NAMES,
     DATE_MONTH_NAMES,
+    DATE_TIME_OF_DAY_FORMAT_NAMES,
     DATE_TIME_STEP_LIMITS,
     DATE_VIEW_NAMES,
     DATE_WEEKDAY_NAMES,
+    SECONDS_PER_DAY,
 )
 
 
@@ -77,6 +79,7 @@ class props(ApiValidator):
         hoursStep: int | None = None,
         minutesStep: int | None = None,
         secondsStep: int | None = None,
+        disabledTimes: list[list[str]] | None = None,
         disabledDates: list[str] | None = None,
         disabledWeekdays: list[int | str] | None = None,
         disabledMonths: list[int | str] | None = None,
@@ -397,6 +400,17 @@ class props(ApiValidator):
                 * Must divide `60` evenly (`1`, `2`, `3`, `4`, `5`, `6`, `10`, `12`, `15`, `20`, `30` or `60`).
                 * A step only applies if the `"seconds"` view is one of the available `views`.
                 * Values that aren't a multiple of the step can't be selected.
+                * This attribute applies exclusively to `"date"` props with the `"time"` and `"datetime"` variants.
+        * **`disabledTimes`**: `[list[list[str]]]` = `None` &rarr; Windows of the time of day that can't be selected, each one as a `[start, end]` pair.
+            * **Accepted Formats**: `HH:MM:SS`, `HH:MM`, `YYYY-MM-DDTHH:MM:SS` or `YYYY-MM-DD HH:MM:SS`
+            * **Example**: `[["12:00", "13:00"], ["22:00", "24:00"]]` disables lunch time and the last two hours of the day.
+            * **Notes**:
+                * The `start` is included in the window and the `end` is not, so `["12:00", "13:00"]` disables `12:00:00` to `12:59:59`.
+                * The `end` of a window (and only the `end`) can also be `"24:00"` or `"24:00:00"`, which is the end of the day.
+                * The `start` must be earlier than the `end`. A window can't go past midnight, so use two windows instead.
+                * Only the time part is used, so any date part is ignored.
+                * The windows can't disable the whole day.
+                * An hour or a minute is disabled in its view only if all of it is disabled.
                 * This attribute applies exclusively to `"date"` props with the `"time"` and `"datetime"` variants.
         * **`disabledDates`**: `[list[str]]` = `None` &rarr; Specific dates that can't be selected.
             * **Accepted Formats**: `YYYY-MM-DD`, `YYYY-MM-DDTHH:MM:SS` or `YYYY-MM-DD HH:MM:SS`
@@ -796,7 +810,14 @@ class props(ApiValidator):
                     "disabledYears",
                 ]
             if variant in ("time", "datetime"):
-                optional_fields += ["minTime", "maxTime", "hoursStep", "minutesStep", "secondsStep"]
+                optional_fields += [
+                    "minTime",
+                    "maxTime",
+                    "disabledTimes",
+                    "hoursStep",
+                    "minutesStep",
+                    "secondsStep",
+                ]
             if variant == "datetime":
                 optional_fields += ["minDateTime", "maxDateTime"]
         elif type == "coordinate":
@@ -1032,6 +1053,39 @@ class props(ApiValidator):
                         msg=f"`disabledDates` has `{entry}` but it should be in one of the accepted formats: {', '.join(DATE_DISABLED_DATE_FORMAT_NAMES)}",
                         path=["disabledDates", i],
                     )
+            windows = []
+            for i, window in enumerate(self.data.get("disabledTimes") or []):
+                if len(window) != 2:
+                    self.__error__(
+                        msg=f"`disabledTimes` has a window of {len(window)} times but it should be a `[start, end]` pair",
+                        path=["disabledTimes", i],
+                    )
+                    continue
+                start = self.__to_seconds_of_day__(window[0])
+                end = self.__to_seconds_of_day__(window[1], is_end=True)
+                for j, (boundary, seconds) in enumerate(zip(window, (start, end))):
+                    if seconds is None:
+                        self.__error__(
+                            msg=f"`disabledTimes` has `{boundary}` but it should be in one of the accepted formats: {', '.join(DATE_TIME_OF_DAY_FORMAT_NAMES)}"
+                            + (" (or `24:00` for an end)" if j == 1 else ""),
+                            path=["disabledTimes", i, j],
+                        )
+                if start is None or end is None:
+                    continue
+                if start >= end:
+                    self.__error__(
+                        msg=f"`disabledTimes` has the window `{window[0]}` to `{window[1]}` but the start must be earlier than the end",
+                        path=["disabledTimes", i],
+                    )
+                else:
+                    windows.append((start, end))
+            covered_until = 0
+            for start, end in sorted(windows):
+                if start > covered_until:
+                    break
+                covered_until = max(covered_until, end)
+            if covered_until == SECONDS_PER_DAY:
+                self.__error__(msg="`disabledTimes` disables the whole day", path=["disabledTimes"])
             for lower, upper, part, formats, format_names in (
                 ("minDate", "maxDate", "date", DATE_BOUND_FORMATS, DATE_BOUND_FORMAT_NAMES),
                 ("minTime", "maxTime", "time", DATE_BOUND_FORMATS, DATE_BOUND_FORMAT_NAMES),

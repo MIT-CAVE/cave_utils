@@ -33,6 +33,12 @@ DATETIME_BOUND_FORMAT_NAMES = ["YYYY-MM-DDTHH:MM:SS", "YYYY-MM-DD HH:MM:SS"]
 # Formats accepted for the `disabledDates` of `date` props, of which only the date part is used
 DATE_DISABLED_DATE_FORMATS = ["%Y-%m-%d", "%Y-%m-%dT%H:%M:%S", "%Y-%m-%d %H:%M:%S"]
 DATE_DISABLED_DATE_FORMAT_NAMES = ["YYYY-MM-DD", "YYYY-MM-DDTHH:MM:SS", "YYYY-MM-DD HH:MM:SS"]
+# Formats accepted for the windows of the `disabledTimes` of `date` props, of which only the time part is used
+DATE_TIME_OF_DAY_FORMATS = ["%H:%M:%S", "%H:%M", "%Y-%m-%dT%H:%M:%S", "%Y-%m-%d %H:%M:%S"]
+DATE_TIME_OF_DAY_FORMAT_NAMES = ["HH:MM:SS", "HH:MM", "YYYY-MM-DDTHH:MM:SS", "YYYY-MM-DD HH:MM:SS"]
+# The end of a day, which is accepted as the end of a `disabledTimes` window
+DATE_END_OF_DAY = ("24:00", "24:00:00")
+SECONDS_PER_DAY = 24 * 60 * 60
 # The names accepted for the `disabledWeekdays` (starting on Sunday, which is `0`) and the
 # `disabledMonths` (starting on January, which is `1`) of `date` props: full, 3-letter and 2-letter
 DATE_WEEKDAY_NAMES = [
@@ -380,6 +386,19 @@ class ApiValidator:
                     return index
         return None
 
+    def __to_seconds_of_day__(self, input: str, is_end: bool = False):
+        """
+        Convert the time of day of a `disabledTimes` window boundary into seconds since
+        midnight, or `None` if it is not in any of the accepted formats. Only the end of a
+        window can be the end of the day (`24:00`).
+        """
+        if is_end and input in DATE_END_OF_DAY:
+            return SECONDS_PER_DAY
+        parsed = self.__parse_date_bound__(input, DATE_TIME_OF_DAY_FORMATS)
+        if parsed is None:
+            return None
+        return parsed.hour * 3600 + parsed.minute * 60 + parsed.second
+
     def __parse_date_bound__(self, input: str, formats: list[str] = DATE_BOUND_FORMATS):
         """
         Parse a date bound string (e.g. `minDate` or `maxDateTime`), returning a `datetime`
@@ -447,6 +466,18 @@ class ApiValidator:
                     self.__warn__(
                         path=prepend_path,
                         msg=f"The value `{input}` is disabled by the `{key}`",
+                    )
+        if date_variant != "date":
+            seconds = value.hour * 3600 + value.minute * 60 + value.second
+            for window in prop_spec.get("disabledTimes") or []:
+                if len(window) != 2:
+                    continue
+                start = self.__to_seconds_of_day__(window[0])
+                end = self.__to_seconds_of_day__(window[1], is_end=True)
+                if start is not None and end is not None and start <= seconds < end:
+                    self.__warn__(
+                        path=prepend_path,
+                        msg=f"The value `{input}` is disabled by the `disabledTimes` window of `{window[0]}` to `{window[1]}`",
                     )
         available_views = prop_spec.get("views") or DATE_DEFAULT_VIEWS.get(date_variant, [])
         for unit, unit_value in (

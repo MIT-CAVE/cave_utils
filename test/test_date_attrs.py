@@ -403,3 +403,83 @@ def test_disabled_lists_are_rejected_on_time_variant(key, entry):
 
 def test_disabled_years_must_be_integers():
     assert validate_date({"disabledYears": ["2026"]}) != []
+
+
+@pytest.mark.parametrize("variant", ["time", "datetime"])
+@pytest.mark.parametrize(
+    "windows",
+    [
+        [["12:00", "13:00"]],
+        [["12:00:00", "13:00:30"], ["22:00", "24:00"]],
+        [["2026-01-01T12:00:00", "2026-01-01 13:00:00"]],
+        [["10:00", "23:59:59"]],
+        [["18:00", "19:00"], ["10:00", "11:00"]],
+    ],
+)
+def test_disabled_times_are_accepted(variant, windows):
+    value = "2026-07-09T09:00:00" if variant == "datetime" else "09:00:00"
+    assert validate_date({"disabledTimes": windows}, variant, value=value) == []
+
+
+@pytest.mark.parametrize(
+    "window",
+    [
+        ["13:00", "12:00"],
+        ["12:00", "12:00"],
+        ["24:00", "24:00"],
+        ["24:00", "23:00"],
+        ["12:00", "25:00"],
+        ["12:00 PM", "13:00"],
+        ["12", "13"],
+        ["2026-07-09", "13:00"],
+        ["12:00"],
+        ["12:00", "13:00", "14:00"],
+        [],
+    ],
+)
+def test_malformed_disabled_times_are_rejected(window):
+    log = validate_date({"disabledTimes": [window]}, "time")
+    assert "error" in [e["level"] for e in log]
+
+
+@pytest.mark.parametrize(
+    "windows",
+    [
+        [["00:00", "24:00"]],
+        [["00:00", "12:00"], ["12:00", "24:00:00"]],
+        [["12:00", "24:00"], ["00:00", "13:00"]],
+        [["00:00", "18:00"], ["06:00", "24:00"]],
+    ],
+)
+def test_disabling_the_whole_day_is_an_error(windows):
+    log = validate_date({"disabledTimes": windows}, "time")
+    assert any(e["level"] == "error" and "whole day" in e["msg"] for e in log)
+
+
+def test_windows_with_a_gap_do_not_disable_the_whole_day():
+    windows = [["00:00", "12:00"], ["12:00:01", "24:00"]]
+    assert validate_date({"disabledTimes": windows}, "time", value="12:00:00") == []
+
+
+@pytest.mark.parametrize(
+    "window, value, warns",
+    [
+        (["09:00", "10:00"], "09:00:00", True),
+        (["09:00", "10:00"], "09:59:59", True),
+        (["09:00", "10:00"], "10:00:00", False),
+        (["09:00", "10:00"], "08:59:59", False),
+        (["23:00", "24:00"], "23:59:59", True),
+    ],
+)
+def test_value_inside_a_disabled_window_warns(window, value, warns):
+    log = validate_date({"disabledTimes": [window]}, "time", value=value)
+    assert [e["level"] for e in log] == (["warning"] if warns else [])
+
+
+def test_datetime_value_inside_a_disabled_window_warns():
+    log = validate_date({"disabledTimes": [["09:00", "10:00"]]}, "datetime")
+    assert [e["level"] for e in log] == ["warning"]
+
+
+def test_disabled_times_are_rejected_on_date_variant():
+    assert validate_date({"disabledTimes": [["12:00", "13:00"]]}, "date") != []
