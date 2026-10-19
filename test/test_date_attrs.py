@@ -278,3 +278,128 @@ def test_step_of_unavailable_view_warns_without_checking_the_value():
     log = validate_date({"secondsStep": 30}, "time", value="10:30:15")
     assert [entry["level"] for entry in log] == ["warning"]
     assert "no effect" in log[0]["msg"]
+
+
+WEEKDAY_NOTATIONS = [
+    ("Sunday", 0), ("sun", 0), ("SU", 0), (0, 0),
+    ("Monday", 1), ("Mon", 1), ("mo", 1), (1, 1),
+    ("Tuesday", 2), ("Tue", 2), ("Tu", 2),
+    ("Wednesday", 3), ("Wed", 3), ("We", 3),
+    ("Thursday", 4), ("Thu", 4), ("Th", 4),
+    ("Friday", 5), ("Fri", 5), ("Fr", 5),
+    ("Saturday", 6), ("Sat", 6), ("Sa", 6), (6, 6),
+]  # fmt: skip
+MONTH_NOTATIONS = [
+    ("January", 1), ("jan", 1), (1, 1), ("February", 2), ("Feb", 2),
+    ("March", 3), ("Mar", 3), ("April", 4), ("Apr", 4), ("May", 5), (5, 5),
+    ("June", 6), ("Jun", 6), ("July", 7), ("Jul", 7), ("August", 8), ("Aug", 8),
+    ("September", 9), ("Sep", 9), ("October", 10), ("Oct", 10),
+    ("November", 11), ("Nov", 11), ("December", 12), ("Dec", 12), (12, 12),
+]  # fmt: skip
+# 2026-07-09 is a Thursday (4) in July (7). Every other date used below differs in all of them.
+CALENDAR_KEYS = {
+    "disabledWeekdays": (WEEKDAY_NOTATIONS, 4),
+    "disabledMonths": (MONTH_NOTATIONS, 7),
+}
+
+
+@pytest.mark.parametrize("key", CALENDAR_KEYS)
+def test_calendar_notations_are_accepted_and_match_the_value(key):
+    notations, hit = CALENDAR_KEYS[key]
+    for notation, index in notations:
+        log = validate_date({key: [notation]}, "date")
+        expected = ["warning"] if index == hit else []
+        assert [entry["level"] for entry in log] == expected, (key, notation)
+
+
+@pytest.mark.parametrize(
+    "key, entry",
+    [
+        ("disabledWeekdays", 7),
+        ("disabledWeekdays", -1),
+        ("disabledWeekdays", True),
+        ("disabledWeekdays", "Thur"),
+        ("disabledWeekdays", "3"),
+        ("disabledWeekdays", "tuesdays"),
+        ("disabledMonths", 0),
+        ("disabledMonths", 13),
+        ("disabledMonths", True),
+        ("disabledMonths", "Sept"),
+        ("disabledMonths", "2026-12"),
+        ("disabledMonths", "7"),
+    ],
+)
+def test_unrecognized_calendar_entries_are_rejected(key, entry):
+    log = validate_date({key: [entry]}, "date")
+    assert "error" in [e["level"] for e in log]
+
+
+@pytest.mark.parametrize(
+    "key, entries",
+    [
+        ("disabledWeekdays", [0, "Mon", "Tuesday", "We", "thu", 5, "Sat"]),
+        ("disabledMonths", list(range(1, 13))),
+        (
+            "disabledMonths",
+            ["Jan", 2, "March", "Apr", "May", 6, "Jul", "Aug", "Sep", 10, 11, "December"],
+        ),
+    ],
+)
+def test_disabling_everything_is_an_error(key, entries):
+    log = validate_date({key: entries}, "date")
+    assert any(e["level"] == "error" and "every" in e["msg"] for e in log)
+
+
+def test_repeated_entries_do_not_count_as_everything():
+    assert [e["level"] for e in validate_date({"disabledWeekdays": [0, "Sun", "Su"] * 3})] == []
+
+
+@pytest.mark.parametrize("variant", ["date", "datetime"])
+def test_disabled_dates_and_years_are_accepted(variant):
+    prop = {"disabledDates": ["2026-07-10", "2026-07-11T10:00:00", "2026-07-12 10:00:00"]}
+    assert validate_date({**prop, "disabledYears": [2025, 2027]}, variant) == []
+
+
+@pytest.mark.parametrize(
+    "entry", ["07-10-2026", "2026/07/10", "2026-07", "2026-13-01", "10:00:00", ""]
+)
+def test_malformed_disabled_dates_are_rejected(entry):
+    assert "error" in [e["level"] for e in validate_date({"disabledDates": [entry]})]
+
+
+@pytest.mark.parametrize(
+    "prop",
+    [
+        {"disabledDates": ["2026-07-09"]},
+        {"disabledDates": ["2026-07-09T23:59:59"]},
+        {"disabledYears": [2026]},
+    ],
+)
+def test_value_on_a_disabled_date_or_year_warns(prop):
+    log = validate_date(prop)
+    assert [e["level"] for e in log] == ["warning"]
+    assert "disabled" in log[0]["msg"]
+
+
+def test_value_next_to_disabled_date_does_not_warn():
+    assert (
+        validate_date({"disabledDates": ["2026-07-08", "2026-07-10"], "disabledYears": [2025]})
+        == []
+    )
+
+
+@pytest.mark.parametrize(
+    "key, entry",
+    [
+        ("disabledDates", "2026-07-10"),
+        ("disabledWeekdays", "Sat"),
+        ("disabledMonths", "Dec"),
+        ("disabledYears", 2025),
+    ],
+)
+def test_disabled_lists_are_rejected_on_time_variant(key, entry):
+    assert validate_date({key: [entry]}, "time") != []
+
+
+def test_disabled_years_must_be_integers():
+    assert validate_date({"disabledYears": ["2026"]}) != []

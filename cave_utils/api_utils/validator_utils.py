@@ -30,6 +30,34 @@ DATE_BOUND_FORMAT_NAMES = [
 # Formats accepted for the `minDateTime` and `maxDateTime` of `date` props, which require a time part
 DATETIME_BOUND_FORMATS = ["%Y-%m-%dT%H:%M:%S", "%Y-%m-%d %H:%M:%S"]
 DATETIME_BOUND_FORMAT_NAMES = ["YYYY-MM-DDTHH:MM:SS", "YYYY-MM-DD HH:MM:SS"]
+# Formats accepted for the `disabledDates` of `date` props, of which only the date part is used
+DATE_DISABLED_DATE_FORMATS = ["%Y-%m-%d", "%Y-%m-%dT%H:%M:%S", "%Y-%m-%d %H:%M:%S"]
+DATE_DISABLED_DATE_FORMAT_NAMES = ["YYYY-MM-DD", "YYYY-MM-DDTHH:MM:SS", "YYYY-MM-DD HH:MM:SS"]
+# The names accepted for the `disabledWeekdays` (starting on Sunday, which is `0`) and the
+# `disabledMonths` (starting on January, which is `1`) of `date` props: full, 3-letter and 2-letter
+DATE_WEEKDAY_NAMES = [
+    ("sunday", "sun", "su"),
+    ("monday", "mon", "mo"),
+    ("tuesday", "tue", "tu"),
+    ("wednesday", "wed", "we"),
+    ("thursday", "thu", "th"),
+    ("friday", "fri", "fr"),
+    ("saturday", "sat", "sa"),
+]
+DATE_MONTH_NAMES = [
+    ("january", "jan"),
+    ("february", "feb"),
+    ("march", "mar"),
+    ("april", "apr"),
+    ("may", "may"),
+    ("june", "jun"),
+    ("july", "jul"),
+    ("august", "aug"),
+    ("september", "sep"),
+    ("october", "oct"),
+    ("november", "nov"),
+    ("december", "dec"),
+]
 # The bound attributes of `date` props, the part of the value they limit, and when it is a violation
 DATE_BOUND_CHECKS = (
     ("minDate", datetime.datetime.date, operator.lt),
@@ -336,6 +364,22 @@ class ApiValidator:
             return False
         return True
 
+    def __to_calendar_index__(self, input, names: list[tuple[str]], first: int):
+        """
+        Convert a weekday or month given as a number (starting at `first`) or as a
+        case-insensitive name from `names` into its zero-based index, or `None` if it is not
+        recognized.
+        """
+        if isinstance(input, bool):
+            return None
+        if isinstance(input, int):
+            return input - first if first <= input < first + len(names) else None
+        if isinstance(input, str):
+            for index, aliases in enumerate(names):
+                if input.lower() in aliases:
+                    return index
+        return None
+
     def __parse_date_bound__(self, input: str, formats: list[str] = DATE_BOUND_FORMATS):
         """
         Parse a date bound string (e.g. `minDate` or `maxDateTime`), returning a `datetime`
@@ -376,6 +420,34 @@ class ApiValidator:
                     path=prepend_path,
                     msg=f"The value `{input}` is outside of the `{key}` of `{bound}`",
                 )
+        if date_variant != "time":
+            day = value.date()
+            disabled = {
+                "disabledYears": day.year in (prop_spec.get("disabledYears") or []),
+                "disabledMonths": (day.month - 1)
+                in {
+                    self.__to_calendar_index__(entry, DATE_MONTH_NAMES, 1)
+                    for entry in prop_spec.get("disabledMonths") or []
+                },
+                # Python counts weekdays from Monday, while the `disabledWeekdays` start on Sunday
+                "disabledWeekdays": (day.weekday() + 1) % 7
+                in {
+                    self.__to_calendar_index__(entry, DATE_WEEKDAY_NAMES, 0)
+                    for entry in prop_spec.get("disabledWeekdays") or []
+                },
+                "disabledDates": day
+                in {
+                    parsed.date()
+                    for entry in prop_spec.get("disabledDates") or []
+                    if (parsed := self.__parse_date_bound__(entry, DATE_DISABLED_DATE_FORMATS))
+                },
+            }
+            for key, is_disabled in disabled.items():
+                if is_disabled:
+                    self.__warn__(
+                        path=prepend_path,
+                        msg=f"The value `{input}` is disabled by the `{key}`",
+                    )
         available_views = prop_spec.get("views") or DATE_DEFAULT_VIEWS.get(date_variant, [])
         for unit, unit_value in (
             ("hours", value.hour),

@@ -12,8 +12,12 @@ from cave_utils.api_utils.validator_utils import (
     DATETIME_BOUND_FORMATS,
     DATETIME_BOUND_FORMAT_NAMES,
     DATE_DEFAULT_VIEWS,
+    DATE_DISABLED_DATE_FORMATS,
+    DATE_DISABLED_DATE_FORMAT_NAMES,
+    DATE_MONTH_NAMES,
     DATE_TIME_STEP_LIMITS,
     DATE_VIEW_NAMES,
+    DATE_WEEKDAY_NAMES,
 )
 
 
@@ -73,6 +77,10 @@ class props(ApiValidator):
         hoursStep: int | None = None,
         minutesStep: int | None = None,
         secondsStep: int | None = None,
+        disabledDates: list[str] | None = None,
+        disabledWeekdays: list[int | str] | None = None,
+        disabledMonths: list[int | str] | None = None,
+        disabledYears: list[int] | None = None,
         disablePast: bool | None = None,
         disableFuture: bool | None = None,
         legendNotation: str | None = None,
@@ -390,6 +398,26 @@ class props(ApiValidator):
                 * A step only applies if the `"seconds"` view is one of the available `views`.
                 * Values that aren't a multiple of the step can't be selected.
                 * This attribute applies exclusively to `"date"` props with the `"time"` and `"datetime"` variants.
+        * **`disabledDates`**: `[list[str]]` = `None` &rarr; Specific dates that can't be selected.
+            * **Accepted Formats**: `YYYY-MM-DD`, `YYYY-MM-DDTHH:MM:SS` or `YYYY-MM-DD HH:MM:SS`
+            * **Notes**:
+                * Only the date part is used, so any time part is ignored.
+                * This attribute applies exclusively to `"date"` props with the `"date"` and `"datetime"` variants.
+        * **`disabledWeekdays`**: `[list[int | str]]` = `None` &rarr; Days of the week that can't be selected.
+            * **Accepted Values**: A number from `0` (Sunday) to `6` (Saturday), a two-letter name (`"Su"`, `"Mo"`, `"Tu"`, `"We"`, `"Th"`, `"Fr"`, `"Sa"`), a three-letter name (`"Sun"`, `"Mon"`, ...) or a full name (`"Sunday"`, `"Monday"`, ...).
+            * **Notes**:
+                * Names are not case-sensitive, and the notations can be mixed in the same list.
+                * Not all of the weekdays can be disabled, as that would leave nothing to select.
+                * This attribute applies exclusively to `"date"` props with the `"date"` and `"datetime"` variants.
+        * **`disabledMonths`**: `[list[int | str]]` = `None` &rarr; Months of the year that can't be selected, in every year.
+            * **Accepted Values**: A number from `1` (January) to `12` (December), a three-letter name (`"Jan"`, `"Feb"`, ...) or a full name (`"January"`, `"February"`, ...).
+            * **Notes**:
+                * Names are not case-sensitive, and the notations can be mixed in the same list.
+                * Not all of the months can be disabled, as that would leave nothing to select.
+                * This attribute applies exclusively to `"date"` props with the `"date"` and `"datetime"` variants.
+        * **`disabledYears`**: `[list[int]]` = `None` &rarr; Years that can't be selected.
+            * **Notes**:
+                * This attribute applies exclusively to `"date"` props with the `"date"` and `"datetime"` variants.
         * **`disablePast`**: `[bool]` = `False` &rarr; Whether to prevent selecting values before the present.
             * **Notes**:
                 * With the `"date"` variant, dates before today are disabled.
@@ -759,7 +787,14 @@ class props(ApiValidator):
                 "disableFuture",
             ]
             if variant in (None, "date", "datetime"):
-                optional_fields += ["minDate", "maxDate"]
+                optional_fields += [
+                    "minDate",
+                    "maxDate",
+                    "disabledDates",
+                    "disabledWeekdays",
+                    "disabledMonths",
+                    "disabledYears",
+                ]
             if variant in ("time", "datetime"):
                 optional_fields += ["minTime", "maxTime", "hoursStep", "minutesStep", "secondsStep"]
             if variant == "datetime":
@@ -973,6 +1008,29 @@ class props(ApiValidator):
                     self.__warn__(
                         msg=f"`{unit}Step` has no effect as the `{unit}` view is not one of the available `views`",
                         path=[f"{unit}Step"],
+                    )
+            for key, names, first, label in (
+                ("disabledWeekdays", DATE_WEEKDAY_NAMES, 0, "weekday"),
+                ("disabledMonths", DATE_MONTH_NAMES, 1, "month"),
+            ):
+                entries = self.data.get(key) or []
+                indexes = set()
+                for i, entry in enumerate(entries):
+                    index = self.__to_calendar_index__(entry, names, first)
+                    if index is None:
+                        self.__error__(
+                            msg=f"`{key}` has `{entry}` but it should be a {label} number from {first} to {first + len(names) - 1} or a {label} name",
+                            path=[key, i],
+                        )
+                    else:
+                        indexes.add(index)
+                if len(indexes) == len(names):
+                    self.__error__(msg=f"`{key}` disables every {label}", path=[key])
+            for i, entry in enumerate(self.data.get("disabledDates") or []):
+                if self.__parse_date_bound__(entry, DATE_DISABLED_DATE_FORMATS) is None:
+                    self.__error__(
+                        msg=f"`disabledDates` has `{entry}` but it should be in one of the accepted formats: {', '.join(DATE_DISABLED_DATE_FORMAT_NAMES)}",
+                        path=["disabledDates", i],
                     )
             for lower, upper, part, formats, format_names in (
                 ("minDate", "maxDate", "date", DATE_BOUND_FORMATS, DATE_BOUND_FORMAT_NAMES),
