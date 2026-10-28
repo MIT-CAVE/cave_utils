@@ -378,6 +378,7 @@ class groupedOutputs_groupings_star_levels_star(ApiValidator):
         ordering: list | None = None,
         orderWithParent: bool = True,
         coloring: dict | None = None,
+        valueNames: dict | None = None,
         **kwargs,
     ):
         """
@@ -404,6 +405,11 @@ class groupedOutputs_groupings_star_levels_star(ApiValidator):
             * Each key in this dictionary is a value in the level.
             * Each value in this dictionary is an rgba string.
             * **See**: `cave_utils.api.groupedOutputs.groupedOutputs_groupings_star_levels_star_coloring`
+        * **`valueNames`**: `[dict]` = `None` &rarr;
+            * A dictionary of display names to be shown in charts and tables instead of the raw values of the level.
+            * Each key in this dictionary is a value in the level, as a string (e.g., `"true"` for a boolean `true`).
+            * Each value in this dictionary is the string to display for that value.
+            * **Note**: Values of the level that are not listed are displayed as they appear in the data.
         """
         return {"kwargs": kwargs, "accepted_values": {}}
 
@@ -424,6 +430,21 @@ class groupedOutputs_groupings_star_levels_star(ApiValidator):
                 ),
                 prepend_path=["ordering"],
             )
+
+        valueNames = self.data.get("valueNames")
+        if valueNames is not None:
+            self.__check_subset_valid__(
+                subset=list(valueNames.keys()),
+                # Booleans are matched by their JSON form (`true`/`false`)
+                valid_values=[
+                    str(value).lower() if isinstance(value, bool) else str(value)
+                    for value in kwargs.get("acceptable_data_levels", {}).get(
+                        kwargs.get("CustomKeyValidatorFieldId"), []
+                    )
+                ],
+                prepend_path=["valueNames"],
+            )
+            self.__check_type_dict__(data=valueNames, types=(str,), prepend_path=["valueNames"])
 
         coloring = self.data.get("coloring")
         if coloring is not None:
