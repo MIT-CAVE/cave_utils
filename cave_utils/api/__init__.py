@@ -10,6 +10,120 @@ Classes represent the actual API items and should have relevant API documentatio
 Submodules (and their classes) are used to define the api at each level. You can use the links on the left to navigate into the API and get detailed documentation for each API item at each level.
 
 See the left hand side for all available submodules.
+
+## Generic Keys
+
+The keys `order` and `timeValues` are not listed in the `spec` of individual API items because they are handled generically. The validator accepts them alongside the data of any API item, but the app only acts on them in the sections listed below under each key.
+
+### `order`
+
+* **`order`**: `[dict[str, list[str | int]]]` &rarr; Defines the display order of sibling dictionaries.
+    * **Notes**:
+        * Each key must match a sibling key whose value is a dictionary. Each list holds ids (keys) from that sibling dictionary.
+        * Ids that are listed come first, in the given order. Any ids that are not listed are placed after them.
+        * Every id in the list must exist in the sibling dictionary or a validation error is logged.
+        * The app applies `order` within `settings`, `appBar`, `maps`, `groupedOutputs` and `mapFeatures` (including nested items). It is not applied within `panes`, `pages`, `draggables` or `globalOutputs`.
+
+Examples:
+
+```py
+# `appBar.order.data`: set the order of app bar items
+{
+    "appBar": {
+        "data": {"pane1": {...}, "pane2": {...}},
+        # Show `pane2` before `pane1`
+        "order": {"data": ["pane2", "pane1"]},
+    }
+}
+
+# `maps.order.additionalMapStyles`: set the order of map styles in the style selector
+{
+    "maps": {
+        "order": {"additionalMapStyles": ["cartoVoyager", "mapboxDarkCustom"]},
+        "additionalMapStyles": {"mapboxDarkCustom": {...}, "cartoVoyager": {...}},
+    }
+}
+
+# `groupedOutputs.groupings.<groupingId>.order.levels`: set the order of grouping levels
+{
+    "groupedOutputs": {
+        "groupings": {
+            "location": {
+                "order": {"levels": ["country", "state"]},
+                "levels": {"state": {...}, "country": {...}},
+                ...
+            }
+        },
+        ...
+    }
+}
+```
+
+### `timeValues`
+
+* **`timeValues`**: `[list[dict] | dict[int, dict]]` &rarr; Defines values that change over time for the item it is placed in.
+    * **Notes**:
+        * Requires `settings.time.timeLength` to be specified.
+        * The app applies `timeValues` within `panes.data`, `maps.data` and `mapFeatures.data` (including nested items). It has no effect in other sections such as `appBar`, `pages`, `groupedOutputs`, `globalOutputs`, `settings` or `draggables`.
+        * If a `list`, its length must equal `settings.time.timeLength`. If a `dict`, its keys must be integers from `0` to `timeLength - 1` (time indices that are left out use the item's own values).
+        * Each entry holds the values to use at that time index. They are merged over the values of the item itself.
+        * All entries must have the same keys, and each key must have the same type across entries.
+
+Examples (each assumes `settings.time.timeLength` is set):
+
+```py
+# `panes.data.<paneId>.values.timeValues`: change a pane value at specific time indices
+{
+    "panes": {
+        "data": {
+            "pane1": {
+                "name": "Pane 1",
+                "props": {"price": {"type": "num", "name": "Price"}},
+                "values": {
+                    "price": 1,
+                    "timeValues": {4: {"price": 5}, 5: {"price": 6}},
+                },
+            }
+        }
+    }
+}
+
+# `maps.data.<mapId>.timeValues`: change a map setting at specific time indices
+{
+    "maps": {
+        "data": {
+            "map1": {
+                "name": "Map 1",
+                "timeValues": {
+                    4: {"defaultViewport": {"longitude": -75.4, "latitude": 40.3, "zoom": 5}},
+                },
+            }
+        }
+    }
+}
+
+# `mapFeatures.data.<featureType>.data.location.timeValues`: move features over time
+{
+    "mapFeatures": {
+        "data": {
+            "nodes": {
+                "data": {
+                    "location": {
+                        "latitude": [[43.78], [39.82]],
+                        "longitude": [[-79.63], [-86.18]],
+                        "timeValues": {
+                            4: {"latitude": [[44.78], [39.82]]},
+                            5: {"latitude": [[45.78], [39.82]]},
+                        },
+                    },
+                    ...
+                },
+                ...
+            }
+        }
+    }
+}
+```
 """
 
 from cave_utils.api_utils.validator_utils import *
