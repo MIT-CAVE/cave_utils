@@ -142,6 +142,7 @@ class props(ApiValidator):
                     * Note: A variant is required when using the `media` type
                 * `"coordinate"`: A coordinate input field
         * **`subtitle`**: `[str]` = `None` &rarr; An optional subtitle for the prop.
+            * **Note**: A long subtitle scrolls (as a marquee) if it does not fit in the width of the prop. It does not make the prop wider.
         * **`help`**: `[str]` = `None` &rarr; The help text to display.
             * **Notes**:
                 - This is displayed when the user clicks on the help icon next to the prop.
