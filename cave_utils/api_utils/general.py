@@ -146,6 +146,8 @@ class props(ApiValidator):
             * **Notes**:
                 - This is displayed when the user clicks on the help icon next to the prop.
                 - This can be regular text or markdown.
+                - It is rendered as markdown unless `richText` is `False`. In the next major version, it will only be rendered as markdown when `richText` is `True`.
+                - See `richText` in the `cave_utils.api` docs for more information.
         * **`helperText`**: `[str]` = `None` &rarr; Additional help text to display below the prop without requiring a click on the help icon.
         * **`display`**: `[bool]` = `None` &rarr; Whether or not the prop will be displayed.
         * **`variant`**: `[str]` = `None` &rarr; The variant of the prop.

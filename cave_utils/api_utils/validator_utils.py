@@ -156,10 +156,12 @@ class ApiValidator:
     def __extend_spec__(self, **kwargs):
         pass
 
-    # Additional core validations for generic terms like `order` and `timeValues`
+    # Additional core validations for generic terms like `order`, `timeValues` and `richText`
     def __genericKeyValidation__(self, **kwargs):
         # Remove `timeValues` out prior to each level validation
         data_timeValues = self.data.pop("timeValues", None)
+        # Remove `richText` out prior to each level validation
+        data_richText = self.data.pop("richText", None)
         # Remove 'ignore_keys' from data to avoid validation issues
         for key in self.ignore_keys:
             self.data.pop(key, None)
@@ -176,6 +178,11 @@ class ApiValidator:
                 self.__timeValues_validation__(timeValues=data_timeValues, timeLength=timeLength)
         if data_order is not None:
             self.__order_validation__(order=data_order)
+        if data_richText is not None and not isinstance(data_richText, bool):
+            self.__error__(
+                path=["richText"],
+                msg=f"`richText` must be a boolean (`True` or `False`), got `{type(data_richText).__name__}`",
+            )
 
     @type_enforced.Enforcer
     def __order_validation__(self, order: dict[str, list[str | int]]):

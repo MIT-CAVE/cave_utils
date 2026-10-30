@@ -13,7 +13,7 @@ See the left hand side for all available submodules.
 
 ## Generic Keys
 
-The keys `order` and `timeValues` are not listed in the `spec` of individual API items because they are handled generically. The validator accepts them alongside the data of any API item, but the app only acts on them in the sections listed below under each key.
+The keys `order`, `timeValues` and `richText` are not listed in the `spec` of individual API items because they are handled generically. The validator accepts them alongside the data of any API item, but the app only acts on them in the sections listed below under each key.
 
 ### `order`
 
@@ -119,6 +119,54 @@ Examples (each assumes `settings.time.timeLength` is set):
                     ...
                 },
                 ...
+            }
+        }
+    }
+}
+```
+
+### `richText`
+
+* **`richText`**: `[bool]` = `None` &rarr; Whether labels (and `help`) are rendered as rich text (markdown) instead of plain text.
+    * **Accepted Values**:
+        * `True`: Render labels as rich text. `help` is rendered as markdown (as it is by default).
+        * `False`: Render labels as plain text. `help` is rendered as plain text instead of markdown.
+        * `None` (not set): Labels are plain text. `help` is rendered as markdown.
+    * **Notes**:
+        * The value cascades: the closest value that is set wins, in the order `prop` &rarr; layout `item` &rarr; ancestor layout `grid`s. Set it once on a top level `grid` to enable it for every prop in the layout, and set it to `False` on a prop or `item` to opt out.
+        * The app applies `richText` to `props` (including their `options`) and to the `layout` `grid`s and `item`s that contain them. It has no effect elsewhere, such as pane names, modal titles, map legends or chart labels.
+        * It affects the `name`, `subtitle`, `unit`, `label`, `activeLabel`, `helperText` and `help` title of a prop, and the option names and `helperText` of `"selector"` props. The `placeholder` stays plain text, with the markdown syntax removed.
+        * Rich text supports inline markdown (`**bold**`, `_italic_`, `` `code` ``, `[links](https://example.com)`) and inline math (`$x^2$`). Raw HTML and block elements (headings, lists, tables, ...) are not rendered in labels. Use `\\*`, `\\_` or `\\$` to show those characters literally.
+        * Keep in mind that characters like `*`, `_`, `` ` ``, `[`, `$` and `\\` in a `name` are interpreted as markdown when `richText` is `True`.
+        * **Planned breaking change**: in the next major version `richText` will default to `False` everywhere, so `help` will also need `richText: True` to be rendered as markdown. To prepare, set `richText: True` on a top level layout `grid` (or on the props) that use markdown in `help`. In development builds, the app logs a warning for `help` text that looks like markdown while `richText` is not set.
+
+Examples:
+
+```py
+{
+    "panes": {
+        "data": {
+            "pane1": {
+                "name": "Pane 1",
+                "props": {
+                    # Rich labels: `richText` is set on the prop
+                    "area": {
+                        "type": "num",
+                        "name": "**Area**",
+                        "subtitle": "In _square_ meters",
+                        "unit": "$m^2$",
+                        "richText": True,
+                    },
+                    # Plain `help` (no markdown): `richText` is explicitly `False`
+                    "note": {
+                        "type": "text",
+                        "name": "Note",
+                        "help": "# Not a heading",
+                        "richText": False,
+                    },
+                },
+                # Or enable it for every prop in the layout at once
+                "layout": {"type": "grid", "richText": True, "data": {...}},
             }
         }
     }
