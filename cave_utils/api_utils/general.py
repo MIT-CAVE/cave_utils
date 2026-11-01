@@ -151,6 +151,9 @@ class props(ApiValidator):
                 - See `richText` in the `cave_utils.api` docs for more information.
                 - HTML in the markdown is sanitized: scripts, iframes, event handlers, inline styles and classes are removed, as well as links with a protocol other than `http`, `https`, `mailto`, `irc`, `ircs` or `xmpp` (e.g. `javascript:`, `data:` or `tel:`). Relative links and links to the same page (`#id`) are kept.
         * **`helperText`**: `[str]` = `None` &rarr; Additional help text to display below the prop without requiring a click on the help icon.
+            * **Notes**:
+                - This is displayed by `"text"`, `"num"` (`"field"` variant), `"selector"` and `"media"` props.
+                - It is rendered as rich text when `richText` is `True`. See `richText` in the `cave_utils.api` docs for more information.
         * **`display`**: `[bool]` = `None` &rarr; Whether or not the prop will be displayed.
         * **`variant`**: `[str]` = `None` &rarr; The variant of the prop.
             * **Accepted Values**:
