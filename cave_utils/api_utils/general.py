@@ -1077,11 +1077,9 @@ class props(ApiValidator):
                     self.__error__(msg=f"`{key}` disables every {label}", path=[key])
             for i, entry in enumerate(self.data.get("disabledDates") or []):
                 is_range = isinstance(entry, list)
-                if is_range and len(entry) != 2:
-                    self.__error__(
-                        msg=f"`disabledDates` has a range of {len(entry)} dates but it should be a `[start, end]` pair",
-                        path=["disabledDates", i],
-                    )
+                if is_range and not self.__check_pair__(
+                    entry, "disabledDates", i, "range", "dates"
+                ):
                     continue
                 parsed = []
                 for j, boundary in enumerate(entry if is_range else [entry]):
@@ -1098,11 +1096,7 @@ class props(ApiValidator):
                     )
             windows = []
             for i, window in enumerate(self.data.get("disabledTimes") or []):
-                if len(window) != 2:
-                    self.__error__(
-                        msg=f"`disabledTimes` has a window of {len(window)} times but it should be a `[start, end]` pair",
-                        path=["disabledTimes", i],
-                    )
+                if not self.__check_pair__(window, "disabledTimes", i, "window", "times"):
                     continue
                 start = self.__to_seconds_of_day__(window[0])
                 end = self.__to_seconds_of_day__(window[1], is_end=True)

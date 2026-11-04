@@ -404,6 +404,19 @@ class ApiValidator:
                 parsed_entries.append((parsed[0].date(), parsed[1].date()))
         return parsed_entries
 
+    def __check_pair__(self, entry: list, key: str, index: int, noun: str, unit: str):
+        """
+        Check that an entry of a list of `[start, end]` pairs has exactly two elements, which the
+        type of the attribute can't enforce, and if not, log an error. Returns whether it does.
+        """
+        if len(entry) == 2:
+            return True
+        self.__error__(
+            msg=f"`{key}` has a {noun} of {len(entry)} {unit} but it should be a `[start, end]` pair",
+            path=[key, index],
+        )
+        return False
+
     def __to_seconds_of_day__(self, input: str, is_end: bool = False):
         """
         Convert the time of day of a `disabledTimes` window boundary into seconds since

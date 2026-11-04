@@ -608,3 +608,23 @@ def test_value_next_to_single_dates_and_ranges_does_not_warn():
 
 def test_a_nested_range_is_rejected_as_a_single_date():
     assert validate_date({"disabledDates": [[["2026-07-10", "2026-07-11"], "2026-07-12"]]}) != []
+
+
+@pytest.mark.parametrize(
+    "prop, variant, message",
+    [
+        (
+            {"disabledDates": [["2026-12-24"]]},
+            "date",
+            "`disabledDates` has a range of 1 dates but it should be a `[start, end]` pair",
+        ),
+        (
+            {"disabledTimes": [["12:00", "13:00", "14:00"]]},
+            "time",
+            "`disabledTimes` has a window of 3 times but it should be a `[start, end]` pair",
+        ),
+    ],
+)
+def test_pairs_of_the_wrong_length_report_their_length(prop, variant, message):
+    log = validate_date(prop, variant)
+    assert [(e["level"], e["msg"]) for e in log] == [("error", message)]
