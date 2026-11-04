@@ -80,7 +80,7 @@ class props(ApiValidator):
         minutesStep: int | None = None,
         secondsStep: int | None = None,
         disabledTimes: list[list[str]] | None = None,
-        disabledDates: list[str] | None = None,
+        disabledDates: list[str | list[str]] | None = None,
         disabledWeekdays: list[int | str] | None = None,
         disabledMonths: list[int | str] | None = None,
         disabledYears: list[int] | None = None,
@@ -180,10 +180,13 @@ class props(ApiValidator):
                 * When **`type`** == `"date"`:
                     * `"date"`: Select a date via a calendar pop-up that appears when the element is clicked (default)
                         * **Note**: Passed as `YYYY-MM-DD`
+                        * **Note**: The pop-up has a `"Today"` shortcut, which is disabled if today can't be selected.
                     * `"time"`: Select a time via a clock pop-up that appears when the element is clicked
                         * **Note**: Passed as `HH:MM:SS`
+                        * **Note**: The pop-up has a `"Now"` shortcut, which is disabled if the current time can't be selected.
                     * `"datetime"`: Select date and time via a pop-up with calendar and clock tabs that appear when the element is clicked
                         * **Note**: Passed as `YYYY-MM-DDTHH:MM:SS`
+                        * **Note**: The pop-up has a `"Now"` shortcut, which is disabled if the current moment can't be selected.
                 * When **`type`** == `"media"`:
                     * `"picture"`: Show a PNG or JPG image
                     * `"video"`: Display a YouTube, Vimeo, or Dailymotion video clip
@@ -427,10 +430,15 @@ class props(ApiValidator):
                 * The windows can't disable the whole day.
                 * An hour or a minute is disabled in its view only if all of it is disabled.
                 * This attribute applies exclusively to `"date"` props with the `"time"` and `"datetime"` variants.
-        * **`disabledDates`**: `[list[str]]` = `None` &rarr; Specific dates that can't be selected.
+        * **`disabledDates`**: `[list[str | list[str]]]` = `None` &rarr; Dates that can't be selected, each one as a single date or as a `[start, end]` range.
             * **Accepted Formats**: `YYYY-MM-DD`, `YYYY-MM-DDTHH:MM:SS` or `YYYY-MM-DD HH:MM:SS`
+            * **Example**: `["2026-07-04", ["2026-12-24", "2027-01-02"]]` disables Independence Day and the holidays.
             * **Notes**:
+                * Single dates and ranges can be mixed in the same list.
+                * Both the `start` and the `end` are included in a range, so `["2026-12-24", "2026-12-26"]` disables three days.
+                * The `start` must not be later than the `end`.
                 * Only the date part is used, so any time part is ignored.
+                * A month or a year that the dates cover completely can't be selected either.
                 * This attribute applies exclusively to `"date"` props with the `"date"` and `"datetime"` variants.
         * **`disabledWeekdays`**: `[list[int | str]]` = `None` &rarr; Days of the week that can't be selected.
             * **Accepted Values**: A number from `0` (Sunday) to `6` (Saturday), a two-letter name (`"Su"`, `"Mo"`, `"Tu"`, `"We"`, `"Th"`, `"Fr"`, `"Sa"`), a three-letter name (`"Sun"`, `"Mon"`, ...) or a full name (`"Sunday"`, `"Monday"`, ...).
@@ -1068,9 +1076,24 @@ class props(ApiValidator):
                 if len(indexes) == len(names):
                     self.__error__(msg=f"`{key}` disables every {label}", path=[key])
             for i, entry in enumerate(self.data.get("disabledDates") or []):
-                if self.__parse_date_bound__(entry, DATE_DISABLED_DATE_FORMATS) is None:
+                is_range = isinstance(entry, list)
+                if is_range and len(entry) != 2:
                     self.__error__(
-                        msg=f"`disabledDates` has `{entry}` but it should be in one of the accepted formats: {', '.join(DATE_DISABLED_DATE_FORMAT_NAMES)}",
+                        msg=f"`disabledDates` has a range of {len(entry)} dates but it should be a `[start, end]` pair",
+                        path=["disabledDates", i],
+                    )
+                    continue
+                parsed = []
+                for j, boundary in enumerate(entry if is_range else [entry]):
+                    parsed.append(self.__parse_date_bound__(boundary, DATE_DISABLED_DATE_FORMATS))
+                    if parsed[-1] is None:
+                        self.__error__(
+                            msg=f"`disabledDates` has `{boundary}` but it should be in one of the accepted formats: {', '.join(DATE_DISABLED_DATE_FORMAT_NAMES)}",
+                            path=["disabledDates", i, j] if is_range else ["disabledDates", i],
+                        )
+                if is_range and None not in parsed and parsed[0].date() > parsed[1].date():
+                    self.__error__(
+                        msg=f"`disabledDates` has the range `{entry[0]}` to `{entry[1]}` but the start must not be later than the end",
                         path=["disabledDates", i],
                     )
             windows = []

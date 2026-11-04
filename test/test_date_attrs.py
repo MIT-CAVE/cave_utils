@@ -544,3 +544,67 @@ def test_hour24_must_be_a_bool():
 )
 def test_display_attrs_are_rejected_on_variants_without_that_part(variant, key, value):
     assert validate_date({key: value}, variant) != []
+
+
+@pytest.mark.parametrize("variant", ["date", "datetime"])
+@pytest.mark.parametrize(
+    "ranges",
+    [
+        [["2026-12-24", "2027-01-02"]],
+        [["2026-12-24", "2026-12-24"]],
+        [["2026-12-24T10:00:00", "2026-12-24 09:00:00"]],
+        [["2026-12-24", "2026-12-25"], ["2026-01-01", "2026-01-05"]],
+    ],
+)
+def test_disabled_dates_as_ranges_are_accepted(variant, ranges):
+    assert validate_date({"disabledDates": ranges}, variant) == []
+
+
+@pytest.mark.parametrize(
+    "date_range",
+    [
+        ["2026-12-26", "2026-12-24"],
+        ["2026-12-24"],
+        ["2026-12-24", "2026-12-25", "2026-12-26"],
+        [],
+        ["12/24/2026", "12/26/2026"],
+        ["2026-12", "2026-12-26"],
+        ["10:00:00", "2026-12-26"],
+    ],
+)
+def test_malformed_disabled_date_ranges_are_rejected(date_range):
+    log = validate_date({"disabledDates": [date_range]})
+    assert "error" in [e["level"] for e in log]
+
+
+@pytest.mark.parametrize(
+    "date_range, warns",
+    [
+        (["2026-07-09", "2026-07-09"], True),
+        (["2026-07-01", "2026-07-09"], True),
+        (["2026-07-09", "2026-07-20"], True),
+        (["2026-07-10", "2026-07-20"], False),
+        (["2026-07-01", "2026-07-08"], False),
+    ],
+)
+def test_value_inside_a_disabled_date_range_warns(date_range, warns):
+    log = validate_date({"disabledDates": [date_range]})
+    assert [e["level"] for e in log] == (["warning"] if warns else [])
+
+
+def test_disabled_dates_as_ranges_are_rejected_on_time_variant():
+    assert validate_date({"disabledDates": [["2026-12-24", "2026-12-26"]]}, "time") != []
+
+
+def test_single_dates_and_ranges_can_be_mixed():
+    prop = {"disabledDates": ["2026-07-10", ["2026-12-24", "2027-01-02"], "2026-07-12 10:00:00"]}
+    assert validate_date(prop) == []
+
+
+def test_value_next_to_single_dates_and_ranges_does_not_warn():
+    prop = {"disabledDates": ["2026-07-10", ["2026-07-01", "2026-07-08"]]}
+    assert validate_date(prop) == []
+
+
+def test_a_nested_range_is_rejected_as_a_single_date():
+    assert validate_date({"disabledDates": [[["2026-07-10", "2026-07-11"], "2026-07-12"]]}) != []

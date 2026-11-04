@@ -386,6 +386,24 @@ class ApiValidator:
                     return index
         return None
 
+    def __parse_disabled_dates__(self, entries):
+        """
+        Parse the `disabledDates`, which are dates or `[start, end]` ranges of dates, into
+        `(start, end)` pairs of `date`s, skipping those that are invalid, as they are reported
+        with the spec.
+        """
+        parsed_entries = []
+        for entry in entries or []:
+            parsed = [
+                self.__parse_date_bound__(boundary, DATE_DISABLED_DATE_FORMATS)
+                for boundary in (entry if isinstance(entry, list) else [entry])
+            ]
+            if len(parsed) == 1:
+                parsed *= 2
+            if len(parsed) == 2 and None not in parsed:
+                parsed_entries.append((parsed[0].date(), parsed[1].date()))
+        return parsed_entries
+
     def __to_seconds_of_day__(self, input: str, is_end: bool = False):
         """
         Convert the time of day of a `disabledTimes` window boundary into seconds since
@@ -454,12 +472,10 @@ class ApiValidator:
                     self.__to_calendar_index__(entry, DATE_WEEKDAY_NAMES, 0)
                     for entry in prop_spec.get("disabledWeekdays") or []
                 },
-                "disabledDates": day
-                in {
-                    parsed.date()
-                    for entry in prop_spec.get("disabledDates") or []
-                    if (parsed := self.__parse_date_bound__(entry, DATE_DISABLED_DATE_FORMATS))
-                },
+                "disabledDates": any(
+                    start <= day <= end
+                    for start, end in self.__parse_disabled_dates__(prop_spec.get("disabledDates"))
+                ),
             }
             for key, is_disabled in disabled.items():
                 if is_disabled:
