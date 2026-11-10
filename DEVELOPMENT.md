@@ -183,7 +183,13 @@ When adding a new top-level key or feature, add or update a file in `test/api_ex
 
 **`kitchen_sink.py`** is the comprehensive example that exercises most features at once: it's a good reference for overall structure.
 
-These are pulled in from the cave_app examples so do not modify them. If you want custom tests, create a separate file in `test/` that handles them independently.
+### Syncing with cave_app examples
+
+Mirrored files in `test/api_examples/` must match their `cave_app/cave_api/examples/` counterparts exactly. `cave_app` is the reference. Don't add deprecated or undefined attributes to examples, and don't copy them from the validator docs.
+
+Deprecated and undefined attributes are tested in `test/test_deprecations.py`, which uses minimal session dicts and explicit assertions. When a new attribute or variant is deprecated, add its test case there, and document it in the validator's docstring with the same deprecation wording.
+
+If you want custom tests beyond the mirrored examples, create a separate file in `test/`.
 
 **Test pattern** for new `test_*.py` files:
 ```python
