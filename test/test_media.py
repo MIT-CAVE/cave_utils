@@ -64,9 +64,7 @@ def test_scale_mode_rejected_for_unrelated_type():
 
 
 def test_full_width_with_scale_mode_warns():
-    log = validate_media(
-        {"variant": "picture", "fullWidth": True, "scaleMode": "fitWidth"}, IMAGE
-    )
+    log = validate_media({"variant": "picture", "fullWidth": True, "scaleMode": "fitWidth"}, IMAGE)
     assert len(log) == 1
     assert log[0]["level"] == "warning"
     assert "takes precedence" in log[0]["msg"]
