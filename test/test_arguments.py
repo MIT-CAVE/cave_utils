@@ -36,5 +36,10 @@ def test_arguments():
 
         args.delete("pos1")
         assert "pos1" not in args.other, "Failed to delete positional argument 'pos1'"
+
+        sys.argv = ["script_name.py", "--offset", "-1.5", "--zoom", "-2"]
+        negative_args = Arguments()
+        assert negative_args.get_kwarg("offset") == "-1.5", "Failed to retrieve negative --offset"
+        assert negative_args.get_kwarg("zoom") == "-2", "Failed to retrieve negative --zoom"
     finally:
         sys.argv = original_argv
