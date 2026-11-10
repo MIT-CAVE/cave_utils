@@ -10,6 +10,169 @@ Classes represent the actual API items and should have relevant API documentatio
 Submodules (and their classes) are used to define the api at each level. You can use the links on the left to navigate into the API and get detailed documentation for each API item at each level.
 
 See the left hand side for all available submodules.
+
+## Generic Keys
+
+The keys `order`, `timeValues` and `richText` are not listed in the `spec` of individual API items because they are handled generically. The validator accepts them alongside the data of any API item, but the app only acts on them in the sections listed below under each key.
+
+### `order`
+
+* **`order`**: `[dict[str, list[str | int]]]` &rarr; Defines the display order of sibling dictionaries.
+    * **Notes**:
+        * Each key must match a sibling key whose value is a dictionary. Each list holds ids (keys) from that sibling dictionary.
+        * Ids that are listed come first, in the given order. Any ids that are not listed are placed after them.
+        * Every id in the list must exist in the sibling dictionary or a validation error is logged.
+        * The app applies `order` within `settings`, `appBar`, `maps`, `groupedOutputs` and `mapFeatures` (including nested items). It is not applied within `panes`, `pages`, `draggables` or `globalOutputs`.
+
+Examples:
+
+```py
+# `appBar.order.data`: set the order of app bar items
+{
+    "appBar": {
+        "data": {"pane1": {...}, "pane2": {...}},
+        # Show `pane2` before `pane1`
+        "order": {"data": ["pane2", "pane1"]},
+    }
+}
+
+# `maps.order.additionalMapStyles`: set the order of map styles in the style selector
+{
+    "maps": {
+        "order": {"additionalMapStyles": ["cartoVoyager", "mapboxDarkCustom"]},
+        "additionalMapStyles": {"mapboxDarkCustom": {...}, "cartoVoyager": {...}},
+    }
+}
+
+# `groupedOutputs.groupings.<groupingId>.order.levels`: set the order of grouping levels
+{
+    "groupedOutputs": {
+        "groupings": {
+            "location": {
+                "order": {"levels": ["country", "state"]},
+                "levels": {"state": {...}, "country": {...}},
+                ...
+            }
+        },
+        ...
+    }
+}
+```
+
+### `timeValues`
+
+* **`timeValues`**: `[list[dict] | dict[int, dict]]` &rarr; Defines values that change over time for the item it is placed in.
+    * **Notes**:
+        * Requires `settings.time.timeLength` to be specified.
+        * The app applies `timeValues` within `panes.data`, `maps.data` and `mapFeatures.data` (including nested items). It has no effect in other sections such as `appBar`, `pages`, `groupedOutputs`, `globalOutputs`, `settings` or `draggables`.
+        * If a `list`, its length must equal `settings.time.timeLength`. If a `dict`, its keys must be integers from `0` to `timeLength - 1` (time indices that are left out use the item's own values).
+        * Each entry holds the values to use at that time index. They are merged over the values of the item itself.
+        * All entries must have the same keys, and each key must have the same type across entries.
+
+Examples (each assumes `settings.time.timeLength` is set):
+
+```py
+# `panes.data.<paneId>.values.timeValues`: change a pane value at specific time indices
+{
+    "panes": {
+        "data": {
+            "pane1": {
+                "name": "Pane 1",
+                "props": {"price": {"type": "num", "name": "Price"}},
+                "values": {
+                    "price": 1,
+                    "timeValues": {4: {"price": 5}, 5: {"price": 6}},
+                },
+            }
+        }
+    }
+}
+
+# `maps.data.<mapId>.timeValues`: change a map setting at specific time indices
+{
+    "maps": {
+        "data": {
+            "map1": {
+                "name": "Map 1",
+                "timeValues": {
+                    4: {"defaultViewport": {"longitude": -75.4, "latitude": 40.3, "zoom": 5}},
+                },
+            }
+        }
+    }
+}
+
+# `mapFeatures.data.<featureType>.data.location.timeValues`: move features over time
+{
+    "mapFeatures": {
+        "data": {
+            "nodes": {
+                "data": {
+                    "location": {
+                        "latitude": [[43.78], [39.82]],
+                        "longitude": [[-79.63], [-86.18]],
+                        "timeValues": {
+                            4: {"latitude": [[44.78], [39.82]]},
+                            5: {"latitude": [[45.78], [39.82]]},
+                        },
+                    },
+                    ...
+                },
+                ...
+            }
+        }
+    }
+}
+```
+
+### `richText`
+
+* **`richText`**: `[bool]` = `None` &rarr; Whether labels (and `help`) are rendered as rich text (markdown) instead of plain text.
+    * **Accepted Values**:
+        * `True`: Render labels as rich text. `help` is rendered as markdown (as it is by default).
+        * `False`: Render labels as plain text. `help` is rendered as plain text instead of markdown.
+        * `None` (not set): Labels are plain text. `help` is rendered as markdown.
+    * **Notes**:
+        * The value cascades: the closest value that is set wins, in the order `prop` &rarr; layout `item` &rarr; ancestor layout `grid`s &rarr; the item that holds the layout (`panes.data.<paneId>` or `globalOutputs`) &rarr; `settings.defaults`. The text of a map legend follows `prop` &rarr; `mapFeatures.data.<type>` &rarr; `settings.defaults`, and the text that belongs to a map follows `maps.data.<mapId>` &rarr; `settings.defaults`. The names of a chart follow `groupedOutputs.data.<datasetId>.stats.<statId>` &rarr; `groupedOutputs.data.<datasetId>` &rarr; `settings.defaults` for stats, `groupedOutputs.groupings.<groupingId>.levels.<levelId>` &rarr; `groupedOutputs.groupings.<groupingId>` &rarr; `settings.defaults` for groupings. The columns of a global outputs table follow `globalOutputs.props.<propId>` &rarr; `globalOutputs` &rarr; `settings.defaults`. Set it once on a top level `grid` to enable it for every prop in the layout, and set it to `False` on a prop or `item` to opt out.
+        * The app applies `richText` to `props` (including their `options`), to the `layout` `grid`s and `item`s that contain them, to the `name` of a pane or modal (`panes.data.<paneId>`), to `globalOutputs`, to a map feature type (`mapFeatures.data.<type>`: its `name`, the text of its legend and its modals), to a map (`maps.data.<mapId>`: its name, its legend groups and the names in its map modals), to the headers of `table` charts, to the stat and grouping names of the chart editor (its selectors and filters) and, through `settings.defaults`, to all of them at once. Chart text drawn on a canvas (axis names, legends, series names and tooltips) cannot render markup, so it shows the names as plain text with the markdown syntax removed. The category names of a grouping and the values of a table are shown as they are written.
+        * It affects the `name`, `subtitle`, `unit`, `label`, `activeLabel`, `helperText` and `help` title of a prop, and the option names and `helperText` of `"selector"` props. The `placeholder` stays plain text, with the markdown syntax removed.
+        * Rich text supports inline markdown (`**bold**`, `_italic_`, `` `code` ``, `[links](https://example.com)`) and inline math (`$x^2$`). Raw HTML and block elements (headings, lists, tables, ...) are not rendered in labels. Use `\\*`, `\\_` or `\\$` to show those characters literally.
+        * HTML is sanitized in both labels and `help`. In labels, raw HTML is not parsed, so it is shown as text. In `help`, raw HTML is rendered after removing scripts, iframes, event handlers, inline styles, classes and links with a protocol other than `http`, `https`, `mailto`, `irc`, `ircs` or `xmpp`. See `help` in `props` for more information.
+        * Keep in mind that characters like `*`, `_`, `` ` ``, `[`, `$` and `\\` in a `name` are interpreted as markdown when `richText` is `True`.
+        * **Planned breaking change**: in the next major version `richText` will default to `False` everywhere, so `help` will also need `richText: True` to be rendered as markdown. To prepare, set `richText: True` on a top level layout `grid` (or on the props) that use markdown in `help`. In development builds, the app logs a warning for `help` text that looks like markdown while `richText` is not set. To keep markdown `help` everywhere with a single line, set `settings.defaults.richText` to `True`. Note that this also renders every label as rich text, so apps that only want rich `help` should set it on the specific panes instead.
+
+Examples:
+
+```py
+{
+    "panes": {
+        "data": {
+            "pane1": {
+                "name": "Pane 1",
+                "props": {
+                    # Rich labels: `richText` is set on the prop
+                    "area": {
+                        "type": "num",
+                        "name": "**Area**",
+                        "subtitle": "In _square_ meters",
+                        "unit": "$m^2$",
+                        "richText": True,
+                    },
+                    # Plain `help` (no markdown): `richText` is explicitly `False`
+                    "note": {
+                        "type": "text",
+                        "name": "Note",
+                        "help": "# Not a heading",
+                        "richText": False,
+                    },
+                },
+                # Or enable it for every prop in the layout at once
+                "layout": {"type": "grid", "richText": True, "data": {...}},
+            }
+        }
+    }
+}
+```
 """
 
 from cave_utils.api_utils.validator_utils import *

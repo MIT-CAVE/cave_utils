@@ -4,8 +4,88 @@ Special utility functions to help in validating your data against the CAVE API. 
 
 from pamda import pamda
 import type_enforced
-import re, datetime
+import re, datetime, os, operator, zoneinfo
+from urllib.parse import urlparse
 from cave_utils.log import LogHelper, LogObject
+
+# The `views` that `date` props have per `variant` when none are provided, and all view names
+DATE_DEFAULT_VIEWS = {
+    "date": ["year", "day"],
+    "time": ["hours", "minutes"],
+    "datetime": ["year", "day", "hours", "minutes"],
+}
+DATE_VIEW_NAMES = ["year", "month", "day", "hours", "minutes", "seconds"]
+# The units of the `hoursStep`, `minutesStep` and `secondsStep`, with how many of each fit in the next one, which a step must divide
+DATE_TIME_STEP_LIMITS = {"hours": 24, "minutes": 60, "seconds": 60}
+
+# Formats accepted for the `minDate`, `maxDate`, `minTime` and `maxTime` of `date` props
+DATE_BOUND_FORMATS = ["%Y-%m-%d", "%Y-%m-%dT%H:%M:%S", "%Y-%m-%d %H:%M:%S", "%H:%M:%S", "%H:%M"]
+DATE_BOUND_FORMAT_NAMES = [
+    "YYYY-MM-DD",
+    "YYYY-MM-DDTHH:MM:SS",
+    "YYYY-MM-DD HH:MM:SS",
+    "HH:MM:SS",
+    "HH:MM",
+]
+# Formats accepted for the `minDateTime` and `maxDateTime` of `date` props, which require a time part
+DATETIME_BOUND_FORMATS = ["%Y-%m-%dT%H:%M:%S", "%Y-%m-%d %H:%M:%S"]
+DATETIME_BOUND_FORMAT_NAMES = ["YYYY-MM-DDTHH:MM:SS", "YYYY-MM-DD HH:MM:SS"]
+# Formats accepted for the `disabledDates` of `date` props, of which only the date part is used
+DATE_DISABLED_DATE_FORMATS = ["%Y-%m-%d", "%Y-%m-%dT%H:%M:%S", "%Y-%m-%d %H:%M:%S"]
+DATE_DISABLED_DATE_FORMAT_NAMES = ["YYYY-MM-DD", "YYYY-MM-DDTHH:MM:SS", "YYYY-MM-DD HH:MM:SS"]
+# Formats accepted for the windows of the `disabledTimes` of `date` props, of which only the time part is used
+DATE_TIME_OF_DAY_FORMATS = ["%H:%M:%S", "%H:%M", "%Y-%m-%dT%H:%M:%S", "%Y-%m-%d %H:%M:%S"]
+DATE_TIME_OF_DAY_FORMAT_NAMES = ["HH:MM:SS", "HH:MM", "YYYY-MM-DDTHH:MM:SS", "YYYY-MM-DD HH:MM:SS"]
+# The end of a day, which is accepted as the end of a `disabledTimes` window
+DATE_END_OF_DAY = ("24:00", "24:00:00")
+SECONDS_PER_DAY = 24 * 60 * 60
+# The names accepted for the `disabledWeekdays` (starting on Sunday, which is `0`) and the
+# `disabledMonths` (starting on January, which is `1`) of `date` props: full, 3-letter and 2-letter
+DATE_WEEKDAY_NAMES = [
+    ("sunday", "sun", "su"),
+    ("monday", "mon", "mo"),
+    ("tuesday", "tue", "tu"),
+    ("wednesday", "wed", "we"),
+    ("thursday", "thu", "th"),
+    ("friday", "fri", "fr"),
+    ("saturday", "sat", "sa"),
+]
+DATE_MONTH_NAMES = [
+    ("january", "jan"),
+    ("february", "feb"),
+    ("march", "mar"),
+    ("april", "apr"),
+    ("may", "may"),
+    ("june", "jun"),
+    ("july", "jul"),
+    ("august", "aug"),
+    ("september", "sep"),
+    ("october", "oct"),
+    ("november", "nov"),
+    ("december", "dec"),
+]
+# The bound attributes of `date` props, the part of the value they limit, and when it is a violation
+DATE_BOUND_CHECKS = (
+    ("minDate", datetime.datetime.date, operator.lt),
+    ("maxDate", datetime.datetime.date, operator.gt),
+    ("minTime", datetime.datetime.time, operator.lt),
+    ("maxTime", datetime.datetime.time, operator.gt),
+    ("minDateTime", lambda value: value, operator.lt),
+    ("maxDateTime", lambda value: value, operator.gt),
+)
+
+# Clear (non-ambiguous) media extensions and hosts used to flag `media` url/variant mismatches
+MEDIA_IMAGE_EXTENSIONS = {".png", ".jpg", ".jpeg", ".gif", ".webp", ".svg", ".bmp", ".avif"}
+MEDIA_VIDEO_EXTENSIONS = {".mp4", ".m4v", ".mov", ".avi", ".mkv", ".mpg", ".mpeg", ".ogv"}
+MEDIA_AUDIO_EXTENSIONS = {".mp3", ".wav", ".flac", ".m4a", ".aac", ".oga", ".opus"}
+MEDIA_VIDEO_HOSTS = {
+    "youtube.com",
+    "youtu.be",
+    "youtube-nocookie.com",
+    "vimeo.com",
+    "dailymotion.com",
+    "dai.ly",
+}
 
 
 class ApiValidator:
@@ -76,10 +156,12 @@ class ApiValidator:
     def __extend_spec__(self, **kwargs):
         pass
 
-    # Additional core validations for generic terms like `order` and `timeValues`
+    # Additional core validations for generic terms like `order`, `timeValues` and `richText`
     def __genericKeyValidation__(self, **kwargs):
         # Remove `timeValues` out prior to each level validation
         data_timeValues = self.data.pop("timeValues", None)
+        # Remove `richText` out prior to each level validation
+        data_richText = self.data.pop("richText", None)
         # Remove 'ignore_keys' from data to avoid validation issues
         for key in self.ignore_keys:
             self.data.pop(key, None)
@@ -96,6 +178,11 @@ class ApiValidator:
                 self.__timeValues_validation__(timeValues=data_timeValues, timeLength=timeLength)
         if data_order is not None:
             self.__order_validation__(order=data_order)
+        if data_richText is not None and not isinstance(data_richText, bool):
+            self.__error__(
+                path=["richText"],
+                msg=f"`richText` must be a boolean (`True` or `False`), got `{type(data_richText).__name__}`",
+            )
 
     @type_enforced.Enforcer
     def __order_validation__(self, order: dict[str, list[str | int]]):
@@ -238,6 +325,210 @@ class ApiValidator:
             self.__error__(path=prepend_path, msg="Invalid url")
             return False
         return True
+
+    def __check_media_url_variant__(
+        self, url: str, variant: str | None, prepend_path: list[str] = list()
+    ):
+        """
+        Validate that a (well formed) media url does not clearly belong to another media variant
+        and if an issue is present, log a warning.
+
+        Only clear mismatches are flagged: unknown hosts and extensionless urls (e.g. CDN or signed
+        urls) are accepted. Ambiguous containers such as `.webm` or `.ogg` are never flagged.
+        """
+        parsed = urlparse(url)
+        host = (parsed.hostname or "").lower()
+        extension = os.path.splitext(parsed.path)[1].lower()
+        kinds = set()
+        if extension in MEDIA_IMAGE_EXTENSIONS:
+            kinds.add("image")
+        if extension in MEDIA_VIDEO_EXTENSIONS or any(
+            host == d or host.endswith("." + d) for d in MEDIA_VIDEO_HOSTS
+        ):
+            kinds.add("video")
+        if extension in MEDIA_AUDIO_EXTENSIONS:
+            kinds.add("audio")
+        expected = {"picture": "image", "video": "video", "audio": "audio"}.get(variant)
+        if expected is None or not kinds or expected in kinds:
+            return True
+        self.__warn__(
+            path=prepend_path,
+            msg=f"The url looks like {'/'.join(sorted(kinds))} media, but the prop's `variant` is `{variant}`",
+        )
+        return False
+
+    def __check_timezone_valid__(self, input: str, prepend_path: list[str] = list()):
+        """
+        Validate a timezone, which is `"system"`, `"UTC"` or an IANA name, and if an issue is
+        present, log an error.
+
+        Note that IANA names are looked up with `zoneinfo`, which needs the system's timezone
+        data or the `tzdata` package (e.g. on Windows).
+        """
+        if input == "system":
+            return True
+        try:
+            zoneinfo.ZoneInfo(input)
+        except (zoneinfo.ZoneInfoNotFoundError, ValueError, OSError):
+            self.__error__(
+                path=prepend_path,
+                msg=f"`{input}` is not a valid timezone. Must be `system`, `UTC` or an IANA timezone name such as `America/New_York`",
+            )
+            return False
+        return True
+
+    def __to_calendar_index__(self, input, names: list[tuple[str]], first: int):
+        """
+        Convert a weekday or month given as a number (starting at `first`) or as a
+        case-insensitive name from `names` into its zero-based index, or `None` if it is not
+        recognized.
+        """
+        if isinstance(input, bool):
+            return None
+        if isinstance(input, int):
+            return input - first if first <= input < first + len(names) else None
+        if isinstance(input, str):
+            for index, aliases in enumerate(names):
+                if input.lower() in aliases:
+                    return index
+        return None
+
+    def __parse_disabled_dates__(self, entries):
+        """
+        Parse the `disabledDates`, which are dates or `[start, end]` ranges of dates, into
+        `(start, end)` pairs of `date`s, skipping those that are invalid, as they are reported
+        with the spec.
+        """
+        parsed_entries = []
+        for entry in entries or []:
+            parsed = [
+                self.__parse_date_bound__(boundary, DATE_DISABLED_DATE_FORMATS)
+                for boundary in (entry if isinstance(entry, list) else [entry])
+            ]
+            if len(parsed) == 1:
+                parsed *= 2
+            if len(parsed) == 2 and None not in parsed:
+                parsed_entries.append((parsed[0].date(), parsed[1].date()))
+        return parsed_entries
+
+    def __check_pair__(self, entry: list, key: str, index: int, noun: str, unit: str):
+        """
+        Check that an entry of a list of `[start, end]` pairs has exactly two elements, which the
+        type of the attribute can't enforce, and if not, log an error. Returns whether it does.
+        """
+        if len(entry) == 2:
+            return True
+        self.__error__(
+            msg=f"`{key}` has a {noun} of {len(entry)} {unit} but it should be a `[start, end]` pair",
+            path=[key, index],
+        )
+        return False
+
+    def __to_seconds_of_day__(self, input: str, is_end: bool = False):
+        """
+        Convert the time of day of a `disabledTimes` window boundary into seconds since
+        midnight, or `None` if it is not in any of the accepted formats. Only the end of a
+        window can be the end of the day (`24:00`).
+        """
+        if is_end and input in DATE_END_OF_DAY:
+            return SECONDS_PER_DAY
+        parsed = self.__parse_date_bound__(input, DATE_TIME_OF_DAY_FORMATS)
+        if parsed is None:
+            return None
+        return parsed.hour * 3600 + parsed.minute * 60 + parsed.second
+
+    def __parse_date_bound__(self, input: str, formats: list[str] = DATE_BOUND_FORMATS):
+        """
+        Parse a date bound string (e.g. `minDate` or `maxDateTime`), returning a `datetime`
+        or `None` if the string is not in any of the accepted `formats`.
+        """
+        for date_format in formats:
+            try:
+                return datetime.datetime.strptime(input, date_format)
+            except ValueError:
+                continue
+        return None
+
+    def __check_date_constraints__(
+        self, input: str, prop_spec: dict, date_variant: str, prepend_path: list[str] = list()
+    ):
+        """
+        Check that a valid date string satisfies the constraints of its prop (its bounds and
+        time steps) and if not, log a warning.
+
+        Constraints that are themselves invalid are skipped, as they are reported with the spec.
+        """
+        value_format = {
+            "date": "%Y-%m-%d",
+            "datetime": "%Y-%m-%dT%H:%M:%S",
+            "time": "%H:%M:%S",
+        }.get(date_variant)
+        if value_format is None:
+            return
+        value = datetime.datetime.strptime(input, value_format)
+        for key, part, is_violation in DATE_BOUND_CHECKS:
+            bound = prop_spec.get(key)
+            if bound is None:
+                continue
+            formats = DATETIME_BOUND_FORMATS if key.endswith("DateTime") else DATE_BOUND_FORMATS
+            parsed = self.__parse_date_bound__(bound, formats)
+            if parsed is not None and is_violation(part(value), part(parsed)):
+                self.__warn__(
+                    path=prepend_path,
+                    msg=f"The value `{input}` is outside of the `{key}` of `{bound}`",
+                )
+        if date_variant != "time":
+            day = value.date()
+            disabled = {
+                "disabledYears": day.year in (prop_spec.get("disabledYears") or []),
+                "disabledMonths": (day.month - 1)
+                in {
+                    self.__to_calendar_index__(entry, DATE_MONTH_NAMES, 1)
+                    for entry in prop_spec.get("disabledMonths") or []
+                },
+                # Python counts weekdays from Monday, while the `disabledWeekdays` start on Sunday
+                "disabledWeekdays": (day.weekday() + 1) % 7
+                in {
+                    self.__to_calendar_index__(entry, DATE_WEEKDAY_NAMES, 0)
+                    for entry in prop_spec.get("disabledWeekdays") or []
+                },
+                "disabledDates": any(
+                    start <= day <= end
+                    for start, end in self.__parse_disabled_dates__(prop_spec.get("disabledDates"))
+                ),
+            }
+            for key, is_disabled in disabled.items():
+                if is_disabled:
+                    self.__warn__(
+                        path=prepend_path,
+                        msg=f"The value `{input}` is disabled by the `{key}`",
+                    )
+        if date_variant != "date":
+            seconds = value.hour * 3600 + value.minute * 60 + value.second
+            for window in prop_spec.get("disabledTimes") or []:
+                if len(window) != 2:
+                    continue
+                start = self.__to_seconds_of_day__(window[0])
+                end = self.__to_seconds_of_day__(window[1], is_end=True)
+                if start is not None and end is not None and start <= seconds < end:
+                    self.__warn__(
+                        path=prepend_path,
+                        msg=f"The value `{input}` is disabled by the `disabledTimes` window of `{window[0]}` to `{window[1]}`",
+                    )
+        available_views = prop_spec.get("views") or DATE_DEFAULT_VIEWS.get(date_variant, [])
+        for unit, unit_value in (
+            ("hours", value.hour),
+            ("minutes", value.minute),
+            ("seconds", value.second),
+        ):
+            step = prop_spec.get(f"{unit}Step")
+            # Steps of views that aren't available can't be selected, so they aren't checked
+            if unit in available_views and isinstance(step, int) and step > 1:
+                if unit_value % step != 0:
+                    self.__warn__(
+                        path=prepend_path,
+                        msg=f"The value `{input}` is not a multiple of the `{unit}Step` of `{step}`",
+                    )
 
     def __check_date_valid__(self, input: str, date_variant: str, prepend_path: list[str] = list()):
         """

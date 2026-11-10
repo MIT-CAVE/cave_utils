@@ -46,6 +46,8 @@ class draggables_data_star(ApiValidator):
         hideDragOption: bool | None = None,
         showDragHandle: bool | None = None,
         hideCloseButton: bool | None = None,
+        docked: bool | None = None,
+        hideDockOption: bool | None = None,
         **kwargs,
     ):
         """
@@ -56,6 +58,7 @@ class draggables_data_star(ApiValidator):
         * **`position`**: `[dict]` = `None` &rarr; The initial pixel position of the draggable on screen.
             * **See**: `cave_utils.api.draggables.draggables_data_star_position`
             * **Note**: If left unspecified (i.e., `None`), the default position is determined by the application.
+            * **Note**: Ignored while the draggable is docked (see `docked` below).
         * **`hideCloseOption`**: `[bool]` = `None` &rarr; If `True`, the close button will be hidden on the draggable.
             * **Note**: If left unspecified (i.e., `None`), the close button is shown by default.
         * **`hideDragOption`**: `[bool]` = `None` &rarr; If `True`, the drag handle will be hidden on the draggable.
@@ -64,6 +67,12 @@ class draggables_data_star(ApiValidator):
             * **Note**: If left unspecified (i.e., `None`), the drag handle visibility is determined by the application.
         * **`hideCloseButton`**: `[bool]` = `None` &rarr; If `True`, the close button will be hidden on the draggable.
             * **Note**: If left unspecified (i.e., `None`), the close button visibility is determined by the application.
+        * **`docked`**: `[bool]` = `None` &rarr; If `True`, the draggable will be rendered docked within the persistent status bar instead of floating freely.
+            * **Notes**:
+                * If left unspecified (i.e., `None`), the draggable floats freely by default.
+                * The user can toggle this at any time via the "Dock to Status Bar" option in the draggable's own menu, unless `hideDockOption` is `True`.
+        * **`hideDockOption`**: `[bool]` = `None` &rarr; If `True`, the "Dock to Status Bar" option will be hidden from the draggable's menu, preventing the user from docking it.
+            * **Note**: If left unspecified (i.e., `None`), the dock option is shown by default.
         """
         return {"kwargs": kwargs, "accepted_values": {}}
 

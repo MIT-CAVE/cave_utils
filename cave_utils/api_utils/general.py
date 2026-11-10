@@ -4,7 +4,23 @@ General API Spec items that are found in multiple places. This is not a key that
 
 from pamda import pamda
 import type_enforced
-from cave_utils.api_utils.validator_utils import ApiValidator, CustomKeyValidator
+from cave_utils.api_utils.validator_utils import (
+    ApiValidator,
+    CustomKeyValidator,
+    DATE_BOUND_FORMATS,
+    DATE_BOUND_FORMAT_NAMES,
+    DATETIME_BOUND_FORMATS,
+    DATETIME_BOUND_FORMAT_NAMES,
+    DATE_DEFAULT_VIEWS,
+    DATE_DISABLED_DATE_FORMATS,
+    DATE_DISABLED_DATE_FORMAT_NAMES,
+    DATE_MONTH_NAMES,
+    DATE_TIME_OF_DAY_FORMAT_NAMES,
+    DATE_TIME_STEP_LIMITS,
+    DATE_VIEW_NAMES,
+    DATE_WEEKDAY_NAMES,
+    SECONDS_PER_DAY,
+)
 
 
 @type_enforced.Enforcer
@@ -28,7 +44,17 @@ class props(ApiValidator):
         labelPlacement: str | None = None,
         activeLabel: str | None = None,
         placeholder: str | None = None,
+        direction: str | None = None,
+        defaultZoom: int | float | None = None,
+        minZoom: int | float | None = None,
+        maxZoom: int | float | None = None,
+        maxBounds: list[list[int | float]] | None = None,
+        pathColor: str | None = None,
+        pathWeight: int | float | None = None,
         numVisibleTags: int | None = None,
+        availableTitle: str | None = None,
+        selectedTitle: str | None = None,
+        height: int | float | str | None = None,
         maxValue: float | int | None = None,
         minValue: float | int | None = None,
         gradient: dict | None = None,
@@ -42,6 +68,26 @@ class props(ApiValidator):
         unit: str | None = None,
         unitPlacement: str | None = None,
         views: list[str] | None = None,
+        defaultView: str | None = None,
+        minDate: str | None = None,
+        maxDate: str | None = None,
+        minTime: str | None = None,
+        maxTime: str | None = None,
+        minDateTime: str | None = None,
+        maxDateTime: str | None = None,
+        timezone: str | None = None,
+        hoursStep: int | None = None,
+        minutesStep: int | None = None,
+        secondsStep: int | None = None,
+        disabledTimes: list[list[str]] | None = None,
+        disabledDates: list[str | list[str]] | None = None,
+        disabledWeekdays: list[int | str] | None = None,
+        disabledMonths: list[int | str] | None = None,
+        disabledYears: list[int] | None = None,
+        dateOrder: str | None = None,
+        hour24: bool | None = None,
+        disablePast: bool | None = None,
+        disableFuture: bool | None = None,
         legendNotation: str | None = None,
         legendPrecision: int | None = None,
         legendNotationDisplay: str | None = None,
@@ -67,6 +113,7 @@ class props(ApiValidator):
         locale: str | None = None,
         fallbackValue: str | None = None,
         draggable: bool | None = None,
+        quickView: bool | None = None,
         allowNone: bool | None = None,
         marqueeLabel: bool | None = None,
         spinner: str | bool | None = None,
@@ -95,19 +142,26 @@ class props(ApiValidator):
                     * Note: A variant is required when using the `media` type
                 * `"coordinate"`: A coordinate input field
         * **`subtitle`**: `[str]` = `None` &rarr; An optional subtitle for the prop.
+            * **Note**: A long subtitle scrolls (as a marquee) if it does not fit in the width of the prop. It does not make the prop wider.
         * **`help`**: `[str]` = `None` &rarr; The help text to display.
             * **Notes**:
                 - This is displayed when the user clicks on the help icon next to the prop.
                 - This can be regular text or markdown.
+                - It is rendered as markdown unless `richText` is `False`. In the next major version, it will only be rendered as markdown when `richText` is `True`.
+                - See `richText` in the `cave_utils.api` docs for more information.
+                - HTML in the markdown is sanitized: scripts, iframes, event handlers, inline styles and classes are removed, as well as links with a protocol other than `http`, `https`, `mailto`, `irc`, `ircs` or `xmpp` (e.g. `javascript:`, `data:` or `tel:`). Relative links and links to the same page (`#id`) are kept.
         * **`helperText`**: `[str]` = `None` &rarr; Additional help text to display below the prop without requiring a click on the help icon.
+            * **Notes**:
+                - This is displayed by `"text"`, `"num"` (`"field"` variant), `"selector"` and `"media"` props.
+                - It is rendered as rich text when `richText` is `True`. See `richText` in the `cave_utils.api` docs for more information.
         * **`display`**: `[bool]` = `None` &rarr; Whether or not the prop will be displayed.
         * **`variant`**: `[str]` = `None` &rarr; The variant of the prop.
             * **Accepted Values**:
                 * When **`type`** == `"head"`:
                     * `"column"`: A header for a column of related prop items
                     * `"row"`: A header for a row of related prop items
-                    * `"icon"`: Same as `"column"`, accompanied by a related icon.
-                    * `"iconRow"`: Same as `"row"`, accompanied by a related icon.
+                    * `"icon"`: **Deprecated**, will be removed in `4.0.0`, in favor of `"column"`.
+                    * `"iconRow"`: **Deprecated**, will be removed in `4.0.0`, in favor of `"row"`.
                 * When **`type`** == `"text"`:
                     * `"single"`: A single-line text input field
                     * `"textarea"`: A multi-line text input field
@@ -116,12 +170,15 @@ class props(ApiValidator):
                     * `"slider"`: A range of values along a bar, from which users may select a single value
                     * `"icon"`: A fixed numerical value presented alongside a corresponding icon.
                     * `"iconCompact"`: Similar to `"icon"`, but designed in a compact format for appropriate rendering within a draggable pad.
+                    * `"iconCompactAlt"`: Similar to `"iconCompact"`, but designed for rendering within a horizontally scrollable carousel (e.g. a global output docked to the persistent status bar).
                     * `"incslider"`: A range of values along a bar, from which users may select a single value, with a predefined set of options.
                 * When **`type`** == `"selector"`:
                     * `"checkbox"`: Select one or more items from a set of checkboxes
+                    * `"hcheckbox"`: A set of `"checkbox"`s placed horizontally
                     * `"combobox"`: A dropdown with a search bar allowing users to filter and select a single option by typing
                     * `"comboboxMulti"`: A dropdown with a search bar, enabling users to filter and select multiple options. Selected items are displayed as tags within the input field.
                     * `"dropdown"`: Show multiple options that appear when the element is clicked
+                    * `"dualList"`: Select one or more options by moving them between two side-by-side lists: "available" and "selected"
                     * `"nested"`: Select one or more options from a set of nested checkboxes
                     * `"radio"`: Select one option from a set of mutually exclusive options
                     * `"hradio"`: A set of `"radio"`s placed horizontally
@@ -130,17 +187,21 @@ class props(ApiValidator):
                 * When **`type`** == `"date"`:
                     * `"date"`: Select a date via a calendar pop-up that appears when the element is clicked (default)
                         * **Note**: Passed as `YYYY-MM-DD`
+                        * **Note**: The pop-up has a `"Today"` shortcut, which is disabled if today can't be selected.
                     * `"time"`: Select a time via a clock pop-up that appears when the element is clicked
                         * **Note**: Passed as `HH:MM:SS`
+                        * **Note**: The pop-up has a `"Now"` shortcut, which is disabled if the current time can't be selected.
                     * `"datetime"`: Select date and time via a pop-up with calendar and clock tabs that appear when the element is clicked
                         * **Note**: Passed as `YYYY-MM-DDTHH:MM:SS`
+                        * **Note**: The pop-up has a `"Now"` shortcut, which is disabled if the current moment can't be selected.
                 * When **`type`** == `"media"`:
                     * `"picture"`: Show a PNG or JPG image
                     * `"video"`: Display a YouTube, Vimeo, or Dailymotion video clip
+                    * `"audio"`: Play an audio clip (e.g. MP3, WAV, or OGG) with the browser's native audio player
                 * When **`type`** == `"coordinate"`:
-                    * `"latLngInput"`: A latitude and longitude input field
-                    * `"latLngMap"`: A clickable map to select a latitude and longitude
-                    * `"latLngPath"`: A clickable map to select a path of latitude and longitude points
+                    * `"latLngInput"`: **Deprecated** alias of `"latLngMap"`, will be removed in `4.0.0`.
+                    * `"latLngMap"`: A map popup to select a latitude and longitude by dragging its marker
+                    * `"latLngPath"`: A map popup to build a path of latitude and longitude points by dragging its marker or entering coordinates manually
         * **`container`**: `[str]` = `"vertical"` | `"none"` &rarr;
             * Specifies the type of prop container by selecting from predefined styles.
             * **Accepted Values**:
@@ -162,10 +223,6 @@ class props(ApiValidator):
             * The root API keys to pass to your `execute_command` function if an `apiCommand` is provided.
             * **Note**: If `None`, all API keys are passed to your `execute_command`.
             * **Note**: This attribute applies to all props except `"head"` props.
-        * **`icon`**: `[str]` = `None` &rarr; The icon to use for the prop.
-            * **Notes**:
-                * It must be a valid icon name from the [react-icons][] bundle, preceded by the abbreviated name of the icon library source.
-                * This attribute applies exclusively to `"head"` props.
         * **`options`**: `[dict]` = `None` &rarr;
             * The options to be displayed on the UI element mapped to their display properties.
             * **Notes**:
@@ -174,20 +231,73 @@ class props(ApiValidator):
         * **`numVisibleTags`**: `[int]` = `None` &rarr;
             * The maximum number of tags visible in a `"comboboxMulti"` variant of a `"selector"` prop when it is not focused.
             * **Notes**:
-                * If `None`, all tags will be displayed
+                * If `None`, `1` tag will be displayed and any remaining selections are summarized in a `+N more` chip
                 * This attribute applies exclusively to `"selector"` props using the `"comboboxMulti"` variant
+        * **`availableTitle`**: `[str]` = `None` &rarr; The title displayed above the list of options that are not selected.
+            * **Notes**:
+                * If `None`, `"Available"` will be used
+                * This attribute applies exclusively to `"selector"` props using the `"dualList"` variant
+        * **`selectedTitle`**: `[str]` = `None` &rarr; The title displayed above the list of selected options.
+            * **Notes**:
+                * If `None`, `"Selected"` will be used
+                * This attribute applies exclusively to `"selector"` props using the `"dualList"` variant
+        * **`height`**: `[int | float | str]` = `None` &rarr; The height of the lists.
+            * **Notes**:
+                * A number is interpreted as pixels; a string can be any valid CSS height (e.g. `"20rem"`)
+                * If `None`, `240` will be used
+                * This attribute applies exclusively to `"selector"` props using the `"dualList"` variant
         * **`valueOptions`**: `[list[int|float]]` = `None` &rarr;
             * **Notes**:
                 * Only valueOptions provided here can be selected for the prop value
                 * This attribute applies to `"num"` props with the `"incslider"` variant.
         * **`label`**: `[str]` = `None` &rarr; The label to display above the input field when the prop is focused.
-            * **Note**: This attribute applies to `"num"`, `"text"`, and `"coordinate"` props.
+            * **Note**: This attribute applies to `"num"`, `"text"` and `"date"` props.
         * **`labelPlacement`**: `[str]` = `None` &rarr; The placement of the label relative to the input field.
-            * **Accepted Values**: ['start', 'end', "top", "bottom"]
+            * **Accepted Values**:
+                * `"start"`: The label is placed at the start of the input field.
+                * `"end"`: The label is placed at the end of the input field.
+                * `"top"`: The label is placed above the input field.
+                * `"bottom"`: The label is placed below the input field.
         * **`activeLabel`**: `[str]` = `None` &rarr; The label to display when the prop value is True.
             * **Notes**: This attribute applies exclusively to `"toggle"` props.
         * **`placeholder`**: `[str]` = `None` &rarr; The placeholder text to display.
-            * **Note**: This attribute applies exclusively to `"text"` props.
+            * **Note**: This attribute applies to `"text"`, `"num"` (`"field"` variant), `"coordinate"` and `"selector"` props (only the `"dropdown"`, `"combobox"` and `"comboboxMulti"` variants). It is shown while nothing is selected, except for `"combobox"`, where it is used as the label of the input field.
+        * **`direction`**: `[str]` = `"row"` &rarr; The layout direction of a coordinate prop's latitude/longitude fields.
+            * **Accepted Values**:
+                * `"row"`: The latitude and longitude fields are placed side by side.
+                * `"column"`: The latitude and longitude fields are stacked vertically.
+            * **Notes**:
+                * This attribute applies exclusively to `"coordinate"` props.
+                * For the `"latLngMap"` and `"latLngPath"` variants, only the latitude/longitude fields are affected; the map-toggle button always stays beside them.
+        * **`defaultZoom`**: `[int | float]` = `None` &rarr; The initial zoom level of the popup map.
+            * **Notes**:
+                * Must be between `0` and `22`.
+                * If left unspecified (i.e., `None`), a sensible default zoom level is used.
+                * This attribute applies to the `"latLngMap"` and `"latLngPath"` variants of `"coordinate"` props.
+        * **`minZoom`**: `[int | float]` = `None` &rarr; The minimum zoom level a user can zoom out to on the popup map.
+            * **Notes**:
+                * Must be between `0` and `22`.
+                * This attribute applies to the `"latLngMap"` and `"latLngPath"` variants of `"coordinate"` props.
+        * **`maxZoom`**: `[int | float]` = `None` &rarr; The maximum zoom level a user can zoom in to on the popup map.
+            * **Notes**:
+                * Must be between `0` and `22`.
+                * This attribute applies to the `"latLngMap"` and `"latLngPath"` variants of `"coordinate"` props.
+        * **`maxBounds`**: `[list[int | float]]` = `None` &rarr; The bounds the popup map can be panned within, as `[[west, south], [east, north]]`.
+            * **Notes**:
+                * Each corner is a `[longitude, latitude]` pair, where longitude is between `-180` and `180` and latitude is between `-90` and `90`.
+                * `west` must be less than `east`, and `south` must be less than `north`.
+                * If left unspecified (i.e., `None`), the popup map can be panned anywhere.
+                * This attribute applies to the `"latLngMap"` and `"latLngPath"` variants of `"coordinate"` props.
+        * **`pathColor`**: `[str]` = `None` &rarr; The color of the drawn path line.
+            * **Notes**:
+                * A valid color string (EG: "rgba(3, 170, 238, 0.5)")
+                * If left unspecified (i.e., `None`), a default blue is used.
+                * This attribute applies exclusively to the `"latLngPath"` variant of `"coordinate"` props.
+        * **`pathWeight`**: `[int | float]` = `None` &rarr; The width of the drawn path line.
+            * **Notes**:
+                * Must be between `1` and `100`.
+                * If left unspecified (i.e., `None`), a default width is used.
+                * This attribute applies exclusively to the `"latLngPath"` variant of `"coordinate"` props.
         * **`maxValue`**: `[float | int]` = `None` &rarr; The maximum value for the prop.
             * **Note**: This attribute applies exclusively to `"num"` props.
         * **`minValue`**: `[float | int]` = `None` &rarr; The minimum value for the prop.
@@ -231,6 +341,141 @@ class props(ApiValidator):
             * **Notes**:
                 * The views will be presented in the order specified in the `views` array.
                 * This attribute applies exclusively to `"date"` props.
+        * **`defaultView`**: `[str]` = `None` &rarr; The view that the picker opens to.
+            * **Accepted Values**: The same as the accepted values of **`views`** for the **`variant`**.
+            * **Notes**:
+                * Must be one of the available `views`, which are the default `views` of the **`variant`** if **`views`** is not provided.
+                * If not provided, the picker opens to its default view, which is the `"day"` view for the `"date"` and `"datetime"` variants and the `"hours"` view for the `"time"` variant.
+                * This attribute applies exclusively to `"date"` props.
+        * **`dateOrder`**: `[str]` = `"mdy"` &rarr; The order of the month, day and year in which the date is displayed.
+            * **Accepted Values**:
+                * `"mdy"`: Month first, e.g. `07-09-2026`
+                * `"dmy"`: Day first, e.g. `09-07-2026`
+                * `"ymd"`: Year first, e.g. `2026-07-09`
+            * **Notes**:
+                * This only changes how the value is displayed. The value is always passed as described in **`variant`**.
+                * This attribute applies exclusively to `"date"` props with the `"date"` and `"datetime"` variants.
+        * **`hour24`**: `[bool]` = `False` &rarr; Whether to display the time in a 24-hour clock. If `False`, a 12-hour clock with `AM`/`PM` is used.
+            * **Notes**:
+                * This only changes how the value is displayed and which hours the clock offers. The value is always passed as described in **`variant`**.
+                * The seconds are only displayed if `"seconds"` is one of the available `views`.
+                * This attribute applies exclusively to `"date"` props with the `"time"` and `"datetime"` variants.
+        * **`minDate`**: `[str]` = `None` &rarr; The earliest date that can be selected.
+            * **Accepted Formats**: `YYYY-MM-DD`, `YYYY-MM-DDTHH:MM:SS` or `YYYY-MM-DD HH:MM:SS`
+            * **Notes**:
+                * Only the date part is used, so any time part is ignored.
+                * This attribute applies exclusively to `"date"` props with the `"date"` and `"datetime"` variants.
+        * **`maxDate`**: `[str]` = `None` &rarr; The latest date that can be selected.
+            * **Accepted Formats**: `YYYY-MM-DD`, `YYYY-MM-DDTHH:MM:SS` or `YYYY-MM-DD HH:MM:SS`
+            * **Notes**:
+                * Only the date part is used, so any time part is ignored.
+                * Must not be earlier than `minDate`.
+                * This attribute applies exclusively to `"date"` props with the `"date"` and `"datetime"` variants.
+        * **`minTime`**: `[str]` = `None` &rarr; The earliest time of day that can be selected.
+            * **Accepted Formats**: `HH:MM:SS`, `HH:MM`, `YYYY-MM-DDTHH:MM:SS` or `YYYY-MM-DD HH:MM:SS`
+            * **Notes**:
+                * Only the time part is used, so any date part is ignored.
+                * This attribute applies exclusively to `"date"` props with the `"time"` and `"datetime"` variants.
+        * **`maxTime`**: `[str]` = `None` &rarr; The latest time of day that can be selected.
+            * **Accepted Formats**: `HH:MM:SS`, `HH:MM`, `YYYY-MM-DDTHH:MM:SS` or `YYYY-MM-DD HH:MM:SS`
+            * **Notes**:
+                * Only the time part is used, so any date part is ignored.
+                * Must not be earlier than `minTime`.
+                * This attribute applies exclusively to `"date"` props with the `"time"` and `"datetime"` variants.
+        * **`minDateTime`**: `[str]` = `None` &rarr; The earliest moment that can be selected, bound to a specific date.
+            * **Accepted Formats**: `YYYY-MM-DDTHH:MM:SS` or `YYYY-MM-DD HH:MM:SS`
+            * **Notes**:
+                * Unlike `minDate` and `minTime`, which limit the day and the time of day independently, this is a single cutoff. For example, with `"minDateTime": "2026-07-05T09:00:00"`, `08:00` on `2026-07-06` can be selected, whereas with `"minDate": "2026-07-05"` and `"minTime": "09:00"` it can not.
+                * A time part is required, so a date-only string is rejected.
+                * It combines with `minDate`, `maxDate`, `minTime` and `maxTime`, and only values that satisfy all of them can be selected.
+                * This attribute applies exclusively to `"date"` props with the `"datetime"` variant.
+        * **`maxDateTime`**: `[str]` = `None` &rarr; The latest moment that can be selected, bound to a specific date.
+            * **Accepted Formats**: `YYYY-MM-DDTHH:MM:SS` or `YYYY-MM-DD HH:MM:SS`
+            * **Notes**:
+                * See `minDateTime` for how this differs from `maxDate` and `maxTime`.
+                * A time part is required, so a date-only string is rejected.
+                * Must not be earlier than `minDateTime`.
+                * This attribute applies exclusively to `"date"` props with the `"datetime"` variant.
+        * **`timezone`**: `[str]` = `None` &rarr; The timezone that the date and/or time of the prop belongs to.
+            * **Accepted Values**:
+                * `"system"`: The timezone of the user's browser
+                * `"UTC"`: Coordinated Universal Time
+                * Any [IANA timezone name], such as `"America/New_York"`
+            * **Notes**:
+                * Values are never converted between timezones. A value is the wall-clock date and/or time in this timezone, and it is displayed as it is stored.
+                * The timezone defines what the present is, so it affects `disablePast` and `disableFuture` and the day highlighted as today.
+                * The `minDate`, `maxDate`, `minTime`, `maxTime`, `minDateTime` and `maxDateTime` bounds are also read in this timezone.
+                * A date and/or time that doesn't exist in this timezone, such as the hour skipped when clocks move forward, is displayed as the next valid one until a new value is selected.
+                * If not provided (or `"system"`), the timezone of the user's browser is used.
+                * This attribute applies exclusively to `"date"` props.
+        * **`hoursStep`**: `[int]` = `None` &rarr; The step between the hours, e.g. `2` only allows even hours.
+            * **Notes**:
+                * Must divide `24` evenly (`1`, `2`, `3`, `4`, `6`, `8`, `12` or `24`).
+                * A step only applies if the `"hours"` view is one of the available `views`.
+                * Values that aren't a multiple of the step can't be selected.
+                * This attribute applies exclusively to `"date"` props with the `"time"` and `"datetime"` variants.
+        * **`minutesStep`**: `[int]` = `None` &rarr; The step between the minutes, e.g. `15` only allows `00`, `15`, `30` and `45`.
+            * **Notes**:
+                * Must divide `60` evenly (`1`, `2`, `3`, `4`, `5`, `6`, `10`, `12`, `15`, `20`, `30` or `60`).
+                * A step only applies if the `"minutes"` view is one of the available `views`.
+                * Values that aren't a multiple of the step can't be selected.
+                * This attribute applies exclusively to `"date"` props with the `"time"` and `"datetime"` variants.
+        * **`secondsStep`**: `[int]` = `None` &rarr; The step between the seconds, e.g. `30` only allows `00` and `30`.
+            * **Notes**:
+                * Must divide `60` evenly (`1`, `2`, `3`, `4`, `5`, `6`, `10`, `12`, `15`, `20`, `30` or `60`).
+                * A step only applies if the `"seconds"` view is one of the available `views`.
+                * Values that aren't a multiple of the step can't be selected.
+                * This attribute applies exclusively to `"date"` props with the `"time"` and `"datetime"` variants.
+        * **`disabledTimes`**: `[list[list[str]]]` = `None` &rarr; Windows of the time of day that can't be selected, each one as a `[start, end]` pair.
+            * **Accepted Formats**: `HH:MM:SS`, `HH:MM`, `YYYY-MM-DDTHH:MM:SS` or `YYYY-MM-DD HH:MM:SS`
+            * **Example**: `[["12:00", "13:00"], ["22:00", "24:00"]]` disables lunch time and the last two hours of the day.
+            * **Notes**:
+                * The `start` is included in the window and the `end` is not, so `["12:00", "13:00"]` disables `12:00:00` to `12:59:59`.
+                * The `end` of a window (and only the `end`) can also be `"24:00"` or `"24:00:00"`, which is the end of the day.
+                * The `start` must be earlier than the `end`. A window can't go past midnight, so use two windows instead.
+                * Only the time part is used, so any date part is ignored.
+                * The windows can't disable the whole day.
+                * An hour or a minute is disabled in its view only if all of it is disabled.
+                * This attribute applies exclusively to `"date"` props with the `"time"` and `"datetime"` variants.
+        * **`disabledDates`**: `[list[str | list[str]]]` = `None` &rarr; Dates that can't be selected, each one as a single date or as a `[start, end]` range.
+            * **Accepted Formats**: `YYYY-MM-DD`, `YYYY-MM-DDTHH:MM:SS` or `YYYY-MM-DD HH:MM:SS`
+            * **Example**: `["2026-07-04", ["2026-12-24", "2027-01-02"]]` disables Independence Day and the holidays.
+            * **Notes**:
+                * Single dates and ranges can be mixed in the same list.
+                * Both the `start` and the `end` are included in a range, so `["2026-12-24", "2026-12-26"]` disables three days.
+                * The `start` must not be later than the `end`.
+                * Only the date part is used, so any time part is ignored.
+                * A month or a year that the dates cover completely can't be selected either.
+                * This attribute applies exclusively to `"date"` props with the `"date"` and `"datetime"` variants.
+        * **`disabledWeekdays`**: `[list[int | str]]` = `None` &rarr; Days of the week that can't be selected.
+            * **Accepted Values**: A number from `0` (Sunday) to `6` (Saturday), a two-letter name (`"Su"`, `"Mo"`, `"Tu"`, `"We"`, `"Th"`, `"Fr"`, `"Sa"`), a three-letter name (`"Sun"`, `"Mon"`, ...) or a full name (`"Sunday"`, `"Monday"`, ...).
+            * **Notes**:
+                * Names are not case-sensitive, and the notations can be mixed in the same list.
+                * Not all of the weekdays can be disabled, as that would leave nothing to select.
+                * This attribute applies exclusively to `"date"` props with the `"date"` and `"datetime"` variants.
+        * **`disabledMonths`**: `[list[int | str]]` = `None` &rarr; Months of the year that can't be selected, in every year.
+            * **Accepted Values**: A number from `1` (January) to `12` (December), a three-letter name (`"Jan"`, `"Feb"`, ...) or a full name (`"January"`, `"February"`, ...).
+            * **Notes**:
+                * Names are not case-sensitive, and the notations can be mixed in the same list.
+                * Not all of the months can be disabled, as that would leave nothing to select.
+                * This attribute applies exclusively to `"date"` props with the `"date"` and `"datetime"` variants.
+        * **`disabledYears`**: `[list[int]]` = `None` &rarr; Years that can't be selected.
+            * **Notes**:
+                * This attribute applies exclusively to `"date"` props with the `"date"` and `"datetime"` variants.
+        * **`disablePast`**: `[bool]` = `False` &rarr; Whether to prevent selecting values before the present.
+            * **Notes**:
+                * With the `"date"` variant, dates before today are disabled.
+                * With the `"time"` variant, times before the current time of day are disabled.
+                * With the `"datetime"` variant, moments before now are disabled.
+                * The present is taken from the user's browser.
+                * This attribute applies exclusively to `"date"` props.
+        * **`disableFuture`**: `[bool]` = `False` &rarr; Whether to prevent selecting values after the present.
+            * **Notes**:
+                * With the `"date"` variant, dates after today are disabled.
+                * With the `"time"` variant, times after the current time of day are disabled.
+                * With the `"datetime"` variant, moments after now are disabled.
+                * The present is taken from the user's browser.
+                * This attribute applies exclusively to `"date"` props.
         * **`locale`**: `[str]` = `None` &rarr;
             * Format numeric values based on language and regional conventions.
             * **Notes**:
@@ -240,13 +485,17 @@ class props(ApiValidator):
         * **`precision`**: `[int]` = `None` &rarr; The number of decimal places to display.
             * **Notes**:
                 * Set the precision to `0` to attach an integer constraint.
-                * If left unspecified (i.e., `None`), it will default to `settings.defaults.precision`.
-                * This attribute applies exclusively to `"num"` props.
+                * If left unspecified (i.e., `None`):
+                    * For `"num"` props, it will default to `settings.defaults.precision`.
+                    * For `"coordinate"` props, it will default to `6` decimal places instead of `settings.defaults.precision`.
+                * This attribute applies to `"num"` and `"coordinate"` props.
         * **`trailingZeros`**: `[bool]` = `None` &rarr; If `True`, trailing zeros will be displayed.
             * **Notes**:
                 * This ensures that all precision digits are shown. For example: `1.5` &rarr; `1.500` when precision is `3`.
-                * If left unspecified (i.e., `None`), it will default to `settings.defaults.trailingZeros`.
-                * This attribute applies exclusively to `"num"` props.
+                * If left unspecified (i.e., `None`):
+                    * For `"num"` props, it will default to `settings.defaults.trailingZeros`.
+                    * For `"coordinate"` props, it will default to `True` instead of `settings.defaults.trailingZeros`.
+                * This attribute applies to `"num"` and `"coordinate"` props.
         * **`fallbackValue`**: [str] = `None` &rarr; A value to show when the value is missing or invalid.
             * **Notes**:
                 * This is only for display purposes as related to number formatting. It does not affect the actual value or any computations.
@@ -255,8 +504,10 @@ class props(ApiValidator):
                 * This attribute applies exclusively to `"num"` props.
         * **`unit`**: `[str]` = `None` &rarr; The unit to use for the prop.
             * **Notes**:
-                * If left unspecified (i.e., `None`), it will default to `settings.defaults.unit`.
-                * This attribute applies exclusively to `"num"` props.
+                * If left unspecified (i.e., `None`):
+                    * For `"num"` props, it will default to `settings.defaults.unit`.
+                    * For `"coordinate"` props, no unit is shown (there is no coordinate-specific default, and `settings.defaults.unit` does not apply).
+                * This attribute applies to `"num"` and `"coordinate"` props.
         * **`unitPlacement`**: `[str]` = `None` &rarr; The position of the `unit` symbol relative to the value.
             * **Accepted Values**:
                 * `"after"`: The `unit` appears after the value.
@@ -264,8 +515,11 @@ class props(ApiValidator):
                 * `"before"`: The `unit` appears before the value.
                 * `"beforeWithSpace"`: The unit is placed before the value, with a space in between.
             * **Notes**:
-                * If left unspecified (i.e., `None`), it will default to `settings.defaults.unitPlacement`.
-                * This attribute applies exclusively to `"num"` props.
+                * Only relevant when `unit` is also set.
+                * If left unspecified (i.e., `None`):
+                    * For `"num"` props, it will default to `settings.defaults.unitPlacement`.
+                    * For `"coordinate"` props, it will default to `"after"` instead of `settings.defaults.unitPlacement`, since degree symbols are conventionally typeset directly against the number.
+                * This attribute applies to `"num"` and `"coordinate"` props.
         * **`notation`**: `[str]` = `"standard"` &rarr; The formatting style of a numeric value.
             * **Accepted Values**:
                 * `"standard"`: Plain number formatting
@@ -341,7 +595,9 @@ class props(ApiValidator):
                 * If left unspecified (i.e., `None`), it will default to `settings.defaults.legendMaxLabel`.
                 * This attribute applies exclusively to `"num"` props.
         * **`icon`**: `[str]` = `None` &rarr; The icon to use for the prop.
-            * **Notes**: Applies to the `icon` variants of various props and also `toggle` and `button` props.
+            * **Notes**:
+                * It must be a valid icon name from the [react-icons][] bundle, preceded by the abbreviated name of the icon library source.
+                * Applies to `"head"` props (all variants), the `icon` variants of various other props, and also `toggle`, `button`, and `selector` props.
         * **`activeIcon`**: `[str]` = `None` &rarr; The icon to use for the prop when it is active.
             * **Notes**: Applies to the `toggle` and `selector` props.
         * **`startIcon`**: `[str]` = `None` &rarr; The icon to display at the start of the prop.
@@ -349,11 +605,11 @@ class props(ApiValidator):
         * **`endIcon`**: `[str]` = `None` &rarr; The icon to display at the end of the prop.
             * **Notes**: Applies to the `button` prop and offers a way to add an icon to the right side of the button.
         * **`color`**: `[str]` = `None` &rarr; The color to use for the prop.
-            * **Notes**: Applies to the `icon` variants of various props and also `toggle` and `button` props.
+            * **Notes**: Applies to `"head"` props (all variants), the `icon` variants of various other props, and also `toggle`, `button`, and `selector` props.
         * **`activeColor`**: `[str]` = `None` &rarr; The color to use for the prop when it is active.
             * **Notes**: Applies to the `toggle` and `selector` props.
         * **`size`**: `[str]` = `None` &rarr; The size of the icon in the prop.
-            * **Notes**: Applies to the `icon` variants of various props and also `toggle` and `button` props.
+            * **Notes**: Applies to `"head"` props (all variants), the `icon` variants of various other props, and also `toggle`, `button`, and `selector` props.
         * **`activeSize`**: `[str]` = `None` &rarr; The size of the icon in the prop when it is active.
             * **Notes**: Applies to the `toggle` and `selector` props.
         * **`placement`**: `[str]` = `None` &rarr; The placement of the prop.
@@ -364,32 +620,47 @@ class props(ApiValidator):
                 * `"bottom"`: The prop is placed at the bottom of the container.
                 * `"center"`: The prop is placed at the center of the container.
         * **`fullWidth`**: `[bool]` = `None` &rarr; Whether or not the prop should take the full width of the container.
+            * **Notes**:
+                * For `media` props, `fullWidth: True` expresses the same as `scaleMode: "fitWidth"`.
+                * If both `fullWidth` and `scaleMode` are used, `scaleMode` takes precedence and a warning is logged.
+                * `"audio"` props only support `fullWidth`: they have a fixed height, so `scaleMode` does not apply.
         * **`url`**: `[str]` = `None` &rarr; The URL to navigate to when the button is clicked.
-            * **Notes**: Applies to `button` props.
+            * **Notes**: Applies to `"button"` props.
         * **`suppressCommand`**: `[bool]` = `False` &rarr;
             * If `True` and `url` is also set, clicking the button only navigates to `url`; the paired `apiCommand` (if any) is not triggered.
             * **Notes**:
-                * Applies to `button` props.
+                * Applies to `"button"` props.
                 * Has no effect unless both `url` and `apiCommand` are set. Otherwise, `apiCommand` (if any) always triggers on click.
         * **`scaleMode`**: `[str]` = `None` &rarr; The scale mode to use for the prop.
-            * **Accepted Values**: ['fitWidth', 'fitHeight', 'fitContainer']
-            * **Notes**: Applies only to `media` props with a `variant` of `video`.
+            * **Accepted Values**:
+                * `"fitWidth"`: The prop will scale to fit the width of its container. Its height follows the media's aspect ratio.
+                * `"fitHeight"`: The prop will scale to fit the height of its container. Its width follows the media's aspect ratio.
+                * `"fitContainer"`: The prop will scale to cover the width and height of its container without cropping. The side that does not bind expands.
+            * **Notes**:
+                * Applies only to `media` props with a `variant` of `picture` or `video`.
+                * `scaleMode` takes precedence over `fullWidth`.
         * **`propStyle`**: `[dict]` = `None` &rarr; A dictionary of css styles to apply to the prop.
             * **Note**: This will not be validated as part of the API spec, so use with caution.
         * **`readOnly`**: `[bool]` = `False` &rarr; Whether or not the prop is read-only.
             * **Notes**:
-                - Only applies to 'text' props.
+                - Only applies to `"text"`, `"date"` and `"num"` props (`"field"` variant), and to `"selector"` props `"selector"` props (only the `"combobox"`, `"comboboxMulti"` and `"dualList"` variants).
                 - Essentially operates an enabled without making the prop darkened.
         * **`marks`**: `[dict[str, dict[str, str]]]` = `None` &rarr; A dictionary of marks to display on the slider.
             * **Notes**:
                 - Only applies to `"num"` props with the `"incslider"` variant.
                 - Contains key-value pairs for each mark, where the key is the mark value and the value is a dictionary of properties for the mark (e.g., label, color).
                 # TODO: Add more details and validation for the `marks` dictionary.
-        * **`draggable`**: `[bool]` = `None` &rarr;
+        * **`draggable`**: `[bool]` = `None` &rarr; **Deprecated**, will be removed in `4.0.0`, in favor of `quickView`.
             * If `True`, the prop will be rendered within the draggable global outputs pad.
             * **Notes**:
-                * The prop's `variant` is enforced to `iconCompact` to accommodate it within the draggable pad.
+                * The prop's `variant` is enforced to `"iconCompact"` to accommodate it within the draggable pad.
                 * This attribute applies exclusively to `"num"` props defined within `cave_utils.api.globalOutputs`.
+        * **`quickView`**: `[bool]` = `None` &rarr;
+            * If `True`, the prop will be rendered within the global outputs quick-view display: the draggable pad, or, if the user has docked global outputs, a card within the persistent status bar carousel.
+            * **Notes**:
+                * The prop's `variant` is enforced to `"iconCompact"` or `"iconCompactAlt"` (depending on whether global outputs are docked) to accommodate it within either display.
+                * This attribute applies exclusively to `"num"` props defined within `cave_utils.api.globalOutputs`.
+                * `draggable` is still accepted as a deprecated alias of this attribute.
         * **`allowNone`**: `[bool]` = `False` &rarr;
             * Whether or not to allow `None` as a valid value for the prop. This is primarily used to help when validating `values` and `valueLists`.
             * **Notes**:
@@ -448,6 +719,7 @@ class props(ApiValidator):
         [metric prefix]: https://en.wikipedia.org/wiki/Metric_prefix
         [Scientific notation]: https://en.wikipedia.org/wiki/Scientific_notation
         [Engineering notation]: https://en.wikipedia.org/wiki/Engineering_notation
+        [IANA timezone name]: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
         [Number.prototype.toPrecision]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toPrecision
         """
         passed_values = {k: v for k, v in locals().items() if (v is not None) and k != "kwargs"}
@@ -465,9 +737,9 @@ class props(ApiValidator):
             "labelPlacement",
         ]
         if type == "head":
-            if variant == "icon" or variant == "iconRow":
-                required_fields += ["icon"]
-                optional_fields += ["color", "size"]
+            # `icon`/`color`/`size` apply to all `head` variants (`column`, `row`, and the
+            # deprecated `icon`/`iconRow` aliases), which all render identically.
+            optional_fields += ["icon", "color", "size"]
         else:
             optional_fields += ["enabled", "apiCommand", "apiCommandKeys", "allowNone"]
 
@@ -502,8 +774,9 @@ class props(ApiValidator):
                         "step",
                         "largeStep",
                         "hideKeyboardToggle",
+                        "readOnly",
                     ]
-            if variant == "icon" or variant == "iconCompact":
+            if variant == "icon" or variant == "iconCompact" or variant == "iconCompactAlt":
                 required_fields += ["icon"]
                 optional_fields += ["color", "size"]
             if notationDisplay:
@@ -523,13 +796,13 @@ class props(ApiValidator):
                 "trailingZeros",
                 "unitPlacement",
                 "draggable",
+                "quickView",
                 "gradient",
                 "fallback",
             ]
         elif type == "selector":
             required_fields += ["options"]
             optional_fields += [
-                "placeholder",
                 "color",
                 "activeColor",
                 "size",
@@ -538,12 +811,60 @@ class props(ApiValidator):
                 "activeIcon",
                 "fallback",
             ]
+            # `dropdown` is the default `variant` for `selector` props
+            if variant in (None, "dropdown", "combobox", "comboboxMulti"):
+                optional_fields += ["placeholder"]
             if variant == "comboboxMulti":
                 optional_fields += ["numVisibleTags"]
+            if variant in ("combobox", "comboboxMulti", "dualList"):
+                optional_fields += ["readOnly"]
+            if variant == "dualList":
+                optional_fields += ["availableTitle", "selectedTitle", "height"]
         elif type == "date":
-            optional_fields += ["views"]
+            optional_fields += [
+                "views",
+                "defaultView",
+                "label",
+                "readOnly",
+                "timezone",
+                "disablePast",
+                "disableFuture",
+            ]
+            if variant in (None, "date", "datetime"):
+                optional_fields += [
+                    "dateOrder",
+                    "minDate",
+                    "maxDate",
+                    "disabledDates",
+                    "disabledWeekdays",
+                    "disabledMonths",
+                    "disabledYears",
+                ]
+            if variant in ("time", "datetime"):
+                optional_fields += [
+                    "hour24",
+                    "minTime",
+                    "maxTime",
+                    "disabledTimes",
+                    "hoursStep",
+                    "minutesStep",
+                    "secondsStep",
+                ]
+            if variant == "datetime":
+                optional_fields += ["minDateTime", "maxDateTime"]
         elif type == "coordinate":
-            optional_fields += ["label", "placeholder", "precision"]
+            optional_fields += [
+                "placeholder",
+                "precision",
+                "trailingZeros",
+                "unit",
+                "unitPlacement",
+                "direction",
+            ]
+            if variant in ("latLngInput", "latLngMap", "latLngPath"):
+                optional_fields += ["defaultZoom", "minZoom", "maxZoom", "maxBounds"]
+            if variant == "latLngPath":
+                optional_fields += ["pathColor", "pathWeight"]
         elif type == "toggle":
             optional_fields += [
                 "options",
@@ -570,7 +891,7 @@ class props(ApiValidator):
         elif type == "media":
             required_fields += ["variant"]
             optional_fields = [i for i in optional_fields if i != "variant"]
-            if variant == "video":
+            if variant in ["picture", "video"]:
                 optional_fields += ["scaleMode"]
 
         missing_required = pamda.difference(required_fields, list(passed_values.keys()))
@@ -595,6 +916,8 @@ class props(ApiValidator):
             "datetime": ["year", "month", "day", "hours", "minutes", "seconds"],
         }
         variant = passed_values.get("variant", None)
+        # `date` is the default `variant` of `date` props
+        date_variant = variant or "date"
         return {
             "kwargs": kwargs,
             "accepted_values": {
@@ -610,7 +933,10 @@ class props(ApiValidator):
                     "coordinate",
                 ],
                 "container": ["vertical", "horizontal", "titled", "untitled", "none"],
-                "views": view_options_dict.get(variant, []),
+                "direction": ["row", "column"],
+                "views": view_options_dict.get(date_variant, []),
+                "defaultView": view_options_dict.get(date_variant, []),
+                "dateOrder": ["mdy", "dmy", "ymd"],
                 "unitPlacement": ["after", "afterWithSpace", "before", "beforeWithSpace"],
                 "notation": ["standard", "compact", "scientific", "engineering", "precision"],
                 "notationDisplay": notationDisplay_options_dict.get(notation, []),
@@ -632,9 +958,17 @@ class props(ApiValidator):
                 "variant": {
                     "head": ["column", "row", "icon", "iconRow"],
                     "text": ["single", "textarea"],
-                    "num": ["field", "slider", "icon", "iconCompact", "incslider"],
+                    "num": [
+                        "field",
+                        "slider",
+                        "icon",
+                        "iconCompact",
+                        "iconCompactAlt",
+                        "incslider",
+                    ],
                     "selector": [
                         "dropdown",
+                        "dualList",
                         "checkbox",
                         "radio",
                         "combobox",
@@ -646,7 +980,7 @@ class props(ApiValidator):
                         "nested",
                     ],
                     "date": ["date", "time", "datetime"],
-                    "media": ["picture", "video"],
+                    "media": ["picture", "video", "audio"],
                     "coordinate": ["latLngInput", "latLngMap", "latLngPath"],
                     "toggle": ["switch", "button", "checkbox"],
                     "button": ["outlined", "text", "icon", "filled"],
@@ -655,6 +989,15 @@ class props(ApiValidator):
         }
 
     def __extend_spec__(self, **kwargs):
+        if (
+            self.data.get("type") == "media"
+            and self.data.get("fullWidth") is True
+            and self.data.get("scaleMode") is not None
+        ):
+            self.__warn__(
+                msg="`scaleMode` takes precedence over `fullWidth` for `media` props, so `fullWidth` has no effect when both are used",
+                path=["fullWidth"],
+            )
         if self.data.get("type") == "selector":
             CustomKeyValidator(
                 data=self.data.get("options", {}),
@@ -694,6 +1037,184 @@ class props(ApiValidator):
             self.__check_pixel_string_valid__(pixel_string=self.data.get("size"))
         if self.data.get("activeSize"):
             self.__check_pixel_string_valid__(pixel_string=self.data.get("activeSize"))
+        if self.data.get("type") == "date":
+            if self.data.get("timezone") is not None:
+                self.__check_timezone_valid__(self.data.get("timezone"), prepend_path=["timezone"])
+            available_views = self.data.get("views") or DATE_DEFAULT_VIEWS.get(
+                self.data.get("variant", "date"), []
+            )
+            default_view = self.data.get("defaultView")
+            if default_view is not None:
+                # Only checked when valid, as an unaccepted value is already reported
+                if default_view in DATE_VIEW_NAMES and default_view not in available_views:
+                    self.__error__(
+                        msg=f"`defaultView = {default_view}` but it should be one of the available `views`: {available_views}",
+                        path=["defaultView"],
+                    )
+            for unit, limit in DATE_TIME_STEP_LIMITS.items():
+                step = self.data.get(f"{unit}Step")
+                if step is None:
+                    continue
+                if step < 1 or limit % step != 0:
+                    self.__error__(
+                        msg=f"`{unit}Step = {step}` but it should be a positive integer that divides {limit} evenly",
+                        path=[f"{unit}Step"],
+                    )
+                elif step > 1 and unit not in available_views:
+                    self.__warn__(
+                        msg=f"`{unit}Step` has no effect as the `{unit}` view is not one of the available `views`",
+                        path=[f"{unit}Step"],
+                    )
+            for key, names, first, label in (
+                ("disabledWeekdays", DATE_WEEKDAY_NAMES, 0, "weekday"),
+                ("disabledMonths", DATE_MONTH_NAMES, 1, "month"),
+            ):
+                entries = self.data.get(key) or []
+                indexes = set()
+                for i, entry in enumerate(entries):
+                    index = self.__to_calendar_index__(entry, names, first)
+                    if index is None:
+                        self.__error__(
+                            msg=f"`{key}` has `{entry}` but it should be a {label} number from {first} to {first + len(names) - 1} or a {label} name",
+                            path=[key, i],
+                        )
+                    else:
+                        indexes.add(index)
+                if len(indexes) == len(names):
+                    self.__error__(msg=f"`{key}` disables every {label}", path=[key])
+            for i, entry in enumerate(self.data.get("disabledDates") or []):
+                is_range = isinstance(entry, list)
+                if is_range and not self.__check_pair__(
+                    entry, "disabledDates", i, "range", "dates"
+                ):
+                    continue
+                parsed = []
+                for j, boundary in enumerate(entry if is_range else [entry]):
+                    parsed.append(self.__parse_date_bound__(boundary, DATE_DISABLED_DATE_FORMATS))
+                    if parsed[-1] is None:
+                        self.__error__(
+                            msg=f"`disabledDates` has `{boundary}` but it should be in one of the accepted formats: {', '.join(DATE_DISABLED_DATE_FORMAT_NAMES)}",
+                            path=["disabledDates", i, j] if is_range else ["disabledDates", i],
+                        )
+                if is_range and None not in parsed and parsed[0].date() > parsed[1].date():
+                    self.__error__(
+                        msg=f"`disabledDates` has the range `{entry[0]}` to `{entry[1]}` but the start must not be later than the end",
+                        path=["disabledDates", i],
+                    )
+            windows = []
+            for i, window in enumerate(self.data.get("disabledTimes") or []):
+                if not self.__check_pair__(window, "disabledTimes", i, "window", "times"):
+                    continue
+                start = self.__to_seconds_of_day__(window[0])
+                end = self.__to_seconds_of_day__(window[1], is_end=True)
+                for j, (boundary, seconds) in enumerate(zip(window, (start, end))):
+                    if seconds is None:
+                        self.__error__(
+                            msg=f"`disabledTimes` has `{boundary}` but it should be in one of the accepted formats: {', '.join(DATE_TIME_OF_DAY_FORMAT_NAMES)}"
+                            + (" (or `24:00` for an end)" if j == 1 else ""),
+                            path=["disabledTimes", i, j],
+                        )
+                if start is None or end is None:
+                    continue
+                if start >= end:
+                    self.__error__(
+                        msg=f"`disabledTimes` has the window `{window[0]}` to `{window[1]}` but the start must be earlier than the end",
+                        path=["disabledTimes", i],
+                    )
+                else:
+                    windows.append((start, end))
+            covered_until = 0
+            for start, end in sorted(windows):
+                if start > covered_until:
+                    break
+                covered_until = max(covered_until, end)
+            if covered_until == SECONDS_PER_DAY:
+                self.__error__(msg="`disabledTimes` disables the whole day", path=["disabledTimes"])
+            for lower, upper, part, formats, format_names in (
+                ("minDate", "maxDate", "date", DATE_BOUND_FORMATS, DATE_BOUND_FORMAT_NAMES),
+                ("minTime", "maxTime", "time", DATE_BOUND_FORMATS, DATE_BOUND_FORMAT_NAMES),
+                (
+                    "minDateTime",
+                    "maxDateTime",
+                    None,
+                    DATETIME_BOUND_FORMATS,
+                    DATETIME_BOUND_FORMAT_NAMES,
+                ),
+            ):
+                parsed = {}
+                for key in (lower, upper):
+                    bound = self.data.get(key)
+                    if bound is None:
+                        continue
+                    parsed[key] = self.__parse_date_bound__(bound, formats)
+                    if parsed[key] is None:
+                        self.__error__(
+                            msg=f"`{key} = {bound}` but it should be in one of the accepted formats: {', '.join(format_names)}",
+                            path=[key],
+                        )
+                if len(parsed) == 2 and None not in parsed.values():
+                    low, high = (
+                        (getattr(parsed[k], part)() if part else parsed[k]) for k in (lower, upper)
+                    )
+                    if low > high:
+                        self.__error__(
+                            msg=f"`{lower}` must not be later than `{upper}`",
+                            path=[lower],
+                        )
+        if self.data.get("type") == "coordinate":
+            variant = self.data.get("variant", "latLngMap")
+            if variant in ("latLngInput", "latLngMap", "latLngPath"):
+                for field in ("defaultZoom", "minZoom", "maxZoom"):
+                    value = self.data.get(field)
+                    if value is not None and (value < 0 or value > 22):
+                        self.__error__(msg=f"`{field} = {value}` but it should be between 0 and 22")
+                max_bounds = self.data.get("maxBounds")
+                if max_bounds is not None:
+                    is_bounds_shape = (
+                        isinstance(max_bounds, list)
+                        and len(max_bounds) == 2
+                        and all(
+                            isinstance(corner, list)
+                            and len(corner) == 2
+                            and all(
+                                isinstance(num, (int, float)) and not isinstance(num, bool)
+                                for num in corner
+                            )
+                            for corner in max_bounds
+                        )
+                    )
+                    if not is_bounds_shape:
+                        self.__error__(
+                            msg=f"`maxBounds = {max_bounds}` but it should be `[[west, south], [east, north]]`"
+                        )
+                    else:
+                        (west, south), (east, north) = max_bounds
+                        for lng in (west, east):
+                            if lng < -180 or lng > 180:
+                                self.__error__(
+                                    msg=f"`maxBounds` longitude `{lng}` but it should be between -180 and 180"
+                                )
+                        for lat in (south, north):
+                            if lat < -90 or lat > 90:
+                                self.__error__(
+                                    msg=f"`maxBounds` latitude `{lat}` but it should be between -90 and 90"
+                                )
+                        if west >= east:
+                            self.__error__(
+                                msg=f"`maxBounds` west `{west}` must be less than east `{east}`"
+                            )
+                        if south >= north:
+                            self.__error__(
+                                msg=f"`maxBounds` south `{south}` must be less than north `{north}`"
+                            )
+            if variant == "latLngPath":
+                if self.data.get("pathColor"):
+                    self.__check_color_string_valid__(color_string=self.data.get("pathColor"))
+                path_weight = self.data.get("pathWeight")
+                if path_weight is not None and (path_weight < 1 or path_weight > 100):
+                    self.__error__(
+                        msg=f"`pathWeight = {path_weight}` but it should be between 1 and 100"
+                    )
 
 
 @type_enforced.Enforcer
@@ -1127,15 +1648,20 @@ class values(ApiValidator):
                 options = list(prop_spec.get("options", {}).keys())
                 self.__check_subset_valid__(prop_value, options, prepend_path=[prop_key])
             elif prop_type == "date":
-                self.__check_date_valid__(
-                    prop_value,
-                    date_variant=prop_spec.get("variant", "date"),
-                    prepend_path=[prop_key],
-                )
+                date_variant = prop_spec.get("variant", "date")
+                if self.__check_date_valid__(
+                    prop_value, date_variant=date_variant, prepend_path=[prop_key]
+                ):
+                    self.__check_date_constraints__(
+                        prop_value, prop_spec, date_variant, prepend_path=[prop_key]
+                    )
             elif prop_type == "media":
-                self.__check_url_valid__(prop_value, prepend_path=[prop_key])
+                if self.__check_url_valid__(prop_value, prepend_path=[prop_key]):
+                    self.__check_media_url_variant__(
+                        prop_value, variant=prop_spec.get("variant"), prepend_path=[prop_key]
+                    )
             elif prop_type == "coordinate":
-                coord_variant = prop_spec.get("variant", "latLngInput")
+                coord_variant = prop_spec.get("variant", "latLngMap")
                 self.__check_coord_path_valid__(prop_value, coord_variant, prepend_path=[prop_key])
 
 
@@ -1181,6 +1707,7 @@ class valueLists(ApiValidator):
                 "selector": (list,),
                 "date": (str,),
                 "media": (str,),
+                "coordinate": (list,),
             }.get(prop_type, tuple())
             # Add None to acceptable types if allowed
             if prop_spec.get("allowNone", False):
@@ -1224,7 +1751,20 @@ class valueLists(ApiValidator):
                         prop_value, date_variant=date_variant, prepend_path=[prop_key]
                     ):
                         continue
+                    self.__check_date_constraints__(
+                        prop_value, prop_spec, date_variant, prepend_path=[prop_key]
+                    )
             elif prop_type == "media":
                 for prop_value in prop_value_list:
                     if not self.__check_url_valid__(prop_value, prepend_path=[prop_key]):
+                        continue
+                    self.__check_media_url_variant__(
+                        prop_value, variant=prop_spec.get("variant"), prepend_path=[prop_key]
+                    )
+            elif prop_type == "coordinate":
+                coord_variant = prop_spec.get("variant", "latLngMap")
+                for prop_value in prop_value_list:
+                    if not self.__check_coord_path_valid__(
+                        prop_value, coord_variant, prepend_path=[prop_key]
+                    ):
                         continue
