@@ -53,6 +53,7 @@ class appBar_data_star(ApiValidator):
         bar: str,
         variant: str | None = None,
         color: str | None = None,
+        name: str | None = None,
         apiCommand: str | None = None,
         apiCommandKeys: list[str] | None = None,
         **kwargs,
@@ -91,6 +92,9 @@ class appBar_data_star(ApiValidator):
             * The color of the button. If omitted, the default value is set by the system.
             * **Note**: It must be a valid RGBA string.
             * **Example**: `"rgba(255, 255, 255, 1)"`.
+        * **`name`**: `[str]` = `None` &rarr; A short label for the action element.
+            * It is shown as a tooltip and used as the accessible name (for example, for screen readers).
+            * If omitted, the `name` of the linked [pane][] is used when there is one. Otherwise, the field id is used.
         * **`apiCommand`**: `[str]` = `None` &rarr; The name of the [API command][] to trigger.
         * **`apiCommandKeys`**: `[list[str]]` = `None` &rarr;
             * The root API keys to pass to your `execute_command` function if an
