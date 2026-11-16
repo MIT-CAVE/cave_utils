@@ -127,6 +127,10 @@ class groupedOutputs_data_star_stats(ApiValidator):
         trailingZeros: bool | None = None,
         notation: str | None = None,
         notationDisplay: str | None = None,
+        yAxisPrecision: int | None = None,
+        yAxisTrailingZeros: bool | None = None,
+        yAxisNotation: str | None = None,
+        yAxisNotationDisplay: str | None = None,
         **kwargs,
     ):
         """
@@ -157,6 +161,21 @@ class groupedOutputs_data_star_stats(ApiValidator):
                 * The options `"short"` and `"long"` are only provided for the `"compact"` notation
                 * The options `"e"`, `"e+"`, `"E"`, `"E+"`, `"x10^"`, and `"x10^+"` are provided for the `"scientific"`, `"engineering"` and `"precision"` notations
                 * If `None`, it defaults to `"short"` for `"compact"` notation, and to `"e+"` for `"scientific"`, `"engineering"` or `"precision"` notations; if the option is set to `"standard"`, its value remains `None`.
+        * **`yAxisPrecision`**: `[int]` = `None` &rarr;
+            * The number of decimal places to display in the y-axis labels of charts.
+            * **Notes**:
+                * If left unspecified (i.e., `None`), it will default to `settings.defaults.yAxisPrecision`, then to the stat's `precision`.
+        * **`yAxisTrailingZeros`**: `[bool]` = `None` &rarr; If `True`, trailing zeros will be displayed in the y-axis labels of charts.
+            * **Notes**:
+                * If left unspecified (i.e., `None`), it will default to `settings.defaults.yAxisTrailingZeros`, then to the stat's `trailingZeros`.
+        * **`yAxisNotation`**: `[str]` = `"standard"` &rarr; The formatting style of the y-axis labels of charts.
+            * **Accepted Values**: The same as `notation`.
+            * **Notes**:
+                * If left unspecified (i.e., `None`), it will default to `settings.defaults.yAxisNotation`. If no `yAxis*` formatting is set at all, the y-axis labels are automatically scaled (e.g., `K`, `M`, `B`).
+        * **`yAxisNotationDisplay`**: `[str]` = `"e+"` | `"short"` | `None` &rarr; Further customize the formatting within the selected `yAxisNotation`.
+            * **Accepted Values**: The same as `notationDisplay`.
+            * **Notes**:
+                * Requires `yAxisNotation`. The same restrictions per notation as `notationDisplay` apply.
 
         [metric prefix]: https://en.wikipedia.org/wiki/Metric_prefix
         [Scientific notation]: https://en.wikipedia.org/wiki/Scientific_notation
@@ -166,20 +185,26 @@ class groupedOutputs_data_star_stats(ApiValidator):
         passed_values = {k: v for k, v in locals().items() if (v is not None) and k != "kwargs"}
         if notationDisplay and not notation:
             raise Exception(f"Missing required fields: notation")
+        if yAxisNotationDisplay and not yAxisNotation:
+            raise Exception(f"Missing required fields: yAxisNotation")
         notation = passed_values.get("notation", "standard")
+        yAxisNotation = passed_values.get("yAxisNotation", "standard")
+        notationDisplay_options_dict = {
+            "compact": ["short", "long"],
+            "scientific": ["e", "e+", "E", "E+", "x10^", "x10^+"],
+            "engineering": ["e", "e+", "E", "E+", "x10^", "x10^+"],
+            "precision": ["e", "e+", "E", "E+", "x10^", "x10^+"],
+            "standard": [],
+        }
 
         return {
             "kwargs": kwargs,
             "accepted_values": {
                 "unitPlacement": ["after", "afterWithSpace", "before", "beforeWithSpace"],
                 "notation": ["standard", "compact", "scientific", "engineering", "precision"],
-                "notationDisplay": {
-                    "compact": ["short", "long"],
-                    "scientific": ["e", "e+", "E", "E+", "x10^", "x10^+"],
-                    "engineering": ["e", "e+", "E", "E+", "x10^", "x10^+"],
-                    "precision": ["e", "e+", "E", "E+", "x10^", "x10^+"],
-                    "standard": [],
-                }.get(notation, []),
+                "notationDisplay": notationDisplay_options_dict.get(notation, []),
+                "yAxisNotation": ["standard", "compact", "scientific", "engineering", "precision"],
+                "yAxisNotationDisplay": notationDisplay_options_dict.get(yAxisNotation, []),
             },
         }
 

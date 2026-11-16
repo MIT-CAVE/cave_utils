@@ -102,6 +102,10 @@ class settings_defaults(ApiValidator):
         legendNotationDisplay: str | None = None,
         legendMinLabel: str | None = None,
         legendMaxLabel: str | None = None,
+        yAxisPrecision: int | None = None,
+        yAxisTrailingZeros: bool | None = None,
+        yAxisNotation: str | None = None,
+        yAxisNotationDisplay: str | None = None,
         **kwargs,
     ):
         """
@@ -202,6 +206,23 @@ class settings_defaults(ApiValidator):
             * **Notes**:
                 * Takes precedence over other formatting, except when used in a node cluster and the `cave_utils.api.maps.group` attribute is `True`. In this case, the max value within the node cluster is displayed.
                 * This attribute only applies to `"num"` props or `stats`.
+        * **`yAxisPrecision`**: `[int]` = `None` &rarr;
+            * The number of decimal places to display in the y-axis labels of charts.
+            * **Notes**:
+                * If left unspecified (i.e. `None`), the stat's `yAxisPrecision` will be used, then its `precision`, then `settings.precision`.
+                * This attribute only applies to `stats`.
+        * **`yAxisTrailingZeros`**: `[bool]` = `None` &rarr; If `True`, trailing zeros will be displayed in the y-axis labels of charts.
+            * **Notes**:
+                * This attribute only applies to `stats`.
+        * **`yAxisNotation`**: `[str]` = `"standard"` &rarr; The formatting style of the y-axis labels of charts.
+            * **Accepted Values**: The same as `notation`.
+            * **Notes**:
+                * If no `yAxis*` formatting is set at all, the y-axis labels are automatically scaled (e.g., `K`, `M`, `B`).
+                * This attribute only applies to `stats`.
+        * **`yAxisNotationDisplay`**: `[str]` = `"e+"` | `"short"` | `None` &rarr; Further customize the formatting within the selected `yAxisNotation`.
+            * **Accepted Values**: The same as `notationDisplay`.
+            * **Notes**:
+                * Requires `yAxisNotation`. This attribute only applies to `stats`.
 
         [locale identifier]: https://en.wikipedia.org/wiki/IETF_language_tag
         [metric prefix]: https://en.wikipedia.org/wiki/Metric_prefix
@@ -215,6 +236,8 @@ class settings_defaults(ApiValidator):
             required_fields += ["notation"]
         if legendNotationDisplay:
             required_fields += ["legendNotation"]
+        if yAxisNotationDisplay:
+            required_fields += ["yAxisNotation"]
         missing_required = pamda.difference(required_fields, list(passed_values.keys()))
         if len(missing_required) > 0:
             raise Exception(f"Missing required fields: {str(missing_required)}")
@@ -228,6 +251,7 @@ class settings_defaults(ApiValidator):
         }
         notation = passed_values.get("notation", "standard")
         legendNotation = passed_values.get("legendNotation", "standard")
+        yAxisNotation = passed_values.get("yAxisNotation", "standard")
         return {
             "kwargs": kwargs,
             "accepted_values": {
@@ -236,6 +260,8 @@ class settings_defaults(ApiValidator):
                 "notationDisplay": notationDisplay_options_dict.get(notation, []),
                 "legendNotation": ["standard", "compact", "scientific", "engineering", "precision"],
                 "legendNotationDisplay": notationDisplay_options_dict.get(legendNotation, []),
+                "yAxisNotation": ["standard", "compact", "scientific", "engineering", "precision"],
+                "yAxisNotationDisplay": notationDisplay_options_dict.get(yAxisNotation, []),
             },
         }
 
