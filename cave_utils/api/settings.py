@@ -97,11 +97,6 @@ class settings_defaults(ApiValidator):
         fallbackValue: str | None = "N/A",
         unit: str | None = None,
         unitPlacement: str | None = None,
-        legendPrecision: int | None = None,
-        legendNotation: str | None = None,
-        legendNotationDisplay: str | None = None,
-        legendMinLabel: str | None = None,
-        legendMaxLabel: str | None = None,
         yAxisPrecision: int | None = None,
         yAxisTrailingZeros: bool | None = None,
         yAxisNotation: str | None = None,
@@ -164,48 +159,6 @@ class settings_defaults(ApiValidator):
                 * `"before"`: The `unit` appears before the value.
                 * `"beforeWithSpace"`: The unit is placed before the value, with a space in between.
             * **Note**: This attribute only applies to `"num"` props or `stats`.
-        * **`legendPrecision`**: `[int]` = `None` &rarr;
-            * The number of decimal places to display in the Map Legend.
-            * **Notes**:
-                * Set the precision to `0` to attach an integer constraint.
-                * If left unspecified (i.e. `None`), the prop's or stat's `precision` will be used or in case the latter is undefined, `settings.precision` will be used.
-                * This attribute only applies to `"num"` props or `stats`.
-        * **`legendNotation`**: `[str]` = `"standard"` &rarr; The formatting style of a numeric value.
-            * **Accepted Values**:
-                * `"standard"`: Plain number formatting
-                * `"compact"`: Resembles the [metric prefix][] system
-                * `"scientific"`: [Scientific notation][]
-                * `"engineering"`: [Engineering notation][]
-                * `"precision"`: Emulates the [Number.prototype.toPrecision][] method
-            * **Notes**:
-                * If left unspecified (i.e. `None`), the prop's or stat's `notation` will be used or in case the latter is undefined, `settings.notation` will be used.
-                * This attribute only applies to `"num"` props or `stats`.
-        * **`legendNotationDisplay`**: `[str]` = `"e+"` | `"short"` | `None` &rarr; Further customize the formatting within the selected `legendNotation`.
-            * **Accepted Values**:
-                * `"short"`: Add symbols `K`, `M`, `B`, and `T` (in `"en-US"`) to denote thousands, millions, billions, and trillions, respectively.
-                * `"long"`: Present numeric values with the informal suffix words `thousand`, `million`, `billion`, and `trillion` (in `"en-US"`).
-                * `"e"`: Exponent symbol in lowercase as per the chosen `locale` identifier
-                * `"e+"`: Similar to `"e"`, but with a plus sign for positive exponents.
-                * `"E"`: Exponent symbol in uppercase as per the chosen `locale` identifier
-                * `"E+"`: Similar to `"E"`, but with a plus sign for positive exponents.
-                * `"x10^"`: Formal scientific notation representation
-                * `"x10^+"`: Similar to `"x10^"`, with a plus sign for positive exponents.
-            * **Notes**:
-                * No `legendNotationDisplay` option is provided for a `"standard"` legend notation
-                * The options `"short"` and `"long"` are only provided for the `"compact"` legend notation
-                * The options `"e"`, `"e+"`, `"E"`, `"E+"`, `"x10^"`, and `"x10^+"` are provided for the `"scientific"`, `"engineering"` and `"precision"` legend notations
-                * If left unspecified (i.e. `None`), the prop's or stat's `notationDisplay` will be used or in case the latter is undefined, `settings.notationDisplay` will be used.
-                * This attribute only applies to `"num"` props or `stats`.
-        * **`legendMinLabel`**: `[str]` = `None` &rarr;
-            * A custom and descriptive label in the Map Legend used to identify the lowest data point.
-            * **Notes**:
-                * Takes precedence over other formatting, except when used in a node cluster and the `cave_utils.api.maps.group` attribute is `True`. In this case, the min value within the node cluster is displayed.
-                * This attribute only applies to `"num"` props or `stats`.
-        * **`legendMaxLabel`**: `[str]` = `None` &rarr;
-            * A custom and descriptive label in the Map Legend used to identify the highest data point.
-            * **Notes**:
-                * Takes precedence over other formatting, except when used in a node cluster and the `cave_utils.api.maps.group` attribute is `True`. In this case, the max value within the node cluster is displayed.
-                * This attribute only applies to `"num"` props or `stats`.
         * **`yAxisPrecision`**: `[int]` = `None` &rarr;
             * The number of decimal places to display in the y-axis labels of charts.
             * **Notes**:
@@ -234,8 +187,6 @@ class settings_defaults(ApiValidator):
         required_fields = []
         if notationDisplay:
             required_fields += ["notation"]
-        if legendNotationDisplay:
-            required_fields += ["legendNotation"]
         if yAxisNotationDisplay:
             required_fields += ["yAxisNotation"]
         missing_required = pamda.difference(required_fields, list(passed_values.keys()))
@@ -250,7 +201,6 @@ class settings_defaults(ApiValidator):
             "standard": [],
         }
         notation = passed_values.get("notation", "standard")
-        legendNotation = passed_values.get("legendNotation", "standard")
         yAxisNotation = passed_values.get("yAxisNotation", "standard")
         return {
             "kwargs": kwargs,
@@ -258,8 +208,6 @@ class settings_defaults(ApiValidator):
                 "unitPlacement": ["after", "afterWithSpace", "before", "beforeWithSpace"],
                 "notation": ["standard", "compact", "scientific", "engineering", "precision"],
                 "notationDisplay": notationDisplay_options_dict.get(notation, []),
-                "legendNotation": ["standard", "compact", "scientific", "engineering", "precision"],
-                "legendNotationDisplay": notationDisplay_options_dict.get(legendNotation, []),
                 "yAxisNotation": ["standard", "compact", "scientific", "engineering", "precision"],
                 "yAxisNotationDisplay": notationDisplay_options_dict.get(yAxisNotation, []),
             },
