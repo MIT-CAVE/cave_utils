@@ -1268,6 +1268,7 @@ class props_gradient(ApiValidator):
         notation: str | None = None,
         notationDisplay: str | None = None,
         precision: int | None = None,
+        trailingZeros: bool | None = None,
         data: list | None = None,
         **kwargs,
     ):
@@ -1306,6 +1307,11 @@ class props_gradient(ApiValidator):
             * **Notes**:
                 * If left unspecified (i.e., `None`), it will default to `settings.defaults.notationDisplay`.
         * **`precision`**: `[int]` = `None` &rarr; The number of decimal places to display next to the gradient.
+        * **`trailingZeros`**: `[bool]` = `None` &rarr; If `True`, trailing zeros will be displayed next to the gradient.
+            * **Notes**:
+                * This ensures that all precision digits are shown. For example: `1.5` &rarr; `1.500` when precision is `3`.
+                * If left unspecified (i.e., `None`), it will default to the prop's `trailingZeros`, then `settings.defaults.trailingZeros`.
+                * Has no effect when `notation` is `"precision"`, which always shows all significant digits.
         * **`data`**: `[list]` = `None` &rarr; The data for the gradient as a list of dicts.
             * **Note**: See `props_gradient_data` for more information.
         """
