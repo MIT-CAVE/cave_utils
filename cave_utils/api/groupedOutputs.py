@@ -127,10 +127,7 @@ class groupedOutputs_data_star_stats(ApiValidator):
         trailingZeros: bool | None = None,
         notation: str | None = None,
         notationDisplay: str | None = None,
-        yAxisPrecision: int | None = None,
-        yAxisTrailingZeros: bool | None = None,
-        yAxisNotation: str | None = None,
-        yAxisNotationDisplay: str | None = None,
+        yAxis: dict | None = None,
         **kwargs,
     ):
         """
@@ -161,21 +158,11 @@ class groupedOutputs_data_star_stats(ApiValidator):
                 * The options `"short"` and `"long"` are only provided for the `"compact"` notation
                 * The options `"e"`, `"e+"`, `"E"`, `"E+"`, `"x10^"`, and `"x10^+"` are provided for the `"scientific"`, `"engineering"` and `"precision"` notations
                 * If `None`, it defaults to `"short"` for `"compact"` notation, and to `"e+"` for `"scientific"`, `"engineering"` or `"precision"` notations; if the option is set to `"standard"`, its value remains `None`.
-        * **`yAxisPrecision`**: `[int]` = `None` &rarr;
-            * The number of decimal places to display in the y-axis labels of charts.
+        * **`yAxis`**: `[dict]` = `None` &rarr; Number formatting for the y-axis labels of charts that use this stat.
+            * **See**: `cave_utils.api.groupedOutputs.groupedOutputs_data_star_stats_yAxis`
             * **Notes**:
-                * If left unspecified (i.e., `None`), it will default to `settings.defaults.yAxisPrecision`, then to the stat's `precision`.
-        * **`yAxisTrailingZeros`**: `[bool]` = `None` &rarr; If `True`, trailing zeros will be displayed in the y-axis labels of charts.
-            * **Notes**:
-                * If left unspecified (i.e., `None`), it will default to `settings.defaults.yAxisTrailingZeros`, then to the stat's `trailingZeros`.
-        * **`yAxisNotation`**: `[str]` = `"standard"` &rarr; The formatting style of the y-axis labels of charts.
-            * **Accepted Values**: The same as `notation`.
-            * **Notes**:
-                * If left unspecified (i.e., `None`), it will default to `settings.defaults.yAxisNotation`. If no `yAxis*` formatting is set at all, the y-axis labels are automatically scaled (e.g., `K`, `M`, `B`).
-        * **`yAxisNotationDisplay`**: `[str]` = `"e+"` | `"short"` | `None` &rarr; Further customize the formatting within the selected `yAxisNotation`.
-            * **Accepted Values**: The same as `notationDisplay`.
-            * **Notes**:
-                * Requires `yAxisNotation`. The same restrictions per notation as `notationDisplay` apply.
+                * Each key falls back to `settings.defaults.yAxis`, then to the stat's own formatting (e.g., `precision`).
+                * If no `yAxis` formatting is set at all, the y-axis labels are automatically scaled (e.g., `K`, `M`, `B`).
 
         [metric prefix]: https://en.wikipedia.org/wiki/Metric_prefix
         [Scientific notation]: https://en.wikipedia.org/wiki/Scientific_notation
@@ -185,26 +172,95 @@ class groupedOutputs_data_star_stats(ApiValidator):
         passed_values = {k: v for k, v in locals().items() if (v is not None) and k != "kwargs"}
         if notationDisplay and not notation:
             raise Exception(f"Missing required fields: notation")
-        if yAxisNotationDisplay and not yAxisNotation:
-            raise Exception(f"Missing required fields: yAxisNotation")
         notation = passed_values.get("notation", "standard")
-        yAxisNotation = passed_values.get("yAxisNotation", "standard")
-        notationDisplay_options_dict = {
-            "compact": ["short", "long"],
-            "scientific": ["e", "e+", "E", "E+", "x10^", "x10^+"],
-            "engineering": ["e", "e+", "E", "E+", "x10^", "x10^+"],
-            "precision": ["e", "e+", "E", "E+", "x10^", "x10^+"],
-            "standard": [],
-        }
 
         return {
             "kwargs": kwargs,
             "accepted_values": {
                 "unitPlacement": ["after", "afterWithSpace", "before", "beforeWithSpace"],
                 "notation": ["standard", "compact", "scientific", "engineering", "precision"],
-                "notationDisplay": notationDisplay_options_dict.get(notation, []),
-                "yAxisNotation": ["standard", "compact", "scientific", "engineering", "precision"],
-                "yAxisNotationDisplay": notationDisplay_options_dict.get(yAxisNotation, []),
+                "notationDisplay": {
+                    "compact": ["short", "long"],
+                    "scientific": ["e", "e+", "E", "E+", "x10^", "x10^+"],
+                    "engineering": ["e", "e+", "E", "E+", "x10^", "x10^+"],
+                    "precision": ["e", "e+", "E", "E+", "x10^", "x10^+"],
+                    "standard": [],
+                }.get(notation, []),
+            },
+        }
+
+    def __extend_spec__(self, **kwargs):
+        if self.data.get("yAxis"):
+            groupedOutputs_data_star_stats_yAxis(
+                data=self.data.get("yAxis"),
+                log=self.log,
+                prepend_path=["yAxis"],
+                **kwargs,
+            )
+
+
+@type_enforced.Enforcer
+class groupedOutputs_data_star_stats_yAxis(ApiValidator):
+    """
+    The y-axis number formatting is located under the path **`groupedOutputs.data.*.stats.*.yAxis`**.
+    """
+
+    @staticmethod
+    def spec(
+        precision: int | None = None,
+        trailingZeros: bool | None = None,
+        notation: str | None = None,
+        notationDisplay: str | None = None,
+        **kwargs,
+    ):
+        """
+        Arguments:
+
+        * **`precision`**: `[int]` = `None` &rarr; The number of decimal places to display in the y-axis labels of charts.
+            * **Notes**:
+                * Set the precision to `0` to attach an integer constraint.
+                * If left unspecified (i.e., `None`), it will default to `settings.defaults.yAxis.precision`, then to the stat's `precision`.
+        * **`trailingZeros`**: `[bool]` = `None` &rarr; If `True`, trailing zeros will be displayed in the y-axis labels of charts.
+            * **Notes**:
+                * If left unspecified (i.e., `None`), it will default to `settings.defaults.yAxis.trailingZeros`, then to the stat's `trailingZeros`.
+        * **`notation`**: `[str]` = `"standard"` &rarr; The formatting style of the y-axis labels of charts.
+            * **Accepted Values**:
+                * `"standard"`: Plain number formatting
+                * `"compact"`: Resembles the [metric prefix][] system
+                * `"scientific"`: [Scientific notation][]
+                * `"engineering"`: [Engineering notation][]
+                * `"precision"`: Emulates the [Number.prototype.toPrecision][] method
+            * **Notes**:
+                * If left unspecified (i.e., `None`), it will default to `settings.defaults.yAxis.notation`, then to the stat's `notation`.
+                * If no `yAxis` formatting is set at all, the y-axis labels are automatically scaled (e.g., `K`, `M`, `B`).
+        * **`notationDisplay`**: `[str]` = `"e+"` | `"short"` | `None` &rarr; Further customize the formatting within the selected `notation`.
+            * **Accepted Values**:
+                * When **`notation`** == `"compact"`: `"short"` or `"long"`
+                * When **`notation`** == `"scientific"`, `"engineering"` or `"precision"`: `"e"`, `"e+"`, `"E"`, `"E+"`, `"x10^"` or `"x10^+"`
+            * **Notes**:
+                * Requires `notation`. No `notationDisplay` option is provided for a `"standard"` notation.
+                * If left unspecified (i.e., `None`), it will default to `settings.defaults.yAxis.notationDisplay`, then to the stat's `notationDisplay` (only when no `notation` is set here).
+
+        [metric prefix]: https://en.wikipedia.org/wiki/Metric_prefix
+        [Scientific notation]: https://en.wikipedia.org/wiki/Scientific_notation
+        [Engineering notation]: https://en.wikipedia.org/wiki/Engineering_notation
+        [Number.prototype.toPrecision]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toPrecision
+        """
+        passed_values = {k: v for k, v in locals().items() if (v is not None) and k != "kwargs"}
+        if notationDisplay and not notation:
+            raise Exception(f"Missing required fields: notation")
+        notation = passed_values.get("notation", "standard")
+        return {
+            "kwargs": kwargs,
+            "accepted_values": {
+                "notation": ["standard", "compact", "scientific", "engineering", "precision"],
+                "notationDisplay": {
+                    "compact": ["short", "long"],
+                    "scientific": ["e", "e+", "E", "E+", "x10^", "x10^+"],
+                    "engineering": ["e", "e+", "E", "E+", "x10^", "x10^+"],
+                    "precision": ["e", "e+", "E", "E+", "x10^", "x10^+"],
+                    "standard": [],
+                }.get(notation, []),
             },
         }
 
