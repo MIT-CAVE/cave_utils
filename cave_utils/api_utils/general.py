@@ -34,6 +34,7 @@ class props(ApiValidator):
         helperText: str | None = None,
         variant: str | None = None,
         display: bool | None = None,
+        allowFiltering: bool | None = None,
         enabled: bool | None = None,
         container: str | None = None,
         apiCommand: str | None = None,
@@ -150,6 +151,8 @@ class props(ApiValidator):
                 - This is displayed by `"text"`, `"num"` (`"field"` variant), `"selector"` and `"media"` props.
                 - It is rendered as rich text when `richText` is `True`. See `richText` in the `cave_utils.api` docs for more information.
         * **`display`**: `[bool]` = `None` &rarr; Whether or not the prop will be displayed.
+        * **`allowFiltering`**: `[bool]` = `True` &rarr; Whether the prop can be used in the map filters.
+            * **Note**: Only used by map features props.
         * **`variant`**: `[str]` = `None` &rarr; The variant of the prop.
             * **Accepted Values**:
                 * When **`type`** == `"head"`:
@@ -681,6 +684,7 @@ class props(ApiValidator):
             "helperText",
             "variant",
             "display",
+            "allowFiltering",
             "container",
             "propStyle",
             "fullWidth",
