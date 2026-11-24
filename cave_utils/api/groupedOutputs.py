@@ -131,12 +131,19 @@ class groupedOutputs_data_star_stats(ApiValidator):
         yAxisTrailingZeros: bool | None = None,
         yAxisNotation: str | None = None,
         yAxisNotationDisplay: str | None = None,
+        allowFiltering: bool | None = None,
+        allowCharting: bool | None = None,
+        help: str | None = None,
         **kwargs,
     ):
         """
         Arguments:
 
         * **`name`**: `[str]` &rarr; The name of the stat.
+        * **`allowFiltering`**: `[bool]` = `True` &rarr; Whether the stat can be used in the filters.
+        * **`allowCharting`**: `[bool]` = `True` &rarr; Whether the stat can be selected in the chart dropdowns.
+        * **`help`**: `[str]` = `None` &rarr; Help text shown in an info button next to the stat in the chart and filter dropdowns.
+            * **Note**: If left unspecified (i.e., `None`) or blank, no info button is displayed.
         * **`unit`**: `[str]` &rarr; The unit to use for the stat.
             * **Note**: If left unspecified (i.e., `None`), it will default to `settings.defaults.unit`.
         * **`unitPlacement`**: `[str]` = `None` &rarr; The position of the `unit` symbol relative to the value.
