@@ -204,6 +204,9 @@ class pages_data_star_charts(ApiValidator):
                     * `"treemap"`: A [treemap chart][]
                     * `"waterfall"`: A [waterfall chart][]
                     * `"distribution"`: A [distribution chart][]
+                    * `"mixed"`: A chart of two stats, each with its own y-axis
+                        * The first stat is plotted against the left y-axis and the second stat against the right y-axis.
+                        * See **`chartOptions`** to choose how each side is drawn.
                 * When **`type`** == `"globalOutput"`:
                     * `"bar"`: A [bar chart][]
                     * `"line"`: A [line chart][]
@@ -217,7 +220,7 @@ class pages_data_star_charts(ApiValidator):
         * **`stats`**: `[list]` = `None` &rarr; A list of stats to use.
             * **See**: `cave_utils.api.pages.pages_data_star_charts_stats`.
         * **`chartOptions`**: `[dict]` = `None` &rarr; The options to pass to the chart.
-            # TODO: Validate chart options
+            * **See**: `cave_utils.api.pages.pages_data_star_charts_chartOptions`.
         * **`sessions`**: `[list]` = `None` &rarr; The ids of the sessions to use.
         * **`globalOutput`**: `[list]` = `None` &rarr; The ids of the global outputs to use.
         * **`lockedLayout`**: `[bool]` = `False` &rarr; Whether or not the layout should be locked.
@@ -529,11 +532,19 @@ class pages_data_star_charts_chartOptions(ApiValidator):
         Arguments:
 
         * ** `leftChartType`**: `[str]` = `None` &rarr; The chart type to use for the left y-axis.
+            * **Notes**:
+                * If left unspecified (i.e., `None`), it will default to `"line"`.
+                * A `"cumulative_line"` is only accumulated if none of its values are missing.
+                * This attribute is applicable exclusively to the `"mixed"` chartType.
             * **Accepted Values**:
                 * `"bar"`: A [bar chart][]
                 * `"line"`: A [line chart][]
                 * `"cumulative_line"`: A cumulative line chart
         * ** `rightChartType`**: `[str]` = `None` &rarr; The chart type to use for the right y-axis.
+            * **Notes**:
+                * If left unspecified (i.e., `None`), it will default to `"bar"`.
+                * A `"cumulative_line"` is only accumulated if none of its values are missing.
+                * This attribute is applicable exclusively to the `"mixed"` chartType.
             * **Accepted Values**:
                 * `"bar"`: A [bar chart][]
                 * `"line"`: A [line chart][]
